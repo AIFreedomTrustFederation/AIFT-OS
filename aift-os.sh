@@ -1,49 +1,39 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/usr/bin/env sh
+set -eu
 
-source "$HOME/AIFT/runtime/common.sh"
-source "$HOME/AIFT/runtime/status.sh"
-source "$HOME/AIFT/runtime/registry.sh"
-source "$HOME/AIFT/runtime/intel.sh"
-source "$HOME/AIFT/runtime/graph.sh"
-source "$HOME/AIFT/runtime/dashboard.sh"
-source "$HOME/AIFT/runtime/doctor.sh"
-source "$HOME/AIFT/runtime/pull.sh"
-source "$HOME/AIFT/runtime/verify.sh"
-source "$HOME/AIFT/runtime/push.sh"
-source "$HOME/AIFT/runtime/workflow.sh"
+AIFT_ROOT="${AIFT_ROOT:-$HOME/AIFT}"
+AIFT_OS_HOME="${AIFT_OS_HOME:-$AIFT_ROOT/AIFT-OS}"
+export AIFT_ROOT AIFT_OS_HOME
 
-case "${1:-help}" in
-  status) aift_status ;;
-  registry) aift_registry ;;
-  intelligence|intel) aift_intelligence ;;
-  graph) aift_graph ;;
-  dashboard) aift_dashboard ;;
-  doctor) aift_doctor ;;
-  pull) aift_pull ;;
-  verify) aift_verify ;;
-  push) aift_push ;;
-  update) aift_update ;;
-  sync)
-    aift_registry
-    aift_intelligence
-    aift_dashboard
-    aift_graph
+cmd="${1:-help}"
+shift || true
+
+case "$cmd" in
+  help|-h|--help)
+    cat <<HELP
+AIFT-OS Federation Control Plane
+
+Usage:
+  aift-os.sh <command>
+
+Commands:
+  help       Show this help
+  doctor     Inspect local control-plane health
+  status     Show federation repository status
+  registry   Generate registry/repos.json
+  graph      Generate reports/federation-graph.md
+  verify     Run doctor + registry + graph
+  sync       Commit/pull/push sovereign repos safely
+  install    Install top-level launchers
+HELP
     ;;
-  help|*)
-    echo "AIFT Runtime OS"
-    echo
-    echo "Commands:"
-    echo "  ~/AIFT/aift-os.sh status"
-    echo "  ~/AIFT/aift-os.sh registry"
-    echo "  ~/AIFT/aift-os.sh intelligence"
-    echo "  ~/AIFT/aift-os.sh graph"
-    echo "  ~/AIFT/aift-os.sh dashboard"
-    echo "  ~/AIFT/aift-os.sh doctor"
-    echo "  ~/AIFT/aift-os.sh pull"
-    echo "  ~/AIFT/aift-os.sh verify"
-    echo "  ~/AIFT/aift-os.sh push"
-    echo "  ~/AIFT/aift-os.sh update"
-    echo "  ~/AIFT/aift-os.sh sync"
+  *)
+    file="$AIFT_OS_HOME/commands/$cmd.sh"
+    [ -f "$file" ] || {
+      echo "Unknown command: $cmd" >&2
+      echo "Run: aift help" >&2
+      exit 1
+    }
+    sh "$file" "$@"
     ;;
 esac
