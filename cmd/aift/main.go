@@ -12,6 +12,7 @@ import (
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/federation"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/gitx"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/intelligence"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manifests"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/plugins"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/providers"
@@ -105,6 +106,8 @@ func main() {
 		err = runWorkflow(cfg, args)
 	case "capabilities":
 		err = runCapabilities(cfg, args)
+	case "intelligence":
+		err = runIntelligence(cfg, args)
 	case "verify":
 		err = verify(cfg)
 	default:
@@ -146,6 +149,7 @@ func help() {
 	fmt.Println("  repo list|inspect|run")
 	fmt.Println("  workflow list")
 	fmt.Println("  capabilities scan|report|repo|promote")
+	fmt.Println("  intelligence scan|report|repo|roadmap")
 	fmt.Println("  verify")
 }
 
@@ -210,6 +214,25 @@ func runCapabilities(cfg config.Config, args []string) error {
 	return fmt.Errorf("usage: aift capabilities scan|report|repo|promote")
 }
 
+func runIntelligence(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "scan" {
+		return intelligence.Scan(cfg)
+	}
+	if args[0] == "report" {
+		return intelligence.Report(cfg)
+	}
+	if args[0] == "repo" {
+		if len(args) < 2 {
+			return fmt.Errorf("usage: aift intelligence repo <repo>")
+		}
+		return intelligence.Repo(cfg, args[1])
+	}
+	if args[0] == "roadmap" {
+		return intelligence.Roadmap(cfg)
+	}
+	return fmt.Errorf("usage: aift intelligence scan|report|repo|roadmap")
+}
+
 func verify(cfg config.Config) error {
 	if err := doctor.Run(cfg); err != nil {
 		return err
@@ -230,6 +253,9 @@ func verify(cfg config.Config) error {
 		return err
 	}
 	if err := capabilities.Scan(cfg); err != nil {
+		return err
+	}
+	if err := intelligence.Scan(cfg); err != nil {
 		return err
 	}
 	if err := events.Emit(cfg, "verify.complete", "verify", "federation verified", nil); err != nil {
