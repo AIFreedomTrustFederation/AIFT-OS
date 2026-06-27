@@ -1,0 +1,20 @@
+{
+  "name": "AI Code Training",
+  "purpose": "Preserve AIFT-OS development scripts and architecture evolution for future AI agents.",
+  "status": "active training corpus",
+  "categories": [
+    "migration scripts",
+    "phase scripts",
+    "patch scripts",
+    "successful patches",
+    "failed approaches",
+    "architecture evolution",
+    "lessons learned"
+  ],
+  "policy": {
+    "delete_old_scripts": false,
+    "archive_old_scripts": true,
+    "compiled_binaries_tracked": false,
+    "shell_scripts_are_training_data": true
+  }
+}

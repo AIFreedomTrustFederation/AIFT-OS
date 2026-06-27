@@ -1,0 +1,18 @@
+[
+  {
+    "phase": "shell-control-plane",
+    "summary": "Initial AIFT-OS control-plane scripts and repo structure."
+  },
+  {
+    "phase": "go-kernel",
+    "summary": "Migrated command kernel to Go."
+  },
+  {
+    "phase": "launcher-stabilization",
+    "summary": "Separated workspace launcher, repo launcher, and compiled Go binary."
+  },
+  {
+    "phase": "services-runtime",
+    "summary": "Added event log, providers, runtime, scheduler, supervisor, services, and API foundation."
+  }
+]

@@ -50,3 +50,27 @@
 {"time":"2026-06-27T23:01:40Z","type":"job.complete","source":"deps","message":"job completed"}
 {"time":"2026-06-27T23:01:40Z","type":"jobs.complete","source":"jobs","message":"job batch completed in 1.197878281s"}
 {"time":"2026-06-27T23:01:42Z","type":"verify.complete","source":"verify","message":"federation verified"}
+{"time":"2026-06-27T23:05:45Z","type":"runtime.start","source":"runtime","message":"runtime one-shot start"}
+{"time":"2026-06-27T23:05:45Z","type":"supervisor.boot","source":"supervisor","message":"runtime supervisor booted"}
+{"time":"2026-06-27T23:05:45Z","type":"jobs.start","source":"jobs","message":"job batch started"}
+{"time":"2026-06-27T23:05:45Z","type":"job.start","source":"providers","message":"job started"}
+{"time":"2026-06-27T23:05:45Z","type":"job.complete","source":"providers","message":"job completed"}
+{"time":"2026-06-27T23:05:45Z","type":"job.start","source":"registry","message":"job started"}
+{"time":"2026-06-27T23:05:46Z","type":"job.complete","source":"registry","message":"job completed"}
+{"time":"2026-06-27T23:05:46Z","type":"job.start","source":"dashboard","message":"job started"}
+{"time":"2026-06-27T23:05:47Z","type":"job.complete","source":"dashboard","message":"job completed"}
+{"time":"2026-06-27T23:05:47Z","type":"job.start","source":"deps","message":"job started"}
+{"time":"2026-06-27T23:05:47Z","type":"job.complete","source":"deps","message":"job completed"}
+{"time":"2026-06-27T23:05:47Z","type":"jobs.complete","source":"jobs","message":"job batch completed in 1.70221828s"}
+{"time":"2026-06-27T23:05:47Z","type":"runtime.complete","source":"runtime","message":"runtime one-shot complete"}
+{"time":"2026-06-27T23:05:47Z","type":"jobs.start","source":"jobs","message":"job batch started"}
+{"time":"2026-06-27T23:05:47Z","type":"job.start","source":"providers","message":"job started"}
+{"time":"2026-06-27T23:05:47Z","type":"job.complete","source":"providers","message":"job completed"}
+{"time":"2026-06-27T23:05:47Z","type":"job.start","source":"registry","message":"job started"}
+{"time":"2026-06-27T23:05:48Z","type":"job.complete","source":"registry","message":"job completed"}
+{"time":"2026-06-27T23:05:48Z","type":"job.start","source":"dashboard","message":"job started"}
+{"time":"2026-06-27T23:05:49Z","type":"job.complete","source":"dashboard","message":"job completed"}
+{"time":"2026-06-27T23:05:49Z","type":"job.start","source":"deps","message":"job started"}
+{"time":"2026-06-27T23:05:49Z","type":"job.complete","source":"deps","message":"job completed"}
+{"time":"2026-06-27T23:05:49Z","type":"jobs.complete","source":"jobs","message":"job batch completed in 1.894362343s"}
+{"time":"2026-06-27T23:05:50Z","type":"verify.complete","source":"verify","message":"federation verified"}
