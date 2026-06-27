@@ -8,14 +8,8 @@
     "role": { "type": "string" },
     "sovereign": { "type": "boolean" },
     "managedBy": { "type": "string" },
-    "dependencies": {
-      "type": "array",
-      "items": { "type": "string" }
-    },
-    "capabilities": {
-      "type": "array",
-      "items": { "type": "string" }
-    },
+    "dependencies": { "type": "array", "items": { "type": "string" } },
+    "capabilities": { "type": "array", "items": { "type": "string" } },
     "commandsPath": { "type": "string" }
   }
 }

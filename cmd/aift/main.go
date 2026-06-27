@@ -1,0 +1,134 @@
+package main
+
+import (
+	"fmt"
+	"os"
+
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/doctor"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/gitx"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manifests"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/plugins"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/registry"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/reports"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/sync"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/workspace"
+)
+
+func main() {
+	cfg := config.Load()
+
+	cmd := "help"
+	args := []string{}
+
+	if len(os.Args) > 1 {
+		cmd = os.Args[1]
+		args = os.Args[2:]
+	}
+
+	if looksLikeExecutablePath(cmd) {
+		if len(args) > 0 {
+			cmd = args[0]
+			args = args[1:]
+		} else {
+			cmd = "help"
+		}
+	}
+
+	var err error
+
+	switch cmd {
+	case "help", "-h", "--help":
+		help()
+	case "doctor":
+		err = doctor.Run(cfg)
+	case "status":
+		err = status(cfg)
+	case "manifest":
+		err = manifests.EnsureAll(cfg)
+		if err == nil {
+			fmt.Println("OK: manifests ensured")
+		}
+	case "registry":
+		err = registry.Generate(cfg)
+	case "dashboard":
+		err = reports.Dashboard(cfg)
+	case "deps":
+		err = reports.Deps(cfg)
+	case "plugins":
+		err = plugins.List(cfg)
+	case "sync":
+		if len(args) == 0 || args[0] == "--safe" || args[0] == "safe" {
+			err = sync.Safe(cfg)
+		} else {
+			err = fmt.Errorf("only sync --safe is implemented in Go kernel")
+		}
+	case "verify":
+		err = verify(cfg)
+	default:
+		err = fmt.Errorf("unknown command: %s", cmd)
+	}
+
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "ERROR:", err)
+		os.Exit(1)
+	}
+}
+
+func looksLikeExecutablePath(s string) bool {
+	return len(s) > 0 && (s[0] == '/' || s == "aiftd" || s == "./aiftd" || s == "bin/aiftd")
+}
+
+func help() {
+	fmt.Println("AIFT-OS Federation Control Plane")
+	fmt.Println()
+	fmt.Println("Commands:")
+	fmt.Println("  help")
+	fmt.Println("  doctor")
+	fmt.Println("  status")
+	fmt.Println("  manifest")
+	fmt.Println("  registry")
+	fmt.Println("  dashboard")
+	fmt.Println("  deps")
+	fmt.Println("  plugins")
+	fmt.Println("  sync --safe")
+	fmt.Println("  verify")
+}
+
+func verify(cfg config.Config) error {
+	if err := doctor.Run(cfg); err != nil {
+		return err
+	}
+	if err := manifests.EnsureAll(cfg); err != nil {
+		return err
+	}
+	if err := registry.Generate(cfg); err != nil {
+		return err
+	}
+	if err := reports.Dashboard(cfg); err != nil {
+		return err
+	}
+	if err := reports.Deps(cfg); err != nil {
+		return err
+	}
+	fmt.Println("OK: federation verified")
+	return nil
+}
+
+func status(cfg config.Config) error {
+	repos, err := workspace.FindRepos(cfg)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("%-32s %-12s %-8s %s\n", "REPOSITORY", "BRANCH", "STATE", "REMOTE")
+	for _, repo := range repos {
+		state := "clean"
+		if gitx.Dirty(repo.Path) {
+			state = "dirty"
+		}
+		fmt.Printf("%-32s %-12s %-8s %s\n", repo.Name, gitx.Branch(repo.Path), state, gitx.Remote(repo.Path))
+	}
+
+	return nil
+}

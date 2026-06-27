@@ -7,9 +7,10 @@ BIN="$OS/bin/aiftd"
 
 cd "$OS" || exit 1
 
-if [ ! -x "$BIN" ]; then
-  go build -o "$BIN" ./cmd/aift
-  chmod +x "$BIN"
-fi
+gofmt -w cmd internal
+go test ./...
+rm -f "$BIN"
+go build -o "$BIN" ./cmd/aift
+chmod +x "$BIN"
 
-exec "$BIN" "$@"
+echo "Built $BIN"

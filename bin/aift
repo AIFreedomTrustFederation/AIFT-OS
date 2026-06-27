@@ -1,4 +1,0 @@
-#!/usr/bin/env sh
-AIFT_ROOT="${AIFT_ROOT:-$HOME/AIFT}"
-AIFT_OS_HOME="${AIFT_OS_HOME:-$AIFT_ROOT/AIFT-OS}"
-exec "$AIFT_OS_HOME/aift-os.sh" "$@"
