@@ -77,3 +77,7 @@
 {"time":"2026-06-27T23:09:14Z","type":"federation.scan","source":"federation","message":"federation scan complete","data":{"dirty":"21","repos":"21"}}
 {"time":"2026-06-27T23:09:19Z","type":"federation.scan","source":"federation","message":"federation scan complete","data":{"dirty":"21","repos":"21"}}
 {"time":"2026-06-27T23:09:22Z","type":"federation.scan","source":"federation","message":"federation scan complete","data":{"dirty":"21","repos":"21"}}
+{"time":"2026-06-27T23:27:10Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-27T23:27:11Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-27T23:27:13Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-27T23:27:13Z","type":"verify.complete","source":"verify","message":"federation verified"}

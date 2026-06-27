@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/api"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/capabilities"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/daemon"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/doctor"
@@ -27,7 +28,6 @@ import (
 
 func main() {
 	cfg := config.Load()
-
 	cmd := "help"
 	args := []string{}
 
@@ -75,10 +75,10 @@ func main() {
 		err = events.Tail(cfg, 25)
 	case "services":
 		err = services.List(cfg)
-	case "tick":
-		err = runtime.Tick(cfg)
 	case "start":
 		err = runtime.StartOnce(cfg)
+	case "tick":
+		err = runtime.Tick(cfg)
 	case "serve":
 		addr := ":8787"
 		if len(args) > 0 {
@@ -98,39 +98,13 @@ func main() {
 			err = fmt.Errorf("only sync --safe is implemented in Go kernel")
 		}
 	case "federation":
-		if len(args) == 0 || args[0] == "scan" {
-			err = federation.Scan(cfg)
-		} else if args[0] == "graph" {
-			err = federation.Graph(cfg)
-		} else if args[0] == "verify" {
-			err = federation.Verify(cfg)
-		} else {
-			err = fmt.Errorf("usage: aift federation scan|graph|verify")
-		}
+		err = runFederation(cfg, args)
 	case "repo":
-		if len(args) == 0 || args[0] == "list" {
-			err = repo.PrintList(cfg)
-		} else if args[0] == "inspect" {
-			if len(args) < 2 {
-				err = fmt.Errorf("usage: aift repo inspect <name>")
-			} else {
-				err = repo.PrintInspect(cfg, repo.NormalizeName(args[1]))
-			}
-		} else if args[0] == "run" {
-			if len(args) < 3 {
-				err = fmt.Errorf("usage: aift repo run <name> <command> [args...]")
-			} else {
-				err = repo.RunCommand(cfg, repo.NormalizeName(args[1]), args[2], args[3:])
-			}
-		} else {
-			err = fmt.Errorf("usage: aift repo list|inspect|run")
-		}
+		err = runRepo(cfg, args)
 	case "workflow":
-		if len(args) == 0 || args[0] == "list" {
-			err = workflow.List(cfg)
-		} else {
-			err = fmt.Errorf("usage: aift workflow list")
-		}
+		err = runWorkflow(cfg, args)
+	case "capabilities":
+		err = runCapabilities(cfg, args)
 	case "verify":
 		err = verify(cfg)
 	default:
@@ -163,15 +137,77 @@ func help() {
 	fmt.Println("  providers")
 	fmt.Println("  events")
 	fmt.Println("  services")
-	fmt.Println("  tick")
 	fmt.Println("  start")
+	fmt.Println("  tick")
 	fmt.Println("  serve [:8787]")
 	fmt.Println("  daemon [:8787]")
 	fmt.Println("  sync --safe")
-	fmt.Println("  verify")
 	fmt.Println("  federation scan|graph|verify")
 	fmt.Println("  repo list|inspect|run")
 	fmt.Println("  workflow list")
+	fmt.Println("  capabilities scan|report|repo|promote")
+	fmt.Println("  verify")
+}
+
+func runFederation(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "scan" {
+		return federation.Scan(cfg)
+	}
+	if args[0] == "graph" {
+		return federation.Graph(cfg)
+	}
+	if args[0] == "verify" {
+		return federation.Verify(cfg)
+	}
+	return fmt.Errorf("usage: aift federation scan|graph|verify")
+}
+
+func runRepo(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "list" {
+		return repo.PrintList(cfg)
+	}
+	if args[0] == "inspect" {
+		if len(args) < 2 {
+			return fmt.Errorf("usage: aift repo inspect <name>")
+		}
+		return repo.PrintInspect(cfg, repo.NormalizeName(args[1]))
+	}
+	if args[0] == "run" {
+		if len(args) < 3 {
+			return fmt.Errorf("usage: aift repo run <name> <command> [args...]")
+		}
+		return repo.RunCommand(cfg, repo.NormalizeName(args[1]), args[2], args[3:])
+	}
+	return fmt.Errorf("usage: aift repo list|inspect|run")
+}
+
+func runWorkflow(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "list" {
+		return workflow.List(cfg)
+	}
+	return fmt.Errorf("usage: aift workflow list")
+}
+
+func runCapabilities(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "scan" {
+		return capabilities.Scan(cfg)
+	}
+	if args[0] == "report" {
+		return capabilities.Report(cfg)
+	}
+	if args[0] == "repo" {
+		if len(args) < 2 {
+			return fmt.Errorf("usage: aift capabilities repo <repo>")
+		}
+		return capabilities.PrintRepo(cfg, args[1])
+	}
+	if args[0] == "promote" {
+		if len(args) < 3 {
+			return fmt.Errorf("usage: aift capabilities promote <repo> <capability>")
+		}
+		return capabilities.Promote(cfg, args[1], args[2])
+	}
+	return fmt.Errorf("usage: aift capabilities scan|report|repo|promote")
 }
 
 func verify(cfg config.Config) error {
@@ -191,6 +227,9 @@ func verify(cfg config.Config) error {
 		return err
 	}
 	if err := reports.Deps(cfg); err != nil {
+		return err
+	}
+	if err := capabilities.Scan(cfg); err != nil {
 		return err
 	}
 	if err := events.Emit(cfg, "verify.complete", "verify", "federation verified", nil); err != nil {
