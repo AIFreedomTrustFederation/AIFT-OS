@@ -1,0 +1,13 @@
+.DS_Store
+node_modules/
+.next/
+dist/
+build/
+*.log
+*.tmp
+cache/
+registry/*.json
+intelligence/*.json
+reports/*.md
+reports/*.txt
+intelligence/cache/
