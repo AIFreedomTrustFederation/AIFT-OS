@@ -2,13 +2,11 @@ package daemon
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/api"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/providers"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/scheduler"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/runtime"
 )
 
 func Start(cfg config.Config, addr string) error {
@@ -16,17 +14,8 @@ func Start(cfg config.Config, addr string) error {
 		return err
 	}
 
-	if err := providers.WriteRegistry(cfg); err != nil {
-		return err
-	}
-
-	s := scheduler.New(cfg)
-	if err := s.RunOnce(); err != nil {
-		return err
-	}
-
 	go func() {
-		_ = s.Loop(5 * time.Minute)
+		_ = runtime.Loop(cfg)
 	}()
 
 	fmt.Println("AIFT-OS daemon started")

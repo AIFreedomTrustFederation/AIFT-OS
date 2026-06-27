@@ -16,6 +16,7 @@ import (
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/registry"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/reports"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/runtime"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/services"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/sync"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/version"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/workspace"
@@ -69,6 +70,10 @@ func main() {
 		err = providers.List(cfg)
 	case "events":
 		err = events.Tail(cfg, 25)
+	case "services":
+		err = services.List(cfg)
+	case "tick":
+		err = runtime.Tick(cfg)
 	case "start":
 		err = runtime.StartOnce(cfg)
 	case "serve":
@@ -120,6 +125,8 @@ func help() {
 	fmt.Println("  plugins")
 	fmt.Println("  providers")
 	fmt.Println("  events")
+	fmt.Println("  services")
+	fmt.Println("  tick")
 	fmt.Println("  start")
 	fmt.Println("  serve [:8787]")
 	fmt.Println("  daemon [:8787]")
