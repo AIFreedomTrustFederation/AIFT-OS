@@ -4,14 +4,20 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/api"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/daemon"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/doctor"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/gitx"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manifests"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/plugins"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/providers"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/registry"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/reports"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/runtime"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/sync"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/version"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/workspace"
 )
 
@@ -40,6 +46,8 @@ func main() {
 	switch cmd {
 	case "help", "-h", "--help":
 		help()
+	case "version":
+		fmt.Printf("%s %s — %s\n", version.Name, version.Version, version.Role)
 	case "doctor":
 		err = doctor.Run(cfg)
 	case "status":
@@ -57,6 +65,24 @@ func main() {
 		err = reports.Deps(cfg)
 	case "plugins":
 		err = plugins.List(cfg)
+	case "providers":
+		err = providers.List(cfg)
+	case "events":
+		err = events.Tail(cfg, 25)
+	case "start":
+		err = runtime.StartOnce(cfg)
+	case "serve":
+		addr := ":8787"
+		if len(args) > 0 {
+			addr = args[0]
+		}
+		err = api.New(cfg, addr).Serve()
+	case "daemon":
+		addr := ":8787"
+		if len(args) > 0 {
+			addr = args[0]
+		}
+		err = daemon.Start(cfg, addr)
 	case "sync":
 		if len(args) == 0 || args[0] == "--safe" || args[0] == "safe" {
 			err = sync.Safe(cfg)
@@ -84,6 +110,7 @@ func help() {
 	fmt.Println()
 	fmt.Println("Commands:")
 	fmt.Println("  help")
+	fmt.Println("  version")
 	fmt.Println("  doctor")
 	fmt.Println("  status")
 	fmt.Println("  manifest")
@@ -91,6 +118,11 @@ func help() {
 	fmt.Println("  dashboard")
 	fmt.Println("  deps")
 	fmt.Println("  plugins")
+	fmt.Println("  providers")
+	fmt.Println("  events")
+	fmt.Println("  start")
+	fmt.Println("  serve [:8787]")
+	fmt.Println("  daemon [:8787]")
 	fmt.Println("  sync --safe")
 	fmt.Println("  verify")
 }
@@ -102,6 +134,9 @@ func verify(cfg config.Config) error {
 	if err := manifests.EnsureAll(cfg); err != nil {
 		return err
 	}
+	if err := providers.WriteRegistry(cfg); err != nil {
+		return err
+	}
 	if err := registry.Generate(cfg); err != nil {
 		return err
 	}
@@ -109,6 +144,9 @@ func verify(cfg config.Config) error {
 		return err
 	}
 	if err := reports.Deps(cfg); err != nil {
+		return err
+	}
+	if err := events.Emit(cfg, "verify.complete", "verify", "federation verified", nil); err != nil {
 		return err
 	}
 	fmt.Println("OK: federation verified")
