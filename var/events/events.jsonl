@@ -74,3 +74,6 @@
 {"time":"2026-06-27T23:05:49Z","type":"job.complete","source":"deps","message":"job completed"}
 {"time":"2026-06-27T23:05:49Z","type":"jobs.complete","source":"jobs","message":"job batch completed in 1.894362343s"}
 {"time":"2026-06-27T23:05:50Z","type":"verify.complete","source":"verify","message":"federation verified"}
+{"time":"2026-06-27T23:09:14Z","type":"federation.scan","source":"federation","message":"federation scan complete","data":{"dirty":"21","repos":"21"}}
+{"time":"2026-06-27T23:09:19Z","type":"federation.scan","source":"federation","message":"federation scan complete","data":{"dirty":"21","repos":"21"}}
+{"time":"2026-06-27T23:09:22Z","type":"federation.scan","source":"federation","message":"federation scan complete","data":{"dirty":"21","repos":"21"}}

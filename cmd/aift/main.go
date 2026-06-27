@@ -9,16 +9,19 @@ import (
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/daemon"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/doctor"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/federation"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/gitx"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manifests"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/plugins"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/providers"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/registry"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/repo"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/reports"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/runtime"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/services"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/sync"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/version"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/workflow"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/workspace"
 )
 
@@ -94,6 +97,40 @@ func main() {
 		} else {
 			err = fmt.Errorf("only sync --safe is implemented in Go kernel")
 		}
+	case "federation":
+		if len(args) == 0 || args[0] == "scan" {
+			err = federation.Scan(cfg)
+		} else if args[0] == "graph" {
+			err = federation.Graph(cfg)
+		} else if args[0] == "verify" {
+			err = federation.Verify(cfg)
+		} else {
+			err = fmt.Errorf("usage: aift federation scan|graph|verify")
+		}
+	case "repo":
+		if len(args) == 0 || args[0] == "list" {
+			err = repo.PrintList(cfg)
+		} else if args[0] == "inspect" {
+			if len(args) < 2 {
+				err = fmt.Errorf("usage: aift repo inspect <name>")
+			} else {
+				err = repo.PrintInspect(cfg, repo.NormalizeName(args[1]))
+			}
+		} else if args[0] == "run" {
+			if len(args) < 3 {
+				err = fmt.Errorf("usage: aift repo run <name> <command> [args...]")
+			} else {
+				err = repo.RunCommand(cfg, repo.NormalizeName(args[1]), args[2], args[3:])
+			}
+		} else {
+			err = fmt.Errorf("usage: aift repo list|inspect|run")
+		}
+	case "workflow":
+		if len(args) == 0 || args[0] == "list" {
+			err = workflow.List(cfg)
+		} else {
+			err = fmt.Errorf("usage: aift workflow list")
+		}
 	case "verify":
 		err = verify(cfg)
 	default:
@@ -132,6 +169,9 @@ func help() {
 	fmt.Println("  daemon [:8787]")
 	fmt.Println("  sync --safe")
 	fmt.Println("  verify")
+	fmt.Println("  federation scan|graph|verify")
+	fmt.Println("  repo list|inspect|run")
+	fmt.Println("  workflow list")
 }
 
 func verify(cfg config.Config) error {
