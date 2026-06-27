@@ -14,26 +14,48 @@ case "$cmd" in
 AIFT-OS Federation Control Plane
 
 Usage:
-  aift-os.sh <command>
+  aift <command>
 
-Commands:
-  help       Show this help
-  doctor     Inspect local control-plane health
-  status     Show federation repository status
-  registry   Generate registry/repos.json
-  graph      Generate reports/federation-graph.md
-  verify     Run doctor + registry + graph
-  sync       Commit/pull/push sovereign repos safely
-  install    Install top-level launchers
+Core:
+  help        Show help
+  doctor      Inspect control-plane health
+  status      Show federation repo status
+  verify      Run full verification
+
+Federation:
+  manifest    Create missing .aift/repo.json manifests
+  registry    Generate registry/repos.json
+  graph       Generate federation graph
+  deps        Generate dependency graph
+  dashboard   Generate dashboard report
+  plugins     List plugin commands
+  sync        Safe sync or explicit commit sync
+
+Sync modes:
+  aift sync --safe
+  aift sync --commit "commit message"
+
+Plugin commands:
+  Any repo may expose commands at:
+    .aift/commands/<command>.sh
 HELP
     ;;
   *)
-    file="$AIFT_OS_HOME/commands/$cmd.sh"
-    [ -f "$file" ] || {
-      echo "Unknown command: $cmd" >&2
-      echo "Run: aift help" >&2
-      exit 1
-    }
-    sh "$file" "$@"
+    builtin="$AIFT_OS_HOME/commands/$cmd.sh"
+    if [ -f "$builtin" ]; then
+      sh "$builtin" "$@"
+      exit $?
+    fi
+
+    . "$AIFT_OS_HOME/runtime/plugins.sh"
+    plugin="$(aift_find_plugin_command "$cmd" || true)"
+    if [ -n "$plugin" ]; then
+      sh "$plugin" "$@"
+      exit $?
+    fi
+
+    echo "Unknown command: $cmd" >&2
+    echo "Run: aift help" >&2
+    exit 1
     ;;
 esac

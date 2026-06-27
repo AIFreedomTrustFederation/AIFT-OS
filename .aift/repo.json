@@ -1,0 +1,9 @@
+{
+  "name": "AIFT-OS",
+  "role": "federation-control-plane",
+  "sovereign": true,
+  "managedBy": "AIFT-OS",
+  "dependencies": [],
+  "capabilities": [],
+  "commandsPath": ".aift/commands"
+}

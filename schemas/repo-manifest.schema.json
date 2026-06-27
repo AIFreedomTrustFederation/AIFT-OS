@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIFT Repository Manifest",
+  "type": "object",
+  "required": ["name", "role", "sovereign"],
+  "properties": {
+    "name": { "type": "string" },
+    "role": { "type": "string" },
+    "sovereign": { "type": "boolean" },
+    "managedBy": { "type": "string" },
+    "dependencies": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "capabilities": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "commandsPath": { "type": "string" }
+  }
+}
