@@ -8,6 +8,7 @@ import (
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/capabilities"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/daemon"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/discoveryengine"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/doctor"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/eventmesh"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
@@ -129,6 +130,8 @@ func main() {
 		err = runModules(cfg, args)
 	case "kernel-registry":
 		err = runKernelRegistry(cfg, args)
+	case "discovery":
+		err = runDiscovery(cfg, args)
 	case "verify":
 		err = verify(cfg)
 	default:
@@ -178,6 +181,7 @@ func help() {
 	fmt.Println("  plan build|summary|repo|ready|blocked|report")
 	fmt.Println("  modules init-all|scan|list|repo|report")
 	fmt.Println("  kernel-registry scan|list|object|report")
+	fmt.Println("  discovery scan|list|object|report")
 	fmt.Println("  verify")
 }
 
@@ -402,6 +406,26 @@ func runKernelRegistry(cfg config.Config, args []string) error {
 		return kernelregistry.Report(cfg)
 	default:
 		return fmt.Errorf("usage: aift kernel-registry scan|list|object|report")
+	}
+}
+
+func runDiscovery(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "scan" {
+		return discoveryengine.Scan(cfg)
+	}
+
+	switch args[0] {
+	case "list":
+		return discoveryengine.List(cfg)
+	case "object":
+		if len(args) < 2 {
+			return fmt.Errorf("usage: aift discovery object <id-or-name>")
+		}
+		return discoveryengine.ObjectInfo(cfg, args[1])
+	case "report":
+		return discoveryengine.Report(cfg)
+	default:
+		return fmt.Errorf("usage: aift discovery scan|list|object|report")
 	}
 }
 

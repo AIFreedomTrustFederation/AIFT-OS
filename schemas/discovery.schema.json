@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIFT Discovery Snapshot",
+  "type": "object",
+  "required": ["schemaVersion", "generatedAt", "source", "objects"],
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "generatedAt": { "type": "string" },
+    "source": { "type": "string" },
+    "objects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "name", "status", "location", "evidence", "generatedAt"],
+        "properties": {
+          "id": { "type": "string" },
+          "kind": { "type": "string" },
+          "name": { "type": "string" },
+          "status": { "type": "string" },
+          "location": { "type": "string" },
+          "evidence": { "type": "array" },
+          "runtimes": { "type": "array" },
+          "manifests": { "type": "array" },
+          "docs": { "type": "array" },
+          "schemas": { "type": "array" },
+          "workflows": { "type": "array" },
+          "commands": { "type": "object" },
+          "capabilities": { "type": "array" },
+          "services": { "type": "array" },
+          "healthChecks": { "type": "array" }
+        }
+      }
+    }
+  }
+}
