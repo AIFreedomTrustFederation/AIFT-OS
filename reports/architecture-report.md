@@ -1,13 +1,13 @@
 # Architecture Report
 
-Generated: 2026-06-28T21:17:43Z
+Generated: 2026-06-28T21:26:06Z
 
 ## Summary
 
-- **Packages**: 41
-- **Commands**: 35
-- **Dependencies**: 142 internal edges
-- **Tested packages**: 20 / 41
+- **Packages**: 42
+- **Commands**: 36
+- **Dependencies**: 145 internal edges
+- **Tested packages**: 21 / 42
 
 ## Invariant Check Results
 
@@ -31,7 +31,7 @@ Generated: 2026-06-28T21:17:43Z
 
 ## Command Status
 
-- **Active**: 31
+- **Active**: 32
 - **Planned**: 4
 
 Planned commands:

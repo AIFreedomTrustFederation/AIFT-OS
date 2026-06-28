@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-28T21:17:43Z",
+  "generated_at": "2026-06-28T21:26:06Z",
   "version": "1.0.0",
   "packages": [
     {
@@ -75,6 +75,7 @@
         "internal/reports",
         "internal/runtime",
         "internal/scheduler",
+        "internal/schedulerplan",
         "internal/servicecontracts",
         "internal/services",
         "internal/state",
@@ -183,6 +184,7 @@
         "internal/readiness",
         "internal/runtime",
         "internal/scheduler",
+        "internal/schedulerplan",
         "internal/servicecontracts",
         "internal/services",
         "internal/supervisor"
@@ -315,6 +317,7 @@
         "internal/providers",
         "internal/readiness",
         "internal/registry",
+        "internal/schedulerplan",
         "internal/servicecontracts",
         "internal/workflow"
       ],
@@ -577,6 +580,20 @@
       ],
       "has_tests": false,
       "category": "runtime"
+    },
+    {
+      "name": "schedulerplan",
+      "path": "internal/schedulerplan",
+      "depends_on": [
+        "internal/config",
+        "internal/events",
+        "internal/jsonfile"
+      ],
+      "depended_by": [
+        "cmd/aift"
+      ],
+      "has_tests": true,
+      "category": "other"
     },
     {
       "name": "servicecontracts",
@@ -873,6 +890,12 @@
     },
     {
       "name": "runtime",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "scheduler",
       "has_handler": true,
       "has_help": true,
       "status": "active"
@@ -1426,6 +1449,18 @@
     {
       "from": "internal/scheduler",
       "to": "internal/reports"
+    },
+    {
+      "from": "internal/schedulerplan",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/schedulerplan",
+      "to": "internal/events"
+    },
+    {
+      "from": "internal/schedulerplan",
+      "to": "internal/jsonfile"
     },
     {
       "from": "internal/servicecontracts",

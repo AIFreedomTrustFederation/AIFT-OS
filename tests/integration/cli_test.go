@@ -434,6 +434,76 @@ func TestRuntimeNoArgs(t *testing.T) {
 	}
 }
 
+// ── scheduler ─────────────────────────────────────────────────────────
+
+func TestSchedulerPlan(t *testing.T) {
+	root := setupWorkspace(t)
+	// First run verify to populate registries, then runtime scan
+	run(t, root, "verify")
+	run(t, root, "runtime", "scan")
+
+	out, err := run(t, root, "scheduler", "plan")
+	if err != nil {
+		t.Fatalf("scheduler plan failed: %v\n%s", err, out)
+	}
+	if !strings.Contains(out, "scheduler-plan.json") {
+		t.Error("scheduler plan should write scheduler-plan.json")
+	}
+}
+
+func TestSchedulerReady(t *testing.T) {
+	root := setupWorkspace(t)
+	run(t, root, "verify")
+	run(t, root, "runtime", "scan")
+	run(t, root, "scheduler", "plan")
+
+	out, err := run(t, root, "scheduler", "ready")
+	if err != nil {
+		t.Fatalf("scheduler ready failed: %v\n%s", err, out)
+	}
+	if !strings.Contains(out, "KIND") {
+		t.Error("scheduler ready should print table header")
+	}
+}
+
+func TestSchedulerBlocked(t *testing.T) {
+	root := setupWorkspace(t)
+	run(t, root, "verify")
+	run(t, root, "runtime", "scan")
+	run(t, root, "scheduler", "plan")
+
+	out, err := run(t, root, "scheduler", "blocked")
+	if err != nil {
+		t.Fatalf("scheduler blocked failed: %v\n%s", err, out)
+	}
+	if !strings.Contains(out, "KIND") && !strings.Contains(out, "No blocked") {
+		t.Error("scheduler blocked should print table header or 'No blocked'")
+	}
+}
+
+func TestSchedulerReport(t *testing.T) {
+	root := setupWorkspace(t)
+	run(t, root, "verify")
+	run(t, root, "runtime", "scan")
+	run(t, root, "scheduler", "plan")
+
+	out, err := run(t, root, "scheduler", "report")
+	if err != nil {
+		t.Fatalf("scheduler report failed: %v\n%s", err, out)
+	}
+	if !strings.Contains(out, "Scheduler Plan") {
+		t.Error("scheduler report should contain 'Scheduler Plan' heading")
+	}
+}
+
+func TestSchedulerNoArgs(t *testing.T) {
+	root := setupWorkspace(t)
+	_, err := run(t, root, "scheduler")
+	if err == nil {
+		t.Error("scheduler with no args should fail with usage")
+	}
+}
+
 // ── operator ──────────────────────────────────────────────────────────
 
 func TestOperatorCheckProducesOutput(t *testing.T) {
@@ -485,6 +555,7 @@ func TestCommandsNoArgsDontPanic(t *testing.T) {
 		"kernel",
 		"runtime",
 		"operator",
+		"scheduler",
 	}
 
 	root := setupWorkspace(t)
