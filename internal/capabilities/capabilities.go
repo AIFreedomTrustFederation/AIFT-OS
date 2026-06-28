@@ -354,12 +354,19 @@ func commandPasses(repoPath, commandPath string) bool {
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 
-	var cmd *exec.Cmd
-	if strings.Contains(commandPath, " ") {
-		cmd = exec.CommandContext(ctx, "sh", "-c", commandPath)
-	} else {
-		cmd = exec.CommandContext(ctx, "sh", commandPath)
+	// Resolve the command path relative to the repo and validate it stays
+	// within the repository tree to prevent command injection.
+	resolved := commandPath
+	if !filepath.IsAbs(commandPath) {
+		resolved = filepath.Join(repoPath, commandPath)
 	}
+	resolved = filepath.Clean(resolved)
+
+	if !strings.HasPrefix(resolved, filepath.Clean(repoPath)+string(filepath.Separator)) {
+		return false
+	}
+
+	cmd := exec.CommandContext(ctx, "sh", resolved)
 	cmd.Dir = repoPath
 	cmd.Env = append(os.Environ(), "AIFT_CAPABILITY_CHECK=1")
 	return cmd.Run() == nil
