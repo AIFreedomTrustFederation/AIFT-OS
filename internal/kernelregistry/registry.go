@@ -351,5 +351,3 @@ func safeID(value string) string {
 	value = strings.ReplaceAll(value, "_", "-")
 	return value
 }
-
-

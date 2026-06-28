@@ -6,22 +6,6 @@ import (
 	"testing"
 )
 
-func TestContains(t *testing.T) {
-	items := []string{"apple", "banana", "cherry"}
-	if !contains(items, "banana") {
-		t.Error("contains should find banana")
-	}
-	if contains(items, "grape") {
-		t.Error("contains should not find grape")
-	}
-	if contains(nil, "anything") {
-		t.Error("contains should return false for nil slice")
-	}
-	if contains([]string{}, "anything") {
-		t.Error("contains should return false for empty slice")
-	}
-}
-
 func TestHasCapability(t *testing.T) {
 	rp := RepoPlan{
 		Capabilities: []Capability{

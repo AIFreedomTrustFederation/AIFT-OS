@@ -437,5 +437,3 @@ func loadOrBuild(cfg config.Config) (Plan, error) {
 	}
 	return plan, nil
 }
-
-

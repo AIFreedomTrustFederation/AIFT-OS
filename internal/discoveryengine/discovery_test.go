@@ -26,33 +26,6 @@ func TestSafeID(t *testing.T) {
 	}
 }
 
-func TestUnique(t *testing.T) {
-	tests := []struct {
-		name  string
-		input []string
-		want  []string
-	}{
-		{"dedup", []string{"b", "a", "b", "c", "a"}, []string{"a", "b", "c"}},
-		{"empty strings removed", []string{"a", "", "b", ""}, []string{"a", "b"}},
-		{"already unique", []string{"x", "y", "z"}, []string{"x", "y", "z"}},
-		{"nil", nil, []string{}},
-		{"empty", []string{}, []string{}},
-		{"all empty strings", []string{"", "", ""}, []string{}},
-	}
-	for _, tt := range tests {
-		got := unique(tt.input)
-		if len(got) != len(tt.want) {
-			t.Errorf("%s: unique(%v) returned %d items, want %d", tt.name, tt.input, len(got), len(tt.want))
-			continue
-		}
-		for i := range tt.want {
-			if got[i] != tt.want[i] {
-				t.Errorf("%s: unique[%d] = %q, want %q", tt.name, i, got[i], tt.want[i])
-			}
-		}
-	}
-}
-
 func TestRuntimeNames(t *testing.T) {
 	runtimes := []Runtime{
 		{Name: "node", Kind: "javascript"},
@@ -270,45 +243,5 @@ func TestDiscoverRepositoryWithAIFTContracts(t *testing.T) {
 	}
 	if !foundVerifyHealth {
 		t.Error("should add verify.sh to health checks")
-	}
-}
-
-func TestReadNamedList(t *testing.T) {
-	dir := t.TempDir()
-	aiftDir := filepath.Join(dir, ".aift")
-	os.MkdirAll(aiftDir, 0755)
-	os.WriteFile(filepath.Join(aiftDir, "capabilities.json"), []byte(`{
-		"capabilities": [
-			{"name": "build", "status": "ready"},
-			{"name": "test", "status": "v1"}
-		]
-	}`), 0644)
-
-	names := readNamedList(dir, "capabilities.json", "capabilities")
-	if len(names) != 2 {
-		t.Fatalf("expected 2 names, got %d", len(names))
-	}
-	if names[0] != "build" || names[1] != "test" {
-		t.Errorf("names = %v, want [build, test]", names)
-	}
-}
-
-func TestReadNamedListMissing(t *testing.T) {
-	dir := t.TempDir()
-	names := readNamedList(dir, "capabilities.json", "capabilities")
-	if len(names) != 0 {
-		t.Errorf("expected empty for missing file, got %v", names)
-	}
-}
-
-func TestReadNamedListInvalidJSON(t *testing.T) {
-	dir := t.TempDir()
-	aiftDir := filepath.Join(dir, ".aift")
-	os.MkdirAll(aiftDir, 0755)
-	os.WriteFile(filepath.Join(aiftDir, "test.json"), []byte("not json"), 0644)
-
-	names := readNamedList(dir, "test.json", "items")
-	if len(names) != 0 {
-		t.Errorf("expected empty for invalid JSON, got %v", names)
 	}
 }

@@ -267,5 +267,3 @@ func booksmithPage(repo string) string {
 func titleFor(repo string) string {
 	return strings.ReplaceAll(repo, "-", " ") + " UNIX Manual"
 }
-
-

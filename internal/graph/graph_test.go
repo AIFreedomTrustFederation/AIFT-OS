@@ -64,28 +64,6 @@ func TestCypherType(t *testing.T) {
 	}
 }
 
-func TestSortedKeys(t *testing.T) {
-	m := map[string]int{"banana": 2, "apple": 1, "cherry": 3}
-	got := sortedKeys(m)
-	want := []string{"apple", "banana", "cherry"}
-	if len(got) != len(want) {
-		t.Fatalf("sortedKeys returned %d keys, want %d", len(got), len(want))
-	}
-	for i := range want {
-		if got[i] != want[i] {
-			t.Errorf("sortedKeys[%d] = %q, want %q", i, got[i], want[i])
-		}
-	}
-}
-
-func TestSortedKeysEmpty(t *testing.T) {
-	m := map[string]int{}
-	got := sortedKeys(m)
-	if len(got) != 0 {
-		t.Errorf("sortedKeys(empty) returned %d keys, want 0", len(got))
-	}
-}
-
 func TestAddNode(t *testing.T) {
 	b := builder{nodes: map[string]Node{}, edges: map[string]Edge{}}
 

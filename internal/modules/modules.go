@@ -280,8 +280,6 @@ func loadOrScan(cfg config.Config) (Registry, error) {
 	return reg, nil
 }
 
-
-
 func inferKind(name, repoPath string) string {
 	lower := strings.ToLower(name)
 	switch {
@@ -303,5 +301,3 @@ func inferKind(name, repoPath string) string {
 		return "repository"
 	}
 }
-
-

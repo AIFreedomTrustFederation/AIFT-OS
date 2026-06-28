@@ -45,27 +45,6 @@ func TestEventIDMaxLength(t *testing.T) {
 	}
 }
 
-func TestSortedKeys(t *testing.T) {
-	m := map[string]bool{"cherry": true, "apple": true, "banana": true}
-	got := sortedKeys(m)
-	want := []string{"apple", "banana", "cherry"}
-	if len(got) != len(want) {
-		t.Fatalf("sortedKeys returned %d keys, want %d", len(got), len(want))
-	}
-	for i := range want {
-		if got[i] != want[i] {
-			t.Errorf("sortedKeys[%d] = %q, want %q", i, got[i], want[i])
-		}
-	}
-}
-
-func TestSortedKeysEmpty(t *testing.T) {
-	got := sortedKeys(map[string]bool{})
-	if len(got) != 0 {
-		t.Errorf("sortedKeys(empty) returned %d keys, want 0", len(got))
-	}
-}
-
 func TestEscapeTable(t *testing.T) {
 	tests := []struct {
 		input string
