@@ -471,5 +471,3 @@ func printRepo(ri RepoIntelligence) {
 		}
 	}
 }
-
-

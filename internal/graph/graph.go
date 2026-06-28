@@ -648,5 +648,3 @@ func cypherType(s string) string {
 	}
 	return s
 }
-
-

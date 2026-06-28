@@ -4,6 +4,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/sliceutil"
 )
 
 func TestClassifyRole(t *testing.T) {
@@ -217,13 +219,13 @@ func TestDetectLanguages(t *testing.T) {
 	os.WriteFile(filepath.Join(dir, "README.md"), []byte("# hi"), 0644)
 
 	langs := detectLanguages(dir)
-	if !contains(langs, "Go") {
+	if !sliceutil.Contains(langs, "Go") {
 		t.Error("expected Go language")
 	}
-	if !contains(langs, "TypeScript/JavaScript") {
+	if !sliceutil.Contains(langs, "TypeScript/JavaScript") {
 		t.Error("expected TypeScript/JavaScript language")
 	}
-	if !contains(langs, "Markdown/Docs") {
+	if !sliceutil.Contains(langs, "Markdown/Docs") {
 		t.Error("expected Markdown/Docs language")
 	}
 }
@@ -246,7 +248,7 @@ func TestDetectFrameworks(t *testing.T) {
 	frameworks := detectFrameworks(dir)
 	expected := []string{"Go CLI/Service", "Next.js", "Tailwind", "Container"}
 	for _, want := range expected {
-		if !contains(frameworks, want) {
+		if !sliceutil.Contains(frameworks, want) {
 			t.Errorf("expected framework %q, got %v", want, frameworks)
 		}
 	}
@@ -267,49 +269,14 @@ func TestDetectFiles(t *testing.T) {
 	os.WriteFile(filepath.Join(dir, "Makefile"), []byte("all:"), 0644)
 
 	files := detectFiles(dir)
-	if !contains(files, "README.md") {
+	if !sliceutil.Contains(files, "README.md") {
 		t.Error("expected README.md")
 	}
-	if !contains(files, "go.mod") {
+	if !sliceutil.Contains(files, "go.mod") {
 		t.Error("expected go.mod")
 	}
-	if !contains(files, "Makefile") {
+	if !sliceutil.Contains(files, "Makefile") {
 		t.Error("expected Makefile")
-	}
-}
-
-func TestContains(t *testing.T) {
-	items := []string{"apple", "banana", "cherry"}
-	if !contains(items, "banana") {
-		t.Error("contains should find banana")
-	}
-	if contains(items, "grape") {
-		t.Error("contains should not find grape")
-	}
-	if contains(nil, "anything") {
-		t.Error("contains should return false for nil slice")
-	}
-}
-
-func TestKeys(t *testing.T) {
-	m := map[string]bool{"b": true, "a": true, "c": true}
-	got := keys(m)
-	want := []string{"a", "b", "c"}
-	if len(got) != len(want) {
-		t.Fatalf("keys returned %d items, want %d", len(got), len(want))
-	}
-	for i := range want {
-		if got[i] != want[i] {
-			t.Errorf("keys[%d] = %q, want %q", i, got[i], want[i])
-		}
-	}
-}
-
-func TestKeysEmpty(t *testing.T) {
-	m := map[string]bool{}
-	got := keys(m)
-	if len(got) != 0 {
-		t.Errorf("keys(empty) returned %d items, want 0", len(got))
 	}
 }
 
