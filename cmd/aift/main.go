@@ -14,6 +14,7 @@ import (
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/gitx"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/intelligence"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manifests"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manual"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/plugins"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/providers"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/registry"
@@ -108,6 +109,8 @@ func main() {
 		err = runCapabilities(cfg, args)
 	case "intelligence":
 		err = runIntelligence(cfg, args)
+	case "manual":
+		err = runManual(cfg, args)
 	case "verify":
 		err = verify(cfg)
 	default:
@@ -150,6 +153,7 @@ func help() {
 	fmt.Println("  workflow list")
 	fmt.Println("  capabilities scan|report|repo|promote")
 	fmt.Println("  intelligence scan|report|repo|roadmap")
+	fmt.Println("  manual init-all|scan|report|repo")
 	fmt.Println("  verify")
 }
 
@@ -233,6 +237,25 @@ func runIntelligence(cfg config.Config, args []string) error {
 	return fmt.Errorf("usage: aift intelligence scan|report|repo|roadmap")
 }
 
+func runManual(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "scan" {
+		return manual.Scan(cfg)
+	}
+	if args[0] == "init-all" {
+		return manual.InitAll(cfg)
+	}
+	if args[0] == "report" {
+		return manual.Report(cfg)
+	}
+	if args[0] == "repo" {
+		if len(args) < 2 {
+			return fmt.Errorf("usage: aift manual repo <repo>")
+		}
+		return manual.Repo(cfg, args[1])
+	}
+	return fmt.Errorf("usage: aift manual init-all|scan|report|repo")
+}
+
 func verify(cfg config.Config) error {
 	if err := doctor.Run(cfg); err != nil {
 		return err
@@ -256,6 +279,9 @@ func verify(cfg config.Config) error {
 		return err
 	}
 	if err := intelligence.Scan(cfg); err != nil {
+		return err
+	}
+	if err := manual.Scan(cfg); err != nil {
 		return err
 	}
 	if err := events.Emit(cfg, "verify.complete", "verify", "federation verified", nil); err != nil {

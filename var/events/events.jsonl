@@ -89,3 +89,11 @@
 {"time":"2026-06-27T23:33:45Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
 {"time":"2026-06-27T23:33:46Z","type":"intelligence.scan","source":"intelligence","message":"real federation intelligence scan complete","data":{"repos":"21","score":"51"}}
 {"time":"2026-06-27T23:33:46Z","type":"verify.complete","source":"verify","message":"federation verified"}
+{"time":"2026-06-28T00:05:42Z","type":"manual.scan","source":"manual","message":"federation manual scan complete","data":{"manuals":"21"}}
+{"time":"2026-06-28T00:05:43Z","type":"manual.scan","source":"manual","message":"federation manual scan complete","data":{"manuals":"21"}}
+{"time":"2026-06-28T00:05:43Z","type":"manual.scan","source":"manual","message":"federation manual scan complete","data":{"manuals":"21"}}
+{"time":"2026-06-28T00:05:46Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-28T00:05:47Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-28T00:05:48Z","type":"intelligence.scan","source":"intelligence","message":"real federation intelligence scan complete","data":{"repos":"21","score":"52"}}
+{"time":"2026-06-28T00:05:48Z","type":"manual.scan","source":"manual","message":"federation manual scan complete","data":{"manuals":"21"}}
+{"time":"2026-06-28T00:05:48Z","type":"verify.complete","source":"verify","message":"federation verified"}
