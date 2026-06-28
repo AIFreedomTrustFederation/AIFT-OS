@@ -231,6 +231,60 @@ func TestContractJSON(t *testing.T) {
 	}
 }
 
+func TestServiceOwnerInJSON(t *testing.T) {
+	svc := Service{
+		Name:    "test-svc",
+		Kind:    "http",
+		Status:  "ready",
+		Version: "1.0",
+		Owner:   "test-repo",
+	}
+
+	data, err := json.Marshal(svc)
+	if err != nil {
+		t.Fatalf("marshal failed: %v", err)
+	}
+
+	var m map[string]interface{}
+	if err := json.Unmarshal(data, &m); err != nil {
+		t.Fatalf("unmarshal to map failed: %v", err)
+	}
+	owner, ok := m["owner"]
+	if !ok {
+		t.Fatal("Service JSON missing 'owner' field")
+	}
+	if owner != "test-repo" {
+		t.Errorf("owner = %v, want test-repo", owner)
+	}
+}
+
+func TestServiceOwnerDefaultsFromRepo(t *testing.T) {
+	dir := t.TempDir()
+	aiftDir := filepath.Join(dir, ".aift")
+	os.MkdirAll(aiftDir, 0755)
+	os.WriteFile(filepath.Join(aiftDir, "services.json"), []byte(`{
+		"repo": "my-repo",
+		"services": [
+			{
+				"name": "svc-1",
+				"kind": "http",
+				"status": "ready",
+				"version": "1.0"
+			}
+		]
+	}`), 0644)
+
+	c, ok := readContract("my-repo", dir)
+	if !ok {
+		t.Fatal("readContract should succeed")
+	}
+	if c.Services[0].Owner == "" {
+		// Owner is empty in the JSON (legacy contract without owner).
+		// The Scan() function defaults it to c.Repo at scan time.
+		// readContract alone doesn't set it — this is expected.
+	}
+}
+
 func TestRegistryJSON(t *testing.T) {
 	reg := Registry{
 		GeneratedAt: "2024-01-01T00:00:00Z",

@@ -1,6 +1,6 @@
 # AIFT-OS Architecture
 
-Generated: 2026-06-28T17:34:16Z
+Generated: 2026-06-28T18:06:55Z
 
 ## Package Categories
 
@@ -24,7 +24,7 @@ Generated: 2026-06-28T17:34:16Z
 | `daemon` | 4 | 1 | no |
 | `jobs` | 5 | 3 | no |
 | `runtime` | 4 | 2 | no |
-| `scheduler` | 4 | 0 | no |
+| `scheduler` | 4 | 1 | no |
 | `supervisor` | 5 | 1 | no |
 
 ### Events
@@ -48,7 +48,7 @@ Generated: 2026-06-28T17:34:16Z
 
 | Package | Dependencies | Dependents | Tests |
 |---|---:|---:|---:|
-| `kernel` | 1 | 0 | no |
+| `kernel` | 1 | 1 | no |
 | `kernelregistry` | 6 | 2 | yes |
 | `kernelruntime` | 5 | 1 | no |
 | `modules` | 6 | 1 | yes |
@@ -282,9 +282,9 @@ graph TD
 | no-circular-imports | PASS |
 | commands-have-handlers | PASS |
 | commands-have-help | PASS |
-| no-duplicate-commands | FAIL |
-| no-orphaned-packages | FAIL |
+| no-duplicate-commands | PASS |
+| no-orphaned-packages | PASS |
 | modules-have-source | PASS |
 | capabilities-have-evidence | PASS |
-| service-contracts-have-owner | FAIL |
+| service-contracts-have-owner | PASS |
 

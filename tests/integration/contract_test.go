@@ -68,6 +68,32 @@ func TestAllSwitchCasesHaveHelp(t *testing.T) {
 	}
 }
 
+// TestNoDuplicateHelpCommands verifies no command appears twice in help output.
+func TestNoDuplicateHelpCommands(t *testing.T) {
+	out, err := run(t, t.TempDir(), "help")
+	if err != nil {
+		t.Fatalf("help failed: %v", err)
+	}
+
+	counts := map[string]int{}
+	for _, line := range strings.Split(out, "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" || line == "Commands:" || strings.HasPrefix(line, "AIFT-OS") {
+			continue
+		}
+		parts := strings.Fields(line)
+		if len(parts) > 0 {
+			counts[parts[0]]++
+		}
+	}
+
+	for cmd, count := range counts {
+		if count > 1 {
+			t.Errorf("command %q appears %d times in help (expected once)", cmd, count)
+		}
+	}
+}
+
 // parseHelpCommands extracts the primary command name from each help line.
 func parseHelpCommands(helpOutput string) []string {
 	var commands []string

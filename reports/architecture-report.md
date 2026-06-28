@@ -1,6 +1,6 @@
 # Architecture Report
 
-Generated: 2026-06-28T17:34:16Z
+Generated: 2026-06-28T18:06:55Z
 
 ## Summary
 
@@ -11,7 +11,7 @@ Generated: 2026-06-28T17:34:16Z
 
 ## Invariant Check Results
 
-**5 passed, 3 failed**
+**8 passed, 0 failed**
 
 ### PASS: no-circular-imports
 
@@ -19,22 +19,15 @@ Generated: 2026-06-28T17:34:16Z
 
 ### PASS: commands-have-help
 
-### FAIL: no-duplicate-commands
+### PASS: no-duplicate-commands
 
-- capabilities appears 2 times in help
-
-### FAIL: no-orphaned-packages
-
-- kernel (not imported by any other package)
-- scheduler (not imported by any other package)
+### PASS: no-orphaned-packages
 
 ### PASS: modules-have-source
 
 ### PASS: capabilities-have-evidence
 
-### FAIL: service-contracts-have-owner
-
-- ServiceContract struct has no Owner field
+### PASS: service-contracts-have-owner
 
 ## Command Status
 
