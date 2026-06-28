@@ -17,6 +17,7 @@ import (
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/intelligence"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manifests"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manual"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/planner"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/plugins"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/providers"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/registry"
@@ -120,6 +121,8 @@ func main() {
 		err = runMesh(cfg, args)
 	case "service-contracts":
 		err = runServiceContracts(cfg, args)
+	case "plan":
+		err = runPlanner(cfg, args)
 	case "verify":
 		err = verify(cfg)
 	default:
@@ -166,6 +169,7 @@ func help() {
 	fmt.Println("  graph [summary|repo|type|status]")
 	fmt.Println("  mesh init-all|scan|topics|subscribers|publish|replay|tail|report")
 	fmt.Println("  service-contracts init-all|scan|list|repo|report")
+	fmt.Println("  plan build|summary|repo|ready|blocked|report")
 	fmt.Println("  verify")
 }
 
@@ -328,6 +332,29 @@ func runServiceContracts(cfg config.Config, args []string) error {
 	}
 }
 
+func runPlanner(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "build" {
+		return planner.Build(cfg)
+	}
+	switch args[0] {
+	case "summary":
+		return planner.SummaryReport(cfg)
+	case "repo":
+		if len(args) < 2 {
+			return fmt.Errorf("usage: aift plan repo <repo>")
+		}
+		return planner.Repo(cfg, args[1])
+	case "ready":
+		return planner.Ready(cfg)
+	case "blocked":
+		return planner.Blocked(cfg)
+	case "report":
+		return planner.Report(cfg)
+	default:
+		return fmt.Errorf("usage: aift plan build|summary|repo|ready|blocked|report")
+	}
+}
+
 func verify(cfg config.Config) error {
 	if err := doctor.Run(cfg); err != nil {
 		return err
@@ -363,6 +390,9 @@ func verify(cfg config.Config) error {
 		return err
 	}
 	if err := servicecontracts.Scan(cfg); err != nil {
+		return err
+	}
+	if err := planner.Build(cfg); err != nil {
 		return err
 	}
 	if err := events.Emit(cfg, "verify.complete", "verify", "federation verified", nil); err != nil {
