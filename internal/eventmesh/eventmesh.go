@@ -12,6 +12,7 @@ import (
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/jsonfile"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/workspace"
 )
 
@@ -278,19 +279,7 @@ func loadOrScan(cfg config.Config) (Registry, error) {
 }
 
 func writeRegistry(cfg config.Config, reg Registry) error {
-	out := filepath.Join(cfg.OSHome, "registry", "event-mesh.json")
-	if err := os.MkdirAll(filepath.Dir(out), 0755); err != nil {
-		return err
-	}
-	data, err := json.MarshalIndent(reg, "", "  ")
-	if err != nil {
-		return err
-	}
-	if err := os.WriteFile(out, append(data, '\n'), 0644); err != nil {
-		return err
-	}
-	fmt.Println("Wrote", out)
-	return nil
+	return jsonfile.Write(filepath.Join(cfg.OSHome, "registry", "event-mesh.json"), reg, true)
 }
 
 func writeReport(cfg config.Config, reg Registry) error {

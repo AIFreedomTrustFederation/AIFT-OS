@@ -11,6 +11,8 @@ import (
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/jsonfile"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/sliceutil"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/workspace"
 )
 
@@ -322,19 +324,19 @@ func recommendations(rp RepoPlan) []string {
 		out = append(out, "Fix broken capabilities before any runtime execution.")
 	}
 
-	if !contains(rp.Ready, "verify") && !contains(rp.V1, "verify") {
+	if !sliceutil.Contains(rp.Ready, "verify") && !sliceutil.Contains(rp.V1, "verify") {
 		out = append(out, "Add and prove `.aift/commands/verify.sh`.")
 	}
 
-	if contains(rp.Detected, "build") {
+	if sliceutil.Contains(rp.Detected, "build") {
 		out = append(out, "Convert detected build support into `.aift/commands/build.sh`.")
 	}
 
-	if contains(rp.Detected, "test") {
+	if sliceutil.Contains(rp.Detected, "test") {
 		out = append(out, "Convert detected test support into `.aift/commands/test.sh`.")
 	}
 
-	if contains(rp.Planned, "start") {
+	if sliceutil.Contains(rp.Planned, "start") {
 		out = append(out, "Keep start orchestration disabled until a real start command and health check exist.")
 	}
 
@@ -350,19 +352,7 @@ func recommendations(rp RepoPlan) []string {
 }
 
 func writeRegistry(cfg config.Config, plan Plan) error {
-	out := filepath.Join(cfg.OSHome, "registry", "execution-plan.json")
-	if err := os.MkdirAll(filepath.Dir(out), 0755); err != nil {
-		return err
-	}
-	data, err := json.MarshalIndent(plan, "", "  ")
-	if err != nil {
-		return err
-	}
-	if err := os.WriteFile(out, append(data, '\n'), 0644); err != nil {
-		return err
-	}
-	fmt.Println("Wrote", out)
-	return nil
+	return jsonfile.Write(filepath.Join(cfg.OSHome, "registry", "execution-plan.json"), plan, true)
 }
 
 func writeReports(cfg config.Config, plan Plan) error {
@@ -448,11 +438,4 @@ func loadOrBuild(cfg config.Config) (Plan, error) {
 	return plan, nil
 }
 
-func contains(items []string, wanted string) bool {
-	for _, item := range items {
-		if item == wanted {
-			return true
-		}
-	}
-	return false
-}
+

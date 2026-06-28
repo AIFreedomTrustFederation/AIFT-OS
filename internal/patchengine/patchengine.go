@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/jsonfile"
 )
 
 type Operation struct {
@@ -164,27 +165,11 @@ func ValidateTree(cfg config.Config) (Result, error) {
 }
 
 func WritePlan(cfg config.Config, plan Plan) error {
-	out := filepath.Join(cfg.OSHome, "registry", "patch-plan.json")
-	if err := os.MkdirAll(filepath.Dir(out), 0755); err != nil {
-		return err
-	}
-	data, err := json.MarshalIndent(plan, "", "  ")
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(out, append(data, '\n'), 0644)
+	return jsonfile.Write(filepath.Join(cfg.OSHome, "registry", "patch-plan.json"), plan, false)
 }
 
 func WriteResult(cfg config.Config, result Result) error {
-	out := filepath.Join(cfg.OSHome, "registry", "patch-result.json")
-	if err := os.MkdirAll(filepath.Dir(out), 0755); err != nil {
-		return err
-	}
-	data, err := json.MarshalIndent(result, "", "  ")
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(out, append(data, '\n'), 0644)
+	return jsonfile.Write(filepath.Join(cfg.OSHome, "registry", "patch-result.json"), result, false)
 }
 
 func WritePlanReport(cfg config.Config, plan Plan) error {

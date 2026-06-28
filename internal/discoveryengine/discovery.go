@@ -11,6 +11,9 @@ import (
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/fsutil"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/jsonfile"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/sliceutil"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/workspace"
 )
 
@@ -131,13 +134,13 @@ func DiscoverRepository(now string, name string, path string) DiscoveryObject {
 		obj.Status = "ready"
 	}
 
-	obj.Docs = unique(obj.Docs)
-	obj.Schemas = unique(obj.Schemas)
-	obj.Workflows = unique(obj.Workflows)
-	obj.Manifests = unique(obj.Manifests)
-	obj.Capabilities = unique(obj.Capabilities)
-	obj.Services = unique(obj.Services)
-	obj.HealthChecks = unique(obj.HealthChecks)
+	obj.Docs = sliceutil.Unique(obj.Docs)
+	obj.Schemas = sliceutil.Unique(obj.Schemas)
+	obj.Workflows = sliceutil.Unique(obj.Workflows)
+	obj.Manifests = sliceutil.Unique(obj.Manifests)
+	obj.Capabilities = sliceutil.Unique(obj.Capabilities)
+	obj.Services = sliceutil.Unique(obj.Services)
+	obj.HealthChecks = sliceutil.Unique(obj.HealthChecks)
 
 	return obj
 }
@@ -146,7 +149,7 @@ func discoverDocs(obj *DiscoveryObject, now string, root string) {
 	candidates := []string{"README.md", "AGENTS.md", "docs", "manual", "book", "site"}
 	for _, rel := range candidates {
 		path := filepath.Join(root, rel)
-		if exists(path) {
+		if fsutil.Exists(path) {
 			obj.Docs = append(obj.Docs, rel)
 			addEvidence(obj, now, "documentation", path, "Documentation path exists.")
 		}
@@ -157,7 +160,7 @@ func discoverSchemas(obj *DiscoveryObject, now string, root string) {
 	candidates := []string{"schemas", "schema", ".aift/schemas"}
 	for _, rel := range candidates {
 		path := filepath.Join(root, rel)
-		if exists(path) {
+		if fsutil.Exists(path) {
 			obj.Schemas = append(obj.Schemas, rel)
 			addEvidence(obj, now, "schema", path, "Schema path exists.")
 		}
@@ -168,7 +171,7 @@ func discoverWorkflows(obj *DiscoveryObject, now string, root string) {
 	candidates := []string{".github/workflows", "workflows", ".aift/workflows"}
 	for _, rel := range candidates {
 		path := filepath.Join(root, rel)
-		if exists(path) {
+		if fsutil.Exists(path) {
 			obj.Workflows = append(obj.Workflows, rel)
 			addEvidence(obj, now, "workflow", path, "Workflow path exists.")
 		}
@@ -198,7 +201,7 @@ func discoverManifests(obj *DiscoveryObject, now string, root string) {
 	}
 	for _, rel := range manifestFiles {
 		path := filepath.Join(root, rel)
-		if exists(path) {
+		if fsutil.Exists(path) {
 			obj.Manifests = append(obj.Manifests, rel)
 			addEvidence(obj, now, "manifest", path, "Manifest file exists.")
 		}
@@ -206,44 +209,44 @@ func discoverManifests(obj *DiscoveryObject, now string, root string) {
 }
 
 func discoverRuntimes(obj *DiscoveryObject, now string, root string) {
-	if exists(filepath.Join(root, "package.json")) {
+	if fsutil.Exists(filepath.Join(root, "package.json")) {
 		obj.Runtimes = append(obj.Runtimes, Runtime{Name: "node", Kind: "javascript", Evidence: []Evidence{ev(now, "manifest", filepath.Join(root, "package.json"), "package.json exists.")}})
 		obj.Capabilities = append(obj.Capabilities, "node.package")
-		readPackageCommands(root, obj.Commands)
+		jsonfile.ReadPackageCommands(root, obj.Commands)
 	}
-	if exists(filepath.Join(root, "go.mod")) {
+	if fsutil.Exists(filepath.Join(root, "go.mod")) {
 		obj.Runtimes = append(obj.Runtimes, Runtime{Name: "go", Kind: "go", Evidence: []Evidence{ev(now, "manifest", filepath.Join(root, "go.mod"), "go.mod exists.")}})
 		obj.Capabilities = append(obj.Capabilities, "go.module")
 		obj.Commands["go:test"] = "go test ./..."
 		obj.Commands["go:build"] = "go build ./..."
 	}
-	if exists(filepath.Join(root, "Cargo.toml")) {
+	if fsutil.Exists(filepath.Join(root, "Cargo.toml")) {
 		obj.Runtimes = append(obj.Runtimes, Runtime{Name: "cargo", Kind: "rust", Evidence: []Evidence{ev(now, "manifest", filepath.Join(root, "Cargo.toml"), "Cargo.toml exists.")}})
 		obj.Capabilities = append(obj.Capabilities, "rust.crate")
 		obj.Commands["cargo:test"] = "cargo test"
 		obj.Commands["cargo:build"] = "cargo build"
 	}
-	if exists(filepath.Join(root, "pyproject.toml")) || exists(filepath.Join(root, "requirements.txt")) {
+	if fsutil.Exists(filepath.Join(root, "pyproject.toml")) || fsutil.Exists(filepath.Join(root, "requirements.txt")) {
 		obj.Runtimes = append(obj.Runtimes, Runtime{Name: "python", Kind: "python", Evidence: []Evidence{ev(now, "manifest", root, "Python manifest evidence exists.")}})
 		obj.Capabilities = append(obj.Capabilities, "python.project")
 	}
-	if exists(filepath.Join(root, "Dockerfile")) {
+	if fsutil.Exists(filepath.Join(root, "Dockerfile")) {
 		obj.Runtimes = append(obj.Runtimes, Runtime{Name: "docker", Kind: "container", Evidence: []Evidence{ev(now, "manifest", filepath.Join(root, "Dockerfile"), "Dockerfile exists.")}})
 		obj.Capabilities = append(obj.Capabilities, "container.image")
 	}
 }
 
 func discoverAIFTContracts(obj *DiscoveryObject, now string, root string) {
-	if exists(filepath.Join(root, ".aift", "module.json")) {
+	if fsutil.Exists(filepath.Join(root, ".aift", "module.json")) {
 		obj.Capabilities = append(obj.Capabilities, "aift.module")
 	}
-	if exists(filepath.Join(root, ".aift", "capabilities.json")) {
-		obj.Capabilities = append(obj.Capabilities, readNamedList(root, "capabilities.json", "capabilities")...)
+	if fsutil.Exists(filepath.Join(root, ".aift", "capabilities.json")) {
+		obj.Capabilities = append(obj.Capabilities, jsonfile.ReadNamedList(root, "capabilities.json", "capabilities")...)
 	}
-	if exists(filepath.Join(root, ".aift", "services.json")) {
-		obj.Services = append(obj.Services, readNamedList(root, "services.json", "services")...)
+	if fsutil.Exists(filepath.Join(root, ".aift", "services.json")) {
+		obj.Services = append(obj.Services, jsonfile.ReadNamedList(root, "services.json", "services")...)
 	}
-	if exists(filepath.Join(root, ".aift", "commands", "verify.sh")) {
+	if fsutil.Exists(filepath.Join(root, ".aift", "commands", "verify.sh")) {
 		obj.Commands["aift:verify"] = "sh .aift/commands/verify.sh"
 		obj.HealthChecks = append(obj.HealthChecks, ".aift/commands/verify.sh")
 	}
@@ -296,15 +299,7 @@ func Report(cfg config.Config) error {
 }
 
 func Write(cfg config.Config, snap Snapshot) error {
-	out := filepath.Join(cfg.OSHome, "registry", "discovery.json")
-	if err := os.MkdirAll(filepath.Dir(out), 0755); err != nil {
-		return err
-	}
-	data, err := json.MarshalIndent(snap, "", "  ")
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(out, append(data, '\n'), 0644)
+	return jsonfile.Write(filepath.Join(cfg.OSHome, "registry", "discovery.json"), snap, false)
 }
 
 func WriteReport(cfg config.Config, snap Snapshot) error {
@@ -347,40 +342,6 @@ func LoadOrBuild(cfg config.Config) (Snapshot, error) {
 	return snap, nil
 }
 
-func readPackageCommands(repoPath string, commands map[string]string) {
-	data, err := os.ReadFile(filepath.Join(repoPath, "package.json"))
-	if err != nil {
-		return
-	}
-	var pkg struct {
-		Scripts map[string]string `json:"scripts"`
-	}
-	if json.Unmarshal(data, &pkg) != nil {
-		return
-	}
-	for name := range pkg.Scripts {
-		commands["npm:"+name] = "npm run " + name
-	}
-}
-
-func readNamedList(repoPath string, fileName string, field string) []string {
-	data, err := os.ReadFile(filepath.Join(repoPath, ".aift", fileName))
-	if err != nil {
-		return []string{}
-	}
-	var raw map[string][]map[string]string
-	if json.Unmarshal(data, &raw) != nil {
-		return []string{}
-	}
-	out := []string{}
-	for _, item := range raw[field] {
-		if item["name"] != "" {
-			out = append(out, item["name"])
-		}
-	}
-	return out
-}
-
 func addEvidence(obj *DiscoveryObject, now string, kind string, path string, description string) {
 	obj.Evidence = append(obj.Evidence, ev(now, kind, path, description))
 }
@@ -394,17 +355,12 @@ func ev(now string, kind string, path string, description string) Evidence {
 	}
 }
 
-func exists(path string) bool {
-	_, err := os.Stat(path)
-	return err == nil
-}
-
 func runtimeNames(runtimes []Runtime) string {
 	names := []string{}
 	for _, rt := range runtimes {
 		names = append(names, rt.Name)
 	}
-	return strings.Join(unique(names), ",")
+	return strings.Join(sliceutil.Unique(names), ",")
 }
 
 func safeID(value string) string {
@@ -415,16 +371,4 @@ func safeID(value string) string {
 	return value
 }
 
-func unique(items []string) []string {
-	seen := map[string]bool{}
-	out := []string{}
-	for _, item := range items {
-		if item == "" || seen[item] {
-			continue
-		}
-		seen[item] = true
-		out = append(out, item)
-	}
-	sort.Strings(out)
-	return out
-}
+

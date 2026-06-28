@@ -11,6 +11,8 @@ import (
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/fsutil"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/jsonfile"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/workspace"
 )
 
@@ -247,19 +249,7 @@ func readContract(name string, repoPath string) (Contract, bool) {
 }
 
 func writeRegistry(cfg config.Config, reg Registry) error {
-	out := filepath.Join(cfg.OSHome, "registry", "service-contracts.json")
-	if err := os.MkdirAll(filepath.Dir(out), 0755); err != nil {
-		return err
-	}
-	data, err := json.MarshalIndent(reg, "", "  ")
-	if err != nil {
-		return err
-	}
-	if err := os.WriteFile(out, append(data, '\n'), 0644); err != nil {
-		return err
-	}
-	fmt.Println("Wrote", out)
-	return nil
+	return jsonfile.Write(filepath.Join(cfg.OSHome, "registry", "service-contracts.json"), reg, true)
 }
 
 func writeReport(cfg config.Config, reg Registry) error {
@@ -315,16 +305,13 @@ func inferKind(name string, repoPath string) string {
 		return "infrastructure"
 	case strings.Contains(lower, "www") || strings.Contains(lower, "github.io"):
 		return "website"
-	case exists(filepath.Join(repoPath, "package.json")):
+	case fsutil.Exists(filepath.Join(repoPath, "package.json")):
 		return "web-app"
-	case exists(filepath.Join(repoPath, "go.mod")):
+	case fsutil.Exists(filepath.Join(repoPath, "go.mod")):
 		return "go-service"
 	default:
 		return "repository"
 	}
 }
 
-func exists(path string) bool {
-	_, err := os.Stat(path)
-	return err == nil
-}
+

@@ -1,12 +1,11 @@
 package workflow
 
 import (
-	"encoding/json"
 	"fmt"
-	"os"
 	"path/filepath"
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/jsonfile"
 )
 
 type WorkflowStep struct {
@@ -46,22 +45,7 @@ func Defaults() []Workflow {
 }
 
 func WriteRegistry(cfg config.Config) error {
-	out := filepath.Join(cfg.OSHome, "registry", "workflows.json")
-	if err := os.MkdirAll(filepath.Dir(out), 0755); err != nil {
-		return err
-	}
-
-	data, err := json.MarshalIndent(Defaults(), "", "  ")
-	if err != nil {
-		return err
-	}
-
-	if err := os.WriteFile(out, append(data, '\n'), 0644); err != nil {
-		return err
-	}
-
-	fmt.Println("Wrote", out)
-	return nil
+	return jsonfile.Write(filepath.Join(cfg.OSHome, "registry", "workflows.json"), Defaults(), true)
 }
 
 func List(cfg config.Config) error {
