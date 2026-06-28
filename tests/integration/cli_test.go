@@ -345,6 +345,95 @@ func TestNoArgsPanic(t *testing.T) {
 	}
 }
 
+// ── runtime ──────────────────────────────────────────────────────────
+
+func TestRuntimeScan(t *testing.T) {
+	root := setupWorkspace(t)
+	out, err := run(t, root, "runtime", "scan")
+	if err != nil {
+		t.Fatalf("runtime scan failed: %v\n%s", err, out)
+	}
+
+	// Check registry file was created
+	regPath := filepath.Join(root, "AIFT-OS", "registry", "runtime-readiness.json")
+	data, err := os.ReadFile(regPath)
+	if err != nil {
+		t.Fatalf("registry/runtime-readiness.json not created: %v", err)
+	}
+	var reg map[string]interface{}
+	if err := json.Unmarshal(data, &reg); err != nil {
+		t.Fatalf("invalid JSON in runtime-readiness.json: %v", err)
+	}
+	if _, ok := reg["objects"]; !ok {
+		t.Error("runtime-readiness.json missing 'objects' field")
+	}
+	if _, ok := reg["summary"]; !ok {
+		t.Error("runtime-readiness.json missing 'summary' field")
+	}
+}
+
+func TestRuntimeStatus(t *testing.T) {
+	root := setupWorkspace(t)
+	// Scan first to populate data
+	run(t, root, "runtime", "scan")
+
+	out, err := run(t, root, "runtime", "status")
+	if err != nil {
+		t.Fatalf("runtime status failed: %v\n%s", err, out)
+	}
+	if !strings.Contains(out, "KIND") || !strings.Contains(out, "STATUS") {
+		t.Error("runtime status should print table headers")
+	}
+}
+
+func TestRuntimeReady(t *testing.T) {
+	root := setupWorkspace(t)
+	run(t, root, "runtime", "scan")
+
+	out, err := run(t, root, "runtime", "ready")
+	if err != nil {
+		t.Fatalf("runtime ready failed: %v\n%s", err, out)
+	}
+	if !strings.Contains(out, "KIND") {
+		t.Error("runtime ready should print table headers")
+	}
+}
+
+func TestRuntimeBlocked(t *testing.T) {
+	root := setupWorkspace(t)
+	run(t, root, "runtime", "scan")
+
+	out, err := run(t, root, "runtime", "blocked")
+	if err != nil {
+		t.Fatalf("runtime blocked failed: %v\n%s", err, out)
+	}
+	// May show "No blocked objects." or a table
+	if !strings.Contains(out, "KIND") && !strings.Contains(out, "No blocked") {
+		t.Error("runtime blocked should print headers or 'No blocked'")
+	}
+}
+
+func TestRuntimeReport(t *testing.T) {
+	root := setupWorkspace(t)
+	run(t, root, "runtime", "scan")
+
+	out, err := run(t, root, "runtime", "report")
+	if err != nil {
+		t.Fatalf("runtime report failed: %v\n%s", err, out)
+	}
+	if !strings.Contains(out, "Runtime Readiness") {
+		t.Error("runtime report should contain 'Runtime Readiness'")
+	}
+}
+
+func TestRuntimeNoArgs(t *testing.T) {
+	root := setupWorkspace(t)
+	_, err := run(t, root, "runtime")
+	if err == nil {
+		t.Error("runtime with no args should fail with usage")
+	}
+}
+
 func TestCommandsNoArgsDontPanic(t *testing.T) {
 	// Commands that accept subcommands should not panic when called with no sub-args
 	commands := []string{
@@ -358,6 +447,7 @@ func TestCommandsNoArgsDontPanic(t *testing.T) {
 		"event-bus",
 		"patch-engine",
 		"kernel",
+		"runtime",
 	}
 
 	root := setupWorkspace(t)
