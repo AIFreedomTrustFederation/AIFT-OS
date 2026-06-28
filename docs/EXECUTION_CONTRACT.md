@@ -100,3 +100,16 @@ The harness traps `EXIT` and:
 - Updates `upload.txt` with `status=failed`
 - Copies status to `latest/upload.txt`
 - Always captures `git-after.txt` state
+
+## Coverage Baseline
+
+The repository enforces a coverage threshold via `scripts/check-coverage.sh`.
+The baseline percentage is stored in `coverage-baseline.txt` at the repo root.
+CI runs this check automatically; if coverage drops below the baseline the
+build fails.
+
+To update the baseline after adding tests:
+
+```bash
+echo "30.0" > coverage-baseline.txt
+```

@@ -41,45 +41,59 @@ go tool cover -html=coverage.out
 
 The coverage report is written to `reports/coverage.txt`.
 
+## Coverage Baseline
+
+A coverage threshold gate prevents regressions. The baseline is stored in
+`coverage-baseline.txt` at the repo root. CI runs `scripts/check-coverage.sh`
+which fails if total coverage drops below the baseline.
+
+To update the baseline intentionally (e.g. after adding tests), edit
+`coverage-baseline.txt` with the new percentage.
+
+```bash
+# Check coverage against baseline locally
+bash scripts/check-coverage.sh
+```
+
 ## Packages With Tests
 
 | Package | Tests | Coverage |
 |---|---:|---:|
+| `internal/config` | 4 | 100.0% |
 | `internal/fsutil` | 9 | 100.0% |
 | `internal/sliceutil` | 13 | 100.0% |
+| `internal/events` | 9 | 86.7% |
 | `internal/jsonfile` | 11 | 86.2% |
-| `internal/eventbus` | 15 | 50.0% |
-| `internal/discoveryengine` | 12 | 37.0% |
-| `internal/modules` | 18 | 31.1% |
-| `internal/kernelregistry` | 18 | 27.7% |
-| `internal/planner` | 12 | 27.2% |
-| `internal/patchengine` | 8 | 25.7% |
-| `internal/intelligence` | 14 | 23.4% |
-| `internal/eventmesh` | 18 | 19.4% |
-| `internal/servicecontracts` | 14 | 10.8% |
-| `internal/graph` | 15 | 9.7% |
+| `internal/eventbus` | 15 | 53.4% |
+| `internal/manifests` | 14 | 46.5% |
+| `internal/discoveryengine` | 12 | 45.7% |
+| `internal/capabilities` | 24 | 45.4% |
+| `internal/intelligence` | 14 | 42.1% |
+| `internal/modules` | 18 | 38.6% |
+| `internal/kernelregistry` | 18 | 36.4% |
+| `internal/planner` | 12 | 32.0% |
+| `internal/patchengine` | 8 | 27.8% |
+| `internal/repo` | 7 | 17.7% |
+| `internal/eventmesh` | 18 | 17.0% |
+| `internal/servicecontracts` | 14 | 13.6% |
+| `internal/api` | 11 | 11.7% |
+| `internal/graph` | 15 | 11.0% |
 
 ## Packages Needing Coverage
 
 The following packages have 0% test coverage:
 
-- `internal/api`
-- `internal/capabilities`
-- `internal/config`
 - `internal/daemon`
 - `internal/doctor`
-- `internal/events`
 - `internal/federation`
 - `internal/gitx`
 - `internal/jobs`
 - `internal/kernel`
 - `internal/kernelruntime`
-- `internal/manifests`
 - `internal/manual`
 - `internal/plugins`
 - `internal/providers`
 - `internal/registry`
-- `internal/repo`
 - `internal/reports`
 - `internal/runtime`
 - `internal/scheduler`
@@ -98,3 +112,15 @@ All tests are self-contained:
 - No network access required
 - No GitHub credentials or external services needed
 - No real federation repositories required
+
+## Shell Harness Tests
+
+The script execution harness has its own test suite:
+
+```bash
+bash tests/harness-syntax-test.sh
+```
+
+This validates 13 scenarios including syntax checks, path discovery, mode
+queries, run directory creation, upload.txt timing, failure trap behavior,
+inspect-only immutability, and commit-verified refusal on validation failure.

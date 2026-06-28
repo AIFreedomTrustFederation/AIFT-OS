@@ -46,16 +46,12 @@ jobs:
           done
           exit $status
 
-      - name: Coverage report
-        run: |
-          mkdir -p reports
-          go test ./... -coverprofile=coverage.out
-          go tool cover -func=coverage.out > reports/coverage.txt
-          echo "--- Coverage Summary ---"
-          tail -1 reports/coverage.txt
+      - name: Coverage threshold check
+        run: bash scripts/check-coverage.sh
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: coverage-report
           path: |
