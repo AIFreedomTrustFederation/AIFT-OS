@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "AIFT-OS"
+version = "1.0.0"
+id = "artifacts/aift-os-landing"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19322
+
+[services.development]
+run = "pnpm --filter @workspace/aift-os-landing run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/aift-os-landing", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/aift-os-landing/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19322"
+BASE_PATH = "/"

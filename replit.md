@@ -1,6 +1,6 @@
-# [Project name]
+# AIFT-OS
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A living, federated operating system governed by evidence, not authority — the public-facing landing page and architectural reference for the AI Freedom Trust Federation.
 
 ## Run & Operate
 
@@ -22,15 +22,22 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- Landing page: `artifacts/aift-os-landing/src/` — React + Vite, no backend
+- Theme: `artifacts/aift-os-landing/src/index.css` — dark palette, Syne + Space Mono fonts
+- Architecture sections: `artifacts/aift-os-landing/src/components/` — ArchitectureRings, Trees, LivingLayers, LivingSpectrum, DiscoveryLifecycle, Hero, Footer
+- API server: `artifacts/api-server/src/` — Express 5, health endpoint only currently
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Landing page is presentation-only (no backend). All architecture content is static/animated in the frontend.
+- Canvas tree renderer (`Trees.tsx`) uses synchronous recursive `drawBranch` — no `setTimeout` fan-out to avoid unbounded timer growth and frame jank.
+- Governance model: 12 Validator Orders are constitutional domains (not people), 24 Elders are a role-based council (not a fixed list), Constitutional Core is the federation's ground truth.
+- Seven Living Layers are permanent architectural domains; repositories are implementations of layers, not the architecture itself.
+- Tree of Life (runtime/teal) and Tree of Knowledge (knowledge/amber) share the same underlying data registries — two views, one root.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+The AIFT-OS landing page explains the complete federation architecture through 7 interactive sections: governance wheel-within-wheels diagram, seven living layers, dual tree visualizations, living spectrum state system, discovery lifecycle, core philosophy, and sovereign vision. Scroll-driven with Framer Motion animations throughout.
 
 ## User preferences
 
