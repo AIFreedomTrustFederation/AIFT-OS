@@ -17,6 +17,7 @@ import (
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/intelligence"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manifests"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manual"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/modules"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/planner"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/plugins"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/providers"
@@ -123,6 +124,8 @@ func main() {
 		err = runServiceContracts(cfg, args)
 	case "plan":
 		err = runPlanner(cfg, args)
+	case "modules":
+		err = runModules(cfg, args)
 	case "verify":
 		err = verify(cfg)
 	default:
@@ -170,6 +173,7 @@ func help() {
 	fmt.Println("  mesh init-all|scan|topics|subscribers|publish|replay|tail|report")
 	fmt.Println("  service-contracts init-all|scan|list|repo|report")
 	fmt.Println("  plan build|summary|repo|ready|blocked|report")
+	fmt.Println("  modules init-all|scan|list|repo|report")
 	fmt.Println("  verify")
 }
 
@@ -352,6 +356,28 @@ func runPlanner(cfg config.Config, args []string) error {
 		return planner.Report(cfg)
 	default:
 		return fmt.Errorf("usage: aift plan build|summary|repo|ready|blocked|report")
+	}
+}
+
+func runModules(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "scan" {
+		return modules.Scan(cfg)
+	}
+
+	switch args[0] {
+	case "init-all":
+		return modules.InitAll(cfg)
+	case "list":
+		return modules.List(cfg)
+	case "repo":
+		if len(args) < 2 {
+			return fmt.Errorf("usage: aift modules repo <repo>")
+		}
+		return modules.Repo(cfg, args[1])
+	case "report":
+		return modules.Report(cfg)
+	default:
+		return fmt.Errorf("usage: aift modules init-all|scan|list|repo|report")
 	}
 }
 

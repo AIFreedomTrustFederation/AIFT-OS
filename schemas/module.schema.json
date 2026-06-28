@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIFT Kernel Module Manifest",
+  "type": "object",
+  "required": ["id", "repo", "name", "version", "status", "kind", "provides", "commands", "evidence"],
+  "properties": {
+    "id": { "type": "string" },
+    "repo": { "type": "string" },
+    "name": { "type": "string" },
+    "version": { "type": "string" },
+    "status": { "type": "string" },
+    "kind": { "type": "string" },
+    "description": { "type": "string" },
+    "dependsOn": { "type": "array", "items": { "type": "string" } },
+    "provides": { "type": "array", "items": { "type": "string" } },
+    "consumes": { "type": "array", "items": { "type": "string" } },
+    "publishes": { "type": "array", "items": { "type": "string" } },
+    "commands": { "type": "object" },
+    "services": { "type": "array", "items": { "type": "string" } },
+    "capabilities": { "type": "array", "items": { "type": "string" } },
+    "docs": { "type": "array", "items": { "type": "string" } },
+    "healthChecks": { "type": "array", "items": { "type": "string" } },
+    "migrationLevel": { "type": "string" },
+    "evidence": { "type": "array", "items": { "type": "string" } },
+    "generatedAt": { "type": "string" }
+  }
+}
