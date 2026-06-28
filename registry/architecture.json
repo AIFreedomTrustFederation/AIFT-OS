@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-28T18:06:55Z",
+  "generated_at": "2026-06-28T21:17:43Z",
   "version": "1.0.0",
   "packages": [
     {
@@ -69,6 +69,7 @@
         "internal/planner",
         "internal/plugins",
         "internal/providers",
+        "internal/readiness",
         "internal/registry",
         "internal/repo",
         "internal/reports",
@@ -179,6 +180,7 @@
         "internal/manual",
         "internal/modules",
         "internal/planner",
+        "internal/readiness",
         "internal/runtime",
         "internal/scheduler",
         "internal/servicecontracts",
@@ -219,6 +221,7 @@
         "internal/kernelregistry",
         "internal/manual",
         "internal/modules",
+        "internal/readiness",
         "internal/servicecontracts"
       ],
       "has_tests": true,
@@ -310,6 +313,7 @@
         "internal/patchengine",
         "internal/planner",
         "internal/providers",
+        "internal/readiness",
         "internal/registry",
         "internal/servicecontracts",
         "internal/workflow"
@@ -471,6 +475,22 @@
       ],
       "has_tests": false,
       "category": "extensions"
+    },
+    {
+      "name": "readiness",
+      "path": "internal/readiness",
+      "depends_on": [
+        "internal/config",
+        "internal/events",
+        "internal/fsutil",
+        "internal/jsonfile",
+        "internal/workspace"
+      ],
+      "depended_by": [
+        "cmd/aift"
+      ],
+      "has_tests": true,
+      "category": "other"
     },
     {
       "name": "registry",
@@ -695,6 +715,7 @@
         "internal/modules",
         "internal/planner",
         "internal/plugins",
+        "internal/readiness",
         "internal/registry",
         "internal/repo",
         "internal/reports",
@@ -809,6 +830,12 @@
       "status": "active"
     },
     {
+      "name": "operator",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
       "name": "patch-engine",
       "has_handler": true,
       "has_help": true,
@@ -840,6 +867,12 @@
     },
     {
       "name": "repo",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "runtime",
       "has_handler": true,
       "has_help": true,
       "status": "active"
@@ -1289,6 +1322,26 @@
     {
       "from": "internal/providers",
       "to": "internal/jsonfile"
+    },
+    {
+      "from": "internal/readiness",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/readiness",
+      "to": "internal/events"
+    },
+    {
+      "from": "internal/readiness",
+      "to": "internal/fsutil"
+    },
+    {
+      "from": "internal/readiness",
+      "to": "internal/jsonfile"
+    },
+    {
+      "from": "internal/readiness",
+      "to": "internal/workspace"
     },
     {
       "from": "internal/registry",

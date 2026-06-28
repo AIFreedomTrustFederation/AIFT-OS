@@ -434,6 +434,42 @@ func TestRuntimeNoArgs(t *testing.T) {
 	}
 }
 
+// ── operator ──────────────────────────────────────────────────────────
+
+func TestOperatorCheckProducesOutput(t *testing.T) {
+	root := setupWorkspace(t)
+	out, _ := run(t, root, "operator", "check")
+	if !strings.Contains(out, "--- verify ---") {
+		t.Error("operator check should include verify step header")
+	}
+	if !strings.Contains(out, "--- runtime scan ---") {
+		t.Error("operator check should include runtime scan step header")
+	}
+	if !strings.Contains(out, "--- readiness summary ---") {
+		t.Error("operator check should include readiness summary")
+	}
+}
+
+func TestOperatorCheckSurfacesVerifyFailure(t *testing.T) {
+	// Use an empty temp dir (no AIFT-OS structure) so doctor fails
+	root := t.TempDir()
+	out, err := run(t, root, "operator", "check")
+	if err == nil {
+		t.Error("operator check should fail when verify fails")
+	}
+	if !strings.Contains(out, "FAIL") {
+		t.Errorf("operator check should surface failures in output, got: %s", out)
+	}
+}
+
+func TestOperatorNoArgs(t *testing.T) {
+	root := setupWorkspace(t)
+	_, err := run(t, root, "operator")
+	if err == nil {
+		t.Error("operator with no args should fail with usage")
+	}
+}
+
 func TestCommandsNoArgsDontPanic(t *testing.T) {
 	// Commands that accept subcommands should not panic when called with no sub-args
 	commands := []string{
@@ -448,6 +484,7 @@ func TestCommandsNoArgsDontPanic(t *testing.T) {
 		"patch-engine",
 		"kernel",
 		"runtime",
+		"operator",
 	}
 
 	root := setupWorkspace(t)

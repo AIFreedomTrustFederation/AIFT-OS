@@ -101,6 +101,32 @@ The harness traps `EXIT` and:
 - Copies status to `latest/upload.txt`
 - Always captures `git-after.txt` state
 
+## Operator Workflow
+
+The recommended operator workflow runs all verification steps in sequence:
+
+```bash
+aift verify              # Doctor + manifests + registries + graphs
+aift runtime scan        # Evaluate all objects for readiness
+aift runtime report      # Print readiness report
+```
+
+The `aift operator check` command runs this entire sequence plus architecture
+validation in a single invocation:
+
+```bash
+aift operator check
+```
+
+Steps executed:
+1. `verify` - doctor, manifests, registries, capabilities, intelligence, graph, mesh, service-contracts, planner
+2. `architecture` - runs `go run ./tools/architecture --ci` to check invariants
+3. `runtime scan` - evaluates all federation objects
+4. Readiness summary - prints status table
+
+Each step's success or failure is reported. The command fails if any required
+step fails, and failures are surfaced in the output (never swallowed).
+
 ## Coverage Baseline
 
 The repository enforces a coverage threshold via `scripts/check-coverage.sh`.

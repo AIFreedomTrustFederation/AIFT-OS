@@ -5,6 +5,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
 )
 
 func TestInferKindControlPlane(t *testing.T) {
@@ -282,6 +284,139 @@ func TestServiceOwnerDefaultsFromRepo(t *testing.T) {
 		// Owner is empty in the JSON (legacy contract without owner).
 		// The Scan() function defaults it to c.Repo at scan time.
 		// readContract alone doesn't set it — this is expected.
+	}
+}
+
+func TestScanDefaultsPersistInContracts(t *testing.T) {
+	root := t.TempDir()
+	repoDir := filepath.Join(root, "legacy-repo")
+	os.MkdirAll(filepath.Join(repoDir, ".git"), 0755)
+	os.MkdirAll(filepath.Join(repoDir, ".aift"), 0755)
+
+	// Legacy contract: services have no status, version, owner, or evidence
+	os.WriteFile(filepath.Join(repoDir, ".aift", "services.json"), []byte(`{
+		"repo": "legacy-repo",
+		"services": [
+			{
+				"name": "legacy-svc",
+				"kind": "http",
+				"provides": [],
+				"requires": [],
+				"events": []
+			}
+		]
+	}`), 0644)
+
+	osHome := filepath.Join(root, "AIFT-OS")
+	for _, d := range []string{"registry", "reports"} {
+		os.MkdirAll(filepath.Join(osHome, d), 0755)
+	}
+
+	cfg := config.Config{Root: root, OSHome: osHome}
+	if err := Scan(cfg); err != nil {
+		t.Fatalf("Scan failed: %v", err)
+	}
+
+	// Read persisted registry
+	data, err := os.ReadFile(filepath.Join(osHome, "registry", "service-contracts.json"))
+	if err != nil {
+		t.Fatalf("read registry: %v", err)
+	}
+
+	var reg Registry
+	if err := json.Unmarshal(data, &reg); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+
+	// Verify defaults persisted in the Contract entries (the PR #11 fix)
+	if len(reg.Contracts) != 1 {
+		t.Fatalf("expected 1 contract, got %d", len(reg.Contracts))
+	}
+	svc := reg.Contracts[0].Services[0]
+	if svc.Status != "planned" {
+		t.Errorf("Contract.Services[0].Status = %q, want planned", svc.Status)
+	}
+	if svc.Version != "0.1.0" {
+		t.Errorf("Contract.Services[0].Version = %q, want 0.1.0", svc.Version)
+	}
+	if svc.Owner != "legacy-repo" {
+		t.Errorf("Contract.Services[0].Owner = %q, want legacy-repo", svc.Owner)
+	}
+	if svc.Evidence != ".aift/services.json" {
+		t.Errorf("Contract.Services[0].Evidence = %q, want .aift/services.json", svc.Evidence)
+	}
+
+	// Verify ServiceRecord also has defaults
+	if len(reg.Services) != 1 {
+		t.Fatalf("expected 1 service record, got %d", len(reg.Services))
+	}
+	sr := reg.Services[0]
+	if sr.Status != "planned" {
+		t.Errorf("ServiceRecord.Status = %q, want planned", sr.Status)
+	}
+	if sr.Version != "0.1.0" {
+		t.Errorf("ServiceRecord.Version = %q, want 0.1.0", sr.Version)
+	}
+	if sr.Evidence != ".aift/services.json" {
+		t.Errorf("ServiceRecord.Evidence = %q, want .aift/services.json", sr.Evidence)
+	}
+}
+
+func TestScanDefaultsDoNotOverwriteExplicit(t *testing.T) {
+	root := t.TempDir()
+	repoDir := filepath.Join(root, "explicit-repo")
+	os.MkdirAll(filepath.Join(repoDir, ".git"), 0755)
+	os.MkdirAll(filepath.Join(repoDir, ".aift"), 0755)
+
+	// Contract with explicit values that should NOT be overwritten
+	os.WriteFile(filepath.Join(repoDir, ".aift", "services.json"), []byte(`{
+		"repo": "explicit-repo",
+		"services": [
+			{
+				"name": "api",
+				"kind": "grpc",
+				"status": "ready",
+				"version": "2.0.0",
+				"owner": "team-alpha",
+				"evidence": "ci-verified",
+				"provides": [],
+				"requires": [],
+				"events": []
+			}
+		]
+	}`), 0644)
+
+	osHome := filepath.Join(root, "AIFT-OS")
+	for _, d := range []string{"registry", "reports"} {
+		os.MkdirAll(filepath.Join(osHome, d), 0755)
+	}
+
+	cfg := config.Config{Root: root, OSHome: osHome}
+	if err := Scan(cfg); err != nil {
+		t.Fatalf("Scan failed: %v", err)
+	}
+
+	data, err := os.ReadFile(filepath.Join(osHome, "registry", "service-contracts.json"))
+	if err != nil {
+		t.Fatalf("read registry: %v", err)
+	}
+	var reg Registry
+	if err := json.Unmarshal(data, &reg); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+
+	svc := reg.Contracts[0].Services[0]
+	if svc.Status != "ready" {
+		t.Errorf("Status = %q, want ready (should not be overwritten)", svc.Status)
+	}
+	if svc.Version != "2.0.0" {
+		t.Errorf("Version = %q, want 2.0.0 (should not be overwritten)", svc.Version)
+	}
+	if svc.Owner != "team-alpha" {
+		t.Errorf("Owner = %q, want team-alpha (should not be overwritten)", svc.Owner)
+	}
+	if svc.Evidence != "ci-verified" {
+		t.Errorf("Evidence = %q, want ci-verified (should not be overwritten)", svc.Evidence)
 	}
 }
 

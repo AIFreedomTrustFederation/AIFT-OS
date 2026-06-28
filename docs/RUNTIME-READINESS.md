@@ -59,6 +59,27 @@ aift runtime blocked   # Print only blocked objects
 aift runtime report    # Print the readiness report (markdown)
 ```
 
+## Operator Workflow
+
+Runtime readiness is part of the standard operator workflow. The recommended
+sequence is:
+
+```bash
+aift verify              # Run all verification steps
+aift runtime scan        # Evaluate readiness
+aift runtime report      # Review results
+```
+
+Or use the aggregate command:
+
+```bash
+aift operator check      # Runs verify + architecture + runtime scan + summary
+```
+
+Readiness is intentionally NOT part of `verify`. It is a meta-analysis layer
+that reads from registries populated by verify's sub-commands. Running it
+inside verify would create a circular dependency or produce stale results.
+
 ## Output Files
 
 | File | Format | Content |
@@ -74,4 +95,7 @@ go test ./internal/readiness/ -v
 
 # Integration tests for CLI commands
 go test ./tests/integration/ -v -run TestRuntime
+
+# Integration tests for operator check
+go test ./tests/integration/ -v -run TestOperator
 ```

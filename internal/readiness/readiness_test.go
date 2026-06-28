@@ -485,6 +485,77 @@ func TestScanScriptsNoDir(t *testing.T) {
 	}
 }
 
+func TestScanServicesConsumesPersistedDefaults(t *testing.T) {
+	dir := t.TempDir()
+	regDir := filepath.Join(dir, "registry")
+	os.MkdirAll(regDir, 0755)
+
+	// Simulates service-contracts.json produced by Scan() after PR #11 fix:
+	// defaults (status, evidence) are present even for legacy services
+	reg := map[string]interface{}{
+		"services": []map[string]string{
+			{"repo": "legacy-repo", "name": "legacy-svc", "status": "planned", "evidence": ".aift/services.json"},
+			{"repo": "other-repo", "name": "other-svc", "status": "ready", "evidence": "ci-verified"},
+		},
+	}
+	data, _ := json.Marshal(reg)
+	os.WriteFile(filepath.Join(regDir, "service-contracts.json"), data, 0644)
+
+	cfg := makeTestConfig(dir, dir)
+	objects := scanServices(cfg)
+
+	if len(objects) != 2 {
+		t.Fatalf("expected 2 services, got %d", len(objects))
+	}
+
+	byName := map[string]Object{}
+	for _, o := range objects {
+		byName[o.Name] = o
+	}
+
+	// Verify readiness correctly maps the persisted defaults
+	legacy := byName["legacy-svc"]
+	if legacy.Status != StatusPlanned {
+		t.Errorf("legacy-svc status = %q, want planned", legacy.Status)
+	}
+	if legacy.Evidence != ".aift/services.json" {
+		t.Errorf("legacy-svc evidence = %q, want .aift/services.json", legacy.Evidence)
+	}
+
+	other := byName["other-svc"]
+	if other.Status != StatusReady {
+		t.Errorf("other-svc status = %q, want ready", other.Status)
+	}
+	if other.Evidence != "ci-verified" {
+		t.Errorf("other-svc evidence = %q, want ci-verified", other.Evidence)
+	}
+}
+
+func TestScanServicesEmptyEvidence(t *testing.T) {
+	dir := t.TempDir()
+	regDir := filepath.Join(dir, "registry")
+	os.MkdirAll(regDir, 0755)
+
+	// Service with empty evidence should get a fallback
+	reg := map[string]interface{}{
+		"services": []map[string]string{
+			{"repo": "r1", "name": "svc1", "status": "planned", "evidence": ""},
+		},
+	}
+	data, _ := json.Marshal(reg)
+	os.WriteFile(filepath.Join(regDir, "service-contracts.json"), data, 0644)
+
+	cfg := makeTestConfig(dir, dir)
+	objects := scanServices(cfg)
+
+	if len(objects) != 1 {
+		t.Fatalf("expected 1 service, got %d", len(objects))
+	}
+	if objects[0].Evidence != "registry/service-contracts.json" {
+		t.Errorf("evidence = %q, want fallback registry/service-contracts.json", objects[0].Evidence)
+	}
+}
+
 func makeTestConfig(osHome, root string) config.Config {
 	return config.Config{
 		Root:   root,
