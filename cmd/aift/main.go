@@ -23,6 +23,7 @@ import (
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/repo"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/reports"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/runtime"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/servicecontracts"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/services"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/sync"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/version"
@@ -117,6 +118,8 @@ func main() {
 		err = graph.Query(cfg, args)
 	case "mesh":
 		err = runMesh(cfg, args)
+	case "service-contracts":
+		err = runServiceContracts(cfg, args)
 	case "verify":
 		err = verify(cfg)
 	default:
@@ -162,6 +165,7 @@ func help() {
 	fmt.Println("  manual init-all|scan|report|repo")
 	fmt.Println("  graph [summary|repo|type|status]")
 	fmt.Println("  mesh init-all|scan|topics|subscribers|publish|replay|tail|report")
+	fmt.Println("  service-contracts init-all|scan|list|repo|report")
 	fmt.Println("  verify")
 }
 
@@ -303,6 +307,27 @@ func runMesh(cfg config.Config, args []string) error {
 	}
 }
 
+func runServiceContracts(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "scan" {
+		return servicecontracts.Scan(cfg)
+	}
+	switch args[0] {
+	case "init-all":
+		return servicecontracts.InitAll(cfg)
+	case "list":
+		return servicecontracts.List(cfg)
+	case "repo":
+		if len(args) < 2 {
+			return fmt.Errorf("usage: aift service-contracts repo <repo>")
+		}
+		return servicecontracts.Repo(cfg, args[1])
+	case "report":
+		return servicecontracts.Report(cfg)
+	default:
+		return fmt.Errorf("usage: aift service-contracts init-all|scan|list|repo|report")
+	}
+}
+
 func verify(cfg config.Config) error {
 	if err := doctor.Run(cfg); err != nil {
 		return err
@@ -335,6 +360,9 @@ func verify(cfg config.Config) error {
 		return err
 	}
 	if err := eventmesh.Scan(cfg); err != nil {
+		return err
+	}
+	if err := servicecontracts.Scan(cfg); err != nil {
 		return err
 	}
 	if err := events.Emit(cfg, "verify.complete", "verify", "federation verified", nil); err != nil {
