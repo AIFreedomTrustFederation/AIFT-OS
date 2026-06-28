@@ -22,6 +22,7 @@ import (
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manifests"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manual"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/modules"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/patchengine"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/planner"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/plugins"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/providers"
@@ -136,6 +137,8 @@ func main() {
 		err = runDiscovery(cfg, args)
 	case "event-bus":
 		err = runEventBus(cfg, args)
+	case "patch-engine":
+		err = runPatchEngine(cfg, args)
 	case "verify":
 		err = verify(cfg)
 	default:
@@ -187,6 +190,7 @@ func help() {
 	fmt.Println("  kernel-registry scan|list|object|report")
 	fmt.Println("  discovery scan|list|object|report")
 	fmt.Println("  event-bus publish|list|replay|report")
+	fmt.Println("  patch-engine inspect|plan|validate")
 	fmt.Println("  verify")
 }
 
@@ -464,6 +468,23 @@ func runEventBus(cfg config.Config, args []string) error {
 		return eventbus.Report(cfg)
 	default:
 		return fmt.Errorf("usage: aift event-bus publish|list|replay|report")
+	}
+}
+
+func runPatchEngine(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "inspect" {
+		return patchengine.Inspect(cfg)
+	}
+
+	switch args[0] {
+	case "inspect":
+		return patchengine.Inspect(cfg)
+	case "plan":
+		return patchengine.PlanCommand(cfg)
+	case "validate":
+		return patchengine.Validate(cfg)
+	default:
+		return fmt.Errorf("usage: aift patch-engine inspect|plan|validate")
 	}
 }
 
