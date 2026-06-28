@@ -75,9 +75,10 @@ bash scripts/check-coverage.sh
 | `internal/patchengine` | 8 | 27.8% |
 | `internal/repo` | 7 | 17.7% |
 | `internal/eventmesh` | 18 | 17.0% |
-| `internal/servicecontracts` | 14 | 13.6% |
+| `internal/servicecontracts` | 16 | 13.3% |
 | `internal/api` | 11 | 11.7% |
 | `internal/graph` | 15 | 11.0% |
+| `internal/readiness` | 35 | — |
 
 ## Packages Needing Coverage
 
@@ -133,6 +134,7 @@ Command families covered:
 - `capabilities` (scan, report)
 - `modules` (scan, list, init-all)
 - `graph` (federation graph)
+- `runtime` (scan, status, ready, blocked, report)
 - `verify` (validation)
 
 Contract tests:
@@ -140,6 +142,7 @@ Contract tests:
 - Every `case` in `main.go` appears in `help` output
 - Planned commands return "planned" error messages
 - No command panics on empty args
+- No duplicate commands in help output
 - Every `.sh` file passes `bash -n`
 - Non-exempt scripts under `scripts/` source `aift-run.sh`
 

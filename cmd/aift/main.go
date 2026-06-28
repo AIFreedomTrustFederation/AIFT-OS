@@ -135,6 +135,8 @@ func main() {
 		err = runPatchEngine(cfg, args)
 	case "kernel":
 		err = runKernelRuntime(cfg, args)
+	case "runtime":
+		err = runRuntime(cfg, args)
 	case "verify":
 		err = verify(cfg)
 	default:
@@ -188,6 +190,7 @@ func help() {
 	fmt.Println("  event-bus publish|list|replay|report")
 	fmt.Println("  patch-engine inspect|plan|validate")
 	fmt.Println("  kernel boot|status|report")
+	fmt.Println("  runtime scan|status|ready|blocked|report")
 	fmt.Println("  capabilities scan|list|info|report")
 	fmt.Println("  verify")
 }
