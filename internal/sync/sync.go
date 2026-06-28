@@ -27,7 +27,12 @@ func Safe(cfg config.Config) error {
 		}
 		branch := gitx.Branch(repo.Path)
 		fmt.Printf("%s: pull --rebase origin %s\n", repo.Name, branch)
-		_, _ = gitx.Run(repo.Path, "pull", "--rebase", "origin", branch)
+		if output, err := gitx.Run(repo.Path, "pull", "--rebase", "origin", branch); err != nil {
+			fmt.Printf("%s: pull failed: %v\n", repo.Name, err)
+			if output != "" {
+				fmt.Printf("%s: %s\n", repo.Name, output)
+			}
+		}
 	}
 
 	return nil

@@ -53,8 +53,11 @@ func Tail(cfg config.Config, limit int) error {
 	path := filepath.Join(cfg.OSHome, "var", "events", "events.jsonl")
 	data, err := os.ReadFile(path)
 	if err != nil {
-		fmt.Println("No events yet.")
-		return nil
+		if os.IsNotExist(err) {
+			fmt.Println("No events yet.")
+			return nil
+		}
+		return fmt.Errorf("failed to read events: %w", err)
 	}
 
 	lines := strings.Split(strings.TrimSpace(string(data)), "\n")

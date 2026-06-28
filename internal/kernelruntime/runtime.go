@@ -14,6 +14,8 @@ import (
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/kernelregistry"
 )
 
+var stderr = os.Stderr
+
 type BootStep struct {
 	Name        string `json:"name"`
 	Status      string `json:"status"`
@@ -78,14 +80,23 @@ func Boot(cfg config.Config) error {
 		return finish(cfg, report, err)
 	}
 
-	discovery, _ := discoveryengine.LoadOrBuild(cfg)
-	registry, _ := kernelregistry.LoadOrBuild(cfg)
-	events, _ := eventbus.Load(cfg)
+	discovery, err := discoveryengine.LoadOrBuild(cfg)
+	if err != nil {
+		fmt.Fprintf(stderr, "kernel: failed to load discovery summary: %v\n", err)
+	}
+	registryData, err := kernelregistry.LoadOrBuild(cfg)
+	if err != nil {
+		fmt.Fprintf(stderr, "kernel: failed to load registry summary: %v\n", err)
+	}
+	busEvents, err := eventbus.Load(cfg)
+	if err != nil {
+		fmt.Fprintf(stderr, "kernel: failed to load event bus summary: %v\n", err)
+	}
 
 	report.Summary = Summary{
 		DiscoveryObjects: len(discovery.Objects),
-		RegistryObjects:  len(registry.Objects),
-		EventCount:       len(events),
+		RegistryObjects:  len(registryData.Objects),
+		EventCount:       len(busEvents),
 	}
 	report.Status = "ready"
 
@@ -151,11 +162,15 @@ func runStep(report *BootReport, name string, description string, fn func() erro
 	return nil
 }
 
-func finish(cfg config.Config, report BootReport, err error) error {
+func finish(cfg config.Config, report BootReport, bootErr error) error {
 	report.Status = "failed"
-	_ = WriteReport(cfg, report)
-	_ = WriteJSON(cfg, report)
-	return err
+	if err := WriteReport(cfg, report); err != nil {
+		fmt.Fprintf(stderr, "kernel: failed to write boot report: %v\n", err)
+	}
+	if err := WriteJSON(cfg, report); err != nil {
+		fmt.Fprintf(stderr, "kernel: failed to write boot json: %v\n", err)
+	}
+	return bootErr
 }
 
 func WriteJSON(cfg config.Config, report BootReport) error {

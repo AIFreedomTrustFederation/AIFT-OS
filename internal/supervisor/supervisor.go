@@ -1,6 +1,8 @@
 package supervisor
 
 import (
+	"fmt"
+	"os"
 	"time"
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
@@ -48,7 +50,9 @@ func (s Supervisor) Loop(interval time.Duration) error {
 	defer ticker.Stop()
 
 	for range ticker.C {
-		_ = s.Tick()
+		if err := s.Tick(); err != nil {
+			fmt.Fprintf(os.Stderr, "supervisor tick error: %v\n", err)
+		}
 	}
 
 	return nil

@@ -2,6 +2,7 @@ package daemon
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/api"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
@@ -15,7 +16,9 @@ func Start(cfg config.Config, addr string) error {
 	}
 
 	go func() {
-		_ = runtime.Loop(cfg)
+		if err := runtime.Loop(cfg); err != nil {
+			fmt.Fprintf(os.Stderr, "runtime loop error: %v\n", err)
+		}
 	}()
 
 	fmt.Println("AIFT-OS daemon started")

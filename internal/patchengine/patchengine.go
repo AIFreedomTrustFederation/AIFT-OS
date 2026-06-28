@@ -66,7 +66,9 @@ func PlanCommand(cfg config.Config) error {
 func Validate(cfg config.Config) error {
 	result, err := ValidateTree(cfg)
 	if err != nil {
-		_ = WriteResult(cfg, result)
+		if writeErr := WriteResult(cfg, result); writeErr != nil {
+			fmt.Fprintf(os.Stderr, "patch-engine: failed to write validation result: %v\n", writeErr)
+		}
 		return err
 	}
 	if err := WriteResult(cfg, result); err != nil {
@@ -205,7 +207,7 @@ func WritePlanReport(cfg config.Config, plan Plan) error {
 
 func discoverFiles(root string, suffixes []string) []string {
 	out := []string{}
-	_ = filepath.WalkDir(root, func(path string, d os.DirEntry, err error) error {
+	if err := filepath.WalkDir(root, func(path string, d os.DirEntry, err error) error {
 		if err != nil {
 			return nil
 		}
@@ -224,7 +226,9 @@ func discoverFiles(root string, suffixes []string) []string {
 			}
 		}
 		return nil
-	})
+	}); err != nil {
+		fmt.Fprintf(os.Stderr, "patch-engine: failed to walk directory %s: %v\n", root, err)
+	}
 	return out
 }
 
