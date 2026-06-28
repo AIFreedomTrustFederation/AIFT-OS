@@ -2,6 +2,7 @@ package jobs
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
@@ -36,7 +37,9 @@ func RunAll(cfg config.Config) error {
 			return err
 		}
 		if err := job.Run(cfg); err != nil {
-			_ = events.Emit(cfg, "job.error", job.Name, err.Error(), nil)
+			if emitErr := events.Emit(cfg, "job.error", job.Name, err.Error(), nil); emitErr != nil {
+				fmt.Fprintf(os.Stderr, "jobs: failed to emit error event for %s: %v\n", job.Name, emitErr)
+			}
 			return err
 		}
 		if err := events.Emit(cfg, "job.complete", job.Name, "job completed", nil); err != nil {

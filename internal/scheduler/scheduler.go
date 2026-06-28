@@ -1,6 +1,8 @@
 package scheduler
 
 import (
+	"fmt"
+	"os"
 	"time"
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
@@ -49,7 +51,10 @@ func (s Scheduler) Loop(interval time.Duration) error {
 
 	for range ticker.C {
 		if err := s.RunOnce(); err != nil {
-			_ = events.Emit(s.Config, "scheduler.error", "scheduler", err.Error(), nil)
+			fmt.Fprintf(os.Stderr, "scheduler tick error: %v\n", err)
+			if emitErr := events.Emit(s.Config, "scheduler.error", "scheduler", err.Error(), nil); emitErr != nil {
+				fmt.Fprintf(os.Stderr, "scheduler: failed to emit error event: %v\n", emitErr)
+			}
 		}
 	}
 

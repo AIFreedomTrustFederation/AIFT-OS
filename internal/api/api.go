@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"path/filepath"
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
@@ -37,12 +38,21 @@ func (s Server) Serve() error {
 	}))
 
 	mux.HandleFunc("/state", func(w http.ResponseWriter, r *http.Request) {
-		st, _ := state.Load(s.Config)
-		_ = json.NewEncoder(w).Encode(st)
+		st, err := state.Load(s.Config)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "api: failed to load state: %v\n", err)
+		}
+		w.Header().Set("content-type", "application/json")
+		if err := json.NewEncoder(w).Encode(st); err != nil {
+			fmt.Fprintf(os.Stderr, "api: failed to encode state response: %v\n", err)
+		}
 	})
 
 	mux.HandleFunc("/services", func(w http.ResponseWriter, r *http.Request) {
-		_ = json.NewEncoder(w).Encode(services.Defaults())
+		w.Header().Set("content-type", "application/json")
+		if err := json.NewEncoder(w).Encode(services.Defaults()); err != nil {
+			fmt.Fprintf(os.Stderr, "api: failed to encode services response: %v\n", err)
+		}
 	})
 
 	mux.HandleFunc("/actions/verify", s.action(func() error {
@@ -81,7 +91,9 @@ func (s Server) Serve() error {
 func (s Server) json(v any) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("content-type", "application/json")
-		_ = json.NewEncoder(w).Encode(v)
+		if err := json.NewEncoder(w).Encode(v); err != nil {
+			fmt.Fprintf(os.Stderr, "api: failed to encode json response: %v\n", err)
+		}
 	}
 }
 
@@ -94,10 +106,14 @@ func (s Server) action(fn func() error) http.HandlerFunc {
 		}
 		if err := fn(); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			_ = json.NewEncoder(w).Encode(map[string]string{"status": "error", "error": err.Error()})
+			if encErr := json.NewEncoder(w).Encode(map[string]string{"status": "error", "error": err.Error()}); encErr != nil {
+				fmt.Fprintf(os.Stderr, "api: failed to encode error response: %v\n", encErr)
+			}
 			return
 		}
-		_ = json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
+		if err := json.NewEncoder(w).Encode(map[string]string{"status": "ok"}); err != nil {
+			fmt.Fprintf(os.Stderr, "api: failed to encode ok response: %v\n", err)
+		}
 	}
 }
 
