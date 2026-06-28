@@ -3,27 +3,20 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/api"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/capabilities"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/daemon"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/discoveryengine"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/doctor"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/eventbus"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/eventmesh"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/federation"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/gitx"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/graph"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/intelligence"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/kernelregistry"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/kernelruntime"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manifests"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manual"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/modules"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/patchengine"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/planner"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/plugins"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/providers"
@@ -195,6 +188,7 @@ func help() {
 	fmt.Println("  event-bus publish|list|replay|report")
 	fmt.Println("  patch-engine inspect|plan|validate")
 	fmt.Println("  kernel boot|status|report")
+	fmt.Println("  capabilities scan|list|info|report")
 	fmt.Println("  verify")
 }
 
@@ -235,278 +229,6 @@ func runWorkflow(cfg config.Config, args []string) error {
 		return workflow.List(cfg)
 	}
 	return fmt.Errorf("usage: aift workflow list")
-}
-
-func runCapabilities(cfg config.Config, args []string) error {
-	if len(args) == 0 || args[0] == "scan" {
-		return capabilities.Scan(cfg)
-	}
-	if args[0] == "report" {
-		return capabilities.Report(cfg)
-	}
-	if args[0] == "repo" {
-		if len(args) < 2 {
-			return fmt.Errorf("usage: aift capabilities repo <repo>")
-		}
-		return capabilities.PrintRepo(cfg, args[1])
-	}
-	if args[0] == "promote" {
-		if len(args) < 3 {
-			return fmt.Errorf("usage: aift capabilities promote <repo> <capability>")
-		}
-		return capabilities.Promote(cfg, args[1], args[2])
-	}
-	return fmt.Errorf("usage: aift capabilities scan|report|repo|promote")
-}
-
-func runIntelligence(cfg config.Config, args []string) error {
-	if len(args) == 0 || args[0] == "scan" {
-		return intelligence.Scan(cfg)
-	}
-	if args[0] == "report" {
-		return intelligence.Report(cfg)
-	}
-	if args[0] == "repo" {
-		if len(args) < 2 {
-			return fmt.Errorf("usage: aift intelligence repo <repo>")
-		}
-		return intelligence.Repo(cfg, args[1])
-	}
-	if args[0] == "roadmap" {
-		return intelligence.Roadmap(cfg)
-	}
-	return fmt.Errorf("usage: aift intelligence scan|report|repo|roadmap")
-}
-
-func runManual(cfg config.Config, args []string) error {
-	if len(args) == 0 || args[0] == "scan" {
-		return manual.Scan(cfg)
-	}
-	if args[0] == "init-all" {
-		return manual.InitAll(cfg)
-	}
-	if args[0] == "report" {
-		return manual.Report(cfg)
-	}
-	if args[0] == "repo" {
-		if len(args) < 2 {
-			return fmt.Errorf("usage: aift manual repo <repo>")
-		}
-		return manual.Repo(cfg, args[1])
-	}
-	return fmt.Errorf("usage: aift manual init-all|scan|report|repo")
-}
-
-func runMesh(cfg config.Config, args []string) error {
-	if len(args) == 0 || args[0] == "scan" {
-		return eventmesh.Scan(cfg)
-	}
-	switch args[0] {
-	case "init-all":
-		return eventmesh.InitAll(cfg)
-	case "topics":
-		return eventmesh.Topics(cfg)
-	case "subscribers":
-		return eventmesh.Subscribers(cfg)
-	case "publish":
-		if len(args) < 2 {
-			return fmt.Errorf("usage: aift mesh publish <topic> [source] [message]")
-		}
-		source := "manual"
-		message := args[1]
-		if len(args) > 2 {
-			source = args[2]
-		}
-		if len(args) > 3 {
-			message = args[3]
-		}
-		return eventmesh.Publish(cfg, args[1], source, message)
-	case "replay":
-		topic := ""
-		if len(args) > 1 {
-			topic = args[1]
-		}
-		return eventmesh.Replay(cfg, topic)
-	case "tail":
-		return eventmesh.Tail(cfg, 25)
-	case "report":
-		return eventmesh.Report(cfg)
-	default:
-		return fmt.Errorf("usage: aift mesh init-all|scan|topics|subscribers|publish|replay|tail|report")
-	}
-}
-
-func runServiceContracts(cfg config.Config, args []string) error {
-	if len(args) == 0 || args[0] == "scan" {
-		return servicecontracts.Scan(cfg)
-	}
-	switch args[0] {
-	case "init-all":
-		return servicecontracts.InitAll(cfg)
-	case "list":
-		return servicecontracts.List(cfg)
-	case "repo":
-		if len(args) < 2 {
-			return fmt.Errorf("usage: aift service-contracts repo <repo>")
-		}
-		return servicecontracts.Repo(cfg, args[1])
-	case "report":
-		return servicecontracts.Report(cfg)
-	default:
-		return fmt.Errorf("usage: aift service-contracts init-all|scan|list|repo|report")
-	}
-}
-
-func runPlanner(cfg config.Config, args []string) error {
-	if len(args) == 0 || args[0] == "build" {
-		return planner.Build(cfg)
-	}
-	switch args[0] {
-	case "summary":
-		return planner.SummaryReport(cfg)
-	case "repo":
-		if len(args) < 2 {
-			return fmt.Errorf("usage: aift plan repo <repo>")
-		}
-		return planner.Repo(cfg, args[1])
-	case "ready":
-		return planner.Ready(cfg)
-	case "blocked":
-		return planner.Blocked(cfg)
-	case "report":
-		return planner.Report(cfg)
-	default:
-		return fmt.Errorf("usage: aift plan build|summary|repo|ready|blocked|report")
-	}
-}
-
-func runModules(cfg config.Config, args []string) error {
-	if len(args) == 0 || args[0] == "scan" {
-		return modules.Scan(cfg)
-	}
-
-	switch args[0] {
-	case "init-all":
-		return modules.InitAll(cfg)
-	case "list":
-		return modules.List(cfg)
-	case "repo":
-		if len(args) < 2 {
-			return fmt.Errorf("usage: aift modules repo <repo>")
-		}
-		return modules.Repo(cfg, args[1])
-	case "report":
-		return modules.Report(cfg)
-	default:
-		return fmt.Errorf("usage: aift modules init-all|scan|list|repo|report")
-	}
-}
-
-func runKernelRegistry(cfg config.Config, args []string) error {
-	if len(args) == 0 || args[0] == "scan" {
-		return kernelregistry.Scan(cfg)
-	}
-
-	switch args[0] {
-	case "list":
-		return kernelregistry.List(cfg)
-	case "object":
-		if len(args) < 2 {
-			return fmt.Errorf("usage: aift kernel-registry object <id-or-name>")
-		}
-		return kernelregistry.ObjectInfo(cfg, args[1])
-	case "report":
-		return kernelregistry.Report(cfg)
-	default:
-		return fmt.Errorf("usage: aift kernel-registry scan|list|object|report")
-	}
-}
-
-func runDiscovery(cfg config.Config, args []string) error {
-	if len(args) == 0 || args[0] == "scan" {
-		return discoveryengine.Scan(cfg)
-	}
-
-	switch args[0] {
-	case "list":
-		return discoveryengine.List(cfg)
-	case "object":
-		if len(args) < 2 {
-			return fmt.Errorf("usage: aift discovery object <id-or-name>")
-		}
-		return discoveryengine.ObjectInfo(cfg, args[1])
-	case "report":
-		return discoveryengine.Report(cfg)
-	default:
-		return fmt.Errorf("usage: aift discovery scan|list|object|report")
-	}
-}
-
-func runEventBus(cfg config.Config, args []string) error {
-	if len(args) == 0 || args[0] == "list" {
-		return eventbus.List(cfg)
-	}
-
-	switch args[0] {
-	case "publish":
-		if len(args) < 3 {
-			return fmt.Errorf("usage: aift event-bus publish <topic> <message> [key=value...]")
-		}
-		payload := map[string]string{}
-		for _, item := range args[3:] {
-			parts := strings.SplitN(item, "=", 2)
-			if len(parts) == 2 {
-				payload[parts[0]] = parts[1]
-			}
-		}
-		return eventbus.Publish(cfg, args[1], "manual", "aiftd", args[2], payload)
-	case "list":
-		return eventbus.List(cfg)
-	case "replay":
-		topic := ""
-		if len(args) > 1 {
-			topic = args[1]
-		}
-		return eventbus.Replay(cfg, topic)
-	case "report":
-		return eventbus.Report(cfg)
-	default:
-		return fmt.Errorf("usage: aift event-bus publish|list|replay|report")
-	}
-}
-
-func runPatchEngine(cfg config.Config, args []string) error {
-	if len(args) == 0 || args[0] == "inspect" {
-		return patchengine.Inspect(cfg)
-	}
-
-	switch args[0] {
-	case "inspect":
-		return patchengine.Inspect(cfg)
-	case "plan":
-		return patchengine.PlanCommand(cfg)
-	case "validate":
-		return patchengine.Validate(cfg)
-	default:
-		return fmt.Errorf("usage: aift patch-engine inspect|plan|validate")
-	}
-}
-
-func runKernelRuntime(cfg config.Config, args []string) error {
-	if len(args) == 0 || args[0] == "boot" {
-		return kernelruntime.Boot(cfg)
-	}
-
-	switch args[0] {
-	case "boot":
-		return kernelruntime.Boot(cfg)
-	case "status":
-		return kernelruntime.Status(cfg)
-	case "report":
-		return kernelruntime.Report(cfg)
-	default:
-		return fmt.Errorf("usage: aift kernel boot|status|report")
-	}
 }
 
 func verify(cfg config.Config) error {
