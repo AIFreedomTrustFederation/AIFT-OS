@@ -120,31 +120,32 @@ func Scan(cfg config.Config) error {
 		if !ok {
 			continue
 		}
-		contracts = append(contracts, c)
 
-		for _, svc := range c.Services {
-			if svc.Status == "" {
-				svc.Status = "planned"
+		for i := range c.Services {
+			if c.Services[i].Status == "" {
+				c.Services[i].Status = "planned"
 			}
-			if svc.Version == "" {
-				svc.Version = "0.1.0"
+			if c.Services[i].Version == "" {
+				c.Services[i].Version = "0.1.0"
 			}
-			if svc.Owner == "" {
-				svc.Owner = c.Repo
+			if c.Services[i].Owner == "" {
+				c.Services[i].Owner = c.Repo
 			}
-			if svc.Evidence == "" {
-				svc.Evidence = ".aift/services.json"
+			if c.Services[i].Evidence == "" {
+				c.Services[i].Evidence = ".aift/services.json"
 			}
 
 			services = append(services, ServiceRecord{
 				Repo:     c.Repo,
-				Name:     svc.Name,
-				Kind:     svc.Kind,
-				Status:   svc.Status,
-				Version:  svc.Version,
-				Evidence: svc.Evidence,
+				Name:     c.Services[i].Name,
+				Kind:     c.Services[i].Kind,
+				Status:   c.Services[i].Status,
+				Version:  c.Services[i].Version,
+				Evidence: c.Services[i].Evidence,
 			})
 		}
+
+		contracts = append(contracts, c)
 	}
 
 	sort.Slice(services, func(i, j int) bool {

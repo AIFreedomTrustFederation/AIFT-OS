@@ -139,6 +139,10 @@ func main() {
 		err = runKernelRuntime(cfg, args)
 	case "runtime":
 		err = runRuntime(cfg, args)
+	case "operator":
+		err = runOperator(cfg, args)
+	case "scheduler":
+		err = runScheduler(cfg, args)
 	case "verify":
 		err = verify(cfg)
 	default:
@@ -193,6 +197,8 @@ func help() {
 	fmt.Println("  kernel boot|status|report")
 	fmt.Println("  runtime scan|status|ready|blocked|report")
 	fmt.Println("  capabilities scan|list|info|report")
+	fmt.Println("  operator check")
+	fmt.Println("  scheduler plan|ready|blocked|report")
 	fmt.Println("  verify")
 }
 

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-28T18:06:55Z",
+  "generated_at": "2026-06-28T21:26:06Z",
   "version": "1.0.0",
   "packages": [
     {
@@ -69,11 +69,13 @@
         "internal/planner",
         "internal/plugins",
         "internal/providers",
+        "internal/readiness",
         "internal/registry",
         "internal/repo",
         "internal/reports",
         "internal/runtime",
         "internal/scheduler",
+        "internal/schedulerplan",
         "internal/servicecontracts",
         "internal/services",
         "internal/state",
@@ -179,8 +181,10 @@
         "internal/manual",
         "internal/modules",
         "internal/planner",
+        "internal/readiness",
         "internal/runtime",
         "internal/scheduler",
+        "internal/schedulerplan",
         "internal/servicecontracts",
         "internal/services",
         "internal/supervisor"
@@ -219,6 +223,7 @@
         "internal/kernelregistry",
         "internal/manual",
         "internal/modules",
+        "internal/readiness",
         "internal/servicecontracts"
       ],
       "has_tests": true,
@@ -310,7 +315,9 @@
         "internal/patchengine",
         "internal/planner",
         "internal/providers",
+        "internal/readiness",
         "internal/registry",
+        "internal/schedulerplan",
         "internal/servicecontracts",
         "internal/workflow"
       ],
@@ -473,6 +480,22 @@
       "category": "extensions"
     },
     {
+      "name": "readiness",
+      "path": "internal/readiness",
+      "depends_on": [
+        "internal/config",
+        "internal/events",
+        "internal/fsutil",
+        "internal/jsonfile",
+        "internal/workspace"
+      ],
+      "depended_by": [
+        "cmd/aift"
+      ],
+      "has_tests": true,
+      "category": "other"
+    },
+    {
       "name": "registry",
       "path": "internal/registry",
       "depends_on": [
@@ -557,6 +580,20 @@
       ],
       "has_tests": false,
       "category": "runtime"
+    },
+    {
+      "name": "schedulerplan",
+      "path": "internal/schedulerplan",
+      "depends_on": [
+        "internal/config",
+        "internal/events",
+        "internal/jsonfile"
+      ],
+      "depended_by": [
+        "cmd/aift"
+      ],
+      "has_tests": true,
+      "category": "other"
     },
     {
       "name": "servicecontracts",
@@ -695,6 +732,7 @@
         "internal/modules",
         "internal/planner",
         "internal/plugins",
+        "internal/readiness",
         "internal/registry",
         "internal/repo",
         "internal/reports",
@@ -809,6 +847,12 @@
       "status": "active"
     },
     {
+      "name": "operator",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
       "name": "patch-engine",
       "has_handler": true,
       "has_help": true,
@@ -840,6 +884,18 @@
     },
     {
       "name": "repo",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "runtime",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "scheduler",
       "has_handler": true,
       "has_help": true,
       "status": "active"
@@ -1291,6 +1347,26 @@
       "to": "internal/jsonfile"
     },
     {
+      "from": "internal/readiness",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/readiness",
+      "to": "internal/events"
+    },
+    {
+      "from": "internal/readiness",
+      "to": "internal/fsutil"
+    },
+    {
+      "from": "internal/readiness",
+      "to": "internal/jsonfile"
+    },
+    {
+      "from": "internal/readiness",
+      "to": "internal/workspace"
+    },
+    {
       "from": "internal/registry",
       "to": "internal/config"
     },
@@ -1373,6 +1449,18 @@
     {
       "from": "internal/scheduler",
       "to": "internal/reports"
+    },
+    {
+      "from": "internal/schedulerplan",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/schedulerplan",
+      "to": "internal/events"
+    },
+    {
+      "from": "internal/schedulerplan",
+      "to": "internal/jsonfile"
     },
     {
       "from": "internal/servicecontracts",

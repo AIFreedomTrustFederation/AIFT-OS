@@ -1,6 +1,6 @@
 # AIFT-OS Architecture
 
-Generated: 2026-06-28T18:06:55Z
+Generated: 2026-06-28T21:26:06Z
 
 ## Package Categories
 
@@ -8,13 +8,13 @@ Generated: 2026-06-28T18:06:55Z
 
 | Package | Dependencies | Dependents | Tests |
 |---|---:|---:|---:|
-| `config` | 0 | 35 | yes |
-| `fsutil` | 0 | 8 | yes |
+| `config` | 0 | 37 | yes |
+| `fsutil` | 0 | 9 | yes |
 | `gitx` | 0 | 6 | no |
-| `jsonfile` | 0 | 15 | yes |
+| `jsonfile` | 0 | 17 | yes |
 | `sliceutil` | 0 | 7 | yes |
 | `version` | 0 | 2 | no |
-| `workspace` | 1 | 17 | no |
+| `workspace` | 1 | 18 | no |
 
 ### Runtime
 
@@ -33,7 +33,7 @@ Generated: 2026-06-28T18:06:55Z
 |---|---:|---:|---:|
 | `eventbus` | 2 | 2 | yes |
 | `eventmesh` | 4 | 1 | yes |
-| `events` | 1 | 18 | yes |
+| `events` | 1 | 20 | yes |
 
 ### Analysis
 
@@ -94,6 +94,13 @@ Generated: 2026-06-28T18:06:55Z
 | `plugins` | 2 | 1 | no |
 | `providers` | 2 | 4 | no |
 
+### Other
+
+| Package | Dependencies | Dependents | Tests |
+|---|---:|---:|---:|
+| `readiness` | 5 | 1 | yes |
+| `schedulerplan` | 3 | 1 | yes |
+
 ## Command Registry
 
 | Command | Status | Handler | Help |
@@ -115,12 +122,15 @@ Generated: 2026-06-28T18:06:55Z
 | `manual` | planned | yes | yes |
 | `mesh` | planned | yes | yes |
 | `modules` | active | yes | yes |
+| `operator` | active | yes | yes |
 | `patch-engine` | active | yes | yes |
 | `plan` | active | yes | yes |
 | `plugins` | active | yes | yes |
 | `providers` | active | yes | yes |
 | `registry` | active | yes | yes |
 | `repo` | active | yes | yes |
+| `runtime` | active | yes | yes |
+| `scheduler` | active | yes | yes |
 | `serve` | active | yes | yes |
 | `service-contracts` | planned | yes | yes |
 | `services` | active | yes | yes |
@@ -232,6 +242,11 @@ graph TD
     plugins --> workspace
     providers --> config
     providers --> jsonfile
+    readiness --> config
+    readiness --> events
+    readiness --> fsutil
+    readiness --> jsonfile
+    readiness --> workspace
     registry --> config
     registry --> gitx
     registry --> jsonfile
@@ -253,6 +268,9 @@ graph TD
     scheduler --> events
     scheduler --> registry
     scheduler --> reports
+    schedulerplan --> config
+    schedulerplan --> events
+    schedulerplan --> jsonfile
     servicecontracts --> config
     servicecontracts --> events
     servicecontracts --> fsutil
