@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/api"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/capabilities"
@@ -10,6 +11,7 @@ import (
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/daemon"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/discoveryengine"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/doctor"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/eventbus"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/eventmesh"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/federation"
@@ -132,6 +134,8 @@ func main() {
 		err = runKernelRegistry(cfg, args)
 	case "discovery":
 		err = runDiscovery(cfg, args)
+	case "event-bus":
+		err = runEventBus(cfg, args)
 	case "verify":
 		err = verify(cfg)
 	default:
@@ -182,6 +186,7 @@ func help() {
 	fmt.Println("  modules init-all|scan|list|repo|report")
 	fmt.Println("  kernel-registry scan|list|object|report")
 	fmt.Println("  discovery scan|list|object|report")
+	fmt.Println("  event-bus publish|list|replay|report")
 	fmt.Println("  verify")
 }
 
@@ -426,6 +431,39 @@ func runDiscovery(cfg config.Config, args []string) error {
 		return discoveryengine.Report(cfg)
 	default:
 		return fmt.Errorf("usage: aift discovery scan|list|object|report")
+	}
+}
+
+func runEventBus(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "list" {
+		return eventbus.List(cfg)
+	}
+
+	switch args[0] {
+	case "publish":
+		if len(args) < 3 {
+			return fmt.Errorf("usage: aift event-bus publish <topic> <message> [key=value...]")
+		}
+		payload := map[string]string{}
+		for _, item := range args[3:] {
+			parts := strings.SplitN(item, "=", 2)
+			if len(parts) == 2 {
+				payload[parts[0]] = parts[1]
+			}
+		}
+		return eventbus.Publish(cfg, args[1], "manual", "aiftd", args[2], payload)
+	case "list":
+		return eventbus.List(cfg)
+	case "replay":
+		topic := ""
+		if len(args) > 1 {
+			topic = args[1]
+		}
+		return eventbus.Replay(cfg, topic)
+	case "report":
+		return eventbus.Report(cfg)
+	default:
+		return fmt.Errorf("usage: aift event-bus publish|list|replay|report")
 	}
 }
 
