@@ -49,6 +49,9 @@ jobs:
       - name: Coverage threshold check
         run: bash scripts/check-coverage.sh
 
+      - name: Architecture invariant check
+        run: go run ./tools/architecture --ci
+
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
         if: always()
@@ -57,3 +60,12 @@ jobs:
           path: |
             coverage.out
             reports/coverage.txt
+
+      - name: Upload architecture artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: architecture-report
+          path: |
+            registry/architecture.json
+            reports/architecture-report.md
