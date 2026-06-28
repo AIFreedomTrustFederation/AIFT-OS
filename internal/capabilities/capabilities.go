@@ -398,5 +398,3 @@ func description(name string) string {
 		return "Capability"
 	}
 }
-
-

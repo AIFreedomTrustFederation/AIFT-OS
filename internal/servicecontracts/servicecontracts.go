@@ -313,5 +313,3 @@ func inferKind(name string, repoPath string) string {
 		return "repository"
 	}
 }
-
-
