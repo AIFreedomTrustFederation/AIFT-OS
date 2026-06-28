@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIFT Service Contracts Registry",
+  "type": "object",
+  "required": ["generatedAt", "contracts", "services"],
+  "properties": {
+    "generatedAt": { "type": "string" },
+    "contracts": { "type": "array" },
+    "services": { "type": "array" }
+  }
+}

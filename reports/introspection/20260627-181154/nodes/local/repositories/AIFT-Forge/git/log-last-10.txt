@@ -1,0 +1,10 @@
+3dd84e4 Sync AIFT phase updates
+ea3aad8 Add AIFT service contract
+51416f3 Add AIFT event mesh contract
+818e6fa Add AIFT manual contract
+82717cb Add Phase 13 autonomous build farm foundation
+eef93b0 Integrate Phase 12 improve command surface
+bfd093b Add Phase 12B safe self-improvement workflow
+5a3ae55 Add Phase 12A self-analysis engine
+646a3eb Repair Phase 12 improvement store
+642bdc3 Add Phase 12B safe self-improvement workflow

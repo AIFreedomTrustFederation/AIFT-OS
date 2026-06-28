@@ -1,0 +1,15 @@
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	AI-Code-Training/scripts/phase-scripts/phase-16-introspection-kernel.sh
+	ci-truth-repair-report.sh
+	fix-introspection-and-push-federation.sh
+	phase-16-diagnostics.sh
+	phase-16-introspection-kernel.sh
+	reports/diagnostics-20260627-174933.tar.gz
+	reports/diagnostics/
+	reports/introspection/
+
+nothing added to commit but untracked files present (use "git add" to track)

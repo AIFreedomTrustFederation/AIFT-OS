@@ -1,0 +1,10 @@
+84c6ec7 Sync AIFT phase updates
+a10d65b Add AIFT service contract
+32f7cff Add AIFT event mesh contract
+5201176 Add AIFT manual contract
+b87e96b Add GitHub Pages setup notes
+ee43686 Add VPS project page
+8f17ec3 Add VPS repo health validation
+13b4fe1 Standardize infrastructure README
+3cb8572 Add AIFT desktop Electron main process
+a14edff Add Windows desktop wrapper package

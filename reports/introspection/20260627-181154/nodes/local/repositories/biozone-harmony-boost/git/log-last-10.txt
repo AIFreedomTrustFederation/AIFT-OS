@@ -1,0 +1,10 @@
+9f48065 Sync AIFT phase updates
+4b5aec5 Add AIFT service contract
+e1c0206 Add AIFT event mesh contract
+ebd9cfd Add AIFT manual contract
+2fee316 Add GitHub Pages setup notes
+f48f463 Fix Biozoe mobile repository card
+fecfa62 Serve Biozoe Pages routes directly
+1b4842f Ground Biozoe concept routes
+adcb8dd Link Aetherion flight paper
+906e9b8 Position Circleunchain as biozoe coin platform

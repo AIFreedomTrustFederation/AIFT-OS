@@ -1,0 +1,2 @@
+origin	https://github.com/AIFreedomTrustFederation/biozone-harmony-boost.git (fetch)
+origin	https://github.com/AIFreedomTrustFederation/biozone-harmony-boost.git (push)

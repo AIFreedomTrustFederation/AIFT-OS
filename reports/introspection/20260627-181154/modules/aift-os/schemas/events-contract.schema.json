@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIFT Repo Event Contract",
+  "type": "object",
+  "required": ["repo", "publishes", "subscribes"],
+  "properties": {
+    "repo": { "type": "string" },
+    "publishes": { "type": "array" },
+    "subscribes": { "type": "array" },
+    "generatedAt": { "type": "string" }
+  }
+}

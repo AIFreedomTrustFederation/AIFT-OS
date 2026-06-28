@@ -1,0 +1,10 @@
+DATE=Sat Jun 27 17:49:33 PDT 2026
+ROOT=/data/data/com.termux/files/home/AIFT
+OS=/data/data/com.termux/files/home/AIFT/AIFT-OS
+SHELL=/data/data/com.termux/files/usr/bin/bash
+PATH=/data/data/com.termux/files/home/.local/bin:/data/data/com.termux/files/home/.local/bin:/data/data/com.termux/files/home/.local/bin:/data/data/com.termux/files/home/.local/bin:/data/data/com.termux/files/usr/bin:/product/bin:/apex/com.android.runtime/bin:/apex/com.android.art/bin:/system_ext/bin:/system/bin:/system/xbin:/odm/bin:/vendor/bin:/vendor/xbin
+NODE=/data/data/com.termux/files/usr/bin/node v26.3.1
+NPM=/data/data/com.termux/files/usr/bin/npm 11.17.0
+GO=/data/data/com.termux/files/usr/bin/go go version go1.26.4 android/arm64
+GIT=git version 2.54.0
+UNAME=Linux localhost 4.19.113-27223811 #1 SMP PREEMPT Fri Sep 26 20:41:10 KST 2025 aarch64 Android

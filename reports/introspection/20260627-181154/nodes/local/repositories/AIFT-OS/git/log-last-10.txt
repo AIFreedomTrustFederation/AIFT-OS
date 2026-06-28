@@ -1,0 +1,10 @@
+924cba7 Sync AIFT phase updates
+c688ce2 Add federation execution planner
+05b7531 Add federation service contracts
+01dc730 Add federation event mesh
+413aa41 Add federation knowledge graph engine
+652e115 Add federation manual contract system
+54a3290 Add real federation intelligence layer
+77617bf Add truthful federation capability audit system
+3c00d54 Add AIFT-OS federation integration layer
+8a16646 Stabilize AIFT-OS services runtime baseline with AI training archive

@@ -1,0 +1,252 @@
+name: Aetherion Wallet Deployment
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment Environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - staging
+          - production
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install --omit=optional
+
+      - name: Verify Federation contracts
+        run: node scripts/verify-federation-contracts.mjs
+
+      - name: Verify Biozoecurrency terminology
+        run: node scripts/verify-biozoecurrency-terminology.mjs
+
+      - name: Run lightweight QA
+        run: npm run qa:local
+
+  build:
+    name: Build
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install --omit=optional
+
+      - name: TypeScript check
+        run: NODE_OPTIONS=--max_old_space_size=4096 npm run check
+
+      - name: Build application
+        run: NODE_OPTIONS=--max_old_space_size=4096 npm run build
+
+      - name: Prepare deployment package
+        run: |
+          tar -czf aetherion-deploy.tar.gz dist server-redirect.js package.json
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: aetherion-artifacts
+          path: aetherion-deploy.tar.gz
+
+  deploy:
+    name: Deploy
+    needs: build
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+    steps:
+      - name: Check deployment secrets
+        id: deployment-check
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_SSH_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_SSH_USER }}
+        run: |
+          missing=()
+          [ -z "$SSH_PRIVATE_KEY" ] && missing+=("SSH_PRIVATE_KEY")
+          [ -z "$DEPLOY_HOST" ] && missing+=("DEPLOY_SSH_HOST")
+          [ -z "$DEPLOY_USER" ] && missing+=("DEPLOY_SSH_USER")
+
+          if [ "${#missing[@]}" -gt 0 ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Deployment secrets are missing: ${missing[*]}. Build artifacts were created, but server deployment is skipped."
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout repository
+        if: steps.deployment-check.outputs.configured == 'true'
+        uses: actions/checkout@v6
+
+      - name: Download build artifacts
+        if: steps.deployment-check.outputs.configured == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: aetherion-artifacts
+
+      - name: Setup SSH key
+        if: steps.deployment-check.outputs.configured == 'true'
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add SSH host key
+        if: steps.deployment-check.outputs.configured == 'true'
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p ${{ secrets.DEPLOY_SSH_PORT || 22 }} ${{ secrets.DEPLOY_SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Create backup timestamp
+        if: steps.deployment-check.outputs.configured == 'true'
+        id: backup-timestamp
+        run: echo "timestamp=$(date +%Y%m%d%H%M%S)" >> $GITHUB_OUTPUT
+
+      - name: Backup existing deployment
+        if: steps.deployment-check.outputs.configured == 'true'
+        run: |
+          ssh -p ${{ secrets.DEPLOY_SSH_PORT || 22 }} ${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }} "
+            if [ -d ~/aetherion ]; then
+              echo 'Backing up existing deployment...'
+              mkdir -p ~/aetherion_backups
+              BACKUP_DIR=~/aetherion_backups/aetherion_backup_${{ steps.backup-timestamp.outputs.timestamp }}
+              cp -r ~/aetherion \$BACKUP_DIR
+              echo 'Backup completed: \$BACKUP_DIR'
+            else
+              echo 'No existing deployment found. Creating directory...'
+              mkdir -p ~/aetherion
+            fi
+          "
+
+      - name: Upload package to server
+        if: steps.deployment-check.outputs.configured == 'true'
+        run: |
+          scp -P ${{ secrets.DEPLOY_SSH_PORT || 22 }} aetherion-deploy.tar.gz ${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:~/
+
+      - name: Deploy on server
+        if: steps.deployment-check.outputs.configured == 'true'
+        id: deploy
+        run: |
+          ssh -p ${{ secrets.DEPLOY_SSH_PORT || 22 }} ${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }} "
+            echo 'Starting deployment on server...'
+            mkdir -p ~/aetherion
+            tar -xzf ~/aetherion-deploy.tar.gz -C ~/aetherion
+            cd ~/aetherion && npm install --omit=dev --omit=optional
+
+            if [ ! -f /etc/systemd/system/aetherion.service ]; then
+              echo 'Creating systemd service...'
+              echo '[Unit]
+          Description=Aetherion Wallet Server
+          After=network.target
+
+          [Service]
+          Type=simple
+          User=${{ secrets.DEPLOY_SSH_USER }}
+          WorkingDirectory=/home/${{ secrets.DEPLOY_SSH_USER }}/aetherion
+          ExecStart=/usr/bin/node /home/${{ secrets.DEPLOY_SSH_USER }}/aetherion/server-redirect.js
+          Restart=on-failure
+          Environment=PORT=3000
+          Environment=NODE_ENV=production
+
+          [Install]
+          WantedBy=multi-user.target' | sudo tee /etc/systemd/system/aetherion.service
+
+              sudo systemctl daemon-reload
+              sudo systemctl enable aetherion.service
+            fi
+
+            sudo systemctl restart aetherion.service
+            echo 'Service status:'
+            sudo systemctl status aetherion.service --no-pager
+            sleep 5
+
+            if sudo systemctl is-active --quiet aetherion.service; then
+              echo 'Deployment successful: Service is running.'
+              rm ~/aetherion-deploy.tar.gz
+              exit 0
+            else
+              echo 'Deployment failed: Service is not running.'
+              exit 1
+            fi
+          "
+
+      - name: Rollback on failure
+        if: failure() && steps.deployment-check.outputs.configured == 'true' && steps.deploy.outcome == 'failure'
+        run: |
+          ssh -p ${{ secrets.DEPLOY_SSH_PORT || 22 }} ${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }} "
+            echo 'Deployment failed. Rolling back to previous version...'
+            BACKUP_DIR=~/aetherion_backups/aetherion_backup_${{ steps.backup-timestamp.outputs.timestamp }}
+            if [ -d \$BACKUP_DIR ]; then
+              rm -rf ~/aetherion
+              cp -r \$BACKUP_DIR ~/aetherion
+              sudo systemctl restart aetherion.service
+              echo 'Rollback completed successfully!'
+            else
+              echo 'No backup found for rollback!'
+            fi
+          "
+
+      - name: Verify deployment
+        if: success() && steps.deployment-check.outputs.configured == 'true' && steps.deploy.outcome == 'success'
+        run: |
+          echo "Waiting for application to start up completely..."
+          sleep 10
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://${{ secrets.DEPLOY_SSH_HOST }}:3000)
+
+          if [ "$HTTP_STATUS" -eq 200 ] || [ "$HTTP_STATUS" -eq 302 ]; then
+            echo "Verification successful! Application is responding with HTTP status: $HTTP_STATUS"
+          else
+            echo "Warning: Application returned unexpected HTTP status: $HTTP_STATUS"
+          fi
+
+      - name: Notify Slack on success
+        if: success() && steps.deployment-check.outputs.configured == 'true' && steps.deploy.outcome == 'success'
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_CHANNEL: deployments
+          SLACK_COLOR: good
+          SLACK_MESSAGE: ":rocket: Aetherion Wallet successfully deployed to ${{ github.event.inputs.environment || 'production' }}!"
+          SLACK_TITLE: Deployment Success
+          SLACK_FOOTER: 'GitHub Actions'
+
+      - name: Notify Slack on failure
+        if: failure() && steps.deployment-check.outputs.configured == 'true'
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_CHANNEL: deployments
+          SLACK_COLOR: danger
+          SLACK_MESSAGE: ":x: Aetherion Wallet deployment to ${{ github.event.inputs.environment || 'production' }} failed! Check GitHub Actions logs for details."
+          SLACK_TITLE: Deployment Failure
+          SLACK_FOOTER: 'GitHub Actions'

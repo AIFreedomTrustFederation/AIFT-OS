@@ -1,0 +1,5 @@
+5a7588e Sync AIFT phase updates
+7b9fe65 Add AIFT service contract
+637d01a Add AIFT event mesh contract
+b0bcaeb Add AIFT manual contract
+166932d Initial commit

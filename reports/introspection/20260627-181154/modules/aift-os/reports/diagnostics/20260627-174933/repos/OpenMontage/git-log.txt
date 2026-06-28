@@ -1,0 +1,10 @@
+ab08bec Sync AIFT phase updates
+856675f Add AIFT service contract
+b438df5 Add AIFT event mesh contract
+aa507ee Add AIFT manual contract
+a5b5b12 docs(readme): add sponsor link
+ddfd567 chore: enable GitHub Sponsors button
+beb7fdc Merge pull request #140 from Diwakar-odds/feat-checkpoint-resume
+d9793ed docs: clarify partial checkpoint validation
+32836fc Merge pull request #132 from shubham21155102/feat/google-service-account-auth
+8ce5c04 Merge pull request #138 from evanclan/fix/e2e-edit-decisions-render-runtime

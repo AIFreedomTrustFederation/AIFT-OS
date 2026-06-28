@@ -1,0 +1,2 @@
+origin	https://github.com/AIFreedomTrustFederation/VPS.git (fetch)
+origin	https://github.com/AIFreedomTrustFederation/VPS.git (push)

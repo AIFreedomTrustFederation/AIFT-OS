@@ -1,0 +1,9 @@
+22d3e9b Sync AIFT phase updates
+14c7a34 Add AIFT service contract
+dcc26d1 Add AIFT event mesh contract
+07e3ad6 Add AIFT manual contract
+315a55c Add TheMindofAll project page
+5b90868 Import local MiniLM embedding model
+be9a075 Add local model import workflow
+1a4cff7 Set up local model hub structure
+cf02227 Initial commit

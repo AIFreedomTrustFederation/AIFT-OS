@@ -1,0 +1,2 @@
+origin	https://github.com/AIFreedomTrustFederation/tastycutz.git (fetch)
+origin	https://github.com/AIFreedomTrustFederation/tastycutz.git (push)

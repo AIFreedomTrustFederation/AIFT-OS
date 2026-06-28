@@ -1,0 +1,15 @@
+npm:test=npm run test
+npm:lint=npm run lint
+npm:lint:structure=npm run lint:structure
+npm:qa:local=npm run qa:local
+npm:verify:structure=npm run verify:structure
+npm:verify:installer-registry=npm run verify:installer-registry
+npm:dashboard:dev=npm run dashboard:dev
+npm:dashboard:build=npm run dashboard:build
+npm:dashboard:start=npm run dashboard:start
+npm:desktop:dev=npm run desktop:dev
+npm:desktop:build:win=npm run desktop:build:win
+npm:node-agent:build=npm run node-agent:build
+npm:android:sync=npm run android:sync
+npm:android:build=npm run android:build
+aift:status.sh=sh .aift/commands/status.sh

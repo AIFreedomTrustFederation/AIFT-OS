@@ -1,0 +1,2 @@
+origin	https://github.com/AIFreedomTrustFederation/repo-brainstorm-backend-forge.git (fetch)
+origin	https://github.com/AIFreedomTrustFederation/repo-brainstorm-backend-forge.git (push)

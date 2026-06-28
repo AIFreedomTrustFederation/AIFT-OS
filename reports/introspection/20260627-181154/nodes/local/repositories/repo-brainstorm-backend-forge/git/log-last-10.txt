@@ -1,0 +1,10 @@
+b8898a0 Sync AIFT phase updates
+d7d7131 Add AIFT service contract
+ce4eb1b Add AIFT event mesh contract
+fc3e1a9 Add AIFT manual contract
+387ce69 Remove fallback data
+1f50ee1 Integrate live data fetching
+a51ac07 Refactor: Update code based on prompt
+9c312ce Fix: Repository details and links
+2c1e767 Add Aether Coin repository details
+e39751d Refactor: Update project dependencies

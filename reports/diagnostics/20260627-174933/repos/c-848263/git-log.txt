@@ -1,0 +1,10 @@
+eb8c50c Sync AIFT phase updates
+6904192 Add AIFT service contract
+c1e31d2 Add AIFT event mesh contract
+70915c8 Add AIFT manual contract
+ff7cf0f docs: add cortex repo-agent instructions
+eb16c1b Update domain and MindMap.
+00c295b Deploy to cortex subdomain
+fbff5dc Fix: Add favicon
+9dbb7ae Add favicon support
+18cbae0 Add favicon and theme color

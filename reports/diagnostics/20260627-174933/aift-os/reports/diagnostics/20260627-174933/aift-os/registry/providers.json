@@ -1,0 +1,44 @@
+[
+  {
+    "name": "local-git",
+    "type": "git",
+    "status": "enabled",
+    "description": "Local Git repository provider"
+  },
+  {
+    "name": "github",
+    "type": "git-host",
+    "status": "configured-by-repo-remotes",
+    "description": "GitHub remotes discovered from sovereign repositories"
+  },
+  {
+    "name": "aift-forge",
+    "type": "forge",
+    "status": "planned",
+    "description": "Future local-first federation forge provider"
+  },
+  {
+    "name": "ollama",
+    "type": "ai",
+    "status": "planned",
+    "description": "Local Ollama AI runtime provider"
+  },
+  {
+    "name": "llamacpp",
+    "type": "ai",
+    "status": "planned",
+    "description": "Local llama.cpp provider"
+  },
+  {
+    "name": "vllm",
+    "type": "ai",
+    "status": "planned",
+    "description": "Local/network vLLM provider"
+  },
+  {
+    "name": "openai-compatible",
+    "type": "ai",
+    "status": "disabled-by-default",
+    "description": "OpenAI-compatible endpoint provider"
+  }
+]

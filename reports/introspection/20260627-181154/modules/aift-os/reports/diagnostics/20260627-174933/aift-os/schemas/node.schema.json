@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIFT Graph Node",
+  "type": "object",
+  "required": ["id", "type", "name", "status", "evidence"],
+  "properties": {
+    "id": { "type": "string" },
+    "type": { "type": "string" },
+    "name": { "type": "string" },
+    "repo": { "type": "string" },
+    "status": { "type": "string" },
+    "evidence": { "type": "string" }
+  }
+}

@@ -1,0 +1,24 @@
+name: Recovery Coupon Processor
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  process-recovery-coupons:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger recovery processor
+        env:
+          RECOVERY_PROCESS_URL: ${{ secrets.RECOVERY_PROCESS_URL }}
+          RECOVERY_PROCESS_SECRET: ${{ secrets.RECOVERY_PROCESS_SECRET }}
+        run: |
+          if [ -z "$RECOVERY_PROCESS_URL" ] || [ -z "$RECOVERY_PROCESS_SECRET" ]; then
+            echo "Recovery processor is not configured; skipping scheduled trigger."
+            exit 0
+          fi
+          curl --fail --show-error --silent \
+            -X POST \
+            -H "Authorization: Bearer $RECOVERY_PROCESS_SECRET" \
+            "$RECOVERY_PROCESS_URL"

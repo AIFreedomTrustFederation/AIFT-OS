@@ -1,0 +1,48 @@
+name: FHQCM PDF Proof
+
+on:
+  push:
+    paths:
+      - 'books/fhqcm/**'
+      - 'scripts/fhqcm-polish-and-validate.mjs'
+      - 'scripts/generate-fhqcm-images.mjs'
+      - 'package.json'
+      - '.github/workflows/fhqcm-pdf-proof.yml'
+  workflow_dispatch:
+
+jobs:
+  build-fhqcm-pdf:
+    name: Build FHQCM PDF Proof
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run FHQCM polish validator
+        run: npm run fhqcm:polish
+
+      - name: Build PDF with XeLaTeX
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: books/fhqcm/manuscript
+          root_file: main.tex
+          latexmk_use_xelatex: true
+          args: -pdf -xelatex -interaction=nonstopmode -halt-on-error -file-line-error
+
+      - name: Collect PDF proof
+        run: |
+          mkdir -p dist/fhqcm
+          cp books/fhqcm/manuscript/main.pdf dist/fhqcm/fhqcm-first-proof.pdf
+          cp books/fhqcm/reports/polish-validation-report.md dist/fhqcm/polish-validation-report.md
+
+      - name: Upload PDF proof artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: fhqcm-first-proof
+          path: dist/fhqcm

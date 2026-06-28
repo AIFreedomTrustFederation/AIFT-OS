@@ -1,0 +1,10 @@
+7d8f12f Sync AIFT phase updates
+94d75ba Add AIFT service contract
+4f4163e Add AIFT event mesh contract
+b9d2df0 Add AIFT manual contract
+8401c0d Fix deployment workflow dependency install gates
+6cf7d28 Repair package-lock baseline for CI install
+8c5f71b chore: ignore local dependency reports
+ab4dc46 chore: normalize Biozoe terminology
+6387815 Protect terminology scripts from self-rewrite
+5159606 Add Biozoecurrency terminology fixer

@@ -1,0 +1,21 @@
+{
+  "repo": "biozone-harmony-boost",
+  "services": [
+    {
+      "name": "biozone-harmony-boost.service",
+      "kind": "web-app",
+      "status": "planned",
+      "version": "0.1.0",
+      "provides": [],
+      "requires": [],
+      "events": [
+        "repo.changed",
+        "capability.changed",
+        "manual.changed"
+      ],
+      "evidence": "default service contract",
+      "description": "Default planned federation service contract for biozone-harmony-boost"
+    }
+  ],
+  "generatedAt": "2026-06-28T00:28:09Z"
+}

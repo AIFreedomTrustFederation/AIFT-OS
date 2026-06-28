@@ -1,0 +1,45 @@
+[
+  {
+    "name": "verify-federation",
+    "description": "Generate manifests, registry, providers, reports, and dependency graph.",
+    "steps": [
+      {
+        "name": "manifest",
+        "command": "manifest"
+      },
+      {
+        "name": "registry",
+        "command": "registry"
+      },
+      {
+        "name": "providers",
+        "command": "providers"
+      },
+      {
+        "name": "dashboard",
+        "command": "dashboard"
+      },
+      {
+        "name": "deps",
+        "command": "deps"
+      },
+      {
+        "name": "verify",
+        "command": "verify"
+      }
+    ]
+  },
+  {
+    "name": "safe-sync",
+    "description": "Run safe federation sync without auto-committing dirty repositories.",
+    "steps": [
+      {
+        "name": "sync-safe",
+        "command": "sync",
+        "args": [
+          "--safe"
+        ]
+      }
+    ]
+  }
+]

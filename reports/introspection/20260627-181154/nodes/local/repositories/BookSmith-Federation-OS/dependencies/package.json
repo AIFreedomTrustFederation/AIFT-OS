@@ -1,0 +1,21 @@
+{
+  "name": "booksmith-federation-os",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local-first, AI-native, federated web operating system for knowledge creation and publishing.",
+  "packageManager": "pnpm@10.0.0",
+  "scripts": {
+    "dev": "pnpm --filter @booksmith-federation-os/web-os dev",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm -r lint"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=20.11.0",
+    "pnpm": ">=9.0.0"
+  }
+}

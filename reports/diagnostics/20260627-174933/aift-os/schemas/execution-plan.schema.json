@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIFT Federation Execution Plan",
+  "type": "object",
+  "required": ["generatedAt", "summary", "repos"],
+  "properties": {
+    "generatedAt": { "type": "string" },
+    "summary": { "type": "object" },
+    "repos": { "type": "array" }
+  }
+}

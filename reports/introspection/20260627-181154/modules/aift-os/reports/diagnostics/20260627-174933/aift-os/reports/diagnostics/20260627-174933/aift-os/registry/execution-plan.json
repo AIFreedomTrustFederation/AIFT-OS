@@ -1,0 +1,2178 @@
+{
+  "generatedAt": "2026-06-28T00:33:18Z",
+  "summary": {
+    "repos": 21,
+    "ready": 0,
+    "planned": 0,
+    "blocked": 21,
+    "broken": 0,
+    "detected": 0
+  },
+  "repos": [
+    {
+      "repo": ".github",
+      "path": "/data/data/com.termux/files/home/AIFT/.github",
+      "state": "BLOCKED",
+      "reason": "service contract has unmet planned or missing requirements",
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "docs"
+      ],
+      "planned": [
+        "build",
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "test",
+        "verify"
+      ],
+      "broken": null,
+      "blocked": [
+        ".github.service: service planned"
+      ],
+      "services": [
+        {
+          "name": ".github.service",
+          "kind": "repository",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract"
+        }
+      ],
+      "capabilities": [
+        {
+          "name": "status",
+          "status": "ready",
+          "command": ".aift/commands/status.sh",
+          "evidence": "command exists and passes local verification"
+        },
+        {
+          "name": "verify",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "test",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "build",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "start",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "stop",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "health",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "deploy",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "sync",
+          "status": "ready",
+          "command": "git remote/status",
+          "evidence": "git repository detected; safe sync can inspect this repo"
+        },
+        {
+          "name": "docs",
+          "status": "detected",
+          "evidence": "README/docs detected"
+        }
+      ],
+      "recommended": [
+        "Add and prove `.aift/commands/verify.sh`.",
+        "Keep start orchestration disabled until a real start command and health check exist."
+      ],
+      "lastEvaluated": "2026-06-28T00:33:18Z"
+    },
+    {
+      "repo": "AI-Freedom-Trust",
+      "path": "/data/data/com.termux/files/home/AIFT/AI-Freedom-Trust",
+      "state": "BLOCKED",
+      "reason": "service contract has unmet planned or missing requirements",
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "docs"
+      ],
+      "planned": [
+        "build",
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "test",
+        "verify"
+      ],
+      "broken": null,
+      "blocked": [
+        "AI-Freedom-Trust.service: service planned"
+      ],
+      "services": [
+        {
+          "name": "AI-Freedom-Trust.service",
+          "kind": "repository",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract"
+        }
+      ],
+      "capabilities": [
+        {
+          "name": "status",
+          "status": "ready",
+          "command": ".aift/commands/status.sh",
+          "evidence": "command exists and passes local verification"
+        },
+        {
+          "name": "verify",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "test",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "build",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "start",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "stop",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "health",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "deploy",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "sync",
+          "status": "ready",
+          "command": "git remote/status",
+          "evidence": "git repository detected; safe sync can inspect this repo"
+        },
+        {
+          "name": "docs",
+          "status": "detected",
+          "evidence": "README/docs detected"
+        }
+      ],
+      "recommended": [
+        "Add and prove `.aift/commands/verify.sh`.",
+        "Keep start orchestration disabled until a real start command and health check exist."
+      ],
+      "lastEvaluated": "2026-06-28T00:33:18Z"
+    },
+    {
+      "repo": "AIFT-Forge",
+      "path": "/data/data/com.termux/files/home/AIFT/AIFT-Forge",
+      "state": "BLOCKED",
+      "reason": "service contract has unmet planned or missing requirements",
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "build",
+        "docs",
+        "test"
+      ],
+      "planned": [
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "verify"
+      ],
+      "broken": null,
+      "blocked": [
+        "AIFT-Forge.service: service planned"
+      ],
+      "services": [
+        {
+          "name": "AIFT-Forge.service",
+          "kind": "forge",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract"
+        }
+      ],
+      "capabilities": [
+        {
+          "name": "status",
+          "status": "ready",
+          "command": ".aift/commands/status.sh",
+          "evidence": "command exists and passes local verification"
+        },
+        {
+          "name": "verify",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "test",
+          "status": "detected",
+          "evidence": "package.json detected; test capability may exist but no .aift command is proven"
+        },
+        {
+          "name": "build",
+          "status": "detected",
+          "evidence": "build-related project file detected but no .aift build command is proven"
+        },
+        {
+          "name": "start",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "stop",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "health",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "deploy",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "sync",
+          "status": "ready",
+          "command": "git remote/status",
+          "evidence": "git repository detected; safe sync can inspect this repo"
+        },
+        {
+          "name": "docs",
+          "status": "detected",
+          "evidence": "README/docs detected"
+        }
+      ],
+      "recommended": [
+        "Add and prove `.aift/commands/verify.sh`.",
+        "Convert detected build support into `.aift/commands/build.sh`.",
+        "Convert detected test support into `.aift/commands/test.sh`.",
+        "Keep start orchestration disabled until a real start command and health check exist."
+      ],
+      "lastEvaluated": "2026-06-28T00:33:18Z"
+    },
+    {
+      "repo": "AIFT-Genesis",
+      "path": "/data/data/com.termux/files/home/AIFT/AIFT-Genesis",
+      "state": "BLOCKED",
+      "reason": "service contract has unmet planned or missing requirements",
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "docs"
+      ],
+      "planned": [
+        "build",
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "test",
+        "verify"
+      ],
+      "broken": null,
+      "blocked": [
+        "AIFT-Genesis.service: service planned"
+      ],
+      "services": [
+        {
+          "name": "AIFT-Genesis.service",
+          "kind": "repository",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract"
+        }
+      ],
+      "capabilities": [
+        {
+          "name": "status",
+          "status": "ready",
+          "command": ".aift/commands/status.sh",
+          "evidence": "command exists and passes local verification"
+        },
+        {
+          "name": "verify",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "test",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "build",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "start",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "stop",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "health",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "deploy",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "sync",
+          "status": "ready",
+          "command": "git remote/status",
+          "evidence": "git repository detected; safe sync can inspect this repo"
+        },
+        {
+          "name": "docs",
+          "status": "detected",
+          "evidence": "README/docs detected"
+        }
+      ],
+      "recommended": [
+        "Add and prove `.aift/commands/verify.sh`.",
+        "Keep start orchestration disabled until a real start command and health check exist."
+      ],
+      "lastEvaluated": "2026-06-28T00:33:18Z"
+    },
+    {
+      "repo": "AIFT-OS",
+      "path": "/data/data/com.termux/files/home/AIFT/AIFT-OS",
+      "state": "BLOCKED",
+      "reason": "service contract has unmet planned or missing requirements",
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "build",
+        "docs",
+        "test"
+      ],
+      "planned": [
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "verify"
+      ],
+      "broken": null,
+      "blocked": [
+        "AIFT-OS.service: service planned"
+      ],
+      "services": [
+        {
+          "name": "AIFT-OS.service",
+          "kind": "control-plane",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract"
+        }
+      ],
+      "capabilities": [
+        {
+          "name": "status",
+          "status": "ready",
+          "command": ".aift/commands/status.sh",
+          "evidence": "command exists and passes local verification"
+        },
+        {
+          "name": "verify",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "test",
+          "status": "detected",
+          "evidence": "go.mod detected; Go tests may exist but no .aift command is proven"
+        },
+        {
+          "name": "build",
+          "status": "detected",
+          "evidence": "build-related project file detected but no .aift build command is proven"
+        },
+        {
+          "name": "start",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "stop",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "health",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "deploy",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "sync",
+          "status": "ready",
+          "command": "git remote/status",
+          "evidence": "git repository detected; safe sync can inspect this repo"
+        },
+        {
+          "name": "docs",
+          "status": "detected",
+          "evidence": "README/docs detected"
+        }
+      ],
+      "recommended": [
+        "Add and prove `.aift/commands/verify.sh`.",
+        "Convert detected build support into `.aift/commands/build.sh`.",
+        "Convert detected test support into `.aift/commands/test.sh`.",
+        "Keep start orchestration disabled until a real start command and health check exist."
+      ],
+      "lastEvaluated": "2026-06-28T00:33:18Z"
+    },
+    {
+      "repo": "Aether_Coin_biozonecurrency",
+      "path": "/data/data/com.termux/files/home/AIFT/Aether_Coin_biozonecurrency",
+      "state": "BLOCKED",
+      "reason": "service contract has unmet planned or missing requirements",
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "build",
+        "docs",
+        "test"
+      ],
+      "planned": [
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "verify"
+      ],
+      "broken": null,
+      "blocked": [
+        "Aether_Coin_biozonecurrency.service: service planned"
+      ],
+      "services": [
+        {
+          "name": "Aether_Coin_biozonecurrency.service",
+          "kind": "web-app",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract"
+        }
+      ],
+      "capabilities": [
+        {
+          "name": "status",
+          "status": "ready",
+          "command": ".aift/commands/status.sh",
+          "evidence": "command exists and passes local verification"
+        },
+        {
+          "name": "verify",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "test",
+          "status": "detected",
+          "evidence": "package.json detected; test capability may exist but no .aift command is proven"
+        },
+        {
+          "name": "build",
+          "status": "detected",
+          "evidence": "build-related project file detected but no .aift build command is proven"
+        },
+        {
+          "name": "start",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "stop",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "health",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "deploy",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "sync",
+          "status": "ready",
+          "command": "git remote/status",
+          "evidence": "git repository detected; safe sync can inspect this repo"
+        },
+        {
+          "name": "docs",
+          "status": "detected",
+          "evidence": "README/docs detected"
+        }
+      ],
+      "recommended": [
+        "Add and prove `.aift/commands/verify.sh`.",
+        "Convert detected build support into `.aift/commands/build.sh`.",
+        "Convert detected test support into `.aift/commands/test.sh`.",
+        "Keep start orchestration disabled until a real start command and health check exist."
+      ],
+      "lastEvaluated": "2026-06-28T00:33:18Z"
+    },
+    {
+      "repo": "AetherianGovernance",
+      "path": "/data/data/com.termux/files/home/AIFT/AetherianGovernance",
+      "state": "BLOCKED",
+      "reason": "service contract has unmet planned or missing requirements",
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "docs"
+      ],
+      "planned": [
+        "build",
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "test",
+        "verify"
+      ],
+      "broken": null,
+      "blocked": [
+        "AetherianGovernance.service: service planned"
+      ],
+      "services": [
+        {
+          "name": "AetherianGovernance.service",
+          "kind": "repository",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract"
+        }
+      ],
+      "capabilities": [
+        {
+          "name": "status",
+          "status": "ready",
+          "command": ".aift/commands/status.sh",
+          "evidence": "command exists and passes local verification"
+        },
+        {
+          "name": "verify",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "test",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "build",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "start",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "stop",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "health",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "deploy",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "sync",
+          "status": "ready",
+          "command": "git remote/status",
+          "evidence": "git repository detected; safe sync can inspect this repo"
+        },
+        {
+          "name": "docs",
+          "status": "detected",
+          "evidence": "README/docs detected"
+        }
+      ],
+      "recommended": [
+        "Add and prove `.aift/commands/verify.sh`.",
+        "Keep start orchestration disabled until a real start command and health check exist."
+      ],
+      "lastEvaluated": "2026-06-28T00:33:18Z"
+    },
+    {
+      "repo": "BookSmith-Federation-OS",
+      "path": "/data/data/com.termux/files/home/AIFT/BookSmith-Federation-OS",
+      "state": "BLOCKED",
+      "reason": "service contract has unmet planned or missing requirements",
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "build",
+        "docs",
+        "test"
+      ],
+      "planned": [
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "verify"
+      ],
+      "broken": null,
+      "blocked": [
+        "BookSmith-Federation-OS.service: service planned"
+      ],
+      "services": [
+        {
+          "name": "BookSmith-Federation-OS.service",
+          "kind": "publishing",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract"
+        }
+      ],
+      "capabilities": [
+        {
+          "name": "status",
+          "status": "ready",
+          "command": ".aift/commands/status.sh",
+          "evidence": "command exists and passes local verification"
+        },
+        {
+          "name": "verify",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "test",
+          "status": "detected",
+          "evidence": "package.json detected; test capability may exist but no .aift command is proven"
+        },
+        {
+          "name": "build",
+          "status": "detected",
+          "evidence": "build-related project file detected but no .aift build command is proven"
+        },
+        {
+          "name": "start",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "stop",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "health",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "deploy",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "sync",
+          "status": "ready",
+          "command": "git remote/status",
+          "evidence": "git repository detected; safe sync can inspect this repo"
+        },
+        {
+          "name": "docs",
+          "status": "detected",
+          "evidence": "README/docs detected"
+        }
+      ],
+      "recommended": [
+        "Add and prove `.aift/commands/verify.sh`.",
+        "Convert detected build support into `.aift/commands/build.sh`.",
+        "Convert detected test support into `.aift/commands/test.sh`.",
+        "Keep start orchestration disabled until a real start command and health check exist."
+      ],
+      "lastEvaluated": "2026-06-28T00:33:18Z"
+    },
+    {
+      "repo": "OpenMontage",
+      "path": "/data/data/com.termux/files/home/AIFT/OpenMontage",
+      "state": "BLOCKED",
+      "reason": "service contract has unmet planned or missing requirements",
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "build",
+        "docs"
+      ],
+      "planned": [
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "test",
+        "verify"
+      ],
+      "broken": null,
+      "blocked": [
+        "OpenMontage.service: service planned"
+      ],
+      "services": [
+        {
+          "name": "OpenMontage.service",
+          "kind": "repository",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract"
+        }
+      ],
+      "capabilities": [
+        {
+          "name": "status",
+          "status": "ready",
+          "command": ".aift/commands/status.sh",
+          "evidence": "command exists and passes local verification"
+        },
+        {
+          "name": "verify",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "test",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "build",
+          "status": "detected",
+          "evidence": "build-related project file detected but no .aift build command is proven"
+        },
+        {
+          "name": "start",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "stop",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "health",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "deploy",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "sync",
+          "status": "ready",
+          "command": "git remote/status",
+          "evidence": "git repository detected; safe sync can inspect this repo"
+        },
+        {
+          "name": "docs",
+          "status": "detected",
+          "evidence": "README/docs detected"
+        }
+      ],
+      "recommended": [
+        "Add and prove `.aift/commands/verify.sh`.",
+        "Convert detected build support into `.aift/commands/build.sh`.",
+        "Keep start orchestration disabled until a real start command and health check exist."
+      ],
+      "lastEvaluated": "2026-06-28T00:33:18Z"
+    },
+    {
+      "repo": "TheMindofAll",
+      "path": "/data/data/com.termux/files/home/AIFT/TheMindofAll",
+      "state": "BLOCKED",
+      "reason": "service contract has unmet planned or missing requirements",
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "docs"
+      ],
+      "planned": [
+        "build",
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "test",
+        "verify"
+      ],
+      "broken": null,
+      "blocked": [
+        "TheMindofAll.service: service planned"
+      ],
+      "services": [
+        {
+          "name": "TheMindofAll.service",
+          "kind": "repository",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract"
+        }
+      ],
+      "capabilities": [
+        {
+          "name": "status",
+          "status": "ready",
+          "command": ".aift/commands/status.sh",
+          "evidence": "command exists and passes local verification"
+        },
+        {
+          "name": "verify",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "test",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "build",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "start",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "stop",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "health",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "deploy",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "sync",
+          "status": "ready",
+          "command": "git remote/status",
+          "evidence": "git repository detected; safe sync can inspect this repo"
+        },
+        {
+          "name": "docs",
+          "status": "detected",
+          "evidence": "README/docs detected"
+        }
+      ],
+      "recommended": [
+        "Add and prove `.aift/commands/verify.sh`.",
+        "Keep start orchestration disabled until a real start command and health check exist."
+      ],
+      "lastEvaluated": "2026-06-28T00:33:18Z"
+    },
+    {
+      "repo": "VPS",
+      "path": "/data/data/com.termux/files/home/AIFT/VPS",
+      "state": "BLOCKED",
+      "reason": "service contract has unmet planned or missing requirements",
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "build",
+        "docs",
+        "test"
+      ],
+      "planned": [
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "verify"
+      ],
+      "broken": null,
+      "blocked": [
+        "VPS.service: service planned"
+      ],
+      "services": [
+        {
+          "name": "VPS.service",
+          "kind": "infrastructure",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract"
+        }
+      ],
+      "capabilities": [
+        {
+          "name": "status",
+          "status": "ready",
+          "command": ".aift/commands/status.sh",
+          "evidence": "command exists and passes local verification"
+        },
+        {
+          "name": "verify",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "test",
+          "status": "detected",
+          "evidence": "package.json detected; test capability may exist but no .aift command is proven"
+        },
+        {
+          "name": "build",
+          "status": "detected",
+          "evidence": "build-related project file detected but no .aift build command is proven"
+        },
+        {
+          "name": "start",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "stop",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "health",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "deploy",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "sync",
+          "status": "ready",
+          "command": "git remote/status",
+          "evidence": "git repository detected; safe sync can inspect this repo"
+        },
+        {
+          "name": "docs",
+          "status": "detected",
+          "evidence": "README/docs detected"
+        }
+      ],
+      "recommended": [
+        "Add and prove `.aift/commands/verify.sh`.",
+        "Convert detected build support into `.aift/commands/build.sh`.",
+        "Convert detected test support into `.aift/commands/test.sh`.",
+        "Keep start orchestration disabled until a real start command and health check exist."
+      ],
+      "lastEvaluated": "2026-06-28T00:33:18Z"
+    },
+    {
+      "repo": "aifreedomtrustfederation.github.io",
+      "path": "/data/data/com.termux/files/home/AIFT/aifreedomtrustfederation.github.io",
+      "state": "BLOCKED",
+      "reason": "service contract has unmet planned or missing requirements",
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "docs"
+      ],
+      "planned": [
+        "build",
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "test",
+        "verify"
+      ],
+      "broken": null,
+      "blocked": [
+        "aifreedomtrustfederation.github.io.service: service planned"
+      ],
+      "services": [
+        {
+          "name": "aifreedomtrustfederation.github.io.service",
+          "kind": "website",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract"
+        }
+      ],
+      "capabilities": [
+        {
+          "name": "status",
+          "status": "ready",
+          "command": ".aift/commands/status.sh",
+          "evidence": "command exists and passes local verification"
+        },
+        {
+          "name": "verify",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "test",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "build",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "start",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "stop",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "health",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "deploy",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "sync",
+          "status": "ready",
+          "command": "git remote/status",
+          "evidence": "git repository detected; safe sync can inspect this repo"
+        },
+        {
+          "name": "docs",
+          "status": "detected",
+          "evidence": "README/docs detected"
+        }
+      ],
+      "recommended": [
+        "Add and prove `.aift/commands/verify.sh`.",
+        "Keep start orchestration disabled until a real start command and health check exist."
+      ],
+      "lastEvaluated": "2026-06-28T00:33:18Z"
+    },
+    {
+      "repo": "biozone-harmony-boost",
+      "path": "/data/data/com.termux/files/home/AIFT/biozone-harmony-boost",
+      "state": "BLOCKED",
+      "reason": "service contract has unmet planned or missing requirements",
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "build",
+        "docs",
+        "test"
+      ],
+      "planned": [
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "verify"
+      ],
+      "broken": null,
+      "blocked": [
+        "biozone-harmony-boost.service: service planned"
+      ],
+      "services": [
+        {
+          "name": "biozone-harmony-boost.service",
+          "kind": "web-app",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract"
+        }
+      ],
+      "capabilities": [
+        {
+          "name": "status",
+          "status": "ready",
+          "command": ".aift/commands/status.sh",
+          "evidence": "command exists and passes local verification"
+        },
+        {
+          "name": "verify",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "test",
+          "status": "detected",
+          "evidence": "package.json detected; test capability may exist but no .aift command is proven"
+        },
+        {
+          "name": "build",
+          "status": "detected",
+          "evidence": "build-related project file detected but no .aift build command is proven"
+        },
+        {
+          "name": "start",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "stop",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "health",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "deploy",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "sync",
+          "status": "ready",
+          "command": "git remote/status",
+          "evidence": "git repository detected; safe sync can inspect this repo"
+        },
+        {
+          "name": "docs",
+          "status": "detected",
+          "evidence": "README/docs detected"
+        }
+      ],
+      "recommended": [
+        "Add and prove `.aift/commands/verify.sh`.",
+        "Convert detected build support into `.aift/commands/build.sh`.",
+        "Convert detected test support into `.aift/commands/test.sh`.",
+        "Keep start orchestration disabled until a real start command and health check exist."
+      ],
+      "lastEvaluated": "2026-06-28T00:33:18Z"
+    },
+    {
+      "repo": "booksmith-ai",
+      "path": "/data/data/com.termux/files/home/AIFT/booksmith-ai",
+      "state": "BLOCKED",
+      "reason": "service contract has unmet planned or missing requirements",
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "build",
+        "docs",
+        "test"
+      ],
+      "planned": [
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "verify"
+      ],
+      "broken": null,
+      "blocked": [
+        "booksmith-ai.service: service planned"
+      ],
+      "services": [
+        {
+          "name": "booksmith-ai.service",
+          "kind": "publishing",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract"
+        }
+      ],
+      "capabilities": [
+        {
+          "name": "status",
+          "status": "ready",
+          "command": ".aift/commands/status.sh",
+          "evidence": "command exists and passes local verification"
+        },
+        {
+          "name": "verify",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "test",
+          "status": "detected",
+          "evidence": "package.json detected; test capability may exist but no .aift command is proven"
+        },
+        {
+          "name": "build",
+          "status": "detected",
+          "evidence": "build-related project file detected but no .aift build command is proven"
+        },
+        {
+          "name": "start",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "stop",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "health",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "deploy",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "sync",
+          "status": "ready",
+          "command": "git remote/status",
+          "evidence": "git repository detected; safe sync can inspect this repo"
+        },
+        {
+          "name": "docs",
+          "status": "detected",
+          "evidence": "README/docs detected"
+        }
+      ],
+      "recommended": [
+        "Add and prove `.aift/commands/verify.sh`.",
+        "Convert detected build support into `.aift/commands/build.sh`.",
+        "Convert detected test support into `.aift/commands/test.sh`.",
+        "Keep start orchestration disabled until a real start command and health check exist."
+      ],
+      "lastEvaluated": "2026-06-28T00:33:18Z"
+    },
+    {
+      "repo": "c-848263",
+      "path": "/data/data/com.termux/files/home/AIFT/c-848263",
+      "state": "BLOCKED",
+      "reason": "service contract has unmet planned or missing requirements",
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "build",
+        "docs",
+        "test"
+      ],
+      "planned": [
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "verify"
+      ],
+      "broken": null,
+      "blocked": [
+        "c-848263.service: service planned"
+      ],
+      "services": [
+        {
+          "name": "c-848263.service",
+          "kind": "web-app",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract"
+        }
+      ],
+      "capabilities": [
+        {
+          "name": "status",
+          "status": "ready",
+          "command": ".aift/commands/status.sh",
+          "evidence": "command exists and passes local verification"
+        },
+        {
+          "name": "verify",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "test",
+          "status": "detected",
+          "evidence": "package.json detected; test capability may exist but no .aift command is proven"
+        },
+        {
+          "name": "build",
+          "status": "detected",
+          "evidence": "build-related project file detected but no .aift build command is proven"
+        },
+        {
+          "name": "start",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "stop",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "health",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "deploy",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "sync",
+          "status": "ready",
+          "command": "git remote/status",
+          "evidence": "git repository detected; safe sync can inspect this repo"
+        },
+        {
+          "name": "docs",
+          "status": "detected",
+          "evidence": "README/docs detected"
+        }
+      ],
+      "recommended": [
+        "Add and prove `.aift/commands/verify.sh`.",
+        "Convert detected build support into `.aift/commands/build.sh`.",
+        "Convert detected test support into `.aift/commands/test.sh`.",
+        "Keep start orchestration disabled until a real start command and health check exist."
+      ],
+      "lastEvaluated": "2026-06-28T00:33:18Z"
+    },
+    {
+      "repo": "capital-city-provisions",
+      "path": "/data/data/com.termux/files/home/AIFT/capital-city-provisions",
+      "state": "BLOCKED",
+      "reason": "service contract has unmet planned or missing requirements",
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "build",
+        "docs",
+        "test"
+      ],
+      "planned": [
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "verify"
+      ],
+      "broken": null,
+      "blocked": [
+        "capital-city-provisions.service: service planned"
+      ],
+      "services": [
+        {
+          "name": "capital-city-provisions.service",
+          "kind": "web-app",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract"
+        }
+      ],
+      "capabilities": [
+        {
+          "name": "status",
+          "status": "ready",
+          "command": ".aift/commands/status.sh",
+          "evidence": "command exists and passes local verification"
+        },
+        {
+          "name": "verify",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "test",
+          "status": "detected",
+          "evidence": "package.json detected; test capability may exist but no .aift command is proven"
+        },
+        {
+          "name": "build",
+          "status": "detected",
+          "evidence": "build-related project file detected but no .aift build command is proven"
+        },
+        {
+          "name": "start",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "stop",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "health",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "deploy",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "sync",
+          "status": "ready",
+          "command": "git remote/status",
+          "evidence": "git repository detected; safe sync can inspect this repo"
+        },
+        {
+          "name": "docs",
+          "status": "detected",
+          "evidence": "README/docs detected"
+        }
+      ],
+      "recommended": [
+        "Add and prove `.aift/commands/verify.sh`.",
+        "Convert detected build support into `.aift/commands/build.sh`.",
+        "Convert detected test support into `.aift/commands/test.sh`.",
+        "Keep start orchestration disabled until a real start command and health check exist."
+      ],
+      "lastEvaluated": "2026-06-28T00:33:18Z"
+    },
+    {
+      "repo": "chktex",
+      "path": "/data/data/com.termux/files/home/AIFT/chktex",
+      "state": "BLOCKED",
+      "reason": "service contract has unmet planned or missing requirements",
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "docs"
+      ],
+      "planned": [
+        "build",
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "test",
+        "verify"
+      ],
+      "broken": null,
+      "blocked": [
+        "chktex.service: service planned"
+      ],
+      "services": [
+        {
+          "name": "chktex.service",
+          "kind": "repository",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract"
+        }
+      ],
+      "capabilities": [
+        {
+          "name": "status",
+          "status": "ready",
+          "command": ".aift/commands/status.sh",
+          "evidence": "command exists and passes local verification"
+        },
+        {
+          "name": "verify",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "test",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "build",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "start",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "stop",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "health",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "deploy",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "sync",
+          "status": "ready",
+          "command": "git remote/status",
+          "evidence": "git repository detected; safe sync can inspect this repo"
+        },
+        {
+          "name": "docs",
+          "status": "detected",
+          "evidence": "README/docs detected"
+        }
+      ],
+      "recommended": [
+        "Add and prove `.aift/commands/verify.sh`.",
+        "Keep start orchestration disabled until a real start command and health check exist."
+      ],
+      "lastEvaluated": "2026-06-28T00:33:18Z"
+    },
+    {
+      "repo": "mobox",
+      "path": "/data/data/com.termux/files/home/AIFT/mobox",
+      "state": "BLOCKED",
+      "reason": "service contract has unmet planned or missing requirements",
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "docs"
+      ],
+      "planned": [
+        "build",
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "test",
+        "verify"
+      ],
+      "broken": null,
+      "blocked": [
+        "mobox.service: service planned"
+      ],
+      "services": [
+        {
+          "name": "mobox.service",
+          "kind": "repository",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract"
+        }
+      ],
+      "capabilities": [
+        {
+          "name": "status",
+          "status": "ready",
+          "command": ".aift/commands/status.sh",
+          "evidence": "command exists and passes local verification"
+        },
+        {
+          "name": "verify",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "test",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "build",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "start",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "stop",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "health",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "deploy",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "sync",
+          "status": "ready",
+          "command": "git remote/status",
+          "evidence": "git repository detected; safe sync can inspect this repo"
+        },
+        {
+          "name": "docs",
+          "status": "detected",
+          "evidence": "README/docs detected"
+        }
+      ],
+      "recommended": [
+        "Add and prove `.aift/commands/verify.sh`.",
+        "Keep start orchestration disabled until a real start command and health check exist."
+      ],
+      "lastEvaluated": "2026-06-28T00:33:18Z"
+    },
+    {
+      "repo": "repo-brainstorm-backend-forge",
+      "path": "/data/data/com.termux/files/home/AIFT/repo-brainstorm-backend-forge",
+      "state": "BLOCKED",
+      "reason": "service contract has unmet planned or missing requirements",
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "build",
+        "docs",
+        "test"
+      ],
+      "planned": [
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "verify"
+      ],
+      "broken": null,
+      "blocked": [
+        "repo-brainstorm-backend-forge.service: service planned"
+      ],
+      "services": [
+        {
+          "name": "repo-brainstorm-backend-forge.service",
+          "kind": "forge",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract"
+        }
+      ],
+      "capabilities": [
+        {
+          "name": "status",
+          "status": "ready",
+          "command": ".aift/commands/status.sh",
+          "evidence": "command exists and passes local verification"
+        },
+        {
+          "name": "verify",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "test",
+          "status": "detected",
+          "evidence": "package.json detected; test capability may exist but no .aift command is proven"
+        },
+        {
+          "name": "build",
+          "status": "detected",
+          "evidence": "build-related project file detected but no .aift build command is proven"
+        },
+        {
+          "name": "start",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "stop",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "health",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "deploy",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "sync",
+          "status": "ready",
+          "command": "git remote/status",
+          "evidence": "git repository detected; safe sync can inspect this repo"
+        },
+        {
+          "name": "docs",
+          "status": "detected",
+          "evidence": "README/docs detected"
+        }
+      ],
+      "recommended": [
+        "Add and prove `.aift/commands/verify.sh`.",
+        "Convert detected build support into `.aift/commands/build.sh`.",
+        "Convert detected test support into `.aift/commands/test.sh`.",
+        "Keep start orchestration disabled until a real start command and health check exist."
+      ],
+      "lastEvaluated": "2026-06-28T00:33:18Z"
+    },
+    {
+      "repo": "tastycutz",
+      "path": "/data/data/com.termux/files/home/AIFT/tastycutz",
+      "state": "BLOCKED",
+      "reason": "service contract has unmet planned or missing requirements",
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "build",
+        "docs",
+        "test"
+      ],
+      "planned": [
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "verify"
+      ],
+      "broken": null,
+      "blocked": [
+        "tastycutz.service: service planned"
+      ],
+      "services": [
+        {
+          "name": "tastycutz.service",
+          "kind": "web-app",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract"
+        }
+      ],
+      "capabilities": [
+        {
+          "name": "status",
+          "status": "ready",
+          "command": ".aift/commands/status.sh",
+          "evidence": "command exists and passes local verification"
+        },
+        {
+          "name": "verify",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "test",
+          "status": "detected",
+          "evidence": "package.json detected; test capability may exist but no .aift command is proven"
+        },
+        {
+          "name": "build",
+          "status": "detected",
+          "evidence": "build-related project file detected but no .aift build command is proven"
+        },
+        {
+          "name": "start",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "stop",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "health",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "deploy",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "sync",
+          "status": "ready",
+          "command": "git remote/status",
+          "evidence": "git repository detected; safe sync can inspect this repo"
+        },
+        {
+          "name": "docs",
+          "status": "detected",
+          "evidence": "README/docs detected"
+        }
+      ],
+      "recommended": [
+        "Add and prove `.aift/commands/verify.sh`.",
+        "Convert detected build support into `.aift/commands/build.sh`.",
+        "Convert detected test support into `.aift/commands/test.sh`.",
+        "Keep start orchestration disabled until a real start command and health check exist."
+      ],
+      "lastEvaluated": "2026-06-28T00:33:18Z"
+    },
+    {
+      "repo": "www.aifreedomtrust.com",
+      "path": "/data/data/com.termux/files/home/AIFT/www.aifreedomtrust.com",
+      "state": "BLOCKED",
+      "reason": "service contract has unmet planned or missing requirements",
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "docs"
+      ],
+      "planned": [
+        "build",
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "test",
+        "verify"
+      ],
+      "broken": null,
+      "blocked": [
+        "www.aifreedomtrust.com.service: service planned"
+      ],
+      "services": [
+        {
+          "name": "www.aifreedomtrust.com.service",
+          "kind": "website",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract"
+        }
+      ],
+      "capabilities": [
+        {
+          "name": "status",
+          "status": "ready",
+          "command": ".aift/commands/status.sh",
+          "evidence": "command exists and passes local verification"
+        },
+        {
+          "name": "verify",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "test",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "build",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "start",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "stop",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "health",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "deploy",
+          "status": "planned",
+          "evidence": "not proven yet"
+        },
+        {
+          "name": "sync",
+          "status": "ready",
+          "command": "git remote/status",
+          "evidence": "git repository detected; safe sync can inspect this repo"
+        },
+        {
+          "name": "docs",
+          "status": "detected",
+          "evidence": "README/docs detected"
+        }
+      ],
+      "recommended": [
+        "Add and prove `.aift/commands/verify.sh`.",
+        "Keep start orchestration disabled until a real start command and health check exist."
+      ],
+      "lastEvaluated": "2026-06-28T00:33:18Z"
+    }
+  ]
+}

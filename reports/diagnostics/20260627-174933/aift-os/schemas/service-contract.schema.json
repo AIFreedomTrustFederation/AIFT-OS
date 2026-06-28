@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIFT Repo Service Contract",
+  "type": "object",
+  "required": ["repo", "services"],
+  "properties": {
+    "repo": { "type": "string" },
+    "services": { "type": "array" },
+    "generatedAt": { "type": "string" }
+  }
+}
