@@ -12,6 +12,7 @@ import (
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/federation"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/gitx"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/graph"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/intelligence"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manifests"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manual"
@@ -111,6 +112,8 @@ func main() {
 		err = runIntelligence(cfg, args)
 	case "manual":
 		err = runManual(cfg, args)
+	case "graph":
+		err = graph.Query(cfg, args)
 	case "verify":
 		err = verify(cfg)
 	default:
@@ -154,6 +157,7 @@ func help() {
 	fmt.Println("  capabilities scan|report|repo|promote")
 	fmt.Println("  intelligence scan|report|repo|roadmap")
 	fmt.Println("  manual init-all|scan|report|repo")
+	fmt.Println("  graph [summary|repo|type|status]")
 	fmt.Println("  verify")
 }
 
@@ -282,6 +286,9 @@ func verify(cfg config.Config) error {
 		return err
 	}
 	if err := manual.Scan(cfg); err != nil {
+		return err
+	}
+	if err := graph.Build(cfg); err != nil {
 		return err
 	}
 	if err := events.Emit(cfg, "verify.complete", "verify", "federation verified", nil); err != nil {

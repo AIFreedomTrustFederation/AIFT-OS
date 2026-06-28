@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIFT Federation Graph",
+  "type": "object",
+  "required": ["generatedAt", "nodes", "edges"],
+  "properties": {
+    "generatedAt": { "type": "string" },
+    "nodes": { "type": "array" },
+    "edges": { "type": "array" }
+  }
+}
