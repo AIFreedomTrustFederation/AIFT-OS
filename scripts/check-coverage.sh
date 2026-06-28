@@ -17,7 +17,9 @@ fi
 BASELINE=$(cat "$BASELINE_FILE" | tr -d '[:space:]')
 
 echo "Running tests with coverage..."
-go test ./... -coverprofile=coverage.out
+# Exclude tools/ from coverage calculation (standalone generators, not library code)
+PKGS=$(go list ./... | grep -v '/tools/')
+go test -coverprofile=coverage.out $PKGS
 
 mkdir -p reports
 go tool cover -func=coverage.out > reports/coverage.txt

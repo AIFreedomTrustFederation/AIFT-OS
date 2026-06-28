@@ -7,7 +7,9 @@ cd "$REPO_ROOT"
 mkdir -p reports
 
 echo "Running tests with coverage..."
-go test ./... -coverprofile=coverage.out
+# Exclude tools/ from coverage calculation (standalone generators, not library code)
+PKGS=$(go list ./... | grep -v '/tools/')
+go test -coverprofile=coverage.out $PKGS
 
 echo ""
 echo "Generating coverage report..."
