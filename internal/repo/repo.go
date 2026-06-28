@@ -115,9 +115,28 @@ func RunCommand(cfg config.Config, name string, commandName string, args []strin
 		return err
 	}
 
+	// Validate commandName to prevent path traversal into arbitrary scripts.
+	if strings.ContainsAny(commandName, "/\\") || commandName == "." || commandName == ".." {
+		return fmt.Errorf("invalid command name: %s", commandName)
+	}
+
 	script := filepath.Join(r.CommandsPath, commandName+".sh")
+
+	// Verify the resolved script path is within the expected commands directory.
+	resolved, err := filepath.Abs(script)
+	if err != nil {
+		return fmt.Errorf("cannot resolve command path: %w", err)
+	}
+	expectedDir, err := filepath.Abs(r.CommandsPath)
+	if err != nil {
+		return fmt.Errorf("cannot resolve commands directory: %w", err)
+	}
+	if !strings.HasPrefix(resolved, expectedDir+string(filepath.Separator)) {
+		return fmt.Errorf("command path escapes commands directory")
+	}
+
 	if _, err := os.Stat(script); err != nil {
-		return fmt.Errorf("repo command not found: %s", script)
+		return fmt.Errorf("repo command not found: %s", commandName)
 	}
 
 	cmd := exec.Command("sh", append([]string{script}, args...)...)
@@ -158,5 +177,11 @@ func EnsureExampleCommand(cfg config.Config) error {
 }
 
 func NormalizeName(s string) string {
-	return strings.TrimSpace(s)
+	s = strings.TrimSpace(s)
+	// Prevent path traversal by stripping directory separators and parent refs.
+	s = filepath.Base(s)
+	if s == "." || s == ".." {
+		return ""
+	}
+	return s
 }
