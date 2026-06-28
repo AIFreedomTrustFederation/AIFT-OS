@@ -1,12 +1,11 @@
 package providers
 
 import (
-	"encoding/json"
 	"fmt"
-	"os"
 	"path/filepath"
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/jsonfile"
 )
 
 type Provider struct {
@@ -29,22 +28,7 @@ func Defaults() []Provider {
 }
 
 func WriteRegistry(cfg config.Config) error {
-	out := filepath.Join(cfg.OSHome, "registry", "providers.json")
-	if err := os.MkdirAll(filepath.Dir(out), 0755); err != nil {
-		return err
-	}
-
-	data, err := json.MarshalIndent(Defaults(), "", "  ")
-	if err != nil {
-		return err
-	}
-
-	if err := os.WriteFile(out, append(data, '\n'), 0644); err != nil {
-		return err
-	}
-
-	fmt.Println("Wrote", out)
-	return nil
+	return jsonfile.Write(filepath.Join(cfg.OSHome, "registry", "providers.json"), Defaults(), true)
 }
 
 func List(cfg config.Config) error {

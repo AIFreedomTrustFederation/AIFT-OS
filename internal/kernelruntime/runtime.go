@@ -1,7 +1,6 @@
 package kernelruntime
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -11,6 +10,7 @@ import (
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/discoveryengine"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/eventbus"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/jsonfile"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/kernelregistry"
 )
 
@@ -159,15 +159,7 @@ func finish(cfg config.Config, report BootReport, err error) error {
 }
 
 func WriteJSON(cfg config.Config, report BootReport) error {
-	out := filepath.Join(cfg.OSHome, "registry", "kernel-boot.json")
-	if err := os.MkdirAll(filepath.Dir(out), 0755); err != nil {
-		return err
-	}
-	data, err := json.MarshalIndent(report, "", "  ")
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(out, append(data, '\n'), 0644)
+	return jsonfile.Write(filepath.Join(cfg.OSHome, "registry", "kernel-boot.json"), report, false)
 }
 
 func WriteReport(cfg config.Config, report BootReport) error {

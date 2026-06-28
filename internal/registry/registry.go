@@ -1,13 +1,11 @@
 package registry
 
 import (
-	"encoding/json"
-	"fmt"
-	"os"
 	"path/filepath"
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/gitx"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/jsonfile"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manifests"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/workspace"
 )
@@ -39,21 +37,5 @@ func Generate(cfg config.Config) error {
 		})
 	}
 
-	outDir := filepath.Join(cfg.OSHome, "registry")
-	if err := os.MkdirAll(outDir, 0755); err != nil {
-		return err
-	}
-
-	data, err := json.MarshalIndent(records, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	out := filepath.Join(outDir, "repos.json")
-	if err := os.WriteFile(out, append(data, '\n'), 0644); err != nil {
-		return err
-	}
-
-	fmt.Println("Wrote", out)
-	return nil
+	return jsonfile.Write(filepath.Join(cfg.OSHome, "registry", "repos.json"), records, true)
 }

@@ -12,6 +12,8 @@ import (
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/fsutil"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/jsonfile"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/workspace"
 )
 
@@ -140,7 +142,7 @@ func detectCapability(repoPath, name string) Capability {
 	}
 
 	cmdPath := filepath.Join(repoPath, ".aift", "commands", name+".sh")
-	if fileExists(cmdPath) {
+	if fsutil.FileExists(cmdPath) {
 		c.Command = ".aift/commands/" + name + ".sh"
 		if commandPasses(repoPath, cmdPath) {
 			c.Status = StatusReady
@@ -154,37 +156,37 @@ func detectCapability(repoPath, name string) Capability {
 
 	switch name {
 	case "test":
-		if fileExists(filepath.Join(repoPath, "package.json")) {
+		if fsutil.FileExists(filepath.Join(repoPath, "package.json")) {
 			c.Status = StatusDetected
 			c.Evidence = "package.json detected; test capability may exist but no .aift command is proven"
 			return c
 		}
-		if fileExists(filepath.Join(repoPath, "go.mod")) {
+		if fsutil.FileExists(filepath.Join(repoPath, "go.mod")) {
 			c.Status = StatusDetected
 			c.Evidence = "go.mod detected; Go tests may exist but no .aift command is proven"
 			return c
 		}
 	case "build":
-		if fileExists(filepath.Join(repoPath, "package.json")) || fileExists(filepath.Join(repoPath, "go.mod")) || fileExists(filepath.Join(repoPath, "Makefile")) {
+		if fsutil.FileExists(filepath.Join(repoPath, "package.json")) || fsutil.FileExists(filepath.Join(repoPath, "go.mod")) || fsutil.FileExists(filepath.Join(repoPath, "Makefile")) {
 			c.Status = StatusDetected
 			c.Evidence = "build-related project file detected but no .aift build command is proven"
 			return c
 		}
 	case "docs":
-		if fileExists(filepath.Join(repoPath, "README.md")) || dirExists(filepath.Join(repoPath, "docs")) {
+		if fsutil.FileExists(filepath.Join(repoPath, "README.md")) || fsutil.DirExists(filepath.Join(repoPath, "docs")) {
 			c.Status = StatusDetected
 			c.Evidence = "README/docs detected"
 			return c
 		}
 	case "status":
-		if dirExists(filepath.Join(repoPath, ".git")) {
+		if fsutil.DirExists(filepath.Join(repoPath, ".git")) {
 			c.Status = StatusReady
 			c.Command = "git status --short"
 			c.Evidence = "git repository detected; built-in status capability is ready"
 			return c
 		}
 	case "sync":
-		if dirExists(filepath.Join(repoPath, ".git")) {
+		if fsutil.DirExists(filepath.Join(repoPath, ".git")) {
 			c.Status = StatusReady
 			c.Command = "git remote/status"
 			c.Evidence = "git repository detected; safe sync can inspect this repo"
@@ -296,31 +298,11 @@ func printRepo(rc RepoCapabilities) {
 }
 
 func writeRepo(repoPath string, rc RepoCapabilities) error {
-	dir := filepath.Join(repoPath, ".aift")
-	if err := os.MkdirAll(dir, 0755); err != nil {
-		return err
-	}
-	data, err := json.MarshalIndent(rc, "", "  ")
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(filepath.Join(dir, "capabilities.json"), append(data, '\n'), 0644)
+	return jsonfile.Write(filepath.Join(repoPath, ".aift", "capabilities.json"), rc, false)
 }
 
 func writeGlobal(cfg config.Config, all FederationCapabilities) error {
-	out := filepath.Join(cfg.OSHome, "registry", "capabilities.json")
-	if err := os.MkdirAll(filepath.Dir(out), 0755); err != nil {
-		return err
-	}
-	data, err := json.MarshalIndent(all, "", "  ")
-	if err != nil {
-		return err
-	}
-	if err := os.WriteFile(out, append(data, '\n'), 0644); err != nil {
-		return err
-	}
-	fmt.Println("Wrote", out)
-	return nil
+	return jsonfile.Write(filepath.Join(cfg.OSHome, "registry", "capabilities.json"), all, true)
 }
 
 func writeReport(cfg config.Config, all FederationCapabilities) error {
@@ -410,12 +392,4 @@ func description(name string) string {
 	}
 }
 
-func fileExists(path string) bool {
-	info, err := os.Stat(path)
-	return err == nil && !info.IsDir()
-}
 
-func dirExists(path string) bool {
-	info, err := os.Stat(path)
-	return err == nil && info.IsDir()
-}

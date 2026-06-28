@@ -11,6 +11,9 @@ import (
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/fsutil"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/jsonfile"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/sliceutil"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/workspace"
 )
 
@@ -60,15 +63,11 @@ func InitRepo(name, repoPath string) error {
 		return err
 	}
 	path := filepath.Join(dir, "module.json")
-	if fileExists(path) {
+	if fsutil.FileExists(path) {
 		return nil
 	}
 	manifest := BuildRepoManifest(name, repoPath)
-	data, err := json.MarshalIndent(manifest, "", "  ")
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(path, append(data, '\n'), 0644)
+	return jsonfile.Write(path, manifest, false)
 }
 
 func Scan(cfg config.Config) error {
@@ -86,14 +85,7 @@ func Scan(cfg config.Config) error {
 		manifest := BuildRepoManifest(repo.Name, repo.Path)
 		reg.Modules = append(reg.Modules, manifest)
 
-		data, err := json.MarshalIndent(manifest, "", "  ")
-		if err != nil {
-			return err
-		}
-		if err := os.MkdirAll(filepath.Join(repo.Path, ".aift"), 0755); err != nil {
-			return err
-		}
-		if err := os.WriteFile(filepath.Join(repo.Path, ".aift", "module.json"), append(data, '\n'), 0644); err != nil {
+		if err := jsonfile.Write(filepath.Join(repo.Path, ".aift", "module.json"), manifest, false); err != nil {
 			return err
 		}
 	}
@@ -125,48 +117,48 @@ func BuildRepoManifest(name, repoPath string) ModuleManifest {
 	capabilities := []string{}
 	services := []string{}
 
-	if fileExists(filepath.Join(repoPath, "README.md")) {
+	if fsutil.FileExists(filepath.Join(repoPath, "README.md")) {
 		docs = append(docs, "README.md")
 		evidence = append(evidence, "README.md")
 	}
-	if dirExists(filepath.Join(repoPath, "docs")) {
+	if fsutil.DirExists(filepath.Join(repoPath, "docs")) {
 		docs = append(docs, "docs/")
 		evidence = append(evidence, "docs/")
 	}
-	if fileExists(filepath.Join(repoPath, "package.json")) {
+	if fsutil.FileExists(filepath.Join(repoPath, "package.json")) {
 		evidence = append(evidence, "package.json")
-		readPackageCommands(repoPath, commands)
+		jsonfile.ReadPackageCommands(repoPath, commands)
 		provides = append(provides, "node.package")
 	}
-	if fileExists(filepath.Join(repoPath, "go.mod")) {
+	if fsutil.FileExists(filepath.Join(repoPath, "go.mod")) {
 		evidence = append(evidence, "go.mod")
 		commands["go:test"] = "go test ./..."
 		commands["go:build"] = "go build ./..."
 		provides = append(provides, "go.module")
 	}
-	if fileExists(filepath.Join(repoPath, "Cargo.toml")) {
+	if fsutil.FileExists(filepath.Join(repoPath, "Cargo.toml")) {
 		evidence = append(evidence, "Cargo.toml")
 		commands["cargo:test"] = "cargo test"
 		commands["cargo:build"] = "cargo build"
 		provides = append(provides, "rust.crate")
 	}
-	if fileExists(filepath.Join(repoPath, ".aift", "manual.json")) {
+	if fsutil.FileExists(filepath.Join(repoPath, ".aift", "manual.json")) {
 		provides = append(provides, "manual.contract")
 		docs = append(docs, ".aift/manual.json")
 		evidence = append(evidence, ".aift/manual.json")
 	}
-	if fileExists(filepath.Join(repoPath, ".aift", "capabilities.json")) {
-		caps := readNamedList(repoPath, "capabilities.json", "capabilities")
+	if fsutil.FileExists(filepath.Join(repoPath, ".aift", "capabilities.json")) {
+		caps := jsonfile.ReadNamedList(repoPath, "capabilities.json", "capabilities")
 		capabilities = append(capabilities, caps...)
 		provides = append(provides, caps...)
 		evidence = append(evidence, ".aift/capabilities.json")
 	}
-	if fileExists(filepath.Join(repoPath, ".aift", "services.json")) {
-		services = append(services, readNamedList(repoPath, "services.json", "services")...)
+	if fsutil.FileExists(filepath.Join(repoPath, ".aift", "services.json")) {
+		services = append(services, jsonfile.ReadNamedList(repoPath, "services.json", "services")...)
 		provides = append(provides, "service.contract")
 		evidence = append(evidence, ".aift/services.json")
 	}
-	if fileExists(filepath.Join(repoPath, ".aift", "commands", "verify.sh")) {
+	if fsutil.FileExists(filepath.Join(repoPath, ".aift", "commands", "verify.sh")) {
 		commands["aift:verify"] = "sh .aift/commands/verify.sh"
 		health = append(health, ".aift/commands/verify.sh")
 	}
@@ -175,7 +167,7 @@ func BuildRepoManifest(name, repoPath string) ModuleManifest {
 	if len(capabilities) == 0 && len(services) == 0 && len(commands) == 0 {
 		status = "planned"
 	}
-	if contains(capabilities, "verify") || commands["aift:verify"] != "" {
+	if sliceutil.Contains(capabilities, "verify") || commands["aift:verify"] != "" {
 		status = "ready"
 	}
 
@@ -188,16 +180,16 @@ func BuildRepoManifest(name, repoPath string) ModuleManifest {
 		Kind:           inferKind(name, repoPath),
 		Description:    "Auto-discovered federation kernel module for " + name,
 		DependsOn:      []string{},
-		Provides:       unique(provides),
-		Consumes:       unique(consumes),
-		Publishes:      unique(publishes),
+		Provides:       sliceutil.Unique(provides),
+		Consumes:       sliceutil.Unique(consumes),
+		Publishes:      sliceutil.Unique(publishes),
 		Commands:       commands,
-		Services:       unique(services),
-		Capabilities:   unique(capabilities),
-		Docs:           unique(docs),
-		HealthChecks:   unique(health),
+		Services:       sliceutil.Unique(services),
+		Capabilities:   sliceutil.Unique(capabilities),
+		Docs:           sliceutil.Unique(docs),
+		HealthChecks:   sliceutil.Unique(health),
 		MigrationLevel: "phase-17",
-		Evidence:       unique(evidence),
+		Evidence:       sliceutil.Unique(evidence),
 		GeneratedAt:    time.Now().Format(time.RFC3339),
 	}
 }
@@ -249,15 +241,7 @@ func Report(cfg config.Config) error {
 }
 
 func writeRegistry(cfg config.Config, reg Registry) error {
-	out := filepath.Join(cfg.OSHome, "registry", "modules.json")
-	if err := os.MkdirAll(filepath.Dir(out), 0755); err != nil {
-		return err
-	}
-	data, err := json.MarshalIndent(reg, "", "  ")
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(out, append(data, '\n'), 0644)
+	return jsonfile.Write(filepath.Join(cfg.OSHome, "registry", "modules.json"), reg, false)
 }
 
 func writeReport(cfg config.Config, reg Registry) error {
@@ -296,39 +280,7 @@ func loadOrScan(cfg config.Config) (Registry, error) {
 	return reg, nil
 }
 
-func readPackageCommands(repoPath string, commands map[string]string) {
-	data, err := os.ReadFile(filepath.Join(repoPath, "package.json"))
-	if err != nil {
-		return
-	}
-	var pkg struct {
-		Scripts map[string]string `json:"scripts"`
-	}
-	if json.Unmarshal(data, &pkg) != nil {
-		return
-	}
-	for name := range pkg.Scripts {
-		commands["npm:"+name] = "npm run " + name
-	}
-}
 
-func readNamedList(repoPath, fileName, field string) []string {
-	data, err := os.ReadFile(filepath.Join(repoPath, ".aift", fileName))
-	if err != nil {
-		return []string{}
-	}
-	var raw map[string][]map[string]string
-	if json.Unmarshal(data, &raw) != nil {
-		return []string{}
-	}
-	out := []string{}
-	for _, item := range raw[field] {
-		if item["name"] != "" {
-			out = append(out, item["name"])
-		}
-	}
-	return out
-}
 
 func inferKind(name, repoPath string) string {
 	lower := strings.ToLower(name)
@@ -341,46 +293,15 @@ func inferKind(name, repoPath string) string {
 		return "publishing"
 	case strings.Contains(lower, "www") || strings.Contains(lower, "github.io"):
 		return "website"
-	case fileExists(filepath.Join(repoPath, "package.json")):
+	case fsutil.FileExists(filepath.Join(repoPath, "package.json")):
 		return "node-app"
-	case fileExists(filepath.Join(repoPath, "go.mod")):
+	case fsutil.FileExists(filepath.Join(repoPath, "go.mod")):
 		return "go-module"
-	case fileExists(filepath.Join(repoPath, "Cargo.toml")):
+	case fsutil.FileExists(filepath.Join(repoPath, "Cargo.toml")):
 		return "rust-crate"
 	default:
 		return "repository"
 	}
 }
 
-func fileExists(path string) bool {
-	info, err := os.Stat(path)
-	return err == nil && !info.IsDir()
-}
 
-func dirExists(path string) bool {
-	info, err := os.Stat(path)
-	return err == nil && info.IsDir()
-}
-
-func contains(items []string, wanted string) bool {
-	for _, item := range items {
-		if item == wanted {
-			return true
-		}
-	}
-	return false
-}
-
-func unique(items []string) []string {
-	seen := map[string]bool{}
-	out := []string{}
-	for _, item := range items {
-		if item == "" || seen[item] {
-			continue
-		}
-		seen[item] = true
-		out = append(out, item)
-	}
-	sort.Strings(out)
-	return out
-}

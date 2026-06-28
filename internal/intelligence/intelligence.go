@@ -12,7 +12,10 @@ import (
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/capabilities"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/fsutil"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/gitx"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/jsonfile"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/sliceutil"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/workspace"
 )
 
@@ -194,7 +197,7 @@ func detectFiles(path string) []string {
 	}
 	var found []string
 	for _, c := range candidates {
-		if exists(filepath.Join(path, c)) {
+		if fsutil.Exists(filepath.Join(path, c)) {
 			found = append(found, c)
 		}
 	}
@@ -203,33 +206,33 @@ func detectFiles(path string) []string {
 
 func detectLanguages(path string) []string {
 	set := map[string]bool{}
-	if exists(filepath.Join(path, "go.mod")) {
+	if fsutil.Exists(filepath.Join(path, "go.mod")) {
 		set["Go"] = true
 	}
-	if exists(filepath.Join(path, "package.json")) || exists(filepath.Join(path, "tsconfig.json")) {
+	if fsutil.Exists(filepath.Join(path, "package.json")) || fsutil.Exists(filepath.Join(path, "tsconfig.json")) {
 		set["TypeScript/JavaScript"] = true
 	}
-	if exists(filepath.Join(path, "README.md")) || exists(filepath.Join(path, "docs")) {
+	if fsutil.Exists(filepath.Join(path, "README.md")) || fsutil.Exists(filepath.Join(path, "docs")) {
 		set["Markdown/Docs"] = true
 	}
-	return keys(set)
+	return sliceutil.SortedBoolMapKeys(set)
 }
 
 func detectFrameworks(path string) []string {
 	set := map[string]bool{}
-	if exists(filepath.Join(path, "next.config.js")) || exists(filepath.Join(path, "next.config.ts")) {
+	if fsutil.Exists(filepath.Join(path, "next.config.js")) || fsutil.Exists(filepath.Join(path, "next.config.ts")) {
 		set["Next.js"] = true
 	}
-	if exists(filepath.Join(path, "tailwind.config.js")) || exists(filepath.Join(path, "tailwind.config.ts")) {
+	if fsutil.Exists(filepath.Join(path, "tailwind.config.js")) || fsutil.Exists(filepath.Join(path, "tailwind.config.ts")) {
 		set["Tailwind"] = true
 	}
-	if exists(filepath.Join(path, "go.mod")) {
+	if fsutil.Exists(filepath.Join(path, "go.mod")) {
 		set["Go CLI/Service"] = true
 	}
-	if exists(filepath.Join(path, "Dockerfile")) || exists(filepath.Join(path, "docker-compose.yml")) {
+	if fsutil.Exists(filepath.Join(path, "Dockerfile")) || fsutil.Exists(filepath.Join(path, "docker-compose.yml")) {
 		set["Container"] = true
 	}
-	return keys(set)
+	return sliceutil.SortedBoolMapKeys(set)
 }
 
 func classifyRole(name string, ri RepoIntelligence) string {
@@ -249,9 +252,9 @@ func classifyRole(name string, ri RepoIntelligence) string {
 		return "infrastructure-node-layer"
 	case strings.Contains(n, "www") || strings.Contains(n, "github.io"):
 		return "public-web-portal"
-	case contains(ri.Frameworks, "Next.js"):
+	case sliceutil.Contains(ri.Frameworks, "Next.js"):
 		return "web-application"
-	case contains(ri.Languages, "Markdown/Docs"):
+	case sliceutil.Contains(ri.Languages, "Markdown/Docs"):
 		return "documentation-repository"
 	default:
 		return "unknown-sovereign-repository"
@@ -306,15 +309,15 @@ func score(ri RepoIntelligence) (int, string, int) {
 	score := 0
 	confidence := 35
 
-	if contains(ri.DetectedFiles, "README.md") {
+	if sliceutil.Contains(ri.DetectedFiles, "README.md") {
 		score += 10
 		confidence += 5
 	}
-	if contains(ri.DetectedFiles, ".aift/repo.json") {
+	if sliceutil.Contains(ri.DetectedFiles, ".aift/repo.json") {
 		score += 10
 		confidence += 10
 	}
-	if contains(ri.DetectedFiles, ".aift/capabilities.json") {
+	if sliceutil.Contains(ri.DetectedFiles, ".aift/capabilities.json") {
 		score += 10
 		confidence += 10
 	}
@@ -374,19 +377,19 @@ func score(ri RepoIntelligence) (int, string, int) {
 func recommendations(ri RepoIntelligence) []string {
 	var rec []string
 
-	if !contains(ri.DetectedFiles, ".aift/repo.json") {
+	if !sliceutil.Contains(ri.DetectedFiles, ".aift/repo.json") {
 		rec = append(rec, "Add `.aift/repo.json` manifest.")
 	}
-	if !contains(ri.DetectedFiles, ".aift/capabilities.json") {
+	if !sliceutil.Contains(ri.DetectedFiles, ".aift/capabilities.json") {
 		rec = append(rec, "Run `aift capabilities scan` to generate truthful capability state.")
 	}
-	if !contains(ri.Ready, "verify") && !contains(ri.V1, "verify") {
+	if !sliceutil.Contains(ri.Ready, "verify") && !sliceutil.Contains(ri.V1, "verify") {
 		rec = append(rec, "Add `.aift/commands/verify.sh` before enabling orchestration.")
 	}
-	if !contains(ri.Ready, "build") && !contains(ri.V1, "build") && contains(ri.Detected, "build") {
+	if !sliceutil.Contains(ri.Ready, "build") && !sliceutil.Contains(ri.V1, "build") && sliceutil.Contains(ri.Detected, "build") {
 		rec = append(rec, "Convert detected build support into `.aift/commands/build.sh`.")
 	}
-	if !contains(ri.Ready, "test") && !contains(ri.V1, "test") && contains(ri.Detected, "test") {
+	if !sliceutil.Contains(ri.Ready, "test") && !sliceutil.Contains(ri.V1, "test") && sliceutil.Contains(ri.Detected, "test") {
 		rec = append(rec, "Convert detected test support into `.aift/commands/test.sh`.")
 	}
 	if len(ri.Broken) > 0 {
@@ -400,19 +403,7 @@ func recommendations(ri RepoIntelligence) []string {
 }
 
 func writeRegistry(cfg config.Config, fi FederationIntelligence) error {
-	out := filepath.Join(cfg.OSHome, "registry", "intelligence.json")
-	if err := os.MkdirAll(filepath.Dir(out), 0755); err != nil {
-		return err
-	}
-	data, err := json.MarshalIndent(fi, "", "  ")
-	if err != nil {
-		return err
-	}
-	if err := os.WriteFile(out, append(data, '\n'), 0644); err != nil {
-		return err
-	}
-	fmt.Println("Wrote", out)
-	return nil
+	return jsonfile.Write(filepath.Join(cfg.OSHome, "registry", "intelligence.json"), fi, true)
 }
 
 func writeReport(cfg config.Config, fi FederationIntelligence) error {
@@ -481,25 +472,4 @@ func printRepo(ri RepoIntelligence) {
 	}
 }
 
-func exists(path string) bool {
-	_, err := os.Stat(path)
-	return err == nil
-}
 
-func keys(m map[string]bool) []string {
-	out := []string{}
-	for k := range m {
-		out = append(out, k)
-	}
-	sort.Strings(out)
-	return out
-}
-
-func contains(items []string, wanted string) bool {
-	for _, item := range items {
-		if item == wanted {
-			return true
-		}
-	}
-	return false
-}

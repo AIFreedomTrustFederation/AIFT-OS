@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
 	"time"
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/sliceutil"
 )
 
 type Event struct {
@@ -151,8 +151,8 @@ func Snapshot(cfg config.Config) (Summary, error) {
 		GeneratedAt:   time.Now().UTC().Format(time.RFC3339),
 		LogPath:       logPath(cfg),
 		Count:         len(events),
-		Topics:        sortedKeys(topics),
-		Sources:       sortedKeys(sources),
+		Topics:        sliceutil.SortedBoolMapKeys(topics),
+		Sources:       sliceutil.SortedBoolMapKeys(sources),
 	}, nil
 }
 
@@ -266,15 +266,6 @@ func eventID(now string, source string, topic string) string {
 		raw = raw[:96]
 	}
 	return raw
-}
-
-func sortedKeys(values map[string]bool) []string {
-	out := []string{}
-	for value := range values {
-		out = append(out, value)
-	}
-	sort.Strings(out)
-	return out
 }
 
 func escapeTable(value string) string {

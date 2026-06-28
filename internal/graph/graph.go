@@ -11,6 +11,9 @@ import (
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/fsutil"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/jsonfile"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/sliceutil"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/workspace"
 )
 
@@ -116,7 +119,7 @@ func (b *builder) discoverRepo(cfg config.Config, r workspace.Repo) {
 
 func (b *builder) fileNode(r workspace.Repo, rel string, typ string, name string, repoID string, edgeType string) {
 	path := filepath.Join(r.Path, rel)
-	if !exists(path) {
+	if !fsutil.Exists(path) {
 		return
 	}
 	id := typ + ":" + r.Name + ":" + name
@@ -414,19 +417,7 @@ func writeAll(cfg config.Config, g Graph) error {
 }
 
 func writeJSON(cfg config.Config, g Graph) error {
-	out := filepath.Join(cfg.OSHome, "registry", "graph.json")
-	if err := os.MkdirAll(filepath.Dir(out), 0755); err != nil {
-		return err
-	}
-	data, err := json.MarshalIndent(g, "", "  ")
-	if err != nil {
-		return err
-	}
-	if err := os.WriteFile(out, append(data, '\n'), 0644); err != nil {
-		return err
-	}
-	fmt.Println("Wrote", out)
-	return nil
+	return jsonfile.Write(filepath.Join(cfg.OSHome, "registry", "graph.json"), g, true)
 }
 
 func writeMermaid(cfg config.Config, g Graph) error {
@@ -510,11 +501,11 @@ func writeReports(cfg config.Config, g Graph) error {
 	b.WriteString(fmt.Sprintf("- Nodes: %d\n", len(g.Nodes)))
 	b.WriteString(fmt.Sprintf("- Edges: %d\n\n", len(g.Edges)))
 	b.WriteString("## Node Types\n\n")
-	for _, k := range sortedKeys(typeCounts) {
+	for _, k := range sliceutil.SortedIntMapKeys(typeCounts) {
 		b.WriteString(fmt.Sprintf("- `%s`: %d\n", k, typeCounts[k]))
 	}
 	b.WriteString("\n## Statuses\n\n")
-	for _, k := range sortedKeys(statusCounts) {
+	for _, k := range sliceutil.SortedIntMapKeys(statusCounts) {
 		b.WriteString(fmt.Sprintf("- `%s`: %d\n", k, statusCounts[k]))
 	}
 	b.WriteString("\n## Edges\n\n")
@@ -640,11 +631,6 @@ func printMatching(g Graph, field, value string) error {
 	return nil
 }
 
-func exists(path string) bool {
-	_, err := os.Stat(path)
-	return err == nil
-}
-
 func safeID(s string) string {
 	repl := strings.NewReplacer(":", "_", "-", "_", ".", "_", "/", "_", " ", "_")
 	return repl.Replace(s)
@@ -663,11 +649,4 @@ func cypherType(s string) string {
 	return s
 }
 
-func sortedKeys(m map[string]int) []string {
-	out := []string{}
-	for k := range m {
-		out = append(out, k)
-	}
-	sort.Strings(out)
-	return out
-}
+

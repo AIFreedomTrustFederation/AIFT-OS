@@ -11,6 +11,9 @@ import (
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/fsutil"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/jsonfile"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/sliceutil"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/workspace"
 )
 
@@ -138,32 +141,32 @@ func discoverRepository(now string, name string, path string) Object {
 		"git_status": "git status --short",
 	}
 
-	if exists(filepath.Join(path, "README.md")) {
+	if fsutil.Exists(filepath.Join(path, "README.md")) {
 		evidence = append(evidence, ev(now, "doc", filepath.Join(path, "README.md"), "README documentation exists."))
 		provides = append(provides, "documentation.seed")
 	}
-	if exists(filepath.Join(path, "package.json")) {
+	if fsutil.Exists(filepath.Join(path, "package.json")) {
 		evidence = append(evidence, ev(now, "manifest", filepath.Join(path, "package.json"), "Node package manifest exists."))
 		provides = append(provides, "node.package")
-		readPackageCommands(path, commands)
+		jsonfile.ReadPackageCommands(path, commands)
 	}
-	if exists(filepath.Join(path, "go.mod")) {
+	if fsutil.Exists(filepath.Join(path, "go.mod")) {
 		evidence = append(evidence, ev(now, "manifest", filepath.Join(path, "go.mod"), "Go module manifest exists."))
 		provides = append(provides, "go.module")
 		commands["go:test"] = "go test ./..."
 		commands["go:build"] = "go build ./..."
 	}
-	if exists(filepath.Join(path, "Cargo.toml")) {
+	if fsutil.Exists(filepath.Join(path, "Cargo.toml")) {
 		evidence = append(evidence, ev(now, "manifest", filepath.Join(path, "Cargo.toml"), "Rust Cargo manifest exists."))
 		provides = append(provides, "rust.crate")
 		commands["cargo:test"] = "cargo test"
 		commands["cargo:build"] = "cargo build"
 	}
-	if exists(filepath.Join(path, ".github", "workflows")) {
+	if fsutil.Exists(filepath.Join(path, ".github", "workflows")) {
 		evidence = append(evidence, ev(now, "workflow", filepath.Join(path, ".github", "workflows"), "GitHub workflow directory exists."))
 		provides = append(provides, "github.workflows")
 	}
-	if exists(filepath.Join(path, ".aift", "module.json")) {
+	if fsutil.Exists(filepath.Join(path, ".aift", "module.json")) {
 		evidence = append(evidence, ev(now, "contract", filepath.Join(path, ".aift", "module.json"), "AIFT module manifest exists."))
 		provides = append(provides, "aift.module.contract")
 	}
@@ -182,7 +185,7 @@ func discoverRepository(now string, name string, path string) Object {
 		Version:       "0.1.0",
 		Description:   "Discovered repository object for " + name + ".",
 		Evidence:      evidence,
-		Provides:      unique(provides),
+		Provides:      sliceutil.Unique(provides),
 		Consumes:      []string{},
 		DependsOn:     []string{},
 		Publishes:     []string{"repository.discovered"},
@@ -290,15 +293,7 @@ func Report(cfg config.Config) error {
 }
 
 func Write(cfg config.Config, reg Registry) error {
-	out := filepath.Join(cfg.OSHome, "registry", "kernel-registry.json")
-	if err := os.MkdirAll(filepath.Dir(out), 0755); err != nil {
-		return err
-	}
-	data, err := json.MarshalIndent(reg, "", "  ")
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(out, append(data, '\n'), 0644)
+	return jsonfile.Write(filepath.Join(cfg.OSHome, "registry", "kernel-registry.json"), reg, false)
 }
 
 func WriteReport(cfg config.Config, reg Registry) error {
@@ -336,22 +331,6 @@ func LoadOrBuild(cfg config.Config) (Registry, error) {
 	return reg, nil
 }
 
-func readPackageCommands(repoPath string, commands map[string]string) {
-	data, err := os.ReadFile(filepath.Join(repoPath, "package.json"))
-	if err != nil {
-		return
-	}
-	var pkg struct {
-		Scripts map[string]string `json:"scripts"`
-	}
-	if json.Unmarshal(data, &pkg) != nil {
-		return
-	}
-	for name := range pkg.Scripts {
-		commands["npm:"+name] = "npm run " + name
-	}
-}
-
 func ev(now string, kind string, path string, description string) Evidence {
 	return Evidence{
 		Kind:        kind,
@@ -361,18 +340,8 @@ func ev(now string, kind string, path string, description string) Evidence {
 	}
 }
 
-func exists(path string) bool {
-	_, err := os.Stat(path)
-	return err == nil
-}
-
 func hasProvide(obj Object, capability string) bool {
-	for _, item := range obj.Provides {
-		if item == capability {
-			return true
-		}
-	}
-	return false
+	return sliceutil.Contains(obj.Provides, capability)
 }
 
 func safeID(value string) string {
@@ -383,16 +352,4 @@ func safeID(value string) string {
 	return value
 }
 
-func unique(items []string) []string {
-	seen := map[string]bool{}
-	out := []string{}
-	for _, item := range items {
-		if item == "" || seen[item] {
-			continue
-		}
-		seen[item] = true
-		out = append(out, item)
-	}
-	sort.Strings(out)
-	return out
-}
+

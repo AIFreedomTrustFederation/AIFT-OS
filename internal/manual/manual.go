@@ -1,7 +1,6 @@
 package manual
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -10,6 +9,8 @@ import (
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/fsutil"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/jsonfile"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/workspace"
 )
 
@@ -92,11 +93,7 @@ func InitRepo(cfg config.Config, r workspace.Repo) error {
 	writeIfMissing(filepath.Join(source, "man7", "booksmith-pipeline.md"), booksmithPage(r.Name))
 
 	contract := BuildContract(cfg, r)
-	data, err := json.MarshalIndent(contract, "", "  ")
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(filepath.Join(r.Path, ".aift", "manual.json"), append(data, '\n'), 0644)
+	return jsonfile.Write(filepath.Join(r.Path, ".aift", "manual.json"), contract, false)
 }
 
 func Scan(cfg config.Config) error {
@@ -171,16 +168,16 @@ func BuildContract(cfg config.Config, r workspace.Repo) Contract {
 	assetsRel := "docs/manual/assets"
 
 	sourceStatus := "planned"
-	if dirExists(filepath.Join(r.Path, sourceRel)) {
+	if fsutil.DirExists(filepath.Join(r.Path, sourceRel)) {
 		sourceStatus = "ready"
 	}
 
 	builderStatus := "planned"
 	booksmithPath := filepath.Join(cfg.Root, "booksmith-ai")
-	if !dirExists(booksmithPath) {
+	if !fsutil.DirExists(booksmithPath) {
 		booksmithPath = filepath.Join(cfg.Root, "BookSmith-Federation-OS")
 	}
-	if fileExists(filepath.Join(booksmithPath, ".aift", "commands", "manual-build.sh")) {
+	if fsutil.FileExists(filepath.Join(booksmithPath, ".aift", "commands", "manual-build.sh")) {
 		builderStatus = "ready"
 	}
 
@@ -207,19 +204,7 @@ func BuildContract(cfg config.Config, r workspace.Repo) Contract {
 }
 
 func writeRegistry(cfg config.Config, reg Registry) error {
-	out := filepath.Join(cfg.OSHome, "registry", "manuals.json")
-	if err := os.MkdirAll(filepath.Dir(out), 0755); err != nil {
-		return err
-	}
-	data, err := json.MarshalIndent(reg, "", "  ")
-	if err != nil {
-		return err
-	}
-	if err := os.WriteFile(out, append(data, '\n'), 0644); err != nil {
-		return err
-	}
-	fmt.Println("Wrote", out)
-	return nil
+	return jsonfile.Write(filepath.Join(cfg.OSHome, "registry", "manuals.json"), reg, true)
 }
 
 func writeReport(cfg config.Config, reg Registry) error {
@@ -246,7 +231,7 @@ func writeReport(cfg config.Config, reg Registry) error {
 }
 
 func writeIfMissing(path string, content string) error {
-	if fileExists(path) {
+	if fsutil.FileExists(path) {
 		return nil
 	}
 	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
@@ -283,12 +268,4 @@ func titleFor(repo string) string {
 	return strings.ReplaceAll(repo, "-", " ") + " UNIX Manual"
 }
 
-func fileExists(path string) bool {
-	info, err := os.Stat(path)
-	return err == nil && !info.IsDir()
-}
 
-func dirExists(path string) bool {
-	info, err := os.Stat(path)
-	return err == nil && info.IsDir()
-}
