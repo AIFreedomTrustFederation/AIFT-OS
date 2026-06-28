@@ -113,6 +113,36 @@ All tests are self-contained:
 - No GitHub credentials or external services needed
 - No real federation repositories required
 
+## Integration Tests
+
+CLI integration tests live in `tests/integration/` and exercise the compiled
+`aiftd` binary end-to-end via `os/exec`. Each test creates an isolated workspace
+using `t.TempDir()` with a minimal fake repo structure.
+
+```bash
+go test ./tests/integration/ -v
+```
+
+Command families covered:
+- `help`, `version` (output format)
+- `doctor` (health check)
+- `status` (repo listing)
+- `manifest` (creates `.aift/repo.json`)
+- `registry` (generates `registry/repos.json`)
+- `events`, `event-bus` (publish, list, report)
+- `capabilities` (scan, report)
+- `modules` (scan, list, init-all)
+- `graph` (federation graph)
+- `verify` (validation)
+
+Contract tests:
+- Every command in `help` has a matching `case` in `main.go`
+- Every `case` in `main.go` appears in `help` output
+- Planned commands return "planned" error messages
+- No command panics on empty args
+- Every `.sh` file passes `bash -n`
+- Non-exempt scripts under `scripts/` source `aift-run.sh`
+
 ## Shell Harness Tests
 
 The script execution harness has its own test suite:
