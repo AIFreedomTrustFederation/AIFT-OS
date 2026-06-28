@@ -9,6 +9,7 @@ import (
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/daemon"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/doctor"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/eventmesh"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/federation"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/gitx"
@@ -114,6 +115,8 @@ func main() {
 		err = runManual(cfg, args)
 	case "graph":
 		err = graph.Query(cfg, args)
+	case "mesh":
+		err = runMesh(cfg, args)
 	case "verify":
 		err = verify(cfg)
 	default:
@@ -158,6 +161,7 @@ func help() {
 	fmt.Println("  intelligence scan|report|repo|roadmap")
 	fmt.Println("  manual init-all|scan|report|repo")
 	fmt.Println("  graph [summary|repo|type|status]")
+	fmt.Println("  mesh init-all|scan|topics|subscribers|publish|replay|tail|report")
 	fmt.Println("  verify")
 }
 
@@ -260,6 +264,45 @@ func runManual(cfg config.Config, args []string) error {
 	return fmt.Errorf("usage: aift manual init-all|scan|report|repo")
 }
 
+func runMesh(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "scan" {
+		return eventmesh.Scan(cfg)
+	}
+	switch args[0] {
+	case "init-all":
+		return eventmesh.InitAll(cfg)
+	case "topics":
+		return eventmesh.Topics(cfg)
+	case "subscribers":
+		return eventmesh.Subscribers(cfg)
+	case "publish":
+		if len(args) < 2 {
+			return fmt.Errorf("usage: aift mesh publish <topic> [source] [message]")
+		}
+		source := "manual"
+		message := args[1]
+		if len(args) > 2 {
+			source = args[2]
+		}
+		if len(args) > 3 {
+			message = args[3]
+		}
+		return eventmesh.Publish(cfg, args[1], source, message)
+	case "replay":
+		topic := ""
+		if len(args) > 1 {
+			topic = args[1]
+		}
+		return eventmesh.Replay(cfg, topic)
+	case "tail":
+		return eventmesh.Tail(cfg, 25)
+	case "report":
+		return eventmesh.Report(cfg)
+	default:
+		return fmt.Errorf("usage: aift mesh init-all|scan|topics|subscribers|publish|replay|tail|report")
+	}
+}
+
 func verify(cfg config.Config) error {
 	if err := doctor.Run(cfg); err != nil {
 		return err
@@ -289,6 +332,9 @@ func verify(cfg config.Config) error {
 		return err
 	}
 	if err := graph.Build(cfg); err != nil {
+		return err
+	}
+	if err := eventmesh.Scan(cfg); err != nil {
 		return err
 	}
 	if err := events.Emit(cfg, "verify.complete", "verify", "federation verified", nil); err != nil {
