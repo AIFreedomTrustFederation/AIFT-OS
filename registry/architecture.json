@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-28T17:34:16Z",
+  "generated_at": "2026-06-28T18:06:55Z",
   "version": "1.0.0",
   "packages": [
     {
@@ -323,7 +323,9 @@
       "depends_on": [
         "internal/config"
       ],
-      "depended_by": null,
+      "depended_by": [
+        "cmd/aift"
+      ],
       "has_tests": false,
       "category": "kernel"
     },
@@ -550,7 +552,9 @@
         "internal/registry",
         "internal/reports"
       ],
-      "depended_by": null,
+      "depended_by": [
+        "cmd/aift"
+      ],
       "has_tests": false,
       "category": "runtime"
     },
@@ -1466,18 +1470,11 @@
     },
     {
       "name": "no-duplicate-commands",
-      "passed": false,
-      "details": [
-        "capabilities appears 2 times in help"
-      ]
+      "passed": true
     },
     {
       "name": "no-orphaned-packages",
-      "passed": false,
-      "details": [
-        "kernel (not imported by any other package)",
-        "scheduler (not imported by any other package)"
-      ]
+      "passed": true
     },
     {
       "name": "modules-have-source",
@@ -1489,10 +1486,7 @@
     },
     {
       "name": "service-contracts-have-owner",
-      "passed": false,
-      "details": [
-        "ServiceContract struct has no Owner field"
-      ]
+      "passed": true
     }
   ]
 }

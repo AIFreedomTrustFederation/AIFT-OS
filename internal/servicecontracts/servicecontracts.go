@@ -21,6 +21,7 @@ type Service struct {
 	Kind        string   `json:"kind"`
 	Status      string   `json:"status"`
 	Version     string   `json:"version"`
+	Owner       string   `json:"owner"`
 	Provides    []string `json:"provides"`
 	Requires    []string `json:"requires"`
 	Events      []string `json:"events"`
@@ -86,6 +87,7 @@ func InitRepo(name string, repoPath string) error {
 				Kind:        inferKind(name, repoPath),
 				Status:      "planned",
 				Version:     "0.1.0",
+				Owner:       name,
 				Provides:    []string{},
 				Requires:    []string{},
 				Events:      []string{"repo.changed", "capability.changed", "manual.changed"},
@@ -126,6 +128,9 @@ func Scan(cfg config.Config) error {
 			}
 			if svc.Version == "" {
 				svc.Version = "0.1.0"
+			}
+			if svc.Owner == "" {
+				svc.Owner = c.Repo
 			}
 			if svc.Evidence == "" {
 				svc.Evidence = ".aift/services.json"
@@ -199,6 +204,7 @@ func Repo(cfg config.Config, name string) error {
 			fmt.Println("Kind:", svc.Kind)
 			fmt.Println("Status:", svc.Status)
 			fmt.Println("Version:", svc.Version)
+			fmt.Println("Owner:", svc.Owner)
 			fmt.Println("Provides:", strings.Join(svc.Provides, ", "))
 			fmt.Println("Requires:", strings.Join(svc.Requires, ", "))
 			fmt.Println("Events:", strings.Join(svc.Events, ", "))

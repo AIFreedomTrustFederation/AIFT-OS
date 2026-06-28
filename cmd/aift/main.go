@@ -15,6 +15,7 @@ import (
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/gitx"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/graph"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/intelligence"
+	_ "github.com/AIFreedomTrustFederation/AIFT-OS/internal/kernel"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manifests"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manual"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/planner"
@@ -24,6 +25,7 @@ import (
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/repo"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/reports"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/runtime"
+	_ "github.com/AIFreedomTrustFederation/AIFT-OS/internal/scheduler"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/servicecontracts"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/services"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/sync"
@@ -175,7 +177,6 @@ func help() {
 	fmt.Println("  federation scan|graph|verify")
 	fmt.Println("  repo list|inspect|run")
 	fmt.Println("  workflow list")
-	fmt.Println("  capabilities scan|report|repo|promote")
 	fmt.Println("  intelligence scan|report|repo|roadmap")
 	fmt.Println("  manual init-all|scan|report|repo")
 	fmt.Println("  graph [summary|repo|type|status]")
