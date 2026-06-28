@@ -15,6 +15,7 @@ import (
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/gitx"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/graph"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/intelligence"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/kernelregistry"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manifests"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manual"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/modules"
@@ -126,6 +127,8 @@ func main() {
 		err = runPlanner(cfg, args)
 	case "modules":
 		err = runModules(cfg, args)
+	case "kernel-registry":
+		err = runKernelRegistry(cfg, args)
 	case "verify":
 		err = verify(cfg)
 	default:
@@ -174,6 +177,7 @@ func help() {
 	fmt.Println("  service-contracts init-all|scan|list|repo|report")
 	fmt.Println("  plan build|summary|repo|ready|blocked|report")
 	fmt.Println("  modules init-all|scan|list|repo|report")
+	fmt.Println("  kernel-registry scan|list|object|report")
 	fmt.Println("  verify")
 }
 
@@ -378,6 +382,26 @@ func runModules(cfg config.Config, args []string) error {
 		return modules.Report(cfg)
 	default:
 		return fmt.Errorf("usage: aift modules init-all|scan|list|repo|report")
+	}
+}
+
+func runKernelRegistry(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "scan" {
+		return kernelregistry.Scan(cfg)
+	}
+
+	switch args[0] {
+	case "list":
+		return kernelregistry.List(cfg)
+	case "object":
+		if len(args) < 2 {
+			return fmt.Errorf("usage: aift kernel-registry object <id-or-name>")
+		}
+		return kernelregistry.ObjectInfo(cfg, args[1])
+	case "report":
+		return kernelregistry.Report(cfg)
+	default:
+		return fmt.Errorf("usage: aift kernel-registry scan|list|object|report")
 	}
 }
 
