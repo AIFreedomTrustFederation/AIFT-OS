@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIFT Kernel Boot Report",
+  "type": "object",
+  "required": ["schemaVersion", "generatedAt", "status", "steps", "summary"],
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "generatedAt": { "type": "string" },
+    "status": { "type": "string" },
+    "steps": { "type": "array" },
+    "summary": { "type": "object" }
+  }
+}

@@ -1,0 +1,616 @@
+{
+  "generatedAt": "2026-06-28T00:33:17Z",
+  "contracts": [
+    {
+      "repo": ".github",
+      "services": [
+        {
+          "name": ".github.service",
+          "kind": "repository",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract",
+          "description": "Default planned federation service contract for .github"
+        }
+      ],
+      "generatedAt": "2026-06-28T00:28:09Z"
+    },
+    {
+      "repo": "AI-Freedom-Trust",
+      "services": [
+        {
+          "name": "AI-Freedom-Trust.service",
+          "kind": "repository",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract",
+          "description": "Default planned federation service contract for AI-Freedom-Trust"
+        }
+      ],
+      "generatedAt": "2026-06-28T00:28:09Z"
+    },
+    {
+      "repo": "AIFT-Forge",
+      "services": [
+        {
+          "name": "AIFT-Forge.service",
+          "kind": "forge",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract",
+          "description": "Default planned federation service contract for AIFT-Forge"
+        }
+      ],
+      "generatedAt": "2026-06-28T00:28:09Z"
+    },
+    {
+      "repo": "AIFT-Genesis",
+      "services": [
+        {
+          "name": "AIFT-Genesis.service",
+          "kind": "repository",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract",
+          "description": "Default planned federation service contract for AIFT-Genesis"
+        }
+      ],
+      "generatedAt": "2026-06-28T00:28:09Z"
+    },
+    {
+      "repo": "AIFT-OS",
+      "services": [
+        {
+          "name": "AIFT-OS.service",
+          "kind": "control-plane",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract",
+          "description": "Default planned federation service contract for AIFT-OS"
+        }
+      ],
+      "generatedAt": "2026-06-28T00:28:09Z"
+    },
+    {
+      "repo": "Aether_Coin_biozonecurrency",
+      "services": [
+        {
+          "name": "Aether_Coin_biozonecurrency.service",
+          "kind": "web-app",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract",
+          "description": "Default planned federation service contract for Aether_Coin_biozonecurrency"
+        }
+      ],
+      "generatedAt": "2026-06-28T00:28:09Z"
+    },
+    {
+      "repo": "AetherianGovernance",
+      "services": [
+        {
+          "name": "AetherianGovernance.service",
+          "kind": "repository",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract",
+          "description": "Default planned federation service contract for AetherianGovernance"
+        }
+      ],
+      "generatedAt": "2026-06-28T00:28:09Z"
+    },
+    {
+      "repo": "BookSmith-Federation-OS",
+      "services": [
+        {
+          "name": "BookSmith-Federation-OS.service",
+          "kind": "publishing",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract",
+          "description": "Default planned federation service contract for BookSmith-Federation-OS"
+        }
+      ],
+      "generatedAt": "2026-06-28T00:28:09Z"
+    },
+    {
+      "repo": "OpenMontage",
+      "services": [
+        {
+          "name": "OpenMontage.service",
+          "kind": "repository",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract",
+          "description": "Default planned federation service contract for OpenMontage"
+        }
+      ],
+      "generatedAt": "2026-06-28T00:28:09Z"
+    },
+    {
+      "repo": "TheMindofAll",
+      "services": [
+        {
+          "name": "TheMindofAll.service",
+          "kind": "repository",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract",
+          "description": "Default planned federation service contract for TheMindofAll"
+        }
+      ],
+      "generatedAt": "2026-06-28T00:28:09Z"
+    },
+    {
+      "repo": "VPS",
+      "services": [
+        {
+          "name": "VPS.service",
+          "kind": "infrastructure",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract",
+          "description": "Default planned federation service contract for VPS"
+        }
+      ],
+      "generatedAt": "2026-06-28T00:28:09Z"
+    },
+    {
+      "repo": "aifreedomtrustfederation.github.io",
+      "services": [
+        {
+          "name": "aifreedomtrustfederation.github.io.service",
+          "kind": "website",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract",
+          "description": "Default planned federation service contract for aifreedomtrustfederation.github.io"
+        }
+      ],
+      "generatedAt": "2026-06-28T00:28:09Z"
+    },
+    {
+      "repo": "biozone-harmony-boost",
+      "services": [
+        {
+          "name": "biozone-harmony-boost.service",
+          "kind": "web-app",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract",
+          "description": "Default planned federation service contract for biozone-harmony-boost"
+        }
+      ],
+      "generatedAt": "2026-06-28T00:28:09Z"
+    },
+    {
+      "repo": "booksmith-ai",
+      "services": [
+        {
+          "name": "booksmith-ai.service",
+          "kind": "publishing",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract",
+          "description": "Default planned federation service contract for booksmith-ai"
+        }
+      ],
+      "generatedAt": "2026-06-28T00:28:09Z"
+    },
+    {
+      "repo": "c-848263",
+      "services": [
+        {
+          "name": "c-848263.service",
+          "kind": "web-app",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract",
+          "description": "Default planned federation service contract for c-848263"
+        }
+      ],
+      "generatedAt": "2026-06-28T00:28:09Z"
+    },
+    {
+      "repo": "capital-city-provisions",
+      "services": [
+        {
+          "name": "capital-city-provisions.service",
+          "kind": "web-app",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract",
+          "description": "Default planned federation service contract for capital-city-provisions"
+        }
+      ],
+      "generatedAt": "2026-06-28T00:28:09Z"
+    },
+    {
+      "repo": "chktex",
+      "services": [
+        {
+          "name": "chktex.service",
+          "kind": "repository",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract",
+          "description": "Default planned federation service contract for chktex"
+        }
+      ],
+      "generatedAt": "2026-06-28T00:28:09Z"
+    },
+    {
+      "repo": "mobox",
+      "services": [
+        {
+          "name": "mobox.service",
+          "kind": "repository",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract",
+          "description": "Default planned federation service contract for mobox"
+        }
+      ],
+      "generatedAt": "2026-06-28T00:28:09Z"
+    },
+    {
+      "repo": "repo-brainstorm-backend-forge",
+      "services": [
+        {
+          "name": "repo-brainstorm-backend-forge.service",
+          "kind": "forge",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract",
+          "description": "Default planned federation service contract for repo-brainstorm-backend-forge"
+        }
+      ],
+      "generatedAt": "2026-06-28T00:28:09Z"
+    },
+    {
+      "repo": "tastycutz",
+      "services": [
+        {
+          "name": "tastycutz.service",
+          "kind": "web-app",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract",
+          "description": "Default planned federation service contract for tastycutz"
+        }
+      ],
+      "generatedAt": "2026-06-28T00:28:09Z"
+    },
+    {
+      "repo": "www.aifreedomtrust.com",
+      "services": [
+        {
+          "name": "www.aifreedomtrust.com.service",
+          "kind": "website",
+          "status": "planned",
+          "version": "0.1.0",
+          "provides": [],
+          "requires": [],
+          "events": [
+            "repo.changed",
+            "capability.changed",
+            "manual.changed"
+          ],
+          "evidence": "default service contract",
+          "description": "Default planned federation service contract for www.aifreedomtrust.com"
+        }
+      ],
+      "generatedAt": "2026-06-28T00:28:09Z"
+    }
+  ],
+  "services": [
+    {
+      "repo": ".github",
+      "name": ".github.service",
+      "kind": "repository",
+      "status": "planned",
+      "version": "0.1.0",
+      "evidence": "default service contract"
+    },
+    {
+      "repo": "AI-Freedom-Trust",
+      "name": "AI-Freedom-Trust.service",
+      "kind": "repository",
+      "status": "planned",
+      "version": "0.1.0",
+      "evidence": "default service contract"
+    },
+    {
+      "repo": "AIFT-Forge",
+      "name": "AIFT-Forge.service",
+      "kind": "forge",
+      "status": "planned",
+      "version": "0.1.0",
+      "evidence": "default service contract"
+    },
+    {
+      "repo": "AIFT-Genesis",
+      "name": "AIFT-Genesis.service",
+      "kind": "repository",
+      "status": "planned",
+      "version": "0.1.0",
+      "evidence": "default service contract"
+    },
+    {
+      "repo": "AIFT-OS",
+      "name": "AIFT-OS.service",
+      "kind": "control-plane",
+      "status": "planned",
+      "version": "0.1.0",
+      "evidence": "default service contract"
+    },
+    {
+      "repo": "Aether_Coin_biozonecurrency",
+      "name": "Aether_Coin_biozonecurrency.service",
+      "kind": "web-app",
+      "status": "planned",
+      "version": "0.1.0",
+      "evidence": "default service contract"
+    },
+    {
+      "repo": "AetherianGovernance",
+      "name": "AetherianGovernance.service",
+      "kind": "repository",
+      "status": "planned",
+      "version": "0.1.0",
+      "evidence": "default service contract"
+    },
+    {
+      "repo": "BookSmith-Federation-OS",
+      "name": "BookSmith-Federation-OS.service",
+      "kind": "publishing",
+      "status": "planned",
+      "version": "0.1.0",
+      "evidence": "default service contract"
+    },
+    {
+      "repo": "OpenMontage",
+      "name": "OpenMontage.service",
+      "kind": "repository",
+      "status": "planned",
+      "version": "0.1.0",
+      "evidence": "default service contract"
+    },
+    {
+      "repo": "TheMindofAll",
+      "name": "TheMindofAll.service",
+      "kind": "repository",
+      "status": "planned",
+      "version": "0.1.0",
+      "evidence": "default service contract"
+    },
+    {
+      "repo": "VPS",
+      "name": "VPS.service",
+      "kind": "infrastructure",
+      "status": "planned",
+      "version": "0.1.0",
+      "evidence": "default service contract"
+    },
+    {
+      "repo": "aifreedomtrustfederation.github.io",
+      "name": "aifreedomtrustfederation.github.io.service",
+      "kind": "website",
+      "status": "planned",
+      "version": "0.1.0",
+      "evidence": "default service contract"
+    },
+    {
+      "repo": "biozone-harmony-boost",
+      "name": "biozone-harmony-boost.service",
+      "kind": "web-app",
+      "status": "planned",
+      "version": "0.1.0",
+      "evidence": "default service contract"
+    },
+    {
+      "repo": "booksmith-ai",
+      "name": "booksmith-ai.service",
+      "kind": "publishing",
+      "status": "planned",
+      "version": "0.1.0",
+      "evidence": "default service contract"
+    },
+    {
+      "repo": "c-848263",
+      "name": "c-848263.service",
+      "kind": "web-app",
+      "status": "planned",
+      "version": "0.1.0",
+      "evidence": "default service contract"
+    },
+    {
+      "repo": "capital-city-provisions",
+      "name": "capital-city-provisions.service",
+      "kind": "web-app",
+      "status": "planned",
+      "version": "0.1.0",
+      "evidence": "default service contract"
+    },
+    {
+      "repo": "chktex",
+      "name": "chktex.service",
+      "kind": "repository",
+      "status": "planned",
+      "version": "0.1.0",
+      "evidence": "default service contract"
+    },
+    {
+      "repo": "mobox",
+      "name": "mobox.service",
+      "kind": "repository",
+      "status": "planned",
+      "version": "0.1.0",
+      "evidence": "default service contract"
+    },
+    {
+      "repo": "repo-brainstorm-backend-forge",
+      "name": "repo-brainstorm-backend-forge.service",
+      "kind": "forge",
+      "status": "planned",
+      "version": "0.1.0",
+      "evidence": "default service contract"
+    },
+    {
+      "repo": "tastycutz",
+      "name": "tastycutz.service",
+      "kind": "web-app",
+      "status": "planned",
+      "version": "0.1.0",
+      "evidence": "default service contract"
+    },
+    {
+      "repo": "www.aifreedomtrust.com",
+      "name": "www.aifreedomtrust.com.service",
+      "kind": "website",
+      "status": "planned",
+      "version": "0.1.0",
+      "evidence": "default service contract"
+    }
+  ]
+}

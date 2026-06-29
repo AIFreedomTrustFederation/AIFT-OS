@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIFT Event Bus Event",
+  "type": "object",
+  "required": ["id", "schema", "topic", "kind", "source", "message", "status", "payload", "evidence", "generatedAt"],
+  "properties": {
+    "id": { "type": "string" },
+    "schema": { "type": "string" },
+    "topic": { "type": "string" },
+    "kind": { "type": "string" },
+    "source": { "type": "string" },
+    "message": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["planned", "detected", "ready", "active", "deprecated", "removed"]
+    },
+    "payload": { "type": "object" },
+    "evidence": { "type": "array" },
+    "generatedAt": { "type": "string" }
+  }
+}

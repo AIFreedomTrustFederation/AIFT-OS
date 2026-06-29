@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIFT Kernel Module Registry",
+  "type": "object",
+  "required": ["generatedAt", "modules"],
+  "properties": {
+    "generatedAt": { "type": "string" },
+    "modules": {
+      "type": "array",
+      "items": { "$ref": "./module.schema.json" }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "AIFT-OS",
+  "status": "running",
+  "startedAt": "2026-06-27T23:05:45Z",
+  "updatedAt": "2026-06-27T23:05:45Z",
+  "services": {
+    "api": "running",
+    "events": "running",
+    "providers": "running",
+    "registry": "running",
+    "reports": "running",
+    "scheduler": "running"
+  }
+}

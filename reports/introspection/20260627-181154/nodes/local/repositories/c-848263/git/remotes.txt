@@ -1,0 +1,2 @@
+origin	https://github.com/AIFreedomTrustFederation/c-848263.git (fetch)
+origin	https://github.com/AIFreedomTrustFederation/c-848263.git (push)

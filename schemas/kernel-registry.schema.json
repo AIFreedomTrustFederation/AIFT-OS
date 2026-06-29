@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIFT Kernel Registry",
+  "type": "object",
+  "required": ["schemaVersion", "generatedAt", "source", "objects"],
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "generatedAt": { "type": "string" },
+    "source": { "type": "string" },
+    "objects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "name", "status", "evidence", "generatedAt"],
+        "properties": {
+          "id": { "type": "string" },
+          "kind": { "type": "string" },
+          "name": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["planned", "detected", "ready", "active", "deprecated", "removed"]
+          },
+          "evidence": { "type": "array" },
+          "provides": { "type": "array" },
+          "consumes": { "type": "array" },
+          "dependsOn": { "type": "array" },
+          "commands": { "type": "object" }
+        }
+      }
+    }
+  }
+}

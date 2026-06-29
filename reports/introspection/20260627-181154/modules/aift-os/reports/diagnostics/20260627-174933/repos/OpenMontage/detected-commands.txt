@@ -1,0 +1,2 @@
+python:pytest=python -m pytest
+aift:status.sh=sh .aift/commands/status.sh

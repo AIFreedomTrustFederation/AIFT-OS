@@ -1,0 +1,9 @@
+npm:dev=npm run dev
+npm:build=npm run build
+npm:start=npm run start
+npm:lint=npm run lint
+npm:typecheck=npm run typecheck
+npm:license:audit=npm run license:audit
+npm:verify=npm run verify
+npm:vercel-build=npm run vercel-build
+aift:status.sh=sh .aift/commands/status.sh

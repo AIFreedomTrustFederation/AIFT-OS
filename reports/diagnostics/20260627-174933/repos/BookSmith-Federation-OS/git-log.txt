@@ -1,0 +1,10 @@
+5e7e3ee Sync AIFT phase updates
+7927128 Add AIFT service contract
+97c9215 Add AIFT event mesh contract
+1da961f Add AIFT manual contract
+7722bd5 Publish GitHub Pages: add deploy workflow and docs/index.html (redirect to federation-os-architecture.html)
+1c9124b Add Federation OS architecture landing page
+4c17cdc Add web OS root layout
+d1d4b4d Add web OS Next config
+96067a4 Add web OS app package
+6d19484 Reserve scripts directory

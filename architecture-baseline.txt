@@ -1,0 +1,4 @@
+# Known architecture invariant violations (baselined).
+# CI will only fail if NEW violations appear beyond these.
+# Remove an entry here to enforce it going forward.
+# All violations remediated in Phase 6.

@@ -1,0 +1,8 @@
+npm:lint=npm run lint
+npm:test=npm run test
+npm:typecheck=npm run typecheck
+npm:build=npm run build
+npm:deps:doctor=npm run deps:doctor
+npm:provider:smoke=npm run provider:smoke
+npm:pipeline=npm run pipeline
+aift:status.sh=sh .aift/commands/status.sh

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIFT Event Mesh Registry",
+  "type": "object",
+  "required": ["generatedAt", "topics", "subscribers", "contracts"],
+  "properties": {
+    "generatedAt": { "type": "string" },
+    "topics": { "type": "array" },
+    "subscribers": { "type": "array" },
+    "contracts": { "type": "array" }
+  }
+}

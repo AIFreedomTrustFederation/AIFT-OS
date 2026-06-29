@@ -1,0 +1,1234 @@
+{
+  "generatedAt": "2026-06-28T00:33:17Z",
+  "repos": [
+    {
+      "name": ".github",
+      "path": "/data/data/com.termux/files/home/AIFT/.github",
+      "branch": "main",
+      "remote": "https://github.com/AIFreedomTrustFederation/.github.git",
+      "dirty": true,
+      "detectedFiles": [
+        "README.md",
+        ".aift/repo.json",
+        ".aift/capabilities.json"
+      ],
+      "languages": [
+        "Markdown/Docs"
+      ],
+      "frameworks": [],
+      "role": "documentation-repository",
+      "maturity": "integrating",
+      "score": 49,
+      "confidence": 70,
+      "capabilitySummary": {
+        "build": "planned",
+        "deploy": "planned",
+        "docs": "detected",
+        "health": "planned",
+        "start": "planned",
+        "status": "ready",
+        "stop": "planned",
+        "sync": "ready",
+        "test": "planned",
+        "verify": "planned"
+      },
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "docs"
+      ],
+      "planned": [
+        "build",
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "test",
+        "verify"
+      ],
+      "broken": null,
+      "recommendations": [
+        "Add `.aift/commands/verify.sh` before enabling orchestration.",
+        "Review and commit or intentionally preserve local changes."
+      ]
+    },
+    {
+      "name": "AI-Freedom-Trust",
+      "path": "/data/data/com.termux/files/home/AIFT/AI-Freedom-Trust",
+      "branch": "main",
+      "remote": "https://github.com/AIFreedomTrustFederation/AI-Freedom-Trust.git",
+      "dirty": true,
+      "detectedFiles": [
+        "README.md",
+        "AGENTS.md",
+        ".aift/repo.json",
+        ".aift/capabilities.json"
+      ],
+      "languages": [
+        "Markdown/Docs"
+      ],
+      "frameworks": [],
+      "role": "doctrine-governance-trust",
+      "maturity": "integrating",
+      "score": 49,
+      "confidence": 70,
+      "capabilitySummary": {
+        "build": "planned",
+        "deploy": "planned",
+        "docs": "detected",
+        "health": "planned",
+        "start": "planned",
+        "status": "ready",
+        "stop": "planned",
+        "sync": "ready",
+        "test": "planned",
+        "verify": "planned"
+      },
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "docs"
+      ],
+      "planned": [
+        "build",
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "test",
+        "verify"
+      ],
+      "broken": null,
+      "recommendations": [
+        "Add `.aift/commands/verify.sh` before enabling orchestration.",
+        "Review and commit or intentionally preserve local changes."
+      ]
+    },
+    {
+      "name": "AIFT-Forge",
+      "path": "/data/data/com.termux/files/home/AIFT/AIFT-Forge",
+      "branch": "main",
+      "remote": "https://github.com/AIFreedomTrustFederation/AIFT-Forge.git",
+      "dirty": true,
+      "detectedFiles": [
+        "README.md",
+        "AGENTS.md",
+        "package.json",
+        "package-lock.json",
+        ".aift/repo.json",
+        ".aift/capabilities.json"
+      ],
+      "languages": [
+        "Markdown/Docs",
+        "TypeScript/JavaScript"
+      ],
+      "frameworks": [],
+      "role": "forge-repository-platform",
+      "maturity": "integrating",
+      "score": 55,
+      "confidence": 70,
+      "capabilitySummary": {
+        "build": "detected",
+        "deploy": "planned",
+        "docs": "detected",
+        "health": "planned",
+        "start": "planned",
+        "status": "ready",
+        "stop": "planned",
+        "sync": "ready",
+        "test": "detected",
+        "verify": "planned"
+      },
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "build",
+        "docs",
+        "test"
+      ],
+      "planned": [
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "verify"
+      ],
+      "broken": null,
+      "recommendations": [
+        "Add `.aift/commands/verify.sh` before enabling orchestration.",
+        "Convert detected build support into `.aift/commands/build.sh`.",
+        "Convert detected test support into `.aift/commands/test.sh`.",
+        "Review and commit or intentionally preserve local changes."
+      ]
+    },
+    {
+      "name": "AIFT-Genesis",
+      "path": "/data/data/com.termux/files/home/AIFT/AIFT-Genesis",
+      "branch": "main",
+      "remote": "https://github.com/AIFreedomTrustFederation/AIFT-Genesis.git",
+      "dirty": true,
+      "detectedFiles": [
+        "README.md",
+        "AGENTS.md",
+        ".aift/repo.json",
+        ".aift/capabilities.json"
+      ],
+      "languages": [
+        "Markdown/Docs"
+      ],
+      "frameworks": [],
+      "role": "documentation-repository",
+      "maturity": "integrating",
+      "score": 49,
+      "confidence": 70,
+      "capabilitySummary": {
+        "build": "planned",
+        "deploy": "planned",
+        "docs": "detected",
+        "health": "planned",
+        "start": "planned",
+        "status": "ready",
+        "stop": "planned",
+        "sync": "ready",
+        "test": "planned",
+        "verify": "planned"
+      },
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "docs"
+      ],
+      "planned": [
+        "build",
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "test",
+        "verify"
+      ],
+      "broken": null,
+      "recommendations": [
+        "Add `.aift/commands/verify.sh` before enabling orchestration.",
+        "Review and commit or intentionally preserve local changes."
+      ]
+    },
+    {
+      "name": "AIFT-OS",
+      "path": "/data/data/com.termux/files/home/AIFT/AIFT-OS",
+      "branch": "main",
+      "remote": "https://github.com/AIFreedomTrustFederation/AIFT-OS.git",
+      "dirty": true,
+      "detectedFiles": [
+        "README.md",
+        "go.mod",
+        "Makefile",
+        ".aift/repo.json",
+        ".aift/capabilities.json"
+      ],
+      "languages": [
+        "Go",
+        "Markdown/Docs"
+      ],
+      "frameworks": [
+        "Go CLI/Service"
+      ],
+      "role": "federation-control-plane",
+      "maturity": "runtime-ready",
+      "score": 60,
+      "confidence": 75,
+      "capabilitySummary": {
+        "build": "detected",
+        "deploy": "planned",
+        "docs": "detected",
+        "health": "planned",
+        "start": "planned",
+        "status": "ready",
+        "stop": "planned",
+        "sync": "ready",
+        "test": "detected",
+        "verify": "planned"
+      },
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "build",
+        "docs",
+        "test"
+      ],
+      "planned": [
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "verify"
+      ],
+      "broken": null,
+      "recommendations": [
+        "Add `.aift/commands/verify.sh` before enabling orchestration.",
+        "Convert detected build support into `.aift/commands/build.sh`.",
+        "Convert detected test support into `.aift/commands/test.sh`.",
+        "Review and commit or intentionally preserve local changes."
+      ]
+    },
+    {
+      "name": "Aether_Coin_biozonecurrency",
+      "path": "/data/data/com.termux/files/home/AIFT/Aether_Coin_biozonecurrency",
+      "branch": "main",
+      "remote": "https://github.com/AIFreedomTrustFederation/Aether_Coin_biozonecurrency.git",
+      "dirty": true,
+      "detectedFiles": [
+        "README.md",
+        "AGENTS.md",
+        "package.json",
+        "package-lock.json",
+        "tsconfig.json",
+        "tailwind.config.js",
+        "tailwind.config.ts",
+        ".aift/repo.json",
+        ".aift/capabilities.json"
+      ],
+      "languages": [
+        "Markdown/Docs",
+        "TypeScript/JavaScript"
+      ],
+      "frameworks": [
+        "Tailwind"
+      ],
+      "role": "economic-trust-layer",
+      "maturity": "runtime-ready",
+      "score": 60,
+      "confidence": 75,
+      "capabilitySummary": {
+        "build": "detected",
+        "deploy": "planned",
+        "docs": "detected",
+        "health": "planned",
+        "start": "planned",
+        "status": "ready",
+        "stop": "planned",
+        "sync": "ready",
+        "test": "detected",
+        "verify": "planned"
+      },
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "build",
+        "docs",
+        "test"
+      ],
+      "planned": [
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "verify"
+      ],
+      "broken": null,
+      "recommendations": [
+        "Add `.aift/commands/verify.sh` before enabling orchestration.",
+        "Convert detected build support into `.aift/commands/build.sh`.",
+        "Convert detected test support into `.aift/commands/test.sh`.",
+        "Review and commit or intentionally preserve local changes."
+      ]
+    },
+    {
+      "name": "AetherianGovernance",
+      "path": "/data/data/com.termux/files/home/AIFT/AetherianGovernance",
+      "branch": "main",
+      "remote": "https://github.com/AIFreedomTrustFederation/AetherianGovernance.git",
+      "dirty": true,
+      "detectedFiles": [
+        ".aift/repo.json",
+        ".aift/capabilities.json"
+      ],
+      "languages": [
+        "Markdown/Docs"
+      ],
+      "frameworks": [],
+      "role": "economic-trust-layer",
+      "maturity": "discovered",
+      "score": 39,
+      "confidence": 65,
+      "capabilitySummary": {
+        "build": "planned",
+        "deploy": "planned",
+        "docs": "detected",
+        "health": "planned",
+        "start": "planned",
+        "status": "ready",
+        "stop": "planned",
+        "sync": "ready",
+        "test": "planned",
+        "verify": "planned"
+      },
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "docs"
+      ],
+      "planned": [
+        "build",
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "test",
+        "verify"
+      ],
+      "broken": null,
+      "recommendations": [
+        "Add `.aift/commands/verify.sh` before enabling orchestration.",
+        "Review and commit or intentionally preserve local changes."
+      ]
+    },
+    {
+      "name": "BookSmith-Federation-OS",
+      "path": "/data/data/com.termux/files/home/AIFT/BookSmith-Federation-OS",
+      "branch": "main",
+      "remote": "https://github.com/AIFreedomTrustFederation/BookSmith-Federation-OS.git",
+      "dirty": true,
+      "detectedFiles": [
+        "README.md",
+        "package.json",
+        ".aift/repo.json",
+        ".aift/capabilities.json"
+      ],
+      "languages": [
+        "Markdown/Docs",
+        "TypeScript/JavaScript"
+      ],
+      "frameworks": [],
+      "role": "authoring-publishing-system",
+      "maturity": "integrating",
+      "score": 55,
+      "confidence": 70,
+      "capabilitySummary": {
+        "build": "detected",
+        "deploy": "planned",
+        "docs": "detected",
+        "health": "planned",
+        "start": "planned",
+        "status": "ready",
+        "stop": "planned",
+        "sync": "ready",
+        "test": "detected",
+        "verify": "planned"
+      },
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "build",
+        "docs",
+        "test"
+      ],
+      "planned": [
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "verify"
+      ],
+      "broken": null,
+      "recommendations": [
+        "Add `.aift/commands/verify.sh` before enabling orchestration.",
+        "Convert detected build support into `.aift/commands/build.sh`.",
+        "Convert detected test support into `.aift/commands/test.sh`.",
+        "Review and commit or intentionally preserve local changes."
+      ]
+    },
+    {
+      "name": "OpenMontage",
+      "path": "/data/data/com.termux/files/home/AIFT/OpenMontage",
+      "branch": "main",
+      "remote": "https://github.com/AIFreedomTrustFederation/OpenMontage.git",
+      "dirty": true,
+      "detectedFiles": [
+        "README.md",
+        "AGENTS.md",
+        "Makefile",
+        ".aift/repo.json",
+        ".aift/capabilities.json"
+      ],
+      "languages": [
+        "Markdown/Docs"
+      ],
+      "frameworks": [],
+      "role": "documentation-repository",
+      "maturity": "integrating",
+      "score": 52,
+      "confidence": 70,
+      "capabilitySummary": {
+        "build": "detected",
+        "deploy": "planned",
+        "docs": "detected",
+        "health": "planned",
+        "start": "planned",
+        "status": "ready",
+        "stop": "planned",
+        "sync": "ready",
+        "test": "planned",
+        "verify": "planned"
+      },
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "build",
+        "docs"
+      ],
+      "planned": [
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "test",
+        "verify"
+      ],
+      "broken": null,
+      "recommendations": [
+        "Add `.aift/commands/verify.sh` before enabling orchestration.",
+        "Convert detected build support into `.aift/commands/build.sh`.",
+        "Review and commit or intentionally preserve local changes."
+      ]
+    },
+    {
+      "name": "TheMindofAll",
+      "path": "/data/data/com.termux/files/home/AIFT/TheMindofAll",
+      "branch": "main",
+      "remote": "https://github.com/AIFreedomTrustFederation/TheMindofAll.git",
+      "dirty": true,
+      "detectedFiles": [
+        "README.md",
+        ".aift/repo.json",
+        ".aift/capabilities.json"
+      ],
+      "languages": [
+        "Markdown/Docs"
+      ],
+      "frameworks": [],
+      "role": "documentation-repository",
+      "maturity": "integrating",
+      "score": 49,
+      "confidence": 70,
+      "capabilitySummary": {
+        "build": "planned",
+        "deploy": "planned",
+        "docs": "detected",
+        "health": "planned",
+        "start": "planned",
+        "status": "ready",
+        "stop": "planned",
+        "sync": "ready",
+        "test": "planned",
+        "verify": "planned"
+      },
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "docs"
+      ],
+      "planned": [
+        "build",
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "test",
+        "verify"
+      ],
+      "broken": null,
+      "recommendations": [
+        "Add `.aift/commands/verify.sh` before enabling orchestration.",
+        "Review and commit or intentionally preserve local changes."
+      ]
+    },
+    {
+      "name": "VPS",
+      "path": "/data/data/com.termux/files/home/AIFT/VPS",
+      "branch": "main",
+      "remote": "https://github.com/AIFreedomTrustFederation/VPS.git",
+      "dirty": true,
+      "detectedFiles": [
+        "README.md",
+        "AGENTS.md",
+        "package.json",
+        ".aift/repo.json",
+        ".aift/capabilities.json"
+      ],
+      "languages": [
+        "Markdown/Docs",
+        "TypeScript/JavaScript"
+      ],
+      "frameworks": [],
+      "role": "infrastructure-node-layer",
+      "maturity": "integrating",
+      "score": 55,
+      "confidence": 70,
+      "capabilitySummary": {
+        "build": "detected",
+        "deploy": "planned",
+        "docs": "detected",
+        "health": "planned",
+        "start": "planned",
+        "status": "ready",
+        "stop": "planned",
+        "sync": "ready",
+        "test": "detected",
+        "verify": "planned"
+      },
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "build",
+        "docs",
+        "test"
+      ],
+      "planned": [
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "verify"
+      ],
+      "broken": null,
+      "recommendations": [
+        "Add `.aift/commands/verify.sh` before enabling orchestration.",
+        "Convert detected build support into `.aift/commands/build.sh`.",
+        "Convert detected test support into `.aift/commands/test.sh`.",
+        "Review and commit or intentionally preserve local changes."
+      ]
+    },
+    {
+      "name": "aifreedomtrustfederation.github.io",
+      "path": "/data/data/com.termux/files/home/AIFT/aifreedomtrustfederation.github.io",
+      "branch": "main",
+      "remote": "https://github.com/AIFreedomTrustFederation/aifreedomtrustfederation.github.io.git",
+      "dirty": true,
+      "detectedFiles": [
+        ".aift/repo.json",
+        ".aift/capabilities.json"
+      ],
+      "languages": [
+        "Markdown/Docs"
+      ],
+      "frameworks": [],
+      "role": "public-web-portal",
+      "maturity": "discovered",
+      "score": 39,
+      "confidence": 65,
+      "capabilitySummary": {
+        "build": "planned",
+        "deploy": "planned",
+        "docs": "detected",
+        "health": "planned",
+        "start": "planned",
+        "status": "ready",
+        "stop": "planned",
+        "sync": "ready",
+        "test": "planned",
+        "verify": "planned"
+      },
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "docs"
+      ],
+      "planned": [
+        "build",
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "test",
+        "verify"
+      ],
+      "broken": null,
+      "recommendations": [
+        "Add `.aift/commands/verify.sh` before enabling orchestration.",
+        "Review and commit or intentionally preserve local changes."
+      ]
+    },
+    {
+      "name": "biozone-harmony-boost",
+      "path": "/data/data/com.termux/files/home/AIFT/biozone-harmony-boost",
+      "branch": "main",
+      "remote": "https://github.com/AIFreedomTrustFederation/biozone-harmony-boost.git",
+      "dirty": true,
+      "detectedFiles": [
+        "README.md",
+        "package.json",
+        "package-lock.json",
+        "tsconfig.json",
+        "tailwind.config.ts",
+        ".aift/repo.json",
+        ".aift/capabilities.json"
+      ],
+      "languages": [
+        "Markdown/Docs",
+        "TypeScript/JavaScript"
+      ],
+      "frameworks": [
+        "Tailwind"
+      ],
+      "role": "documentation-repository",
+      "maturity": "runtime-ready",
+      "score": 60,
+      "confidence": 75,
+      "capabilitySummary": {
+        "build": "detected",
+        "deploy": "planned",
+        "docs": "detected",
+        "health": "planned",
+        "start": "planned",
+        "status": "ready",
+        "stop": "planned",
+        "sync": "ready",
+        "test": "detected",
+        "verify": "planned"
+      },
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "build",
+        "docs",
+        "test"
+      ],
+      "planned": [
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "verify"
+      ],
+      "broken": null,
+      "recommendations": [
+        "Add `.aift/commands/verify.sh` before enabling orchestration.",
+        "Convert detected build support into `.aift/commands/build.sh`.",
+        "Convert detected test support into `.aift/commands/test.sh`.",
+        "Review and commit or intentionally preserve local changes."
+      ]
+    },
+    {
+      "name": "booksmith-ai",
+      "path": "/data/data/com.termux/files/home/AIFT/booksmith-ai",
+      "branch": "main",
+      "remote": "https://github.com/AIFreedomTrustFederation/booksmith-ai.git",
+      "dirty": true,
+      "detectedFiles": [
+        "README.md",
+        "AGENTS.md",
+        "package.json",
+        "package-lock.json",
+        "next.config.ts",
+        "tsconfig.json",
+        ".aift/repo.json",
+        ".aift/capabilities.json"
+      ],
+      "languages": [
+        "Markdown/Docs",
+        "TypeScript/JavaScript"
+      ],
+      "frameworks": [
+        "Next.js"
+      ],
+      "role": "authoring-publishing-system",
+      "maturity": "runtime-ready",
+      "score": 60,
+      "confidence": 75,
+      "capabilitySummary": {
+        "build": "detected",
+        "deploy": "planned",
+        "docs": "detected",
+        "health": "planned",
+        "start": "planned",
+        "status": "ready",
+        "stop": "planned",
+        "sync": "ready",
+        "test": "detected",
+        "verify": "planned"
+      },
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "build",
+        "docs",
+        "test"
+      ],
+      "planned": [
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "verify"
+      ],
+      "broken": null,
+      "recommendations": [
+        "Add `.aift/commands/verify.sh` before enabling orchestration.",
+        "Convert detected build support into `.aift/commands/build.sh`.",
+        "Convert detected test support into `.aift/commands/test.sh`.",
+        "Review and commit or intentionally preserve local changes."
+      ]
+    },
+    {
+      "name": "c-848263",
+      "path": "/data/data/com.termux/files/home/AIFT/c-848263",
+      "branch": "main",
+      "remote": "https://github.com/AIFreedomTrustFederation/c-848263.git",
+      "dirty": true,
+      "detectedFiles": [
+        "README.md",
+        "AGENTS.md",
+        "package.json",
+        "package-lock.json",
+        "tsconfig.json",
+        "tailwind.config.ts",
+        ".aift/repo.json",
+        ".aift/capabilities.json"
+      ],
+      "languages": [
+        "Markdown/Docs",
+        "TypeScript/JavaScript"
+      ],
+      "frameworks": [
+        "Tailwind"
+      ],
+      "role": "documentation-repository",
+      "maturity": "runtime-ready",
+      "score": 60,
+      "confidence": 75,
+      "capabilitySummary": {
+        "build": "detected",
+        "deploy": "planned",
+        "docs": "detected",
+        "health": "planned",
+        "start": "planned",
+        "status": "ready",
+        "stop": "planned",
+        "sync": "ready",
+        "test": "detected",
+        "verify": "planned"
+      },
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "build",
+        "docs",
+        "test"
+      ],
+      "planned": [
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "verify"
+      ],
+      "broken": null,
+      "recommendations": [
+        "Add `.aift/commands/verify.sh` before enabling orchestration.",
+        "Convert detected build support into `.aift/commands/build.sh`.",
+        "Convert detected test support into `.aift/commands/test.sh`.",
+        "Review and commit or intentionally preserve local changes."
+      ]
+    },
+    {
+      "name": "capital-city-provisions",
+      "path": "/data/data/com.termux/files/home/AIFT/capital-city-provisions",
+      "branch": "main",
+      "remote": "https://github.com/AIFreedomTrustFederation/capital-city-provisions.git",
+      "dirty": true,
+      "detectedFiles": [
+        "README.md",
+        "AGENTS.md",
+        "package.json",
+        "package-lock.json",
+        "tsconfig.json",
+        ".aift/repo.json",
+        ".aift/capabilities.json"
+      ],
+      "languages": [
+        "Markdown/Docs",
+        "TypeScript/JavaScript"
+      ],
+      "frameworks": [],
+      "role": "documentation-repository",
+      "maturity": "integrating",
+      "score": 55,
+      "confidence": 70,
+      "capabilitySummary": {
+        "build": "detected",
+        "deploy": "planned",
+        "docs": "detected",
+        "health": "planned",
+        "start": "planned",
+        "status": "ready",
+        "stop": "planned",
+        "sync": "ready",
+        "test": "detected",
+        "verify": "planned"
+      },
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "build",
+        "docs",
+        "test"
+      ],
+      "planned": [
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "verify"
+      ],
+      "broken": null,
+      "recommendations": [
+        "Add `.aift/commands/verify.sh` before enabling orchestration.",
+        "Convert detected build support into `.aift/commands/build.sh`.",
+        "Convert detected test support into `.aift/commands/test.sh`.",
+        "Review and commit or intentionally preserve local changes."
+      ]
+    },
+    {
+      "name": "chktex",
+      "path": "/data/data/com.termux/files/home/AIFT/chktex",
+      "branch": "master",
+      "remote": "https://github.com/AIFreedomTrustFederation/chktex.git",
+      "dirty": true,
+      "detectedFiles": [
+        ".aift/repo.json",
+        ".aift/capabilities.json"
+      ],
+      "languages": [
+        "Markdown/Docs"
+      ],
+      "frameworks": [],
+      "role": "documentation-repository",
+      "maturity": "discovered",
+      "score": 39,
+      "confidence": 65,
+      "capabilitySummary": {
+        "build": "planned",
+        "deploy": "planned",
+        "docs": "detected",
+        "health": "planned",
+        "start": "planned",
+        "status": "ready",
+        "stop": "planned",
+        "sync": "ready",
+        "test": "planned",
+        "verify": "planned"
+      },
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "docs"
+      ],
+      "planned": [
+        "build",
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "test",
+        "verify"
+      ],
+      "broken": null,
+      "recommendations": [
+        "Add `.aift/commands/verify.sh` before enabling orchestration.",
+        "Review and commit or intentionally preserve local changes."
+      ]
+    },
+    {
+      "name": "mobox",
+      "path": "/data/data/com.termux/files/home/AIFT/mobox",
+      "branch": "main",
+      "remote": "https://github.com/AIFreedomTrustFederation/mobox.git",
+      "dirty": true,
+      "detectedFiles": [
+        "README.md",
+        ".aift/repo.json",
+        ".aift/capabilities.json"
+      ],
+      "languages": [
+        "Markdown/Docs"
+      ],
+      "frameworks": [],
+      "role": "documentation-repository",
+      "maturity": "integrating",
+      "score": 49,
+      "confidence": 70,
+      "capabilitySummary": {
+        "build": "planned",
+        "deploy": "planned",
+        "docs": "detected",
+        "health": "planned",
+        "start": "planned",
+        "status": "ready",
+        "stop": "planned",
+        "sync": "ready",
+        "test": "planned",
+        "verify": "planned"
+      },
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "docs"
+      ],
+      "planned": [
+        "build",
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "test",
+        "verify"
+      ],
+      "broken": null,
+      "recommendations": [
+        "Add `.aift/commands/verify.sh` before enabling orchestration.",
+        "Review and commit or intentionally preserve local changes."
+      ]
+    },
+    {
+      "name": "repo-brainstorm-backend-forge",
+      "path": "/data/data/com.termux/files/home/AIFT/repo-brainstorm-backend-forge",
+      "branch": "main",
+      "remote": "https://github.com/AIFreedomTrustFederation/repo-brainstorm-backend-forge.git",
+      "dirty": true,
+      "detectedFiles": [
+        "README.md",
+        "package.json",
+        "package-lock.json",
+        "tsconfig.json",
+        "tailwind.config.ts",
+        ".aift/repo.json",
+        ".aift/capabilities.json"
+      ],
+      "languages": [
+        "Markdown/Docs",
+        "TypeScript/JavaScript"
+      ],
+      "frameworks": [
+        "Tailwind"
+      ],
+      "role": "forge-repository-platform",
+      "maturity": "runtime-ready",
+      "score": 60,
+      "confidence": 75,
+      "capabilitySummary": {
+        "build": "detected",
+        "deploy": "planned",
+        "docs": "detected",
+        "health": "planned",
+        "start": "planned",
+        "status": "ready",
+        "stop": "planned",
+        "sync": "ready",
+        "test": "detected",
+        "verify": "planned"
+      },
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "build",
+        "docs",
+        "test"
+      ],
+      "planned": [
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "verify"
+      ],
+      "broken": null,
+      "recommendations": [
+        "Add `.aift/commands/verify.sh` before enabling orchestration.",
+        "Convert detected build support into `.aift/commands/build.sh`.",
+        "Convert detected test support into `.aift/commands/test.sh`.",
+        "Review and commit or intentionally preserve local changes."
+      ]
+    },
+    {
+      "name": "tastycutz",
+      "path": "/data/data/com.termux/files/home/AIFT/tastycutz",
+      "branch": "main",
+      "remote": "https://github.com/AIFreedomTrustFederation/tastycutz.git",
+      "dirty": true,
+      "detectedFiles": [
+        "README.md",
+        "AGENTS.md",
+        "package.json",
+        "package-lock.json",
+        "tsconfig.json",
+        ".aift/repo.json",
+        ".aift/capabilities.json"
+      ],
+      "languages": [
+        "Markdown/Docs",
+        "TypeScript/JavaScript"
+      ],
+      "frameworks": [],
+      "role": "documentation-repository",
+      "maturity": "integrating",
+      "score": 55,
+      "confidence": 70,
+      "capabilitySummary": {
+        "build": "detected",
+        "deploy": "planned",
+        "docs": "detected",
+        "health": "planned",
+        "start": "planned",
+        "status": "ready",
+        "stop": "planned",
+        "sync": "ready",
+        "test": "detected",
+        "verify": "planned"
+      },
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "build",
+        "docs",
+        "test"
+      ],
+      "planned": [
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "verify"
+      ],
+      "broken": null,
+      "recommendations": [
+        "Add `.aift/commands/verify.sh` before enabling orchestration.",
+        "Convert detected build support into `.aift/commands/build.sh`.",
+        "Convert detected test support into `.aift/commands/test.sh`.",
+        "Review and commit or intentionally preserve local changes."
+      ]
+    },
+    {
+      "name": "www.aifreedomtrust.com",
+      "path": "/data/data/com.termux/files/home/AIFT/www.aifreedomtrust.com",
+      "branch": "main",
+      "remote": "https://github.com/AIFreedomTrustFederation/www.aifreedomtrust.com.git",
+      "dirty": true,
+      "detectedFiles": [
+        "README.md",
+        "AGENTS.md",
+        ".aift/repo.json",
+        ".aift/capabilities.json"
+      ],
+      "languages": [
+        "Markdown/Docs"
+      ],
+      "frameworks": [],
+      "role": "public-web-portal",
+      "maturity": "integrating",
+      "score": 49,
+      "confidence": 70,
+      "capabilitySummary": {
+        "build": "planned",
+        "deploy": "planned",
+        "docs": "detected",
+        "health": "planned",
+        "start": "planned",
+        "status": "ready",
+        "stop": "planned",
+        "sync": "ready",
+        "test": "planned",
+        "verify": "planned"
+      },
+      "ready": [
+        "status",
+        "sync"
+      ],
+      "v1": null,
+      "detected": [
+        "docs"
+      ],
+      "planned": [
+        "build",
+        "deploy",
+        "health",
+        "start",
+        "stop",
+        "test",
+        "verify"
+      ],
+      "broken": null,
+      "recommendations": [
+        "Add `.aift/commands/verify.sh` before enabling orchestration.",
+        "Review and commit or intentionally preserve local changes."
+      ]
+    }
+  ],
+  "summary": {
+    "repos": 21,
+    "dirty": 21,
+    "readyOrV1Repos": 21,
+    "brokenRepos": 0,
+    "averageScore": 52
+  }
+}

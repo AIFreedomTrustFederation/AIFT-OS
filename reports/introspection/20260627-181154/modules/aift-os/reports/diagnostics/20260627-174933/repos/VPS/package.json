@@ -1,0 +1,27 @@
+{
+  "name": "aift-vps-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "workspaces": [
+    "apps/aift-dashboard",
+    "apps/aift-desktop",
+    "apps/aift-node-agent"
+  ],
+  "scripts": {
+    "test": "npm run qa:local",
+    "lint": "npm run lint:structure",
+    "lint:structure": "npm run verify:structure",
+    "qa:local": "npm run verify:structure && npm run verify:installer-registry",
+    "verify:structure": "node scripts/aift-verify-structure.mjs",
+    "verify:installer-registry": "node scripts/aift-validate-installer-registry.mjs",
+    "dashboard:dev": "npm --workspace apps/aift-dashboard run dev",
+    "dashboard:build": "npm --workspace apps/aift-dashboard run build",
+    "dashboard:start": "npm --workspace apps/aift-dashboard run start",
+    "desktop:dev": "npm --workspace apps/aift-desktop run dev",
+    "desktop:build:win": "npm --workspace apps/aift-desktop run build:win",
+    "node-agent:build": "npm --workspace apps/aift-node-agent run build",
+    "android:sync": "bash scripts/aift-android-runtime-bootstrap.sh",
+    "android:build": "bash scripts/aift-build-android-runtime.sh"
+  }
+}

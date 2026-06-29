@@ -1,0 +1,10 @@
+0961b0e Sync AIFT phase updates
+77f0faf Add AIFT service contract
+da1a81e Add AIFT event mesh contract
+43dc1f4 Add AIFT manual contract
+c9bd5e8 improve error messages for mismatched environments
+0cd8b6c disable ConText errors
+daf8f62 split out bracket matching errors
+6fadb06 keep copy of line when storing error
+8944015 keep filename in memory for use in error messages
+3043271 add a memory check with valgrind

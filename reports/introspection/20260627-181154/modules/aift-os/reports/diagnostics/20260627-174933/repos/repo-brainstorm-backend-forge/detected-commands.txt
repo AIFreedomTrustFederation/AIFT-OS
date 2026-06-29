@@ -1,0 +1,6 @@
+npm:dev=npm run dev
+npm:build=npm run build
+npm:build:dev=npm run build:dev
+npm:lint=npm run lint
+npm:preview=npm run preview
+aift:status.sh=sh .aift/commands/status.sh

@@ -1,0 +1,1891 @@
+@prefix aift: <https://aifreedomtrust.org/aift#> .
+
+aift:CapabilitySet__github_capabilities a aift:CapabilitySet ; aift:name "capabilities" ; aift:status "detected" .
+aift:CapabilitySet_AI_Freedom_Trust_capabilities a aift:CapabilitySet ; aift:name "capabilities" ; aift:status "detected" .
+aift:CapabilitySet_AIFT_Forge_capabilities a aift:CapabilitySet ; aift:name "capabilities" ; aift:status "detected" .
+aift:CapabilitySet_AIFT_Genesis_capabilities a aift:CapabilitySet ; aift:name "capabilities" ; aift:status "detected" .
+aift:CapabilitySet_AIFT_OS_capabilities a aift:CapabilitySet ; aift:name "capabilities" ; aift:status "detected" .
+aift:CapabilitySet_Aether_Coin_biozonecurrency_capabilities a aift:CapabilitySet ; aift:name "capabilities" ; aift:status "detected" .
+aift:CapabilitySet_AetherianGovernance_capabilities a aift:CapabilitySet ; aift:name "capabilities" ; aift:status "detected" .
+aift:CapabilitySet_BookSmith_Federation_OS_capabilities a aift:CapabilitySet ; aift:name "capabilities" ; aift:status "detected" .
+aift:CapabilitySet_OpenMontage_capabilities a aift:CapabilitySet ; aift:name "capabilities" ; aift:status "detected" .
+aift:CapabilitySet_TheMindofAll_capabilities a aift:CapabilitySet ; aift:name "capabilities" ; aift:status "detected" .
+aift:CapabilitySet_VPS_capabilities a aift:CapabilitySet ; aift:name "capabilities" ; aift:status "detected" .
+aift:CapabilitySet_aifreedomtrustfederation_github_io_capabilities a aift:CapabilitySet ; aift:name "capabilities" ; aift:status "detected" .
+aift:CapabilitySet_biozone_harmony_boost_capabilities a aift:CapabilitySet ; aift:name "capabilities" ; aift:status "detected" .
+aift:CapabilitySet_booksmith_ai_capabilities a aift:CapabilitySet ; aift:name "capabilities" ; aift:status "detected" .
+aift:CapabilitySet_c_848263_capabilities a aift:CapabilitySet ; aift:name "capabilities" ; aift:status "detected" .
+aift:CapabilitySet_capital_city_provisions_capabilities a aift:CapabilitySet ; aift:name "capabilities" ; aift:status "detected" .
+aift:CapabilitySet_chktex_capabilities a aift:CapabilitySet ; aift:name "capabilities" ; aift:status "detected" .
+aift:CapabilitySet_mobox_capabilities a aift:CapabilitySet ; aift:name "capabilities" ; aift:status "detected" .
+aift:CapabilitySet_repo_brainstorm_backend_forge_capabilities a aift:CapabilitySet ; aift:name "capabilities" ; aift:status "detected" .
+aift:CapabilitySet_tastycutz_capabilities a aift:CapabilitySet ; aift:name "capabilities" ; aift:status "detected" .
+aift:CapabilitySet_www_aifreedomtrust_com_capabilities a aift:CapabilitySet ; aift:name "capabilities" ; aift:status "detected" .
+aift:Manifest__github_repo_manifest a aift:Manifest ; aift:name "repo-manifest" ; aift:status "detected" .
+aift:Manifest_AI_Freedom_Trust_repo_manifest a aift:Manifest ; aift:name "repo-manifest" ; aift:status "detected" .
+aift:Manifest_AIFT_Forge_repo_manifest a aift:Manifest ; aift:name "repo-manifest" ; aift:status "detected" .
+aift:Manifest_AIFT_Genesis_repo_manifest a aift:Manifest ; aift:name "repo-manifest" ; aift:status "detected" .
+aift:Manifest_AIFT_OS_repo_manifest a aift:Manifest ; aift:name "repo-manifest" ; aift:status "detected" .
+aift:Manifest_Aether_Coin_biozonecurrency_repo_manifest a aift:Manifest ; aift:name "repo-manifest" ; aift:status "detected" .
+aift:Manifest_AetherianGovernance_repo_manifest a aift:Manifest ; aift:name "repo-manifest" ; aift:status "detected" .
+aift:Manifest_BookSmith_Federation_OS_repo_manifest a aift:Manifest ; aift:name "repo-manifest" ; aift:status "detected" .
+aift:Manifest_OpenMontage_repo_manifest a aift:Manifest ; aift:name "repo-manifest" ; aift:status "detected" .
+aift:Manifest_TheMindofAll_repo_manifest a aift:Manifest ; aift:name "repo-manifest" ; aift:status "detected" .
+aift:Manifest_VPS_repo_manifest a aift:Manifest ; aift:name "repo-manifest" ; aift:status "detected" .
+aift:Manifest_aifreedomtrustfederation_github_io_repo_manifest a aift:Manifest ; aift:name "repo-manifest" ; aift:status "detected" .
+aift:Manifest_biozone_harmony_boost_repo_manifest a aift:Manifest ; aift:name "repo-manifest" ; aift:status "detected" .
+aift:Manifest_booksmith_ai_repo_manifest a aift:Manifest ; aift:name "repo-manifest" ; aift:status "detected" .
+aift:Manifest_c_848263_repo_manifest a aift:Manifest ; aift:name "repo-manifest" ; aift:status "detected" .
+aift:Manifest_capital_city_provisions_repo_manifest a aift:Manifest ; aift:name "repo-manifest" ; aift:status "detected" .
+aift:Manifest_chktex_repo_manifest a aift:Manifest ; aift:name "repo-manifest" ; aift:status "detected" .
+aift:Manifest_mobox_repo_manifest a aift:Manifest ; aift:name "repo-manifest" ; aift:status "detected" .
+aift:Manifest_repo_brainstorm_backend_forge_repo_manifest a aift:Manifest ; aift:name "repo-manifest" ; aift:status "detected" .
+aift:Manifest_tastycutz_repo_manifest a aift:Manifest ; aift:name "repo-manifest" ; aift:status "detected" .
+aift:Manifest_www_aifreedomtrust_com_repo_manifest a aift:Manifest ; aift:name "repo-manifest" ; aift:status "detected" .
+aift:Manual__github_unix_manual_source a aift:Manual ; aift:name "unix-manual-source" ; aift:status "detected" .
+aift:Manual_AI_Freedom_Trust_unix_manual_source a aift:Manual ; aift:name "unix-manual-source" ; aift:status "detected" .
+aift:Manual_AIFT_Forge_unix_manual_source a aift:Manual ; aift:name "unix-manual-source" ; aift:status "detected" .
+aift:Manual_AIFT_Genesis_unix_manual_source a aift:Manual ; aift:name "unix-manual-source" ; aift:status "detected" .
+aift:Manual_AIFT_OS_unix_manual_source a aift:Manual ; aift:name "unix-manual-source" ; aift:status "detected" .
+aift:Manual_Aether_Coin_biozonecurrency_unix_manual_source a aift:Manual ; aift:name "unix-manual-source" ; aift:status "detected" .
+aift:Manual_AetherianGovernance_unix_manual_source a aift:Manual ; aift:name "unix-manual-source" ; aift:status "detected" .
+aift:Manual_BookSmith_Federation_OS_unix_manual_source a aift:Manual ; aift:name "unix-manual-source" ; aift:status "detected" .
+aift:Manual_OpenMontage_unix_manual_source a aift:Manual ; aift:name "unix-manual-source" ; aift:status "detected" .
+aift:Manual_TheMindofAll_unix_manual_source a aift:Manual ; aift:name "unix-manual-source" ; aift:status "detected" .
+aift:Manual_VPS_unix_manual_source a aift:Manual ; aift:name "unix-manual-source" ; aift:status "detected" .
+aift:Manual_aifreedomtrustfederation_github_io_unix_manual_source a aift:Manual ; aift:name "unix-manual-source" ; aift:status "detected" .
+aift:Manual_biozone_harmony_boost_unix_manual_source a aift:Manual ; aift:name "unix-manual-source" ; aift:status "detected" .
+aift:Manual_booksmith_ai_unix_manual_source a aift:Manual ; aift:name "unix-manual-source" ; aift:status "detected" .
+aift:Manual_c_848263_unix_manual_source a aift:Manual ; aift:name "unix-manual-source" ; aift:status "detected" .
+aift:Manual_capital_city_provisions_unix_manual_source a aift:Manual ; aift:name "unix-manual-source" ; aift:status "detected" .
+aift:Manual_chktex_unix_manual_source a aift:Manual ; aift:name "unix-manual-source" ; aift:status "detected" .
+aift:Manual_mobox_unix_manual_source a aift:Manual ; aift:name "unix-manual-source" ; aift:status "detected" .
+aift:Manual_repo_brainstorm_backend_forge_unix_manual_source a aift:Manual ; aift:name "unix-manual-source" ; aift:status "detected" .
+aift:Manual_tastycutz_unix_manual_source a aift:Manual ; aift:name "unix-manual-source" ; aift:status "detected" .
+aift:Manual_www_aifreedomtrust_com_unix_manual_source a aift:Manual ; aift:name "unix-manual-source" ; aift:status "detected" .
+aift:ManualContract__github_manual_contract a aift:ManualContract ; aift:name "manual-contract" ; aift:status "detected" .
+aift:ManualContract_AI_Freedom_Trust_manual_contract a aift:ManualContract ; aift:name "manual-contract" ; aift:status "detected" .
+aift:ManualContract_AIFT_Forge_manual_contract a aift:ManualContract ; aift:name "manual-contract" ; aift:status "detected" .
+aift:ManualContract_AIFT_Genesis_manual_contract a aift:ManualContract ; aift:name "manual-contract" ; aift:status "detected" .
+aift:ManualContract_AIFT_OS_manual_contract a aift:ManualContract ; aift:name "manual-contract" ; aift:status "detected" .
+aift:ManualContract_Aether_Coin_biozonecurrency_manual_contract a aift:ManualContract ; aift:name "manual-contract" ; aift:status "detected" .
+aift:ManualContract_AetherianGovernance_manual_contract a aift:ManualContract ; aift:name "manual-contract" ; aift:status "detected" .
+aift:ManualContract_BookSmith_Federation_OS_manual_contract a aift:ManualContract ; aift:name "manual-contract" ; aift:status "detected" .
+aift:ManualContract_OpenMontage_manual_contract a aift:ManualContract ; aift:name "manual-contract" ; aift:status "detected" .
+aift:ManualContract_TheMindofAll_manual_contract a aift:ManualContract ; aift:name "manual-contract" ; aift:status "detected" .
+aift:ManualContract_VPS_manual_contract a aift:ManualContract ; aift:name "manual-contract" ; aift:status "detected" .
+aift:ManualContract_aifreedomtrustfederation_github_io_manual_contract a aift:ManualContract ; aift:name "manual-contract" ; aift:status "detected" .
+aift:ManualContract_biozone_harmony_boost_manual_contract a aift:ManualContract ; aift:name "manual-contract" ; aift:status "detected" .
+aift:ManualContract_booksmith_ai_manual_contract a aift:ManualContract ; aift:name "manual-contract" ; aift:status "detected" .
+aift:ManualContract_c_848263_manual_contract a aift:ManualContract ; aift:name "manual-contract" ; aift:status "detected" .
+aift:ManualContract_capital_city_provisions_manual_contract a aift:ManualContract ; aift:name "manual-contract" ; aift:status "detected" .
+aift:ManualContract_chktex_manual_contract a aift:ManualContract ; aift:name "manual-contract" ; aift:status "detected" .
+aift:ManualContract_mobox_manual_contract a aift:ManualContract ; aift:name "manual-contract" ; aift:status "detected" .
+aift:ManualContract_repo_brainstorm_backend_forge_manual_contract a aift:ManualContract ; aift:name "manual-contract" ; aift:status "detected" .
+aift:ManualContract_tastycutz_manual_contract a aift:ManualContract ; aift:name "manual-contract" ; aift:status "detected" .
+aift:ManualContract_www_aifreedomtrust_com_manual_contract a aift:ManualContract ; aift:name "manual-contract" ; aift:status "detected" .
+aift:ManualPage__github_readme a aift:ManualPage ; aift:name "readme" ; aift:status "detected" .
+aift:ManualPage_AI_Freedom_Trust_readme a aift:ManualPage ; aift:name "readme" ; aift:status "detected" .
+aift:ManualPage_AIFT_Forge_readme a aift:ManualPage ; aift:name "readme" ; aift:status "detected" .
+aift:ManualPage_AIFT_Genesis_readme a aift:ManualPage ; aift:name "readme" ; aift:status "detected" .
+aift:ManualPage_AIFT_OS_readme a aift:ManualPage ; aift:name "readme" ; aift:status "detected" .
+aift:ManualPage_Aether_Coin_biozonecurrency_readme a aift:ManualPage ; aift:name "readme" ; aift:status "detected" .
+aift:ManualPage_BookSmith_Federation_OS_readme a aift:ManualPage ; aift:name "readme" ; aift:status "detected" .
+aift:ManualPage_OpenMontage_readme a aift:ManualPage ; aift:name "readme" ; aift:status "detected" .
+aift:ManualPage_TheMindofAll_readme a aift:ManualPage ; aift:name "readme" ; aift:status "detected" .
+aift:ManualPage_VPS_readme a aift:ManualPage ; aift:name "readme" ; aift:status "detected" .
+aift:ManualPage_biozone_harmony_boost_readme a aift:ManualPage ; aift:name "readme" ; aift:status "detected" .
+aift:ManualPage_booksmith_ai_readme a aift:ManualPage ; aift:name "readme" ; aift:status "detected" .
+aift:ManualPage_c_848263_readme a aift:ManualPage ; aift:name "readme" ; aift:status "detected" .
+aift:ManualPage_capital_city_provisions_readme a aift:ManualPage ; aift:name "readme" ; aift:status "detected" .
+aift:ManualPage_mobox_readme a aift:ManualPage ; aift:name "readme" ; aift:status "detected" .
+aift:ManualPage_repo_brainstorm_backend_forge_readme a aift:ManualPage ; aift:name "readme" ; aift:status "detected" .
+aift:ManualPage_tastycutz_readme a aift:ManualPage ; aift:name "readme" ; aift:status "detected" .
+aift:ManualPage_www_aifreedomtrust_com_readme a aift:ManualPage ; aift:name "readme" ; aift:status "detected" .
+aift:Package_AIFT_Forge_npm_package a aift:Package ; aift:name "npm-package" ; aift:status "detected" .
+aift:Package_AIFT_OS_go_module a aift:Package ; aift:name "go-module" ; aift:status "detected" .
+aift:Package_Aether_Coin_biozonecurrency_npm_package a aift:Package ; aift:name "npm-package" ; aift:status "detected" .
+aift:Package_BookSmith_Federation_OS_npm_package a aift:Package ; aift:name "npm-package" ; aift:status "detected" .
+aift:Package_VPS_npm_package a aift:Package ; aift:name "npm-package" ; aift:status "detected" .
+aift:Package_biozone_harmony_boost_npm_package a aift:Package ; aift:name "npm-package" ; aift:status "detected" .
+aift:Package_booksmith_ai_npm_package a aift:Package ; aift:name "npm-package" ; aift:status "detected" .
+aift:Package_c_848263_npm_package a aift:Package ; aift:name "npm-package" ; aift:status "detected" .
+aift:Package_capital_city_provisions_npm_package a aift:Package ; aift:name "npm-package" ; aift:status "detected" .
+aift:Package_repo_brainstorm_backend_forge_npm_package a aift:Package ; aift:name "npm-package" ; aift:status "detected" .
+aift:Package_tastycutz_npm_package a aift:Package ; aift:name "npm-package" ; aift:status "detected" .
+aift:capability__github_build a aift:Capability ; aift:name "build" ; aift:status "planned" .
+aift:capability__github_deploy a aift:Capability ; aift:name "deploy" ; aift:status "planned" .
+aift:capability__github_docs a aift:Capability ; aift:name "docs" ; aift:status "detected" .
+aift:capability__github_health a aift:Capability ; aift:name "health" ; aift:status "planned" .
+aift:capability__github_start a aift:Capability ; aift:name "start" ; aift:status "planned" .
+aift:capability__github_status a aift:Capability ; aift:name "status" ; aift:status "ready" .
+aift:capability__github_stop a aift:Capability ; aift:name "stop" ; aift:status "planned" .
+aift:capability__github_sync a aift:Capability ; aift:name "sync" ; aift:status "ready" .
+aift:capability__github_test a aift:Capability ; aift:name "test" ; aift:status "planned" .
+aift:capability__github_verify a aift:Capability ; aift:name "verify" ; aift:status "planned" .
+aift:capability_AI_Freedom_Trust_build a aift:Capability ; aift:name "build" ; aift:status "planned" .
+aift:capability_AI_Freedom_Trust_deploy a aift:Capability ; aift:name "deploy" ; aift:status "planned" .
+aift:capability_AI_Freedom_Trust_docs a aift:Capability ; aift:name "docs" ; aift:status "detected" .
+aift:capability_AI_Freedom_Trust_health a aift:Capability ; aift:name "health" ; aift:status "planned" .
+aift:capability_AI_Freedom_Trust_start a aift:Capability ; aift:name "start" ; aift:status "planned" .
+aift:capability_AI_Freedom_Trust_status a aift:Capability ; aift:name "status" ; aift:status "ready" .
+aift:capability_AI_Freedom_Trust_stop a aift:Capability ; aift:name "stop" ; aift:status "planned" .
+aift:capability_AI_Freedom_Trust_sync a aift:Capability ; aift:name "sync" ; aift:status "ready" .
+aift:capability_AI_Freedom_Trust_test a aift:Capability ; aift:name "test" ; aift:status "planned" .
+aift:capability_AI_Freedom_Trust_verify a aift:Capability ; aift:name "verify" ; aift:status "planned" .
+aift:capability_AIFT_Forge_build a aift:Capability ; aift:name "build" ; aift:status "detected" .
+aift:capability_AIFT_Forge_deploy a aift:Capability ; aift:name "deploy" ; aift:status "planned" .
+aift:capability_AIFT_Forge_docs a aift:Capability ; aift:name "docs" ; aift:status "detected" .
+aift:capability_AIFT_Forge_health a aift:Capability ; aift:name "health" ; aift:status "planned" .
+aift:capability_AIFT_Forge_start a aift:Capability ; aift:name "start" ; aift:status "planned" .
+aift:capability_AIFT_Forge_status a aift:Capability ; aift:name "status" ; aift:status "ready" .
+aift:capability_AIFT_Forge_stop a aift:Capability ; aift:name "stop" ; aift:status "planned" .
+aift:capability_AIFT_Forge_sync a aift:Capability ; aift:name "sync" ; aift:status "ready" .
+aift:capability_AIFT_Forge_test a aift:Capability ; aift:name "test" ; aift:status "detected" .
+aift:capability_AIFT_Forge_verify a aift:Capability ; aift:name "verify" ; aift:status "planned" .
+aift:capability_AIFT_Genesis_build a aift:Capability ; aift:name "build" ; aift:status "planned" .
+aift:capability_AIFT_Genesis_deploy a aift:Capability ; aift:name "deploy" ; aift:status "planned" .
+aift:capability_AIFT_Genesis_docs a aift:Capability ; aift:name "docs" ; aift:status "detected" .
+aift:capability_AIFT_Genesis_health a aift:Capability ; aift:name "health" ; aift:status "planned" .
+aift:capability_AIFT_Genesis_start a aift:Capability ; aift:name "start" ; aift:status "planned" .
+aift:capability_AIFT_Genesis_status a aift:Capability ; aift:name "status" ; aift:status "ready" .
+aift:capability_AIFT_Genesis_stop a aift:Capability ; aift:name "stop" ; aift:status "planned" .
+aift:capability_AIFT_Genesis_sync a aift:Capability ; aift:name "sync" ; aift:status "ready" .
+aift:capability_AIFT_Genesis_test a aift:Capability ; aift:name "test" ; aift:status "planned" .
+aift:capability_AIFT_Genesis_verify a aift:Capability ; aift:name "verify" ; aift:status "planned" .
+aift:capability_AIFT_OS_build a aift:Capability ; aift:name "build" ; aift:status "detected" .
+aift:capability_AIFT_OS_deploy a aift:Capability ; aift:name "deploy" ; aift:status "planned" .
+aift:capability_AIFT_OS_docs a aift:Capability ; aift:name "docs" ; aift:status "detected" .
+aift:capability_AIFT_OS_health a aift:Capability ; aift:name "health" ; aift:status "planned" .
+aift:capability_AIFT_OS_start a aift:Capability ; aift:name "start" ; aift:status "planned" .
+aift:capability_AIFT_OS_status a aift:Capability ; aift:name "status" ; aift:status "ready" .
+aift:capability_AIFT_OS_stop a aift:Capability ; aift:name "stop" ; aift:status "planned" .
+aift:capability_AIFT_OS_sync a aift:Capability ; aift:name "sync" ; aift:status "ready" .
+aift:capability_AIFT_OS_test a aift:Capability ; aift:name "test" ; aift:status "detected" .
+aift:capability_AIFT_OS_verify a aift:Capability ; aift:name "verify" ; aift:status "planned" .
+aift:capability_Aether_Coin_biozonecurrency_build a aift:Capability ; aift:name "build" ; aift:status "detected" .
+aift:capability_Aether_Coin_biozonecurrency_deploy a aift:Capability ; aift:name "deploy" ; aift:status "planned" .
+aift:capability_Aether_Coin_biozonecurrency_docs a aift:Capability ; aift:name "docs" ; aift:status "detected" .
+aift:capability_Aether_Coin_biozonecurrency_health a aift:Capability ; aift:name "health" ; aift:status "planned" .
+aift:capability_Aether_Coin_biozonecurrency_start a aift:Capability ; aift:name "start" ; aift:status "planned" .
+aift:capability_Aether_Coin_biozonecurrency_status a aift:Capability ; aift:name "status" ; aift:status "ready" .
+aift:capability_Aether_Coin_biozonecurrency_stop a aift:Capability ; aift:name "stop" ; aift:status "planned" .
+aift:capability_Aether_Coin_biozonecurrency_sync a aift:Capability ; aift:name "sync" ; aift:status "ready" .
+aift:capability_Aether_Coin_biozonecurrency_test a aift:Capability ; aift:name "test" ; aift:status "detected" .
+aift:capability_Aether_Coin_biozonecurrency_verify a aift:Capability ; aift:name "verify" ; aift:status "planned" .
+aift:capability_AetherianGovernance_build a aift:Capability ; aift:name "build" ; aift:status "planned" .
+aift:capability_AetherianGovernance_deploy a aift:Capability ; aift:name "deploy" ; aift:status "planned" .
+aift:capability_AetherianGovernance_docs a aift:Capability ; aift:name "docs" ; aift:status "detected" .
+aift:capability_AetherianGovernance_health a aift:Capability ; aift:name "health" ; aift:status "planned" .
+aift:capability_AetherianGovernance_start a aift:Capability ; aift:name "start" ; aift:status "planned" .
+aift:capability_AetherianGovernance_status a aift:Capability ; aift:name "status" ; aift:status "ready" .
+aift:capability_AetherianGovernance_stop a aift:Capability ; aift:name "stop" ; aift:status "planned" .
+aift:capability_AetherianGovernance_sync a aift:Capability ; aift:name "sync" ; aift:status "ready" .
+aift:capability_AetherianGovernance_test a aift:Capability ; aift:name "test" ; aift:status "planned" .
+aift:capability_AetherianGovernance_verify a aift:Capability ; aift:name "verify" ; aift:status "planned" .
+aift:capability_BookSmith_Federation_OS_build a aift:Capability ; aift:name "build" ; aift:status "detected" .
+aift:capability_BookSmith_Federation_OS_deploy a aift:Capability ; aift:name "deploy" ; aift:status "planned" .
+aift:capability_BookSmith_Federation_OS_docs a aift:Capability ; aift:name "docs" ; aift:status "detected" .
+aift:capability_BookSmith_Federation_OS_health a aift:Capability ; aift:name "health" ; aift:status "planned" .
+aift:capability_BookSmith_Federation_OS_start a aift:Capability ; aift:name "start" ; aift:status "planned" .
+aift:capability_BookSmith_Federation_OS_status a aift:Capability ; aift:name "status" ; aift:status "ready" .
+aift:capability_BookSmith_Federation_OS_stop a aift:Capability ; aift:name "stop" ; aift:status "planned" .
+aift:capability_BookSmith_Federation_OS_sync a aift:Capability ; aift:name "sync" ; aift:status "ready" .
+aift:capability_BookSmith_Federation_OS_test a aift:Capability ; aift:name "test" ; aift:status "detected" .
+aift:capability_BookSmith_Federation_OS_verify a aift:Capability ; aift:name "verify" ; aift:status "planned" .
+aift:capability_OpenMontage_build a aift:Capability ; aift:name "build" ; aift:status "detected" .
+aift:capability_OpenMontage_deploy a aift:Capability ; aift:name "deploy" ; aift:status "planned" .
+aift:capability_OpenMontage_docs a aift:Capability ; aift:name "docs" ; aift:status "detected" .
+aift:capability_OpenMontage_health a aift:Capability ; aift:name "health" ; aift:status "planned" .
+aift:capability_OpenMontage_start a aift:Capability ; aift:name "start" ; aift:status "planned" .
+aift:capability_OpenMontage_status a aift:Capability ; aift:name "status" ; aift:status "ready" .
+aift:capability_OpenMontage_stop a aift:Capability ; aift:name "stop" ; aift:status "planned" .
+aift:capability_OpenMontage_sync a aift:Capability ; aift:name "sync" ; aift:status "ready" .
+aift:capability_OpenMontage_test a aift:Capability ; aift:name "test" ; aift:status "planned" .
+aift:capability_OpenMontage_verify a aift:Capability ; aift:name "verify" ; aift:status "planned" .
+aift:capability_TheMindofAll_build a aift:Capability ; aift:name "build" ; aift:status "planned" .
+aift:capability_TheMindofAll_deploy a aift:Capability ; aift:name "deploy" ; aift:status "planned" .
+aift:capability_TheMindofAll_docs a aift:Capability ; aift:name "docs" ; aift:status "detected" .
+aift:capability_TheMindofAll_health a aift:Capability ; aift:name "health" ; aift:status "planned" .
+aift:capability_TheMindofAll_start a aift:Capability ; aift:name "start" ; aift:status "planned" .
+aift:capability_TheMindofAll_status a aift:Capability ; aift:name "status" ; aift:status "ready" .
+aift:capability_TheMindofAll_stop a aift:Capability ; aift:name "stop" ; aift:status "planned" .
+aift:capability_TheMindofAll_sync a aift:Capability ; aift:name "sync" ; aift:status "ready" .
+aift:capability_TheMindofAll_test a aift:Capability ; aift:name "test" ; aift:status "planned" .
+aift:capability_TheMindofAll_verify a aift:Capability ; aift:name "verify" ; aift:status "planned" .
+aift:capability_VPS_build a aift:Capability ; aift:name "build" ; aift:status "detected" .
+aift:capability_VPS_deploy a aift:Capability ; aift:name "deploy" ; aift:status "planned" .
+aift:capability_VPS_docs a aift:Capability ; aift:name "docs" ; aift:status "detected" .
+aift:capability_VPS_health a aift:Capability ; aift:name "health" ; aift:status "planned" .
+aift:capability_VPS_start a aift:Capability ; aift:name "start" ; aift:status "planned" .
+aift:capability_VPS_status a aift:Capability ; aift:name "status" ; aift:status "ready" .
+aift:capability_VPS_stop a aift:Capability ; aift:name "stop" ; aift:status "planned" .
+aift:capability_VPS_sync a aift:Capability ; aift:name "sync" ; aift:status "ready" .
+aift:capability_VPS_test a aift:Capability ; aift:name "test" ; aift:status "detected" .
+aift:capability_VPS_verify a aift:Capability ; aift:name "verify" ; aift:status "planned" .
+aift:capability_aifreedomtrustfederation_github_io_build a aift:Capability ; aift:name "build" ; aift:status "planned" .
+aift:capability_aifreedomtrustfederation_github_io_deploy a aift:Capability ; aift:name "deploy" ; aift:status "planned" .
+aift:capability_aifreedomtrustfederation_github_io_docs a aift:Capability ; aift:name "docs" ; aift:status "detected" .
+aift:capability_aifreedomtrustfederation_github_io_health a aift:Capability ; aift:name "health" ; aift:status "planned" .
+aift:capability_aifreedomtrustfederation_github_io_start a aift:Capability ; aift:name "start" ; aift:status "planned" .
+aift:capability_aifreedomtrustfederation_github_io_status a aift:Capability ; aift:name "status" ; aift:status "ready" .
+aift:capability_aifreedomtrustfederation_github_io_stop a aift:Capability ; aift:name "stop" ; aift:status "planned" .
+aift:capability_aifreedomtrustfederation_github_io_sync a aift:Capability ; aift:name "sync" ; aift:status "ready" .
+aift:capability_aifreedomtrustfederation_github_io_test a aift:Capability ; aift:name "test" ; aift:status "planned" .
+aift:capability_aifreedomtrustfederation_github_io_verify a aift:Capability ; aift:name "verify" ; aift:status "planned" .
+aift:capability_biozone_harmony_boost_build a aift:Capability ; aift:name "build" ; aift:status "detected" .
+aift:capability_biozone_harmony_boost_deploy a aift:Capability ; aift:name "deploy" ; aift:status "planned" .
+aift:capability_biozone_harmony_boost_docs a aift:Capability ; aift:name "docs" ; aift:status "detected" .
+aift:capability_biozone_harmony_boost_health a aift:Capability ; aift:name "health" ; aift:status "planned" .
+aift:capability_biozone_harmony_boost_start a aift:Capability ; aift:name "start" ; aift:status "planned" .
+aift:capability_biozone_harmony_boost_status a aift:Capability ; aift:name "status" ; aift:status "ready" .
+aift:capability_biozone_harmony_boost_stop a aift:Capability ; aift:name "stop" ; aift:status "planned" .
+aift:capability_biozone_harmony_boost_sync a aift:Capability ; aift:name "sync" ; aift:status "ready" .
+aift:capability_biozone_harmony_boost_test a aift:Capability ; aift:name "test" ; aift:status "detected" .
+aift:capability_biozone_harmony_boost_verify a aift:Capability ; aift:name "verify" ; aift:status "planned" .
+aift:capability_booksmith_ai_build a aift:Capability ; aift:name "build" ; aift:status "detected" .
+aift:capability_booksmith_ai_deploy a aift:Capability ; aift:name "deploy" ; aift:status "planned" .
+aift:capability_booksmith_ai_docs a aift:Capability ; aift:name "docs" ; aift:status "detected" .
+aift:capability_booksmith_ai_health a aift:Capability ; aift:name "health" ; aift:status "planned" .
+aift:capability_booksmith_ai_manual_build_pdf a aift:Capability ; aift:name "manual.build.pdf" ; aift:status "planned" .
+aift:capability_booksmith_ai_start a aift:Capability ; aift:name "start" ; aift:status "planned" .
+aift:capability_booksmith_ai_status a aift:Capability ; aift:name "status" ; aift:status "ready" .
+aift:capability_booksmith_ai_stop a aift:Capability ; aift:name "stop" ; aift:status "planned" .
+aift:capability_booksmith_ai_sync a aift:Capability ; aift:name "sync" ; aift:status "ready" .
+aift:capability_booksmith_ai_test a aift:Capability ; aift:name "test" ; aift:status "detected" .
+aift:capability_booksmith_ai_verify a aift:Capability ; aift:name "verify" ; aift:status "planned" .
+aift:capability_c_848263_build a aift:Capability ; aift:name "build" ; aift:status "detected" .
+aift:capability_c_848263_deploy a aift:Capability ; aift:name "deploy" ; aift:status "planned" .
+aift:capability_c_848263_docs a aift:Capability ; aift:name "docs" ; aift:status "detected" .
+aift:capability_c_848263_health a aift:Capability ; aift:name "health" ; aift:status "planned" .
+aift:capability_c_848263_start a aift:Capability ; aift:name "start" ; aift:status "planned" .
+aift:capability_c_848263_status a aift:Capability ; aift:name "status" ; aift:status "ready" .
+aift:capability_c_848263_stop a aift:Capability ; aift:name "stop" ; aift:status "planned" .
+aift:capability_c_848263_sync a aift:Capability ; aift:name "sync" ; aift:status "ready" .
+aift:capability_c_848263_test a aift:Capability ; aift:name "test" ; aift:status "detected" .
+aift:capability_c_848263_verify a aift:Capability ; aift:name "verify" ; aift:status "planned" .
+aift:capability_capital_city_provisions_build a aift:Capability ; aift:name "build" ; aift:status "detected" .
+aift:capability_capital_city_provisions_deploy a aift:Capability ; aift:name "deploy" ; aift:status "planned" .
+aift:capability_capital_city_provisions_docs a aift:Capability ; aift:name "docs" ; aift:status "detected" .
+aift:capability_capital_city_provisions_health a aift:Capability ; aift:name "health" ; aift:status "planned" .
+aift:capability_capital_city_provisions_start a aift:Capability ; aift:name "start" ; aift:status "planned" .
+aift:capability_capital_city_provisions_status a aift:Capability ; aift:name "status" ; aift:status "ready" .
+aift:capability_capital_city_provisions_stop a aift:Capability ; aift:name "stop" ; aift:status "planned" .
+aift:capability_capital_city_provisions_sync a aift:Capability ; aift:name "sync" ; aift:status "ready" .
+aift:capability_capital_city_provisions_test a aift:Capability ; aift:name "test" ; aift:status "detected" .
+aift:capability_capital_city_provisions_verify a aift:Capability ; aift:name "verify" ; aift:status "planned" .
+aift:capability_chktex_build a aift:Capability ; aift:name "build" ; aift:status "planned" .
+aift:capability_chktex_deploy a aift:Capability ; aift:name "deploy" ; aift:status "planned" .
+aift:capability_chktex_docs a aift:Capability ; aift:name "docs" ; aift:status "detected" .
+aift:capability_chktex_health a aift:Capability ; aift:name "health" ; aift:status "planned" .
+aift:capability_chktex_start a aift:Capability ; aift:name "start" ; aift:status "planned" .
+aift:capability_chktex_status a aift:Capability ; aift:name "status" ; aift:status "ready" .
+aift:capability_chktex_stop a aift:Capability ; aift:name "stop" ; aift:status "planned" .
+aift:capability_chktex_sync a aift:Capability ; aift:name "sync" ; aift:status "ready" .
+aift:capability_chktex_test a aift:Capability ; aift:name "test" ; aift:status "planned" .
+aift:capability_chktex_verify a aift:Capability ; aift:name "verify" ; aift:status "planned" .
+aift:capability_mobox_build a aift:Capability ; aift:name "build" ; aift:status "planned" .
+aift:capability_mobox_deploy a aift:Capability ; aift:name "deploy" ; aift:status "planned" .
+aift:capability_mobox_docs a aift:Capability ; aift:name "docs" ; aift:status "detected" .
+aift:capability_mobox_health a aift:Capability ; aift:name "health" ; aift:status "planned" .
+aift:capability_mobox_start a aift:Capability ; aift:name "start" ; aift:status "planned" .
+aift:capability_mobox_status a aift:Capability ; aift:name "status" ; aift:status "ready" .
+aift:capability_mobox_stop a aift:Capability ; aift:name "stop" ; aift:status "planned" .
+aift:capability_mobox_sync a aift:Capability ; aift:name "sync" ; aift:status "ready" .
+aift:capability_mobox_test a aift:Capability ; aift:name "test" ; aift:status "planned" .
+aift:capability_mobox_verify a aift:Capability ; aift:name "verify" ; aift:status "planned" .
+aift:capability_repo_brainstorm_backend_forge_build a aift:Capability ; aift:name "build" ; aift:status "detected" .
+aift:capability_repo_brainstorm_backend_forge_deploy a aift:Capability ; aift:name "deploy" ; aift:status "planned" .
+aift:capability_repo_brainstorm_backend_forge_docs a aift:Capability ; aift:name "docs" ; aift:status "detected" .
+aift:capability_repo_brainstorm_backend_forge_health a aift:Capability ; aift:name "health" ; aift:status "planned" .
+aift:capability_repo_brainstorm_backend_forge_start a aift:Capability ; aift:name "start" ; aift:status "planned" .
+aift:capability_repo_brainstorm_backend_forge_status a aift:Capability ; aift:name "status" ; aift:status "ready" .
+aift:capability_repo_brainstorm_backend_forge_stop a aift:Capability ; aift:name "stop" ; aift:status "planned" .
+aift:capability_repo_brainstorm_backend_forge_sync a aift:Capability ; aift:name "sync" ; aift:status "ready" .
+aift:capability_repo_brainstorm_backend_forge_test a aift:Capability ; aift:name "test" ; aift:status "detected" .
+aift:capability_repo_brainstorm_backend_forge_verify a aift:Capability ; aift:name "verify" ; aift:status "planned" .
+aift:capability_tastycutz_build a aift:Capability ; aift:name "build" ; aift:status "detected" .
+aift:capability_tastycutz_deploy a aift:Capability ; aift:name "deploy" ; aift:status "planned" .
+aift:capability_tastycutz_docs a aift:Capability ; aift:name "docs" ; aift:status "detected" .
+aift:capability_tastycutz_health a aift:Capability ; aift:name "health" ; aift:status "planned" .
+aift:capability_tastycutz_start a aift:Capability ; aift:name "start" ; aift:status "planned" .
+aift:capability_tastycutz_status a aift:Capability ; aift:name "status" ; aift:status "ready" .
+aift:capability_tastycutz_stop a aift:Capability ; aift:name "stop" ; aift:status "planned" .
+aift:capability_tastycutz_sync a aift:Capability ; aift:name "sync" ; aift:status "ready" .
+aift:capability_tastycutz_test a aift:Capability ; aift:name "test" ; aift:status "detected" .
+aift:capability_tastycutz_verify a aift:Capability ; aift:name "verify" ; aift:status "planned" .
+aift:capability_www_aifreedomtrust_com_build a aift:Capability ; aift:name "build" ; aift:status "planned" .
+aift:capability_www_aifreedomtrust_com_deploy a aift:Capability ; aift:name "deploy" ; aift:status "planned" .
+aift:capability_www_aifreedomtrust_com_docs a aift:Capability ; aift:name "docs" ; aift:status "detected" .
+aift:capability_www_aifreedomtrust_com_health a aift:Capability ; aift:name "health" ; aift:status "planned" .
+aift:capability_www_aifreedomtrust_com_start a aift:Capability ; aift:name "start" ; aift:status "planned" .
+aift:capability_www_aifreedomtrust_com_status a aift:Capability ; aift:name "status" ; aift:status "ready" .
+aift:capability_www_aifreedomtrust_com_stop a aift:Capability ; aift:name "stop" ; aift:status "planned" .
+aift:capability_www_aifreedomtrust_com_sync a aift:Capability ; aift:name "sync" ; aift:status "ready" .
+aift:capability_www_aifreedomtrust_com_test a aift:Capability ; aift:name "test" ; aift:status "planned" .
+aift:capability_www_aifreedomtrust_com_verify a aift:Capability ; aift:name "verify" ; aift:status "planned" .
+aift:command__github_status a aift:Command ; aift:name ".aift/commands/status.sh" ; aift:status "ready" .
+aift:command__github_sync a aift:Command ; aift:name "git remote/status" ; aift:status "ready" .
+aift:command_AI_Freedom_Trust_status a aift:Command ; aift:name ".aift/commands/status.sh" ; aift:status "ready" .
+aift:command_AI_Freedom_Trust_sync a aift:Command ; aift:name "git remote/status" ; aift:status "ready" .
+aift:command_AIFT_Forge_status a aift:Command ; aift:name ".aift/commands/status.sh" ; aift:status "ready" .
+aift:command_AIFT_Forge_sync a aift:Command ; aift:name "git remote/status" ; aift:status "ready" .
+aift:command_AIFT_Genesis_status a aift:Command ; aift:name ".aift/commands/status.sh" ; aift:status "ready" .
+aift:command_AIFT_Genesis_sync a aift:Command ; aift:name "git remote/status" ; aift:status "ready" .
+aift:command_AIFT_OS_status a aift:Command ; aift:name ".aift/commands/status.sh" ; aift:status "ready" .
+aift:command_AIFT_OS_sync a aift:Command ; aift:name "git remote/status" ; aift:status "ready" .
+aift:command_Aether_Coin_biozonecurrency_status a aift:Command ; aift:name ".aift/commands/status.sh" ; aift:status "ready" .
+aift:command_Aether_Coin_biozonecurrency_sync a aift:Command ; aift:name "git remote/status" ; aift:status "ready" .
+aift:command_AetherianGovernance_status a aift:Command ; aift:name ".aift/commands/status.sh" ; aift:status "ready" .
+aift:command_AetherianGovernance_sync a aift:Command ; aift:name "git remote/status" ; aift:status "ready" .
+aift:command_BookSmith_Federation_OS_status a aift:Command ; aift:name ".aift/commands/status.sh" ; aift:status "ready" .
+aift:command_BookSmith_Federation_OS_sync a aift:Command ; aift:name "git remote/status" ; aift:status "ready" .
+aift:command_OpenMontage_status a aift:Command ; aift:name ".aift/commands/status.sh" ; aift:status "ready" .
+aift:command_OpenMontage_sync a aift:Command ; aift:name "git remote/status" ; aift:status "ready" .
+aift:command_TheMindofAll_status a aift:Command ; aift:name ".aift/commands/status.sh" ; aift:status "ready" .
+aift:command_TheMindofAll_sync a aift:Command ; aift:name "git remote/status" ; aift:status "ready" .
+aift:command_VPS_status a aift:Command ; aift:name ".aift/commands/status.sh" ; aift:status "ready" .
+aift:command_VPS_sync a aift:Command ; aift:name "git remote/status" ; aift:status "ready" .
+aift:command_aifreedomtrustfederation_github_io_status a aift:Command ; aift:name ".aift/commands/status.sh" ; aift:status "ready" .
+aift:command_aifreedomtrustfederation_github_io_sync a aift:Command ; aift:name "git remote/status" ; aift:status "ready" .
+aift:command_biozone_harmony_boost_status a aift:Command ; aift:name ".aift/commands/status.sh" ; aift:status "ready" .
+aift:command_biozone_harmony_boost_sync a aift:Command ; aift:name "git remote/status" ; aift:status "ready" .
+aift:command_booksmith_ai_status a aift:Command ; aift:name ".aift/commands/status.sh" ; aift:status "ready" .
+aift:command_booksmith_ai_sync a aift:Command ; aift:name "git remote/status" ; aift:status "ready" .
+aift:command_c_848263_status a aift:Command ; aift:name ".aift/commands/status.sh" ; aift:status "ready" .
+aift:command_c_848263_sync a aift:Command ; aift:name "git remote/status" ; aift:status "ready" .
+aift:command_capital_city_provisions_status a aift:Command ; aift:name ".aift/commands/status.sh" ; aift:status "ready" .
+aift:command_capital_city_provisions_sync a aift:Command ; aift:name "git remote/status" ; aift:status "ready" .
+aift:command_chktex_status a aift:Command ; aift:name ".aift/commands/status.sh" ; aift:status "ready" .
+aift:command_chktex_sync a aift:Command ; aift:name "git remote/status" ; aift:status "ready" .
+aift:command_mobox_status a aift:Command ; aift:name ".aift/commands/status.sh" ; aift:status "ready" .
+aift:command_mobox_sync a aift:Command ; aift:name "git remote/status" ; aift:status "ready" .
+aift:command_repo_brainstorm_backend_forge_status a aift:Command ; aift:name ".aift/commands/status.sh" ; aift:status "ready" .
+aift:command_repo_brainstorm_backend_forge_sync a aift:Command ; aift:name "git remote/status" ; aift:status "ready" .
+aift:command_tastycutz_status a aift:Command ; aift:name ".aift/commands/status.sh" ; aift:status "ready" .
+aift:command_tastycutz_sync a aift:Command ; aift:name "git remote/status" ; aift:status "ready" .
+aift:command_www_aifreedomtrust_com_status a aift:Command ; aift:name ".aift/commands/status.sh" ; aift:status "ready" .
+aift:command_www_aifreedomtrust_com_sync a aift:Command ; aift:name "git remote/status" ; aift:status "ready" .
+aift:dependency_@eslint_js a aift:Dependency ; aift:name "@eslint/js" ; aift:status "detected" .
+aift:dependency_@ethersproject_units a aift:Dependency ; aift:name "@ethersproject/units" ; aift:status "detected" .
+aift:dependency_@hookform_resolvers a aift:Dependency ; aift:name "@hookform/resolvers" ; aift:status "detected" .
+aift:dependency_@huggingface_transformers a aift:Dependency ; aift:name "@huggingface/transformers" ; aift:status "detected" .
+aift:dependency_@jridgewell_sourcemap_codec a aift:Dependency ; aift:name "@jridgewell/sourcemap-codec" ; aift:status "detected" .
+aift:dependency_@jridgewell_trace_mapping a aift:Dependency ; aift:name "@jridgewell/trace-mapping" ; aift:status "detected" .
+aift:dependency_@mlc_ai_web_llm a aift:Dependency ; aift:name "@mlc-ai/web-llm" ; aift:status "detected" .
+aift:dependency_@monaco_editor_react a aift:Dependency ; aift:name "@monaco-editor/react" ; aift:status "detected" .
+aift:dependency_@neondatabase_serverless a aift:Dependency ; aift:name "@neondatabase/serverless" ; aift:status "detected" .
+aift:dependency_@playwright_test a aift:Dependency ; aift:name "@playwright/test" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_accordion a aift:Dependency ; aift:name "@radix-ui/react-accordion" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_alert_dialog a aift:Dependency ; aift:name "@radix-ui/react-alert-dialog" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_aspect_ratio a aift:Dependency ; aift:name "@radix-ui/react-aspect-ratio" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_avatar a aift:Dependency ; aift:name "@radix-ui/react-avatar" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_checkbox a aift:Dependency ; aift:name "@radix-ui/react-checkbox" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_collapsible a aift:Dependency ; aift:name "@radix-ui/react-collapsible" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_context_menu a aift:Dependency ; aift:name "@radix-ui/react-context-menu" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_dialog a aift:Dependency ; aift:name "@radix-ui/react-dialog" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_dropdown_menu a aift:Dependency ; aift:name "@radix-ui/react-dropdown-menu" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_hover_card a aift:Dependency ; aift:name "@radix-ui/react-hover-card" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_label a aift:Dependency ; aift:name "@radix-ui/react-label" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_menubar a aift:Dependency ; aift:name "@radix-ui/react-menubar" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_navigation_menu a aift:Dependency ; aift:name "@radix-ui/react-navigation-menu" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_popover a aift:Dependency ; aift:name "@radix-ui/react-popover" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_progress a aift:Dependency ; aift:name "@radix-ui/react-progress" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_radio_group a aift:Dependency ; aift:name "@radix-ui/react-radio-group" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_scroll_area a aift:Dependency ; aift:name "@radix-ui/react-scroll-area" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_select a aift:Dependency ; aift:name "@radix-ui/react-select" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_separator a aift:Dependency ; aift:name "@radix-ui/react-separator" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_slider a aift:Dependency ; aift:name "@radix-ui/react-slider" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_slot a aift:Dependency ; aift:name "@radix-ui/react-slot" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_switch a aift:Dependency ; aift:name "@radix-ui/react-switch" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_tabs a aift:Dependency ; aift:name "@radix-ui/react-tabs" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_toast a aift:Dependency ; aift:name "@radix-ui/react-toast" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_toggle a aift:Dependency ; aift:name "@radix-ui/react-toggle" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_toggle_group a aift:Dependency ; aift:name "@radix-ui/react-toggle-group" ; aift:status "detected" .
+aift:dependency_@radix_ui_react_tooltip a aift:Dependency ; aift:name "@radix-ui/react-tooltip" ; aift:status "detected" .
+aift:dependency_@reown_appkit a aift:Dependency ; aift:name "@reown/appkit" ; aift:status "detected" .
+aift:dependency_@replit_vite_plugin_cartographer a aift:Dependency ; aift:name "@replit/vite-plugin-cartographer" ; aift:status "detected" .
+aift:dependency_@replit_vite_plugin_runtime_error_modal a aift:Dependency ; aift:name "@replit/vite-plugin-runtime-error-modal" ; aift:status "detected" .
+aift:dependency_@replit_vite_plugin_shadcn_theme_json a aift:Dependency ; aift:name "@replit/vite-plugin-shadcn-theme-json" ; aift:status "detected" .
+aift:dependency_@rollup_plugin_inject a aift:Dependency ; aift:name "@rollup/plugin-inject" ; aift:status "detected" .
+aift:dependency_@stripe_react_stripe_js a aift:Dependency ; aift:name "@stripe/react-stripe-js" ; aift:status "detected" .
+aift:dependency_@stripe_stripe_js a aift:Dependency ; aift:name "@stripe/stripe-js" ; aift:status "detected" .
+aift:dependency_@tailwindcss_postcss a aift:Dependency ; aift:name "@tailwindcss/postcss" ; aift:status "detected" .
+aift:dependency_@tailwindcss_typography a aift:Dependency ; aift:name "@tailwindcss/typography" ; aift:status "detected" .
+aift:dependency_@tailwindcss_vite a aift:Dependency ; aift:name "@tailwindcss/vite" ; aift:status "detected" .
+aift:dependency_@tanstack_react_query a aift:Dependency ; aift:name "@tanstack/react-query" ; aift:status "detected" .
+aift:dependency_@types_bcryptjs a aift:Dependency ; aift:name "@types/bcryptjs" ; aift:status "detected" .
+aift:dependency_@types_connect_pg_simple a aift:Dependency ; aift:name "@types/connect-pg-simple" ; aift:status "detected" .
+aift:dependency_@types_cors a aift:Dependency ; aift:name "@types/cors" ; aift:status "detected" .
+aift:dependency_@types_crypto_js a aift:Dependency ; aift:name "@types/crypto-js" ; aift:status "detected" .
+aift:dependency_@types_d3 a aift:Dependency ; aift:name "@types/d3" ; aift:status "detected" .
+aift:dependency_@types_diff a aift:Dependency ; aift:name "@types/diff" ; aift:status "detected" .
+aift:dependency_@types_express a aift:Dependency ; aift:name "@types/express" ; aift:status "detected" .
+aift:dependency_@types_express_session a aift:Dependency ; aift:name "@types/express-session" ; aift:status "detected" .
+aift:dependency_@types_helmet a aift:Dependency ; aift:name "@types/helmet" ; aift:status "detected" .
+aift:dependency_@types_http_proxy_middleware a aift:Dependency ; aift:name "@types/http-proxy-middleware" ; aift:status "detected" .
+aift:dependency_@types_multer a aift:Dependency ; aift:name "@types/multer" ; aift:status "detected" .
+aift:dependency_@types_node a aift:Dependency ; aift:name "@types/node" ; aift:status "detected" .
+aift:dependency_@types_nodemailer a aift:Dependency ; aift:name "@types/nodemailer" ; aift:status "detected" .
+aift:dependency_@types_passport a aift:Dependency ; aift:name "@types/passport" ; aift:status "detected" .
+aift:dependency_@types_passport_local a aift:Dependency ; aift:name "@types/passport-local" ; aift:status "detected" .
+aift:dependency_@types_pg a aift:Dependency ; aift:name "@types/pg" ; aift:status "detected" .
+aift:dependency_@types_react a aift:Dependency ; aift:name "@types/react" ; aift:status "detected" .
+aift:dependency_@types_react_dom a aift:Dependency ; aift:name "@types/react-dom" ; aift:status "detected" .
+aift:dependency_@types_react_helmet a aift:Dependency ; aift:name "@types/react-helmet" ; aift:status "detected" .
+aift:dependency_@types_react_router_dom a aift:Dependency ; aift:name "@types/react-router-dom" ; aift:status "detected" .
+aift:dependency_@types_react_tabs a aift:Dependency ; aift:name "@types/react-tabs" ; aift:status "detected" .
+aift:dependency_@types_uuid a aift:Dependency ; aift:name "@types/uuid" ; aift:status "detected" .
+aift:dependency_@types_ws a aift:Dependency ; aift:name "@types/ws" ; aift:status "detected" .
+aift:dependency_@vercel_analytics a aift:Dependency ; aift:name "@vercel/analytics" ; aift:status "detected" .
+aift:dependency_@vitejs_plugin_react a aift:Dependency ; aift:name "@vitejs/plugin-react" ; aift:status "detected" .
+aift:dependency_@vitejs_plugin_react_swc a aift:Dependency ; aift:name "@vitejs/plugin-react-swc" ; aift:status "detected" .
+aift:dependency_@web3_react_core a aift:Dependency ; aift:name "@web3-react/core" ; aift:status "detected" .
+aift:dependency_@web3_react_injected_connector a aift:Dependency ; aift:name "@web3-react/injected-connector" ; aift:status "detected" .
+aift:dependency_@web3_storage_w3up_client a aift:Dependency ; aift:name "@web3-storage/w3up-client" ; aift:status "detected" .
+aift:dependency_autoevals a aift:Dependency ; aift:name "autoevals" ; aift:status "detected" .
+aift:dependency_autoprefixer a aift:Dependency ; aift:name "autoprefixer" ; aift:status "detected" .
+aift:dependency_axios a aift:Dependency ; aift:name "axios" ; aift:status "detected" .
+aift:dependency_bcryptjs a aift:Dependency ; aift:name "bcryptjs" ; aift:status "detected" .
+aift:dependency_braintrust a aift:Dependency ; aift:name "braintrust" ; aift:status "detected" .
+aift:dependency_browserify_buffer a aift:Dependency ; aift:name "browserify-buffer" ; aift:status "detected" .
+aift:dependency_browserify_zlib a aift:Dependency ; aift:name "browserify-zlib" ; aift:status "detected" .
+aift:dependency_buffer a aift:Dependency ; aift:name "buffer" ; aift:status "detected" .
+aift:dependency_chart_js a aift:Dependency ; aift:name "chart.js" ; aift:status "detected" .
+aift:dependency_class_variance_authority a aift:Dependency ; aift:name "class-variance-authority" ; aift:status "detected" .
+aift:dependency_clsx a aift:Dependency ; aift:name "clsx" ; aift:status "detected" .
+aift:dependency_cmdk a aift:Dependency ; aift:name "cmdk" ; aift:status "detected" .
+aift:dependency_concat_stream a aift:Dependency ; aift:name "concat-stream" ; aift:status "detected" .
+aift:dependency_connect_pg_simple a aift:Dependency ; aift:name "connect-pg-simple" ; aift:status "detected" .
+aift:dependency_cors a aift:Dependency ; aift:name "cors" ; aift:status "detected" .
+aift:dependency_crypto_js a aift:Dependency ; aift:name "crypto-js" ; aift:status "detected" .
+aift:dependency_date_fns a aift:Dependency ; aift:name "date-fns" ; aift:status "detected" .
+aift:dependency_diff a aift:Dependency ; aift:name "diff" ; aift:status "detected" .
+aift:dependency_dompurify a aift:Dependency ; aift:name "dompurify" ; aift:status "detected" .
+aift:dependency_dotenv a aift:Dependency ; aift:name "dotenv" ; aift:status "detected" .
+aift:dependency_drizzle_kit a aift:Dependency ; aift:name "drizzle-kit" ; aift:status "detected" .
+aift:dependency_drizzle_orm a aift:Dependency ; aift:name "drizzle-orm" ; aift:status "detected" .
+aift:dependency_drizzle_zod a aift:Dependency ; aift:name "drizzle-zod" ; aift:status "detected" .
+aift:dependency_embla_carousel_react a aift:Dependency ; aift:name "embla-carousel-react" ; aift:status "detected" .
+aift:dependency_esbuild a aift:Dependency ; aift:name "esbuild" ; aift:status "detected" .
+aift:dependency_eslint a aift:Dependency ; aift:name "eslint" ; aift:status "detected" .
+aift:dependency_eslint_config_next a aift:Dependency ; aift:name "eslint-config-next" ; aift:status "detected" .
+aift:dependency_eslint_plugin_react_hooks a aift:Dependency ; aift:name "eslint-plugin-react-hooks" ; aift:status "detected" .
+aift:dependency_eslint_plugin_react_refresh a aift:Dependency ; aift:name "eslint-plugin-react-refresh" ; aift:status "detected" .
+aift:dependency_ethers a aift:Dependency ; aift:name "ethers" ; aift:status "detected" .
+aift:dependency_events a aift:Dependency ; aift:name "events" ; aift:status "detected" .
+aift:dependency_express a aift:Dependency ; aift:name "express" ; aift:status "detected" .
+aift:dependency_express_rate_limit a aift:Dependency ; aift:name "express-rate-limit" ; aift:status "detected" .
+aift:dependency_express_session a aift:Dependency ; aift:name "express-session" ; aift:status "detected" .
+aift:dependency_firebase a aift:Dependency ; aift:name "firebase" ; aift:status "detected" .
+aift:dependency_framer_motion a aift:Dependency ; aift:name "framer-motion" ; aift:status "detected" .
+aift:dependency_glob a aift:Dependency ; aift:name "glob" ; aift:status "detected" .
+aift:dependency_globals a aift:Dependency ; aift:name "globals" ; aift:status "detected" .
+aift:dependency_helia a aift:Dependency ; aift:name "helia" ; aift:status "detected" .
+aift:dependency_helmet a aift:Dependency ; aift:name "helmet" ; aift:status "detected" .
+aift:dependency_http_proxy_middleware a aift:Dependency ; aift:name "http-proxy-middleware" ; aift:status "detected" .
+aift:dependency_input_otp a aift:Dependency ; aift:name "input-otp" ; aift:status "detected" .
+aift:dependency_jspdf a aift:Dependency ; aift:name "jspdf" ; aift:status "detected" .
+aift:dependency_lovable_tagger a aift:Dependency ; aift:name "lovable-tagger" ; aift:status "detected" .
+aift:dependency_lucide_react a aift:Dependency ; aift:name "lucide-react" ; aift:status "detected" .
+aift:dependency_marked a aift:Dependency ; aift:name "marked" ; aift:status "detected" .
+aift:dependency_matrix_js_sdk a aift:Dependency ; aift:name "matrix-js-sdk" ; aift:status "detected" .
+aift:dependency_memorystore a aift:Dependency ; aift:name "memorystore" ; aift:status "detected" .
+aift:dependency_monaco_editor a aift:Dependency ; aift:name "monaco-editor" ; aift:status "detected" .
+aift:dependency_multer a aift:Dependency ; aift:name "multer" ; aift:status "detected" .
+aift:dependency_next a aift:Dependency ; aift:name "next" ; aift:status "detected" .
+aift:dependency_next_themes a aift:Dependency ; aift:name "next-themes" ; aift:status "detected" .
+aift:dependency_node_fetch a aift:Dependency ; aift:name "node-fetch" ; aift:status "detected" .
+aift:dependency_nodemailer a aift:Dependency ; aift:name "nodemailer" ; aift:status "detected" .
+aift:dependency_openai a aift:Dependency ; aift:name "openai" ; aift:status "detected" .
+aift:dependency_passport a aift:Dependency ; aift:name "passport" ; aift:status "detected" .
+aift:dependency_passport_local a aift:Dependency ; aift:name "passport-local" ; aift:status "detected" .
+aift:dependency_pg a aift:Dependency ; aift:name "pg" ; aift:status "detected" .
+aift:dependency_postcss a aift:Dependency ; aift:name "postcss" ; aift:status "detected" .
+aift:dependency_postgres a aift:Dependency ; aift:name "postgres" ; aift:status "detected" .
+aift:dependency_process a aift:Dependency ; aift:name "process" ; aift:status "detected" .
+aift:dependency_qr a aift:Dependency ; aift:name "qr" ; aift:status "detected" .
+aift:dependency_qrcode_react a aift:Dependency ; aift:name "qrcode.react" ; aift:status "detected" .
+aift:dependency_react a aift:Dependency ; aift:name "react" ; aift:status "detected" .
+aift:dependency_react_chartjs_2 a aift:Dependency ; aift:name "react-chartjs-2" ; aift:status "detected" .
+aift:dependency_react_chatbot_kit a aift:Dependency ; aift:name "react-chatbot-kit" ; aift:status "detected" .
+aift:dependency_react_confetti a aift:Dependency ; aift:name "react-confetti" ; aift:status "detected" .
+aift:dependency_react_day_picker a aift:Dependency ; aift:name "react-day-picker" ; aift:status "detected" .
+aift:dependency_react_dnd a aift:Dependency ; aift:name "react-dnd" ; aift:status "detected" .
+aift:dependency_react_dnd_html5_backend a aift:Dependency ; aift:name "react-dnd-html5-backend" ; aift:status "detected" .
+aift:dependency_react_dom a aift:Dependency ; aift:name "react-dom" ; aift:status "detected" .
+aift:dependency_react_helmet a aift:Dependency ; aift:name "react-helmet" ; aift:status "detected" .
+aift:dependency_react_helmet_async a aift:Dependency ; aift:name "react-helmet-async" ; aift:status "detected" .
+aift:dependency_react_hook_form a aift:Dependency ; aift:name "react-hook-form" ; aift:status "detected" .
+aift:dependency_react_icons a aift:Dependency ; aift:name "react-icons" ; aift:status "detected" .
+aift:dependency_react_markdown a aift:Dependency ; aift:name "react-markdown" ; aift:status "detected" .
+aift:dependency_react_resizable a aift:Dependency ; aift:name "react-resizable" ; aift:status "detected" .
+aift:dependency_react_resizable_panels a aift:Dependency ; aift:name "react-resizable-panels" ; aift:status "detected" .
+aift:dependency_react_router_dom a aift:Dependency ; aift:name "react-router-dom" ; aift:status "detected" .
+aift:dependency_react_speech_recognition a aift:Dependency ; aift:name "react-speech-recognition" ; aift:status "detected" .
+aift:dependency_react_tabs a aift:Dependency ; aift:name "react-tabs" ; aift:status "detected" .
+aift:dependency_recharts a aift:Dependency ; aift:name "recharts" ; aift:status "detected" .
+aift:dependency_rimraf a aift:Dependency ; aift:name "rimraf" ; aift:status "detected" .
+aift:dependency_secure_web_storage a aift:Dependency ; aift:name "secure-web-storage" ; aift:status "detected" .
+aift:dependency_simple_peer a aift:Dependency ; aift:name "simple-peer" ; aift:status "detected" .
+aift:dependency_socket_io_client a aift:Dependency ; aift:name "socket.io-client" ; aift:status "detected" .
+aift:dependency_sonner a aift:Dependency ; aift:name "sonner" ; aift:status "detected" .
+aift:dependency_stream_browserify a aift:Dependency ; aift:name "stream-browserify" ; aift:status "detected" .
+aift:dependency_stripe a aift:Dependency ; aift:name "stripe" ; aift:status "detected" .
+aift:dependency_tailwind_merge a aift:Dependency ; aift:name "tailwind-merge" ; aift:status "detected" .
+aift:dependency_tailwindcss a aift:Dependency ; aift:name "tailwindcss" ; aift:status "detected" .
+aift:dependency_tailwindcss_animate a aift:Dependency ; aift:name "tailwindcss-animate" ; aift:status "detected" .
+aift:dependency_tsx a aift:Dependency ; aift:name "tsx" ; aift:status "detected" .
+aift:dependency_twilio a aift:Dependency ; aift:name "twilio" ; aift:status "detected" .
+aift:dependency_typescript a aift:Dependency ; aift:name "typescript" ; aift:status "detected" .
+aift:dependency_typescript_eslint a aift:Dependency ; aift:name "typescript-eslint" ; aift:status "detected" .
+aift:dependency_util a aift:Dependency ; aift:name "util" ; aift:status "detected" .
+aift:dependency_uuid a aift:Dependency ; aift:name "uuid" ; aift:status "detected" .
+aift:dependency_vaul a aift:Dependency ; aift:name "vaul" ; aift:status "detected" .
+aift:dependency_vercel a aift:Dependency ; aift:name "vercel" ; aift:status "detected" .
+aift:dependency_viem a aift:Dependency ; aift:name "viem" ; aift:status "detected" .
+aift:dependency_vite a aift:Dependency ; aift:name "vite" ; aift:status "detected" .
+aift:dependency_vite_plugin_node_polyfills a aift:Dependency ; aift:name "vite-plugin-node-polyfills" ; aift:status "detected" .
+aift:dependency_vitest a aift:Dependency ; aift:name "vitest" ; aift:status "detected" .
+aift:dependency_wagmi a aift:Dependency ; aift:name "wagmi" ; aift:status "detected" .
+aift:dependency_web_vitals a aift:Dependency ; aift:name "web-vitals" ; aift:status "detected" .
+aift:dependency_wouter a aift:Dependency ; aift:name "wouter" ; aift:status "detected" .
+aift:dependency_ws a aift:Dependency ; aift:name "ws" ; aift:status "detected" .
+aift:dependency_zod a aift:Dependency ; aift:name "zod" ; aift:status "detected" .
+aift:dependency_zod_validation_error a aift:Dependency ; aift:name "zod-validation-error" ; aift:status "detected" .
+aift:dependency_zustand a aift:Dependency ; aift:name "zustand" ; aift:status "detected" .
+aift:federation_root a aift:Federation ; aift:name "AI Freedom Trust Federation" ; aift:status "detected" .
+aift:manual__github a aift:Manual ; aift:name ".github UNIX Manual" ; aift:status "ready" .
+aift:manual_AI_Freedom_Trust a aift:Manual ; aift:name "AI Freedom Trust UNIX Manual" ; aift:status "ready" .
+aift:manual_AIFT_Forge a aift:Manual ; aift:name "AIFT Forge UNIX Manual" ; aift:status "ready" .
+aift:manual_AIFT_Genesis a aift:Manual ; aift:name "AIFT Genesis UNIX Manual" ; aift:status "ready" .
+aift:manual_AIFT_OS a aift:Manual ; aift:name "AIFT OS UNIX Manual" ; aift:status "ready" .
+aift:manual_Aether_Coin_biozonecurrency a aift:Manual ; aift:name "Aether_Coin_biozonecurrency UNIX Manual" ; aift:status "ready" .
+aift:manual_AetherianGovernance a aift:Manual ; aift:name "AetherianGovernance UNIX Manual" ; aift:status "ready" .
+aift:manual_BookSmith_Federation_OS a aift:Manual ; aift:name "BookSmith Federation OS UNIX Manual" ; aift:status "ready" .
+aift:manual_OpenMontage a aift:Manual ; aift:name "OpenMontage UNIX Manual" ; aift:status "ready" .
+aift:manual_TheMindofAll a aift:Manual ; aift:name "TheMindofAll UNIX Manual" ; aift:status "ready" .
+aift:manual_VPS a aift:Manual ; aift:name "VPS UNIX Manual" ; aift:status "ready" .
+aift:manual_aifreedomtrustfederation_github_io a aift:Manual ; aift:name "aifreedomtrustfederation.github.io UNIX Manual" ; aift:status "ready" .
+aift:manual_biozone_harmony_boost a aift:Manual ; aift:name "biozone harmony boost UNIX Manual" ; aift:status "ready" .
+aift:manual_booksmith_ai a aift:Manual ; aift:name "booksmith ai UNIX Manual" ; aift:status "ready" .
+aift:manual_c_848263 a aift:Manual ; aift:name "c 848263 UNIX Manual" ; aift:status "ready" .
+aift:manual_capital_city_provisions a aift:Manual ; aift:name "capital city provisions UNIX Manual" ; aift:status "ready" .
+aift:manual_chktex a aift:Manual ; aift:name "chktex UNIX Manual" ; aift:status "ready" .
+aift:manual_mobox a aift:Manual ; aift:name "mobox UNIX Manual" ; aift:status "ready" .
+aift:manual_repo_brainstorm_backend_forge a aift:Manual ; aift:name "repo brainstorm backend forge UNIX Manual" ; aift:status "ready" .
+aift:manual_tastycutz a aift:Manual ; aift:name "tastycutz UNIX Manual" ; aift:status "ready" .
+aift:manual_www_aifreedomtrust_com a aift:Manual ; aift:name "www.aifreedomtrust.com UNIX Manual" ; aift:status "ready" .
+aift:module_AIFT_OS_go a aift:Module ; aift:name "github.com/AIFreedomTrustFederation/AIFT-OS" ; aift:status "detected" .
+aift:repo__github a aift:Repository ; aift:name ".github" ; aift:status "detected" .
+aift:repo_AI_Freedom_Trust a aift:Repository ; aift:name "AI-Freedom-Trust" ; aift:status "detected" .
+aift:repo_AIFT_Forge a aift:Repository ; aift:name "AIFT-Forge" ; aift:status "detected" .
+aift:repo_AIFT_Genesis a aift:Repository ; aift:name "AIFT-Genesis" ; aift:status "detected" .
+aift:repo_AIFT_OS a aift:Repository ; aift:name "AIFT-OS" ; aift:status "detected" .
+aift:repo_Aether_Coin_biozonecurrency a aift:Repository ; aift:name "Aether_Coin_biozonecurrency" ; aift:status "detected" .
+aift:repo_AetherianGovernance a aift:Repository ; aift:name "AetherianGovernance" ; aift:status "detected" .
+aift:repo_BookSmith_Federation_OS a aift:Repository ; aift:name "BookSmith-Federation-OS" ; aift:status "detected" .
+aift:repo_OpenMontage a aift:Repository ; aift:name "OpenMontage" ; aift:status "detected" .
+aift:repo_TheMindofAll a aift:Repository ; aift:name "TheMindofAll" ; aift:status "detected" .
+aift:repo_VPS a aift:Repository ; aift:name "VPS" ; aift:status "detected" .
+aift:repo_aifreedomtrustfederation_github_io a aift:Repository ; aift:name "aifreedomtrustfederation.github.io" ; aift:status "detected" .
+aift:repo_biozone_harmony_boost a aift:Repository ; aift:name "biozone-harmony-boost" ; aift:status "detected" .
+aift:repo_booksmith_ai a aift:Repository ; aift:name "booksmith-ai" ; aift:status "detected" .
+aift:repo_c_848263 a aift:Repository ; aift:name "c-848263" ; aift:status "detected" .
+aift:repo_capital_city_provisions a aift:Repository ; aift:name "capital-city-provisions" ; aift:status "detected" .
+aift:repo_chktex a aift:Repository ; aift:name "chktex" ; aift:status "detected" .
+aift:repo_mobox a aift:Repository ; aift:name "mobox" ; aift:status "detected" .
+aift:repo_repo_brainstorm_backend_forge a aift:Repository ; aift:name "repo-brainstorm-backend-forge" ; aift:status "detected" .
+aift:repo_tastycutz a aift:Repository ; aift:name "tastycutz" ; aift:status "detected" .
+aift:repo_www_aifreedomtrust_com a aift:Repository ; aift:name "www.aifreedomtrust.com" ; aift:status "detected" .
+aift:script_AIFT_Forge_build a aift:Script ; aift:name "build" ; aift:status "detected" .
+aift:script_AIFT_Forge_deps_doctor a aift:Script ; aift:name "deps:doctor" ; aift:status "detected" .
+aift:script_AIFT_Forge_lint a aift:Script ; aift:name "lint" ; aift:status "detected" .
+aift:script_AIFT_Forge_pipeline a aift:Script ; aift:name "pipeline" ; aift:status "detected" .
+aift:script_AIFT_Forge_provider_smoke a aift:Script ; aift:name "provider:smoke" ; aift:status "detected" .
+aift:script_AIFT_Forge_test a aift:Script ; aift:name "test" ; aift:status "detected" .
+aift:script_AIFT_Forge_typecheck a aift:Script ; aift:name "typecheck" ; aift:status "detected" .
+aift:script_Aether_Coin_biozonecurrency_build a aift:Script ; aift:name "build" ; aift:status "detected" .
+aift:script_Aether_Coin_biozonecurrency_check a aift:Script ; aift:name "check" ; aift:status "detected" .
+aift:script_Aether_Coin_biozonecurrency_db_push a aift:Script ; aift:name "db:push" ; aift:status "detected" .
+aift:script_Aether_Coin_biozonecurrency_dev a aift:Script ; aift:name "dev" ; aift:status "detected" .
+aift:script_Aether_Coin_biozonecurrency_eval a aift:Script ; aift:name "eval" ; aift:status "detected" .
+aift:script_Aether_Coin_biozonecurrency_eval_ai a aift:Script ; aift:name "eval:ai" ; aift:status "detected" .
+aift:script_Aether_Coin_biozonecurrency_eval_custom a aift:Script ; aift:name "eval:custom" ; aift:status "detected" .
+aift:script_Aether_Coin_biozonecurrency_lint a aift:Script ; aift:name "lint" ; aift:status "detected" .
+aift:script_Aether_Coin_biozonecurrency_qa_local a aift:Script ; aift:name "qa:local" ; aift:status "detected" .
+aift:script_Aether_Coin_biozonecurrency_security_api_keys a aift:Script ; aift:name "security:api-keys" ; aift:status "detected" .
+aift:script_Aether_Coin_biozonecurrency_security_audit a aift:Script ; aift:name "security:audit" ; aift:status "detected" .
+aift:script_Aether_Coin_biozonecurrency_security_deps a aift:Script ; aift:name "security:deps" ; aift:status "detected" .
+aift:script_Aether_Coin_biozonecurrency_security_fix a aift:Script ; aift:name "security:fix" ; aift:status "detected" .
+aift:script_Aether_Coin_biozonecurrency_security_install_hooks a aift:Script ; aift:name "security:install-hooks" ; aift:status "detected" .
+aift:script_Aether_Coin_biozonecurrency_start a aift:Script ; aift:name "start" ; aift:status "detected" .
+aift:script_Aether_Coin_biozonecurrency_test a aift:Script ; aift:name "test" ; aift:status "detected" .
+aift:script_Aether_Coin_biozonecurrency_verify_structure a aift:Script ; aift:name "verify:structure" ; aift:status "detected" .
+aift:script_BookSmith_Federation_OS_build a aift:Script ; aift:name "build" ; aift:status "detected" .
+aift:script_BookSmith_Federation_OS_dev a aift:Script ; aift:name "dev" ; aift:status "detected" .
+aift:script_BookSmith_Federation_OS_lint a aift:Script ; aift:name "lint" ; aift:status "detected" .
+aift:script_BookSmith_Federation_OS_typecheck a aift:Script ; aift:name "typecheck" ; aift:status "detected" .
+aift:script_VPS_android_build a aift:Script ; aift:name "android:build" ; aift:status "detected" .
+aift:script_VPS_android_sync a aift:Script ; aift:name "android:sync" ; aift:status "detected" .
+aift:script_VPS_dashboard_build a aift:Script ; aift:name "dashboard:build" ; aift:status "detected" .
+aift:script_VPS_dashboard_dev a aift:Script ; aift:name "dashboard:dev" ; aift:status "detected" .
+aift:script_VPS_dashboard_start a aift:Script ; aift:name "dashboard:start" ; aift:status "detected" .
+aift:script_VPS_desktop_build_win a aift:Script ; aift:name "desktop:build:win" ; aift:status "detected" .
+aift:script_VPS_desktop_dev a aift:Script ; aift:name "desktop:dev" ; aift:status "detected" .
+aift:script_VPS_lint a aift:Script ; aift:name "lint" ; aift:status "detected" .
+aift:script_VPS_lint_structure a aift:Script ; aift:name "lint:structure" ; aift:status "detected" .
+aift:script_VPS_node_agent_build a aift:Script ; aift:name "node-agent:build" ; aift:status "detected" .
+aift:script_VPS_qa_local a aift:Script ; aift:name "qa:local" ; aift:status "detected" .
+aift:script_VPS_test a aift:Script ; aift:name "test" ; aift:status "detected" .
+aift:script_VPS_verify_installer_registry a aift:Script ; aift:name "verify:installer-registry" ; aift:status "detected" .
+aift:script_VPS_verify_structure a aift:Script ; aift:name "verify:structure" ; aift:status "detected" .
+aift:script_biozone_harmony_boost_build a aift:Script ; aift:name "build" ; aift:status "detected" .
+aift:script_biozone_harmony_boost_build_dev a aift:Script ; aift:name "build:dev" ; aift:status "detected" .
+aift:script_biozone_harmony_boost_dev a aift:Script ; aift:name "dev" ; aift:status "detected" .
+aift:script_biozone_harmony_boost_lint a aift:Script ; aift:name "lint" ; aift:status "detected" .
+aift:script_biozone_harmony_boost_preview a aift:Script ; aift:name "preview" ; aift:status "detected" .
+aift:script_booksmith_ai_artifacts_manage_v1 a aift:Script ; aift:name "artifacts:manage:v1" ; aift:status "detected" .
+aift:script_booksmith_ai_artifacts_manage_v1_fhqcm a aift:Script ; aift:name "artifacts:manage:v1:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_bibliography_audit_v2 a aift:Script ; aift:name "bibliography:audit:v2" ; aift:status "detected" .
+aift:script_booksmith_ai_bibliography_audit_v2_fhqcm a aift:Script ; aift:name "bibliography:audit:v2:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_bibliography_pipeline_v2 a aift:Script ; aift:name "bibliography:pipeline:v2" ; aift:status "detected" .
+aift:script_booksmith_ai_bibliography_pipeline_v2_fhqcm a aift:Script ; aift:name "bibliography:pipeline:v2:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_bibliography_stub_v2 a aift:Script ; aift:name "bibliography:stub:v2" ; aift:status "detected" .
+aift:script_booksmith_ai_bibliography_stub_v2_fhqcm a aift:Script ; aift:name "bibliography:stub:v2:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_booksmith_os a aift:Script ; aift:name "booksmith:os" ; aift:status "detected" .
+aift:script_booksmith_ai_booksmith_os_fhqcm a aift:Script ; aift:name "booksmith:os:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_booksmith_os_submit_fhqcm a aift:Script ; aift:name "booksmith:os:submit:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_booksmith_publish a aift:Script ; aift:name "booksmith:publish" ; aift:status "detected" .
+aift:script_booksmith_ai_booksmith_publish_managed a aift:Script ; aift:name "booksmith:publish-managed" ; aift:status "detected" .
+aift:script_booksmith_ai_booksmith_publish_managed_fhqcm a aift:Script ; aift:name "booksmith:publish-managed:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_booksmith_publish_fhqcm a aift:Script ; aift:name "booksmith:publish:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_booksmith_stabilize_submit a aift:Script ; aift:name "booksmith:stabilize-submit" ; aift:status "detected" .
+aift:script_booksmith_ai_booksmith_stabilize_submit_fhqcm a aift:Script ; aift:name "booksmith:stabilize-submit:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_bootstrap a aift:Script ; aift:name "bootstrap" ; aift:status "detected" .
+aift:script_booksmith_ai_build a aift:Script ; aift:name "build" ; aift:status "detected" .
+aift:script_booksmith_ai_dev a aift:Script ; aift:name "dev" ; aift:status "detected" .
+aift:script_booksmith_ai_ensure_book_folders a aift:Script ; aift:name "ensure:book-folders" ; aift:status "detected" .
+aift:script_booksmith_ai_fhqcm_images a aift:Script ; aift:name "fhqcm:images" ; aift:status "detected" .
+aift:script_booksmith_ai_fhqcm_polish a aift:Script ; aift:name "fhqcm:polish" ; aift:status "detected" .
+aift:script_booksmith_ai_figure_approve a aift:Script ; aift:name "figure:approve" ; aift:status "detected" .
+aift:script_booksmith_ai_figure_art_director a aift:Script ; aift:name "figure:art-director" ; aift:status "detected" .
+aift:script_booksmith_ai_figure_art_director_fhqcm a aift:Script ; aift:name "figure:art-director:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_figure_art_director_pipeline a aift:Script ; aift:name "figure:art-director:pipeline" ; aift:status "detected" .
+aift:script_booksmith_ai_figure_art_director_pipeline_fhqcm a aift:Script ; aift:name "figure:art-director:pipeline:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_figure_audit a aift:Script ; aift:name "figure:audit" ; aift:status "detected" .
+aift:script_booksmith_ai_figure_audit_fhqcm a aift:Script ; aift:name "figure:audit:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_figure_engine a aift:Script ; aift:name "figure:engine" ; aift:status "detected" .
+aift:script_booksmith_ai_figure_import a aift:Script ; aift:name "figure:import" ; aift:status "detected" .
+aift:script_booksmith_ai_figure_intelligence_v1 a aift:Script ; aift:name "figure:intelligence:v1" ; aift:status "detected" .
+aift:script_booksmith_ai_figure_intelligence_v1_fhqcm a aift:Script ; aift:name "figure:intelligence:v1:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_figure_pipeline_v1 a aift:Script ; aift:name "figure:pipeline:v1" ; aift:status "detected" .
+aift:script_booksmith_ai_figure_pipeline_v1_fhqcm a aift:Script ; aift:name "figure:pipeline:v1:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_figure_queue a aift:Script ; aift:name "figure:queue" ; aift:status "detected" .
+aift:script_booksmith_ai_figure_reject a aift:Script ; aift:name "figure:reject" ; aift:status "detected" .
+aift:script_booksmith_ai_figure_revise a aift:Script ; aift:name "figure:revise" ; aift:status "detected" .
+aift:script_booksmith_ai_figure_studio a aift:Script ; aift:name "figure:studio" ; aift:status "detected" .
+aift:script_booksmith_ai_figure_studio_fhqcm a aift:Script ; aift:name "figure:studio:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_figure_studio_pipeline a aift:Script ; aift:name "figure:studio:pipeline" ; aift:status "detected" .
+aift:script_booksmith_ai_figure_studio_pipeline_fhqcm a aift:Script ; aift:name "figure:studio:pipeline:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_figures_registry a aift:Script ; aift:name "figures:registry" ; aift:status "detected" .
+aift:script_booksmith_ai_figures_registry_fhqcm a aift:Script ; aift:name "figures:registry:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_install_missing_tools a aift:Script ; aift:name "install:missing-tools" ; aift:status "detected" .
+aift:script_booksmith_ai_install_termux a aift:Script ; aift:name "install:termux" ; aift:status "detected" .
+aift:script_booksmith_ai_json_repair a aift:Script ; aift:name "json:repair" ; aift:status "detected" .
+aift:script_booksmith_ai_json_validate a aift:Script ; aift:name "json:validate" ; aift:status "detected" .
+aift:script_booksmith_ai_latex_sample a aift:Script ; aift:name "latex:sample" ; aift:status "detected" .
+aift:script_booksmith_ai_latex_sample_lua a aift:Script ; aift:name "latex:sample:lua" ; aift:status "detected" .
+aift:script_booksmith_ai_latex_sample_tectonic a aift:Script ; aift:name "latex:sample:tectonic" ; aift:status "detected" .
+aift:script_booksmith_ai_latex_structure a aift:Script ; aift:name "latex:structure" ; aift:status "detected" .
+aift:script_booksmith_ai_latex_structure_fhqcm a aift:Script ; aift:name "latex:structure:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_lint a aift:Script ; aift:name "lint" ; aift:status "detected" .
+aift:script_booksmith_ai_packet_build a aift:Script ; aift:name "packet:build" ; aift:status "detected" .
+aift:script_booksmith_ai_packet_build_fhqcm a aift:Script ; aift:name "packet:build:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_phase1_architecture_v4 a aift:Script ; aift:name "phase1:architecture:v4" ; aift:status "detected" .
+aift:script_booksmith_ai_phase1_architecture_v4_fhqcm a aift:Script ; aift:name "phase1:architecture:v4:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_phase1_figure_audit_v1 a aift:Script ; aift:name "phase1:figure-audit:v1" ; aift:status "detected" .
+aift:script_booksmith_ai_phase1_figure_audit_v1_fhqcm a aift:Script ; aift:name "phase1:figure-audit:v1:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_phase1_pipeline a aift:Script ; aift:name "phase1:pipeline" ; aift:status "detected" .
+aift:script_booksmith_ai_phase1_pipeline_fhqcm a aift:Script ; aift:name "phase1:pipeline:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_phase1_repair_v2 a aift:Script ; aift:name "phase1:repair:v2" ; aift:status "detected" .
+aift:script_booksmith_ai_phase1_repair_v2_fhqcm a aift:Script ; aift:name "phase1:repair:v2:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_phase1_semantic_blocks_v1 a aift:Script ; aift:name "phase1:semantic-blocks:v1" ; aift:status "detected" .
+aift:script_booksmith_ai_phase1_semantic_blocks_v1_fhqcm a aift:Script ; aift:name "phase1:semantic-blocks:v1:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_phase1_semantic_v4 a aift:Script ; aift:name "phase1:semantic:v4" ; aift:status "detected" .
+aift:script_booksmith_ai_phase1_semantic_v4_fhqcm a aift:Script ; aift:name "phase1:semantic:v4:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_phase1_source_mapped_proof a aift:Script ; aift:name "phase1:source-mapped-proof" ; aift:status "detected" .
+aift:script_booksmith_ai_phase1_source_mapped_proof_fhqcm a aift:Script ; aift:name "phase1:source-mapped-proof:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_phase1_strict_proof a aift:Script ; aift:name "phase1:strict-proof" ; aift:status "detected" .
+aift:script_booksmith_ai_phase1_strict_proof_fhqcm a aift:Script ; aift:name "phase1:strict-proof:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_phase1_typography_diagnostics_v4 a aift:Script ; aift:name "phase1:typography-diagnostics:v4" ; aift:status "detected" .
+aift:script_booksmith_ai_phase1_typography_diagnostics_v4_fhqcm a aift:Script ; aift:name "phase1:typography-diagnostics:v4:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_phase1_typography_v3 a aift:Script ; aift:name "phase1:typography:v3" ; aift:status "detected" .
+aift:script_booksmith_ai_phase1_typography_v3_fhqcm a aift:Script ; aift:name "phase1:typography:v3:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_phase1_visual_proof a aift:Script ; aift:name "phase1:visual-proof" ; aift:status "detected" .
+aift:script_booksmith_ai_phase1_visual_proof_fhqcm a aift:Script ; aift:name "phase1:visual-proof:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_architecture_check a aift:Script ; aift:name "proof:architecture-check" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_architecture_check_fhqcm a aift:Script ; aift:name "proof:architecture-check:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_autofix a aift:Script ; aift:name "proof:autofix" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_autofix_fhqcm a aift:Script ; aift:name "proof:autofix:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_context a aift:Script ; aift:name "proof:context" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_context_fhqcm a aift:Script ; aift:name "proof:context:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_limit a aift:Script ; aift:name "proof:limit" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_limit_fhqcm a aift:Script ; aift:name "proof:limit:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_repair_v2 a aift:Script ; aift:name "proof:repair:v2" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_repair_v2_fhqcm a aift:Script ; aift:name "proof:repair:v2:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_report a aift:Script ; aift:name "proof:report" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_report_fhqcm a aift:Script ; aift:name "proof:report:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_semantic_apply_v4 a aift:Script ; aift:name "proof:semantic-apply:v4" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_semantic_context_v4 a aift:Script ; aift:name "proof:semantic-context:v4" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_semantic_context_v4_fhqcm a aift:Script ; aift:name "proof:semantic-context:v4:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_semantic_plan_v4 a aift:Script ; aift:name "proof:semantic-plan:v4" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_semantic_plan_v4_fhqcm a aift:Script ; aift:name "proof:semantic-plan:v4:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_v2 a aift:Script ; aift:name "proof:v2" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_v2_fhqcm a aift:Script ; aift:name "proof:v2:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_v3 a aift:Script ; aift:name "proof:v3" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_v3_apply_one a aift:Script ; aift:name "proof:v3:apply-one" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_v3_context a aift:Script ; aift:name "proof:v3:context" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_v3_context_fhqcm a aift:Script ; aift:name "proof:v3:context:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_v3_fhqcm a aift:Script ; aift:name "proof:v3:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_v3_plan a aift:Script ; aift:name "proof:v3:plan" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_v3_plan_fhqcm a aift:Script ; aift:name "proof:v3:plan:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_visual a aift:Script ; aift:name "proof:visual" ; aift:status "detected" .
+aift:script_booksmith_ai_proof_visual_fhqcm a aift:Script ; aift:name "proof:visual:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_publication_engine_v1 a aift:Script ; aift:name "publication:engine:v1" ; aift:status "detected" .
+aift:script_booksmith_ai_publication_engine_v1_fhqcm a aift:Script ; aift:name "publication:engine:v1:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_publication_gate_v2 a aift:Script ; aift:name "publication:gate:v2" ; aift:status "detected" .
+aift:script_booksmith_ai_publication_gate_v2_fhqcm a aift:Script ; aift:name "publication:gate:v2:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_quality_gate a aift:Script ; aift:name "quality:gate" ; aift:status "detected" .
+aift:script_booksmith_ai_quality_gate_fhqcm a aift:Script ; aift:name "quality:gate:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_reference_intelligence_v1 a aift:Script ; aift:name "reference:intelligence:v1" ; aift:status "detected" .
+aift:script_booksmith_ai_reference_intelligence_v1_fhqcm a aift:Script ; aift:name "reference:intelligence:v1:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_registry_build a aift:Script ; aift:name "registry:build" ; aift:status "detected" .
+aift:script_booksmith_ai_render_latex a aift:Script ; aift:name "render:latex" ; aift:status "detected" .
+aift:script_booksmith_ai_render_latex_fhqcm a aift:Script ; aift:name "render:latex:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_repair_proof a aift:Script ; aift:name "repair:proof" ; aift:status "detected" .
+aift:script_booksmith_ai_repair_proof_fhqcm a aift:Script ; aift:name "repair:proof:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_repair_queue a aift:Script ; aift:name "repair:queue" ; aift:status "detected" .
+aift:script_booksmith_ai_repair_queue_fhqcm a aift:Script ; aift:name "repair:queue:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_semantic_blocks a aift:Script ; aift:name "semantic:blocks" ; aift:status "detected" .
+aift:script_booksmith_ai_semantic_blocks_fhqcm a aift:Script ; aift:name "semantic:blocks:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_server a aift:Script ; aift:name "server" ; aift:status "detected" .
+aift:script_booksmith_ai_server_fhqcm a aift:Script ; aift:name "server:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_source_map_diagnostics a aift:Script ; aift:name "source-map:diagnostics" ; aift:status "detected" .
+aift:script_booksmith_ai_source_map_diagnostics_fhqcm a aift:Script ; aift:name "source-map:diagnostics:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_source_map_latex a aift:Script ; aift:name "source-map:latex" ; aift:status "detected" .
+aift:script_booksmith_ai_source_map_latex_fhqcm a aift:Script ; aift:name "source-map:latex:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_start a aift:Script ; aift:name "start" ; aift:status "detected" .
+aift:script_booksmith_ai_studio a aift:Script ; aift:name "studio" ; aift:status "detected" .
+aift:script_booksmith_ai_studio_dev a aift:Script ; aift:name "studio:dev" ; aift:status "detected" .
+aift:script_booksmith_ai_studio_figures_prepare a aift:Script ; aift:name "studio:figures:prepare" ; aift:status "detected" .
+aift:script_booksmith_ai_system_health a aift:Script ; aift:name "system:health" ; aift:status "detected" .
+aift:script_booksmith_ai_typography_diagnostics_v4 a aift:Script ; aift:name "typography:diagnostics:v4" ; aift:status "detected" .
+aift:script_booksmith_ai_typography_diagnostics_v4_fhqcm a aift:Script ; aift:name "typography:diagnostics:v4:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_typography_v3 a aift:Script ; aift:name "typography:v3" ; aift:status "detected" .
+aift:script_booksmith_ai_typography_v3_fhqcm a aift:Script ; aift:name "typography:v3:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_validate_latex_integrity a aift:Script ; aift:name "validate:latex-integrity" ; aift:status "detected" .
+aift:script_booksmith_ai_validate_latex_integrity_fhqcm a aift:Script ; aift:name "validate:latex-integrity:fhqcm" ; aift:status "detected" .
+aift:script_booksmith_ai_validate_library a aift:Script ; aift:name "validate:library" ; aift:status "detected" .
+aift:script_booksmith_ai_validate_library_v2 a aift:Script ; aift:name "validate:library:v2" ; aift:status "detected" .
+aift:script_booksmith_ai_zip_latest a aift:Script ; aift:name "zip:latest" ; aift:status "detected" .
+aift:script_booksmith_ai_zip_latest_fhqcm a aift:Script ; aift:name "zip:latest:fhqcm" ; aift:status "detected" .
+aift:script_c_848263_build a aift:Script ; aift:name "build" ; aift:status "detected" .
+aift:script_c_848263_build_dev a aift:Script ; aift:name "build:dev" ; aift:status "detected" .
+aift:script_c_848263_dev a aift:Script ; aift:name "dev" ; aift:status "detected" .
+aift:script_c_848263_lint a aift:Script ; aift:name "lint" ; aift:status "detected" .
+aift:script_c_848263_preview a aift:Script ; aift:name "preview" ; aift:status "detected" .
+aift:script_capital_city_provisions_build a aift:Script ; aift:name "build" ; aift:status "detected" .
+aift:script_capital_city_provisions_dev a aift:Script ; aift:name "dev" ; aift:status "detected" .
+aift:script_capital_city_provisions_license_audit a aift:Script ; aift:name "license:audit" ; aift:status "detected" .
+aift:script_capital_city_provisions_lint a aift:Script ; aift:name "lint" ; aift:status "detected" .
+aift:script_capital_city_provisions_start a aift:Script ; aift:name "start" ; aift:status "detected" .
+aift:script_capital_city_provisions_typecheck a aift:Script ; aift:name "typecheck" ; aift:status "detected" .
+aift:script_capital_city_provisions_vercel_build a aift:Script ; aift:name "vercel-build" ; aift:status "detected" .
+aift:script_capital_city_provisions_verify a aift:Script ; aift:name "verify" ; aift:status "detected" .
+aift:script_repo_brainstorm_backend_forge_build a aift:Script ; aift:name "build" ; aift:status "detected" .
+aift:script_repo_brainstorm_backend_forge_build_dev a aift:Script ; aift:name "build:dev" ; aift:status "detected" .
+aift:script_repo_brainstorm_backend_forge_dev a aift:Script ; aift:name "dev" ; aift:status "detected" .
+aift:script_repo_brainstorm_backend_forge_lint a aift:Script ; aift:name "lint" ; aift:status "detected" .
+aift:script_repo_brainstorm_backend_forge_preview a aift:Script ; aift:name "preview" ; aift:status "detected" .
+aift:script_tastycutz_build a aift:Script ; aift:name "build" ; aift:status "detected" .
+aift:script_tastycutz_dev a aift:Script ; aift:name "dev" ; aift:status "detected" .
+aift:script_tastycutz_knowledge_index a aift:Script ; aift:name "knowledge:index" ; aift:status "detected" .
+aift:script_tastycutz_lint a aift:Script ; aift:name "lint" ; aift:status "detected" .
+aift:script_tastycutz_start a aift:Script ; aift:name "start" ; aift:status "detected" .
+aift:script_tastycutz_test a aift:Script ; aift:name "test" ; aift:status "detected" .
+aift:script_tastycutz_test_e2e a aift:Script ; aift:name "test:e2e" ; aift:status "detected" .
+aift:script_tastycutz_typecheck a aift:Script ; aift:name "typecheck" ; aift:status "detected" .
+aift:script_tastycutz_typegen a aift:Script ; aift:name "typegen" ; aift:status "detected" .
+aift:script_tastycutz_verify a aift:Script ; aift:name "verify" ; aift:status "detected" .
+aift:capability__github_status aift:implemented_by aift:command__github_status .
+aift:capability__github_sync aift:implemented_by aift:command__github_sync .
+aift:capability_AI_Freedom_Trust_status aift:implemented_by aift:command_AI_Freedom_Trust_status .
+aift:capability_AI_Freedom_Trust_sync aift:implemented_by aift:command_AI_Freedom_Trust_sync .
+aift:capability_AIFT_Forge_status aift:implemented_by aift:command_AIFT_Forge_status .
+aift:capability_AIFT_Forge_sync aift:implemented_by aift:command_AIFT_Forge_sync .
+aift:capability_AIFT_Genesis_status aift:implemented_by aift:command_AIFT_Genesis_status .
+aift:capability_AIFT_Genesis_sync aift:implemented_by aift:command_AIFT_Genesis_sync .
+aift:capability_AIFT_OS_status aift:implemented_by aift:command_AIFT_OS_status .
+aift:capability_AIFT_OS_sync aift:implemented_by aift:command_AIFT_OS_sync .
+aift:capability_Aether_Coin_biozonecurrency_status aift:implemented_by aift:command_Aether_Coin_biozonecurrency_status .
+aift:capability_Aether_Coin_biozonecurrency_sync aift:implemented_by aift:command_Aether_Coin_biozonecurrency_sync .
+aift:capability_AetherianGovernance_status aift:implemented_by aift:command_AetherianGovernance_status .
+aift:capability_AetherianGovernance_sync aift:implemented_by aift:command_AetherianGovernance_sync .
+aift:capability_BookSmith_Federation_OS_status aift:implemented_by aift:command_BookSmith_Federation_OS_status .
+aift:capability_BookSmith_Federation_OS_sync aift:implemented_by aift:command_BookSmith_Federation_OS_sync .
+aift:capability_OpenMontage_status aift:implemented_by aift:command_OpenMontage_status .
+aift:capability_OpenMontage_sync aift:implemented_by aift:command_OpenMontage_sync .
+aift:capability_TheMindofAll_status aift:implemented_by aift:command_TheMindofAll_status .
+aift:capability_TheMindofAll_sync aift:implemented_by aift:command_TheMindofAll_sync .
+aift:capability_VPS_status aift:implemented_by aift:command_VPS_status .
+aift:capability_VPS_sync aift:implemented_by aift:command_VPS_sync .
+aift:capability_aifreedomtrustfederation_github_io_status aift:implemented_by aift:command_aifreedomtrustfederation_github_io_status .
+aift:capability_aifreedomtrustfederation_github_io_sync aift:implemented_by aift:command_aifreedomtrustfederation_github_io_sync .
+aift:capability_biozone_harmony_boost_status aift:implemented_by aift:command_biozone_harmony_boost_status .
+aift:capability_biozone_harmony_boost_sync aift:implemented_by aift:command_biozone_harmony_boost_sync .
+aift:capability_booksmith_ai_manual_build_pdf aift:owned_by aift:repo_booksmith_ai .
+aift:capability_booksmith_ai_status aift:implemented_by aift:command_booksmith_ai_status .
+aift:capability_booksmith_ai_sync aift:implemented_by aift:command_booksmith_ai_sync .
+aift:capability_c_848263_status aift:implemented_by aift:command_c_848263_status .
+aift:capability_c_848263_sync aift:implemented_by aift:command_c_848263_sync .
+aift:capability_capital_city_provisions_status aift:implemented_by aift:command_capital_city_provisions_status .
+aift:capability_capital_city_provisions_sync aift:implemented_by aift:command_capital_city_provisions_sync .
+aift:capability_chktex_status aift:implemented_by aift:command_chktex_status .
+aift:capability_chktex_sync aift:implemented_by aift:command_chktex_sync .
+aift:capability_mobox_status aift:implemented_by aift:command_mobox_status .
+aift:capability_mobox_sync aift:implemented_by aift:command_mobox_sync .
+aift:capability_repo_brainstorm_backend_forge_status aift:implemented_by aift:command_repo_brainstorm_backend_forge_status .
+aift:capability_repo_brainstorm_backend_forge_sync aift:implemented_by aift:command_repo_brainstorm_backend_forge_sync .
+aift:capability_tastycutz_status aift:implemented_by aift:command_tastycutz_status .
+aift:capability_tastycutz_sync aift:implemented_by aift:command_tastycutz_sync .
+aift:capability_www_aifreedomtrust_com_status aift:implemented_by aift:command_www_aifreedomtrust_com_status .
+aift:capability_www_aifreedomtrust_com_sync aift:implemented_by aift:command_www_aifreedomtrust_com_sync .
+aift:federation_root aift:contains aift:repo__github .
+aift:federation_root aift:contains aift:repo_AI_Freedom_Trust .
+aift:federation_root aift:contains aift:repo_AIFT_Forge .
+aift:federation_root aift:contains aift:repo_AIFT_Genesis .
+aift:federation_root aift:contains aift:repo_AIFT_OS .
+aift:federation_root aift:contains aift:repo_Aether_Coin_biozonecurrency .
+aift:federation_root aift:contains aift:repo_AetherianGovernance .
+aift:federation_root aift:contains aift:repo_BookSmith_Federation_OS .
+aift:federation_root aift:contains aift:repo_OpenMontage .
+aift:federation_root aift:contains aift:repo_TheMindofAll .
+aift:federation_root aift:contains aift:repo_VPS .
+aift:federation_root aift:contains aift:repo_aifreedomtrustfederation_github_io .
+aift:federation_root aift:contains aift:repo_biozone_harmony_boost .
+aift:federation_root aift:contains aift:repo_booksmith_ai .
+aift:federation_root aift:contains aift:repo_c_848263 .
+aift:federation_root aift:contains aift:repo_capital_city_provisions .
+aift:federation_root aift:contains aift:repo_chktex .
+aift:federation_root aift:contains aift:repo_mobox .
+aift:federation_root aift:contains aift:repo_repo_brainstorm_backend_forge .
+aift:federation_root aift:contains aift:repo_tastycutz .
+aift:federation_root aift:contains aift:repo_www_aifreedomtrust_com .
+aift:manual__github aift:built_by aift:capability_booksmith_ai_manual_build_pdf .
+aift:manual_AI_Freedom_Trust aift:built_by aift:capability_booksmith_ai_manual_build_pdf .
+aift:manual_AIFT_Forge aift:built_by aift:capability_booksmith_ai_manual_build_pdf .
+aift:manual_AIFT_Genesis aift:built_by aift:capability_booksmith_ai_manual_build_pdf .
+aift:manual_AIFT_OS aift:built_by aift:capability_booksmith_ai_manual_build_pdf .
+aift:manual_Aether_Coin_biozonecurrency aift:built_by aift:capability_booksmith_ai_manual_build_pdf .
+aift:manual_AetherianGovernance aift:built_by aift:capability_booksmith_ai_manual_build_pdf .
+aift:manual_BookSmith_Federation_OS aift:built_by aift:capability_booksmith_ai_manual_build_pdf .
+aift:manual_OpenMontage aift:built_by aift:capability_booksmith_ai_manual_build_pdf .
+aift:manual_TheMindofAll aift:built_by aift:capability_booksmith_ai_manual_build_pdf .
+aift:manual_VPS aift:built_by aift:capability_booksmith_ai_manual_build_pdf .
+aift:manual_aifreedomtrustfederation_github_io aift:built_by aift:capability_booksmith_ai_manual_build_pdf .
+aift:manual_biozone_harmony_boost aift:built_by aift:capability_booksmith_ai_manual_build_pdf .
+aift:manual_booksmith_ai aift:built_by aift:capability_booksmith_ai_manual_build_pdf .
+aift:manual_c_848263 aift:built_by aift:capability_booksmith_ai_manual_build_pdf .
+aift:manual_capital_city_provisions aift:built_by aift:capability_booksmith_ai_manual_build_pdf .
+aift:manual_chktex aift:built_by aift:capability_booksmith_ai_manual_build_pdf .
+aift:manual_mobox aift:built_by aift:capability_booksmith_ai_manual_build_pdf .
+aift:manual_repo_brainstorm_backend_forge aift:built_by aift:capability_booksmith_ai_manual_build_pdf .
+aift:manual_tastycutz aift:built_by aift:capability_booksmith_ai_manual_build_pdf .
+aift:manual_www_aifreedomtrust_com aift:built_by aift:capability_booksmith_ai_manual_build_pdf .
+aift:package_AIFT_Forge_npm aift:provides_script aift:script_AIFT_Forge_build .
+aift:package_AIFT_Forge_npm aift:provides_script aift:script_AIFT_Forge_deps_doctor .
+aift:package_AIFT_Forge_npm aift:provides_script aift:script_AIFT_Forge_lint .
+aift:package_AIFT_Forge_npm aift:provides_script aift:script_AIFT_Forge_pipeline .
+aift:package_AIFT_Forge_npm aift:provides_script aift:script_AIFT_Forge_provider_smoke .
+aift:package_AIFT_Forge_npm aift:provides_script aift:script_AIFT_Forge_test .
+aift:package_AIFT_Forge_npm aift:provides_script aift:script_AIFT_Forge_typecheck .
+aift:package_Aether_Coin_biozonecurrency_npm aift:provides_script aift:script_Aether_Coin_biozonecurrency_build .
+aift:package_Aether_Coin_biozonecurrency_npm aift:provides_script aift:script_Aether_Coin_biozonecurrency_check .
+aift:package_Aether_Coin_biozonecurrency_npm aift:provides_script aift:script_Aether_Coin_biozonecurrency_db_push .
+aift:package_Aether_Coin_biozonecurrency_npm aift:provides_script aift:script_Aether_Coin_biozonecurrency_dev .
+aift:package_Aether_Coin_biozonecurrency_npm aift:provides_script aift:script_Aether_Coin_biozonecurrency_eval .
+aift:package_Aether_Coin_biozonecurrency_npm aift:provides_script aift:script_Aether_Coin_biozonecurrency_eval_ai .
+aift:package_Aether_Coin_biozonecurrency_npm aift:provides_script aift:script_Aether_Coin_biozonecurrency_eval_custom .
+aift:package_Aether_Coin_biozonecurrency_npm aift:provides_script aift:script_Aether_Coin_biozonecurrency_lint .
+aift:package_Aether_Coin_biozonecurrency_npm aift:provides_script aift:script_Aether_Coin_biozonecurrency_qa_local .
+aift:package_Aether_Coin_biozonecurrency_npm aift:provides_script aift:script_Aether_Coin_biozonecurrency_security_api_keys .
+aift:package_Aether_Coin_biozonecurrency_npm aift:provides_script aift:script_Aether_Coin_biozonecurrency_security_audit .
+aift:package_Aether_Coin_biozonecurrency_npm aift:provides_script aift:script_Aether_Coin_biozonecurrency_security_deps .
+aift:package_Aether_Coin_biozonecurrency_npm aift:provides_script aift:script_Aether_Coin_biozonecurrency_security_fix .
+aift:package_Aether_Coin_biozonecurrency_npm aift:provides_script aift:script_Aether_Coin_biozonecurrency_security_install_hooks .
+aift:package_Aether_Coin_biozonecurrency_npm aift:provides_script aift:script_Aether_Coin_biozonecurrency_start .
+aift:package_Aether_Coin_biozonecurrency_npm aift:provides_script aift:script_Aether_Coin_biozonecurrency_test .
+aift:package_Aether_Coin_biozonecurrency_npm aift:provides_script aift:script_Aether_Coin_biozonecurrency_verify_structure .
+aift:package_BookSmith_Federation_OS_npm aift:provides_script aift:script_BookSmith_Federation_OS_build .
+aift:package_BookSmith_Federation_OS_npm aift:provides_script aift:script_BookSmith_Federation_OS_dev .
+aift:package_BookSmith_Federation_OS_npm aift:provides_script aift:script_BookSmith_Federation_OS_lint .
+aift:package_BookSmith_Federation_OS_npm aift:provides_script aift:script_BookSmith_Federation_OS_typecheck .
+aift:package_VPS_npm aift:provides_script aift:script_VPS_android_build .
+aift:package_VPS_npm aift:provides_script aift:script_VPS_android_sync .
+aift:package_VPS_npm aift:provides_script aift:script_VPS_dashboard_build .
+aift:package_VPS_npm aift:provides_script aift:script_VPS_dashboard_dev .
+aift:package_VPS_npm aift:provides_script aift:script_VPS_dashboard_start .
+aift:package_VPS_npm aift:provides_script aift:script_VPS_desktop_build_win .
+aift:package_VPS_npm aift:provides_script aift:script_VPS_desktop_dev .
+aift:package_VPS_npm aift:provides_script aift:script_VPS_lint .
+aift:package_VPS_npm aift:provides_script aift:script_VPS_lint_structure .
+aift:package_VPS_npm aift:provides_script aift:script_VPS_node_agent_build .
+aift:package_VPS_npm aift:provides_script aift:script_VPS_qa_local .
+aift:package_VPS_npm aift:provides_script aift:script_VPS_test .
+aift:package_VPS_npm aift:provides_script aift:script_VPS_verify_installer_registry .
+aift:package_VPS_npm aift:provides_script aift:script_VPS_verify_structure .
+aift:package_biozone_harmony_boost_npm aift:provides_script aift:script_biozone_harmony_boost_build .
+aift:package_biozone_harmony_boost_npm aift:provides_script aift:script_biozone_harmony_boost_build_dev .
+aift:package_biozone_harmony_boost_npm aift:provides_script aift:script_biozone_harmony_boost_dev .
+aift:package_biozone_harmony_boost_npm aift:provides_script aift:script_biozone_harmony_boost_lint .
+aift:package_biozone_harmony_boost_npm aift:provides_script aift:script_biozone_harmony_boost_preview .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_artifacts_manage_v1 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_artifacts_manage_v1_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_bibliography_audit_v2 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_bibliography_audit_v2_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_bibliography_pipeline_v2 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_bibliography_pipeline_v2_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_bibliography_stub_v2 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_bibliography_stub_v2_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_booksmith_os .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_booksmith_os_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_booksmith_os_submit_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_booksmith_publish .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_booksmith_publish_managed .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_booksmith_publish_managed_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_booksmith_publish_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_booksmith_stabilize_submit .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_booksmith_stabilize_submit_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_bootstrap .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_build .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_dev .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_ensure_book_folders .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_fhqcm_images .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_fhqcm_polish .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_figure_approve .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_figure_art_director .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_figure_art_director_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_figure_art_director_pipeline .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_figure_art_director_pipeline_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_figure_audit .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_figure_audit_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_figure_engine .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_figure_import .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_figure_intelligence_v1 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_figure_intelligence_v1_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_figure_pipeline_v1 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_figure_pipeline_v1_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_figure_queue .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_figure_reject .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_figure_revise .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_figure_studio .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_figure_studio_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_figure_studio_pipeline .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_figure_studio_pipeline_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_figures_registry .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_figures_registry_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_install_missing_tools .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_install_termux .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_json_repair .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_json_validate .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_latex_sample .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_latex_sample_lua .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_latex_sample_tectonic .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_latex_structure .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_latex_structure_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_lint .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_packet_build .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_packet_build_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_phase1_architecture_v4 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_phase1_architecture_v4_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_phase1_figure_audit_v1 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_phase1_figure_audit_v1_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_phase1_pipeline .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_phase1_pipeline_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_phase1_repair_v2 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_phase1_repair_v2_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_phase1_semantic_blocks_v1 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_phase1_semantic_blocks_v1_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_phase1_semantic_v4 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_phase1_semantic_v4_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_phase1_source_mapped_proof .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_phase1_source_mapped_proof_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_phase1_strict_proof .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_phase1_strict_proof_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_phase1_typography_diagnostics_v4 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_phase1_typography_diagnostics_v4_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_phase1_typography_v3 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_phase1_typography_v3_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_phase1_visual_proof .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_phase1_visual_proof_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_architecture_check .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_architecture_check_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_autofix .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_autofix_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_context .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_context_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_limit .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_limit_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_repair_v2 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_repair_v2_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_report .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_report_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_semantic_apply_v4 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_semantic_context_v4 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_semantic_context_v4_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_semantic_plan_v4 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_semantic_plan_v4_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_v2 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_v2_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_v3 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_v3_apply_one .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_v3_context .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_v3_context_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_v3_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_v3_plan .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_v3_plan_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_visual .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_proof_visual_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_publication_engine_v1 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_publication_engine_v1_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_publication_gate_v2 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_publication_gate_v2_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_quality_gate .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_quality_gate_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_reference_intelligence_v1 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_reference_intelligence_v1_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_registry_build .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_render_latex .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_render_latex_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_repair_proof .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_repair_proof_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_repair_queue .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_repair_queue_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_semantic_blocks .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_semantic_blocks_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_server .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_server_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_source_map_diagnostics .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_source_map_diagnostics_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_source_map_latex .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_source_map_latex_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_start .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_studio .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_studio_dev .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_studio_figures_prepare .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_system_health .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_typography_diagnostics_v4 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_typography_diagnostics_v4_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_typography_v3 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_typography_v3_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_validate_latex_integrity .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_validate_latex_integrity_fhqcm .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_validate_library .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_validate_library_v2 .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_zip_latest .
+aift:package_booksmith_ai_npm aift:provides_script aift:script_booksmith_ai_zip_latest_fhqcm .
+aift:package_c_848263_npm aift:provides_script aift:script_c_848263_build .
+aift:package_c_848263_npm aift:provides_script aift:script_c_848263_build_dev .
+aift:package_c_848263_npm aift:provides_script aift:script_c_848263_dev .
+aift:package_c_848263_npm aift:provides_script aift:script_c_848263_lint .
+aift:package_c_848263_npm aift:provides_script aift:script_c_848263_preview .
+aift:package_capital_city_provisions_npm aift:provides_script aift:script_capital_city_provisions_build .
+aift:package_capital_city_provisions_npm aift:provides_script aift:script_capital_city_provisions_dev .
+aift:package_capital_city_provisions_npm aift:provides_script aift:script_capital_city_provisions_license_audit .
+aift:package_capital_city_provisions_npm aift:provides_script aift:script_capital_city_provisions_lint .
+aift:package_capital_city_provisions_npm aift:provides_script aift:script_capital_city_provisions_start .
+aift:package_capital_city_provisions_npm aift:provides_script aift:script_capital_city_provisions_typecheck .
+aift:package_capital_city_provisions_npm aift:provides_script aift:script_capital_city_provisions_vercel_build .
+aift:package_capital_city_provisions_npm aift:provides_script aift:script_capital_city_provisions_verify .
+aift:package_repo_brainstorm_backend_forge_npm aift:provides_script aift:script_repo_brainstorm_backend_forge_build .
+aift:package_repo_brainstorm_backend_forge_npm aift:provides_script aift:script_repo_brainstorm_backend_forge_build_dev .
+aift:package_repo_brainstorm_backend_forge_npm aift:provides_script aift:script_repo_brainstorm_backend_forge_dev .
+aift:package_repo_brainstorm_backend_forge_npm aift:provides_script aift:script_repo_brainstorm_backend_forge_lint .
+aift:package_repo_brainstorm_backend_forge_npm aift:provides_script aift:script_repo_brainstorm_backend_forge_preview .
+aift:package_tastycutz_npm aift:provides_script aift:script_tastycutz_build .
+aift:package_tastycutz_npm aift:provides_script aift:script_tastycutz_dev .
+aift:package_tastycutz_npm aift:provides_script aift:script_tastycutz_knowledge_index .
+aift:package_tastycutz_npm aift:provides_script aift:script_tastycutz_lint .
+aift:package_tastycutz_npm aift:provides_script aift:script_tastycutz_start .
+aift:package_tastycutz_npm aift:provides_script aift:script_tastycutz_test .
+aift:package_tastycutz_npm aift:provides_script aift:script_tastycutz_test_e2e .
+aift:package_tastycutz_npm aift:provides_script aift:script_tastycutz_typecheck .
+aift:package_tastycutz_npm aift:provides_script aift:script_tastycutz_typegen .
+aift:package_tastycutz_npm aift:provides_script aift:script_tastycutz_verify .
+aift:repo__github aift:declares aift:CapabilitySet__github_capabilities .
+aift:repo__github aift:declares aift:Manifest__github_repo_manifest .
+aift:repo__github aift:declares aift:ManualContract__github_manual_contract .
+aift:repo__github aift:documents aift:Manual__github_unix_manual_source .
+aift:repo__github aift:documents aift:ManualPage__github_readme .
+aift:repo__github aift:documents aift:manual__github .
+aift:repo__github aift:provides aift:capability__github_build .
+aift:repo__github aift:provides aift:capability__github_deploy .
+aift:repo__github aift:provides aift:capability__github_docs .
+aift:repo__github aift:provides aift:capability__github_health .
+aift:repo__github aift:provides aift:capability__github_start .
+aift:repo__github aift:provides aift:capability__github_status .
+aift:repo__github aift:provides aift:capability__github_stop .
+aift:repo__github aift:provides aift:capability__github_sync .
+aift:repo__github aift:provides aift:capability__github_test .
+aift:repo__github aift:provides aift:capability__github_verify .
+aift:repo_AI_Freedom_Trust aift:declares aift:CapabilitySet_AI_Freedom_Trust_capabilities .
+aift:repo_AI_Freedom_Trust aift:declares aift:Manifest_AI_Freedom_Trust_repo_manifest .
+aift:repo_AI_Freedom_Trust aift:declares aift:ManualContract_AI_Freedom_Trust_manual_contract .
+aift:repo_AI_Freedom_Trust aift:documents aift:Manual_AI_Freedom_Trust_unix_manual_source .
+aift:repo_AI_Freedom_Trust aift:documents aift:ManualPage_AI_Freedom_Trust_readme .
+aift:repo_AI_Freedom_Trust aift:documents aift:manual_AI_Freedom_Trust .
+aift:repo_AI_Freedom_Trust aift:provides aift:capability_AI_Freedom_Trust_build .
+aift:repo_AI_Freedom_Trust aift:provides aift:capability_AI_Freedom_Trust_deploy .
+aift:repo_AI_Freedom_Trust aift:provides aift:capability_AI_Freedom_Trust_docs .
+aift:repo_AI_Freedom_Trust aift:provides aift:capability_AI_Freedom_Trust_health .
+aift:repo_AI_Freedom_Trust aift:provides aift:capability_AI_Freedom_Trust_start .
+aift:repo_AI_Freedom_Trust aift:provides aift:capability_AI_Freedom_Trust_status .
+aift:repo_AI_Freedom_Trust aift:provides aift:capability_AI_Freedom_Trust_stop .
+aift:repo_AI_Freedom_Trust aift:provides aift:capability_AI_Freedom_Trust_sync .
+aift:repo_AI_Freedom_Trust aift:provides aift:capability_AI_Freedom_Trust_test .
+aift:repo_AI_Freedom_Trust aift:provides aift:capability_AI_Freedom_Trust_verify .
+aift:repo_AIFT_Forge aift:contains aift:Package_AIFT_Forge_npm_package .
+aift:repo_AIFT_Forge aift:declares aift:CapabilitySet_AIFT_Forge_capabilities .
+aift:repo_AIFT_Forge aift:declares aift:Manifest_AIFT_Forge_repo_manifest .
+aift:repo_AIFT_Forge aift:declares aift:ManualContract_AIFT_Forge_manual_contract .
+aift:repo_AIFT_Forge aift:depends_on aift:dependency_eslint .
+aift:repo_AIFT_Forge aift:depends_on aift:dependency_vitest .
+aift:repo_AIFT_Forge aift:documents aift:Manual_AIFT_Forge_unix_manual_source .
+aift:repo_AIFT_Forge aift:documents aift:ManualPage_AIFT_Forge_readme .
+aift:repo_AIFT_Forge aift:documents aift:manual_AIFT_Forge .
+aift:repo_AIFT_Forge aift:provides aift:capability_AIFT_Forge_build .
+aift:repo_AIFT_Forge aift:provides aift:capability_AIFT_Forge_deploy .
+aift:repo_AIFT_Forge aift:provides aift:capability_AIFT_Forge_docs .
+aift:repo_AIFT_Forge aift:provides aift:capability_AIFT_Forge_health .
+aift:repo_AIFT_Forge aift:provides aift:capability_AIFT_Forge_start .
+aift:repo_AIFT_Forge aift:provides aift:capability_AIFT_Forge_status .
+aift:repo_AIFT_Forge aift:provides aift:capability_AIFT_Forge_stop .
+aift:repo_AIFT_Forge aift:provides aift:capability_AIFT_Forge_sync .
+aift:repo_AIFT_Forge aift:provides aift:capability_AIFT_Forge_test .
+aift:repo_AIFT_Forge aift:provides aift:capability_AIFT_Forge_verify .
+aift:repo_AIFT_Genesis aift:declares aift:CapabilitySet_AIFT_Genesis_capabilities .
+aift:repo_AIFT_Genesis aift:declares aift:Manifest_AIFT_Genesis_repo_manifest .
+aift:repo_AIFT_Genesis aift:declares aift:ManualContract_AIFT_Genesis_manual_contract .
+aift:repo_AIFT_Genesis aift:documents aift:Manual_AIFT_Genesis_unix_manual_source .
+aift:repo_AIFT_Genesis aift:documents aift:ManualPage_AIFT_Genesis_readme .
+aift:repo_AIFT_Genesis aift:documents aift:manual_AIFT_Genesis .
+aift:repo_AIFT_Genesis aift:provides aift:capability_AIFT_Genesis_build .
+aift:repo_AIFT_Genesis aift:provides aift:capability_AIFT_Genesis_deploy .
+aift:repo_AIFT_Genesis aift:provides aift:capability_AIFT_Genesis_docs .
+aift:repo_AIFT_Genesis aift:provides aift:capability_AIFT_Genesis_health .
+aift:repo_AIFT_Genesis aift:provides aift:capability_AIFT_Genesis_start .
+aift:repo_AIFT_Genesis aift:provides aift:capability_AIFT_Genesis_status .
+aift:repo_AIFT_Genesis aift:provides aift:capability_AIFT_Genesis_stop .
+aift:repo_AIFT_Genesis aift:provides aift:capability_AIFT_Genesis_sync .
+aift:repo_AIFT_Genesis aift:provides aift:capability_AIFT_Genesis_test .
+aift:repo_AIFT_Genesis aift:provides aift:capability_AIFT_Genesis_verify .
+aift:repo_AIFT_OS aift:contains aift:Package_AIFT_OS_go_module .
+aift:repo_AIFT_OS aift:contains aift:module_AIFT_OS_go .
+aift:repo_AIFT_OS aift:declares aift:CapabilitySet_AIFT_OS_capabilities .
+aift:repo_AIFT_OS aift:declares aift:Manifest_AIFT_OS_repo_manifest .
+aift:repo_AIFT_OS aift:declares aift:ManualContract_AIFT_OS_manual_contract .
+aift:repo_AIFT_OS aift:documents aift:Manual_AIFT_OS_unix_manual_source .
+aift:repo_AIFT_OS aift:documents aift:ManualPage_AIFT_OS_readme .
+aift:repo_AIFT_OS aift:documents aift:manual_AIFT_OS .
+aift:repo_AIFT_OS aift:provides aift:capability_AIFT_OS_build .
+aift:repo_AIFT_OS aift:provides aift:capability_AIFT_OS_deploy .
+aift:repo_AIFT_OS aift:provides aift:capability_AIFT_OS_docs .
+aift:repo_AIFT_OS aift:provides aift:capability_AIFT_OS_health .
+aift:repo_AIFT_OS aift:provides aift:capability_AIFT_OS_start .
+aift:repo_AIFT_OS aift:provides aift:capability_AIFT_OS_status .
+aift:repo_AIFT_OS aift:provides aift:capability_AIFT_OS_stop .
+aift:repo_AIFT_OS aift:provides aift:capability_AIFT_OS_sync .
+aift:repo_AIFT_OS aift:provides aift:capability_AIFT_OS_test .
+aift:repo_AIFT_OS aift:provides aift:capability_AIFT_OS_verify .
+aift:repo_Aether_Coin_biozonecurrency aift:contains aift:Package_Aether_Coin_biozonecurrency_npm_package .
+aift:repo_Aether_Coin_biozonecurrency aift:declares aift:CapabilitySet_Aether_Coin_biozonecurrency_capabilities .
+aift:repo_Aether_Coin_biozonecurrency aift:declares aift:Manifest_Aether_Coin_biozonecurrency_repo_manifest .
+aift:repo_Aether_Coin_biozonecurrency aift:declares aift:ManualContract_Aether_Coin_biozonecurrency_manual_contract .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@ethersproject_units .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@hookform_resolvers .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@jridgewell_sourcemap_codec .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@jridgewell_trace_mapping .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@monaco_editor_react .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@neondatabase_serverless .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_accordion .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_alert_dialog .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_aspect_ratio .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_avatar .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_checkbox .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_collapsible .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_context_menu .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_dialog .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_dropdown_menu .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_hover_card .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_label .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_menubar .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_navigation_menu .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_popover .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_progress .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_radio_group .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_scroll_area .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_select .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_separator .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_slider .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_slot .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_switch .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_tabs .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_toast .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_toggle .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_toggle_group .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@radix_ui_react_tooltip .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@reown_appkit .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@replit_vite_plugin_cartographer .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@replit_vite_plugin_runtime_error_modal .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@replit_vite_plugin_shadcn_theme_json .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@rollup_plugin_inject .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@stripe_react_stripe_js .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@stripe_stripe_js .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@tailwindcss_typography .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@tailwindcss_vite .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@tanstack_react_query .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@types_bcryptjs .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@types_connect_pg_simple .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@types_cors .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@types_crypto_js .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@types_diff .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@types_express .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@types_express_session .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@types_helmet .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@types_http_proxy_middleware .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@types_multer .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@types_node .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@types_passport .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@types_passport_local .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@types_pg .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@types_react .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@types_react_dom .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@types_react_helmet .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@types_react_router_dom .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@types_react_tabs .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@types_uuid .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@types_ws .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@vitejs_plugin_react .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@web3_react_core .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@web3_react_injected_connector .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_@web3_storage_w3up_client .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_autoevals .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_autoprefixer .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_bcryptjs .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_braintrust .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_browserify_buffer .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_browserify_zlib .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_buffer .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_chart_js .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_class_variance_authority .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_clsx .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_cmdk .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_concat_stream .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_connect_pg_simple .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_cors .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_crypto_js .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_date_fns .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_diff .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_dompurify .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_dotenv .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_drizzle_kit .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_drizzle_orm .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_drizzle_zod .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_embla_carousel_react .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_esbuild .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_ethers .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_events .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_express .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_express_rate_limit .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_express_session .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_firebase .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_framer_motion .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_glob .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_helia .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_helmet .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_http_proxy_middleware .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_input_otp .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_jspdf .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_lucide_react .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_marked .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_matrix_js_sdk .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_memorystore .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_monaco_editor .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_multer .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_node_fetch .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_openai .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_passport .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_passport_local .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_pg .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_postcss .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_postgres .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_process .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_qr .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_qrcode_react .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_react .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_react_chartjs_2 .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_react_chatbot_kit .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_react_confetti .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_react_day_picker .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_react_dnd .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_react_dnd_html5_backend .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_react_dom .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_react_helmet .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_react_helmet_async .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_react_hook_form .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_react_icons .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_react_markdown .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_react_resizable .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_react_resizable_panels .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_react_router_dom .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_react_speech_recognition .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_react_tabs .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_recharts .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_rimraf .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_secure_web_storage .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_simple_peer .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_socket_io_client .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_sonner .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_stream_browserify .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_stripe .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_tailwind_merge .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_tailwindcss .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_tailwindcss_animate .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_tsx .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_twilio .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_typescript .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_util .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_uuid .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_vaul .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_viem .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_vite .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_vite_plugin_node_polyfills .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_wagmi .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_web_vitals .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_wouter .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_ws .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_zod .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_zod_validation_error .
+aift:repo_Aether_Coin_biozonecurrency aift:depends_on aift:dependency_zustand .
+aift:repo_Aether_Coin_biozonecurrency aift:documents aift:Manual_Aether_Coin_biozonecurrency_unix_manual_source .
+aift:repo_Aether_Coin_biozonecurrency aift:documents aift:ManualPage_Aether_Coin_biozonecurrency_readme .
+aift:repo_Aether_Coin_biozonecurrency aift:documents aift:manual_Aether_Coin_biozonecurrency .
+aift:repo_Aether_Coin_biozonecurrency aift:provides aift:capability_Aether_Coin_biozonecurrency_build .
+aift:repo_Aether_Coin_biozonecurrency aift:provides aift:capability_Aether_Coin_biozonecurrency_deploy .
+aift:repo_Aether_Coin_biozonecurrency aift:provides aift:capability_Aether_Coin_biozonecurrency_docs .
+aift:repo_Aether_Coin_biozonecurrency aift:provides aift:capability_Aether_Coin_biozonecurrency_health .
+aift:repo_Aether_Coin_biozonecurrency aift:provides aift:capability_Aether_Coin_biozonecurrency_start .
+aift:repo_Aether_Coin_biozonecurrency aift:provides aift:capability_Aether_Coin_biozonecurrency_status .
+aift:repo_Aether_Coin_biozonecurrency aift:provides aift:capability_Aether_Coin_biozonecurrency_stop .
+aift:repo_Aether_Coin_biozonecurrency aift:provides aift:capability_Aether_Coin_biozonecurrency_sync .
+aift:repo_Aether_Coin_biozonecurrency aift:provides aift:capability_Aether_Coin_biozonecurrency_test .
+aift:repo_Aether_Coin_biozonecurrency aift:provides aift:capability_Aether_Coin_biozonecurrency_verify .
+aift:repo_AetherianGovernance aift:declares aift:CapabilitySet_AetherianGovernance_capabilities .
+aift:repo_AetherianGovernance aift:declares aift:Manifest_AetherianGovernance_repo_manifest .
+aift:repo_AetherianGovernance aift:declares aift:ManualContract_AetherianGovernance_manual_contract .
+aift:repo_AetherianGovernance aift:documents aift:Manual_AetherianGovernance_unix_manual_source .
+aift:repo_AetherianGovernance aift:documents aift:manual_AetherianGovernance .
+aift:repo_AetherianGovernance aift:provides aift:capability_AetherianGovernance_build .
+aift:repo_AetherianGovernance aift:provides aift:capability_AetherianGovernance_deploy .
+aift:repo_AetherianGovernance aift:provides aift:capability_AetherianGovernance_docs .
+aift:repo_AetherianGovernance aift:provides aift:capability_AetherianGovernance_health .
+aift:repo_AetherianGovernance aift:provides aift:capability_AetherianGovernance_start .
+aift:repo_AetherianGovernance aift:provides aift:capability_AetherianGovernance_status .
+aift:repo_AetherianGovernance aift:provides aift:capability_AetherianGovernance_stop .
+aift:repo_AetherianGovernance aift:provides aift:capability_AetherianGovernance_sync .
+aift:repo_AetherianGovernance aift:provides aift:capability_AetherianGovernance_test .
+aift:repo_AetherianGovernance aift:provides aift:capability_AetherianGovernance_verify .
+aift:repo_BookSmith_Federation_OS aift:contains aift:Package_BookSmith_Federation_OS_npm_package .
+aift:repo_BookSmith_Federation_OS aift:declares aift:CapabilitySet_BookSmith_Federation_OS_capabilities .
+aift:repo_BookSmith_Federation_OS aift:declares aift:Manifest_BookSmith_Federation_OS_repo_manifest .
+aift:repo_BookSmith_Federation_OS aift:declares aift:ManualContract_BookSmith_Federation_OS_manual_contract .
+aift:repo_BookSmith_Federation_OS aift:documents aift:Manual_BookSmith_Federation_OS_unix_manual_source .
+aift:repo_BookSmith_Federation_OS aift:documents aift:ManualPage_BookSmith_Federation_OS_readme .
+aift:repo_BookSmith_Federation_OS aift:documents aift:manual_BookSmith_Federation_OS .
+aift:repo_BookSmith_Federation_OS aift:provides aift:capability_BookSmith_Federation_OS_build .
+aift:repo_BookSmith_Federation_OS aift:provides aift:capability_BookSmith_Federation_OS_deploy .
+aift:repo_BookSmith_Federation_OS aift:provides aift:capability_BookSmith_Federation_OS_docs .
+aift:repo_BookSmith_Federation_OS aift:provides aift:capability_BookSmith_Federation_OS_health .
+aift:repo_BookSmith_Federation_OS aift:provides aift:capability_BookSmith_Federation_OS_start .
+aift:repo_BookSmith_Federation_OS aift:provides aift:capability_BookSmith_Federation_OS_status .
+aift:repo_BookSmith_Federation_OS aift:provides aift:capability_BookSmith_Federation_OS_stop .
+aift:repo_BookSmith_Federation_OS aift:provides aift:capability_BookSmith_Federation_OS_sync .
+aift:repo_BookSmith_Federation_OS aift:provides aift:capability_BookSmith_Federation_OS_test .
+aift:repo_BookSmith_Federation_OS aift:provides aift:capability_BookSmith_Federation_OS_verify .
+aift:repo_OpenMontage aift:declares aift:CapabilitySet_OpenMontage_capabilities .
+aift:repo_OpenMontage aift:declares aift:Manifest_OpenMontage_repo_manifest .
+aift:repo_OpenMontage aift:declares aift:ManualContract_OpenMontage_manual_contract .
+aift:repo_OpenMontage aift:documents aift:Manual_OpenMontage_unix_manual_source .
+aift:repo_OpenMontage aift:documents aift:ManualPage_OpenMontage_readme .
+aift:repo_OpenMontage aift:documents aift:manual_OpenMontage .
+aift:repo_OpenMontage aift:provides aift:capability_OpenMontage_build .
+aift:repo_OpenMontage aift:provides aift:capability_OpenMontage_deploy .
+aift:repo_OpenMontage aift:provides aift:capability_OpenMontage_docs .
+aift:repo_OpenMontage aift:provides aift:capability_OpenMontage_health .
+aift:repo_OpenMontage aift:provides aift:capability_OpenMontage_start .
+aift:repo_OpenMontage aift:provides aift:capability_OpenMontage_status .
+aift:repo_OpenMontage aift:provides aift:capability_OpenMontage_stop .
+aift:repo_OpenMontage aift:provides aift:capability_OpenMontage_sync .
+aift:repo_OpenMontage aift:provides aift:capability_OpenMontage_test .
+aift:repo_OpenMontage aift:provides aift:capability_OpenMontage_verify .
+aift:repo_TheMindofAll aift:declares aift:CapabilitySet_TheMindofAll_capabilities .
+aift:repo_TheMindofAll aift:declares aift:Manifest_TheMindofAll_repo_manifest .
+aift:repo_TheMindofAll aift:declares aift:ManualContract_TheMindofAll_manual_contract .
+aift:repo_TheMindofAll aift:documents aift:Manual_TheMindofAll_unix_manual_source .
+aift:repo_TheMindofAll aift:documents aift:ManualPage_TheMindofAll_readme .
+aift:repo_TheMindofAll aift:documents aift:manual_TheMindofAll .
+aift:repo_TheMindofAll aift:provides aift:capability_TheMindofAll_build .
+aift:repo_TheMindofAll aift:provides aift:capability_TheMindofAll_deploy .
+aift:repo_TheMindofAll aift:provides aift:capability_TheMindofAll_docs .
+aift:repo_TheMindofAll aift:provides aift:capability_TheMindofAll_health .
+aift:repo_TheMindofAll aift:provides aift:capability_TheMindofAll_start .
+aift:repo_TheMindofAll aift:provides aift:capability_TheMindofAll_status .
+aift:repo_TheMindofAll aift:provides aift:capability_TheMindofAll_stop .
+aift:repo_TheMindofAll aift:provides aift:capability_TheMindofAll_sync .
+aift:repo_TheMindofAll aift:provides aift:capability_TheMindofAll_test .
+aift:repo_TheMindofAll aift:provides aift:capability_TheMindofAll_verify .
+aift:repo_VPS aift:contains aift:Package_VPS_npm_package .
+aift:repo_VPS aift:declares aift:CapabilitySet_VPS_capabilities .
+aift:repo_VPS aift:declares aift:Manifest_VPS_repo_manifest .
+aift:repo_VPS aift:declares aift:ManualContract_VPS_manual_contract .
+aift:repo_VPS aift:documents aift:Manual_VPS_unix_manual_source .
+aift:repo_VPS aift:documents aift:ManualPage_VPS_readme .
+aift:repo_VPS aift:documents aift:manual_VPS .
+aift:repo_VPS aift:provides aift:capability_VPS_build .
+aift:repo_VPS aift:provides aift:capability_VPS_deploy .
+aift:repo_VPS aift:provides aift:capability_VPS_docs .
+aift:repo_VPS aift:provides aift:capability_VPS_health .
+aift:repo_VPS aift:provides aift:capability_VPS_start .
+aift:repo_VPS aift:provides aift:capability_VPS_status .
+aift:repo_VPS aift:provides aift:capability_VPS_stop .
+aift:repo_VPS aift:provides aift:capability_VPS_sync .
+aift:repo_VPS aift:provides aift:capability_VPS_test .
+aift:repo_VPS aift:provides aift:capability_VPS_verify .
+aift:repo_aifreedomtrustfederation_github_io aift:declares aift:CapabilitySet_aifreedomtrustfederation_github_io_capabilities .
+aift:repo_aifreedomtrustfederation_github_io aift:declares aift:Manifest_aifreedomtrustfederation_github_io_repo_manifest .
+aift:repo_aifreedomtrustfederation_github_io aift:declares aift:ManualContract_aifreedomtrustfederation_github_io_manual_contract .
+aift:repo_aifreedomtrustfederation_github_io aift:documents aift:Manual_aifreedomtrustfederation_github_io_unix_manual_source .
+aift:repo_aifreedomtrustfederation_github_io aift:documents aift:manual_aifreedomtrustfederation_github_io .
+aift:repo_aifreedomtrustfederation_github_io aift:provides aift:capability_aifreedomtrustfederation_github_io_build .
+aift:repo_aifreedomtrustfederation_github_io aift:provides aift:capability_aifreedomtrustfederation_github_io_deploy .
+aift:repo_aifreedomtrustfederation_github_io aift:provides aift:capability_aifreedomtrustfederation_github_io_docs .
+aift:repo_aifreedomtrustfederation_github_io aift:provides aift:capability_aifreedomtrustfederation_github_io_health .
+aift:repo_aifreedomtrustfederation_github_io aift:provides aift:capability_aifreedomtrustfederation_github_io_start .
+aift:repo_aifreedomtrustfederation_github_io aift:provides aift:capability_aifreedomtrustfederation_github_io_status .
+aift:repo_aifreedomtrustfederation_github_io aift:provides aift:capability_aifreedomtrustfederation_github_io_stop .
+aift:repo_aifreedomtrustfederation_github_io aift:provides aift:capability_aifreedomtrustfederation_github_io_sync .
+aift:repo_aifreedomtrustfederation_github_io aift:provides aift:capability_aifreedomtrustfederation_github_io_test .
+aift:repo_aifreedomtrustfederation_github_io aift:provides aift:capability_aifreedomtrustfederation_github_io_verify .
+aift:repo_biozone_harmony_boost aift:contains aift:Package_biozone_harmony_boost_npm_package .
+aift:repo_biozone_harmony_boost aift:declares aift:CapabilitySet_biozone_harmony_boost_capabilities .
+aift:repo_biozone_harmony_boost aift:declares aift:Manifest_biozone_harmony_boost_repo_manifest .
+aift:repo_biozone_harmony_boost aift:declares aift:ManualContract_biozone_harmony_boost_manual_contract .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@eslint_js .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@hookform_resolvers .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_accordion .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_alert_dialog .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_aspect_ratio .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_avatar .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_checkbox .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_collapsible .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_context_menu .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_dialog .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_dropdown_menu .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_hover_card .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_label .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_menubar .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_navigation_menu .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_popover .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_progress .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_radio_group .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_scroll_area .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_select .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_separator .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_slider .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_slot .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_switch .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_tabs .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_toast .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_toggle .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_toggle_group .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@radix_ui_react_tooltip .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@tailwindcss_typography .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@tanstack_react_query .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@types_node .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@types_react .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@types_react_dom .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_@vitejs_plugin_react_swc .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_autoprefixer .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_axios .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_class_variance_authority .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_clsx .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_cmdk .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_date_fns .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_embla_carousel_react .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_eslint .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_eslint_plugin_react_hooks .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_eslint_plugin_react_refresh .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_framer_motion .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_globals .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_input_otp .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_lucide_react .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_next_themes .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_postcss .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_react .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_react_day_picker .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_react_dom .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_react_hook_form .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_react_resizable_panels .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_react_router_dom .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_recharts .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_sonner .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_tailwind_merge .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_tailwindcss .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_tailwindcss_animate .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_typescript .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_typescript_eslint .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_vaul .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_vite .
+aift:repo_biozone_harmony_boost aift:depends_on aift:dependency_zod .
+aift:repo_biozone_harmony_boost aift:documents aift:Manual_biozone_harmony_boost_unix_manual_source .
+aift:repo_biozone_harmony_boost aift:documents aift:ManualPage_biozone_harmony_boost_readme .
+aift:repo_biozone_harmony_boost aift:documents aift:manual_biozone_harmony_boost .
+aift:repo_biozone_harmony_boost aift:provides aift:capability_biozone_harmony_boost_build .
+aift:repo_biozone_harmony_boost aift:provides aift:capability_biozone_harmony_boost_deploy .
+aift:repo_biozone_harmony_boost aift:provides aift:capability_biozone_harmony_boost_docs .
+aift:repo_biozone_harmony_boost aift:provides aift:capability_biozone_harmony_boost_health .
+aift:repo_biozone_harmony_boost aift:provides aift:capability_biozone_harmony_boost_start .
+aift:repo_biozone_harmony_boost aift:provides aift:capability_biozone_harmony_boost_status .
+aift:repo_biozone_harmony_boost aift:provides aift:capability_biozone_harmony_boost_stop .
+aift:repo_biozone_harmony_boost aift:provides aift:capability_biozone_harmony_boost_sync .
+aift:repo_biozone_harmony_boost aift:provides aift:capability_biozone_harmony_boost_test .
+aift:repo_biozone_harmony_boost aift:provides aift:capability_biozone_harmony_boost_verify .
+aift:repo_booksmith_ai aift:contains aift:Package_booksmith_ai_npm_package .
+aift:repo_booksmith_ai aift:declares aift:CapabilitySet_booksmith_ai_capabilities .
+aift:repo_booksmith_ai aift:declares aift:Manifest_booksmith_ai_repo_manifest .
+aift:repo_booksmith_ai aift:declares aift:ManualContract_booksmith_ai_manual_contract .
+aift:repo_booksmith_ai aift:depends_on aift:dependency_@tailwindcss_postcss .
+aift:repo_booksmith_ai aift:depends_on aift:dependency_@types_node .
+aift:repo_booksmith_ai aift:depends_on aift:dependency_@types_react .
+aift:repo_booksmith_ai aift:depends_on aift:dependency_@types_react_dom .
+aift:repo_booksmith_ai aift:depends_on aift:dependency_eslint .
+aift:repo_booksmith_ai aift:depends_on aift:dependency_eslint_config_next .
+aift:repo_booksmith_ai aift:depends_on aift:dependency_next .
+aift:repo_booksmith_ai aift:depends_on aift:dependency_react .
+aift:repo_booksmith_ai aift:depends_on aift:dependency_react_dom .
+aift:repo_booksmith_ai aift:depends_on aift:dependency_tailwindcss .
+aift:repo_booksmith_ai aift:depends_on aift:dependency_tsx .
+aift:repo_booksmith_ai aift:depends_on aift:dependency_typescript .
+aift:repo_booksmith_ai aift:documents aift:Manual_booksmith_ai_unix_manual_source .
+aift:repo_booksmith_ai aift:documents aift:ManualPage_booksmith_ai_readme .
+aift:repo_booksmith_ai aift:documents aift:manual_booksmith_ai .
+aift:repo_booksmith_ai aift:provides aift:capability_booksmith_ai_build .
+aift:repo_booksmith_ai aift:provides aift:capability_booksmith_ai_deploy .
+aift:repo_booksmith_ai aift:provides aift:capability_booksmith_ai_docs .
+aift:repo_booksmith_ai aift:provides aift:capability_booksmith_ai_health .
+aift:repo_booksmith_ai aift:provides aift:capability_booksmith_ai_start .
+aift:repo_booksmith_ai aift:provides aift:capability_booksmith_ai_status .
+aift:repo_booksmith_ai aift:provides aift:capability_booksmith_ai_stop .
+aift:repo_booksmith_ai aift:provides aift:capability_booksmith_ai_sync .
+aift:repo_booksmith_ai aift:provides aift:capability_booksmith_ai_test .
+aift:repo_booksmith_ai aift:provides aift:capability_booksmith_ai_verify .
+aift:repo_c_848263 aift:contains aift:Package_c_848263_npm_package .
+aift:repo_c_848263 aift:declares aift:CapabilitySet_c_848263_capabilities .
+aift:repo_c_848263 aift:declares aift:Manifest_c_848263_repo_manifest .
+aift:repo_c_848263 aift:declares aift:ManualContract_c_848263_manual_contract .
+aift:repo_c_848263 aift:depends_on aift:dependency_@eslint_js .
+aift:repo_c_848263 aift:depends_on aift:dependency_@hookform_resolvers .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_accordion .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_alert_dialog .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_aspect_ratio .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_avatar .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_checkbox .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_collapsible .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_context_menu .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_dialog .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_dropdown_menu .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_hover_card .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_label .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_menubar .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_navigation_menu .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_popover .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_progress .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_radio_group .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_scroll_area .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_select .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_separator .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_slider .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_slot .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_switch .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_tabs .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_toast .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_toggle .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_toggle_group .
+aift:repo_c_848263 aift:depends_on aift:dependency_@radix_ui_react_tooltip .
+aift:repo_c_848263 aift:depends_on aift:dependency_@tailwindcss_typography .
+aift:repo_c_848263 aift:depends_on aift:dependency_@tanstack_react_query .
+aift:repo_c_848263 aift:depends_on aift:dependency_@types_d3 .
+aift:repo_c_848263 aift:depends_on aift:dependency_@types_node .
+aift:repo_c_848263 aift:depends_on aift:dependency_@types_react .
+aift:repo_c_848263 aift:depends_on aift:dependency_@types_react_dom .
+aift:repo_c_848263 aift:depends_on aift:dependency_@vitejs_plugin_react_swc .
+aift:repo_c_848263 aift:depends_on aift:dependency_autoprefixer .
+aift:repo_c_848263 aift:depends_on aift:dependency_class_variance_authority .
+aift:repo_c_848263 aift:depends_on aift:dependency_clsx .
+aift:repo_c_848263 aift:depends_on aift:dependency_cmdk .
+aift:repo_c_848263 aift:depends_on aift:dependency_date_fns .
+aift:repo_c_848263 aift:depends_on aift:dependency_embla_carousel_react .
+aift:repo_c_848263 aift:depends_on aift:dependency_eslint .
+aift:repo_c_848263 aift:depends_on aift:dependency_eslint_plugin_react_hooks .
+aift:repo_c_848263 aift:depends_on aift:dependency_eslint_plugin_react_refresh .
+aift:repo_c_848263 aift:depends_on aift:dependency_framer_motion .
+aift:repo_c_848263 aift:depends_on aift:dependency_globals .
+aift:repo_c_848263 aift:depends_on aift:dependency_input_otp .
+aift:repo_c_848263 aift:depends_on aift:dependency_lovable_tagger .
+aift:repo_c_848263 aift:depends_on aift:dependency_lucide_react .
+aift:repo_c_848263 aift:depends_on aift:dependency_next_themes .
+aift:repo_c_848263 aift:depends_on aift:dependency_postcss .
+aift:repo_c_848263 aift:depends_on aift:dependency_react .
+aift:repo_c_848263 aift:depends_on aift:dependency_react_day_picker .
+aift:repo_c_848263 aift:depends_on aift:dependency_react_dom .
+aift:repo_c_848263 aift:depends_on aift:dependency_react_hook_form .
+aift:repo_c_848263 aift:depends_on aift:dependency_react_resizable_panels .
+aift:repo_c_848263 aift:depends_on aift:dependency_react_router_dom .
+aift:repo_c_848263 aift:depends_on aift:dependency_recharts .
+aift:repo_c_848263 aift:depends_on aift:dependency_sonner .
+aift:repo_c_848263 aift:depends_on aift:dependency_tailwind_merge .
+aift:repo_c_848263 aift:depends_on aift:dependency_tailwindcss .
+aift:repo_c_848263 aift:depends_on aift:dependency_tailwindcss_animate .
+aift:repo_c_848263 aift:depends_on aift:dependency_typescript .
+aift:repo_c_848263 aift:depends_on aift:dependency_typescript_eslint .
+aift:repo_c_848263 aift:depends_on aift:dependency_vaul .
+aift:repo_c_848263 aift:depends_on aift:dependency_vite .
+aift:repo_c_848263 aift:depends_on aift:dependency_zod .
+aift:repo_c_848263 aift:documents aift:Manual_c_848263_unix_manual_source .
+aift:repo_c_848263 aift:documents aift:ManualPage_c_848263_readme .
+aift:repo_c_848263 aift:documents aift:manual_c_848263 .
+aift:repo_c_848263 aift:provides aift:capability_c_848263_build .
+aift:repo_c_848263 aift:provides aift:capability_c_848263_deploy .
+aift:repo_c_848263 aift:provides aift:capability_c_848263_docs .
+aift:repo_c_848263 aift:provides aift:capability_c_848263_health .
+aift:repo_c_848263 aift:provides aift:capability_c_848263_start .
+aift:repo_c_848263 aift:provides aift:capability_c_848263_status .
+aift:repo_c_848263 aift:provides aift:capability_c_848263_stop .
+aift:repo_c_848263 aift:provides aift:capability_c_848263_sync .
+aift:repo_c_848263 aift:provides aift:capability_c_848263_test .
+aift:repo_c_848263 aift:provides aift:capability_c_848263_verify .
+aift:repo_capital_city_provisions aift:contains aift:Package_capital_city_provisions_npm_package .
+aift:repo_capital_city_provisions aift:declares aift:CapabilitySet_capital_city_provisions_capabilities .
+aift:repo_capital_city_provisions aift:declares aift:Manifest_capital_city_provisions_repo_manifest .
+aift:repo_capital_city_provisions aift:declares aift:ManualContract_capital_city_provisions_manual_contract .
+aift:repo_capital_city_provisions aift:depends_on aift:dependency_@mlc_ai_web_llm .
+aift:repo_capital_city_provisions aift:depends_on aift:dependency_@types_node .
+aift:repo_capital_city_provisions aift:depends_on aift:dependency_@types_nodemailer .
+aift:repo_capital_city_provisions aift:depends_on aift:dependency_@types_pg .
+aift:repo_capital_city_provisions aift:depends_on aift:dependency_@types_react .
+aift:repo_capital_city_provisions aift:depends_on aift:dependency_@types_react_dom .
+aift:repo_capital_city_provisions aift:depends_on aift:dependency_@vercel_analytics .
+aift:repo_capital_city_provisions aift:depends_on aift:dependency_autoprefixer .
+aift:repo_capital_city_provisions aift:depends_on aift:dependency_eslint .
+aift:repo_capital_city_provisions aift:depends_on aift:dependency_eslint_config_next .
+aift:repo_capital_city_provisions aift:depends_on aift:dependency_framer_motion .
+aift:repo_capital_city_provisions aift:depends_on aift:dependency_lucide_react .
+aift:repo_capital_city_provisions aift:depends_on aift:dependency_next .
+aift:repo_capital_city_provisions aift:depends_on aift:dependency_nodemailer .
+aift:repo_capital_city_provisions aift:depends_on aift:dependency_pg .
+aift:repo_capital_city_provisions aift:depends_on aift:dependency_postcss .
+aift:repo_capital_city_provisions aift:depends_on aift:dependency_react .
+aift:repo_capital_city_provisions aift:depends_on aift:dependency_react_dom .
+aift:repo_capital_city_provisions aift:depends_on aift:dependency_tailwindcss .
+aift:repo_capital_city_provisions aift:depends_on aift:dependency_typescript .
+aift:repo_capital_city_provisions aift:documents aift:Manual_capital_city_provisions_unix_manual_source .
+aift:repo_capital_city_provisions aift:documents aift:ManualPage_capital_city_provisions_readme .
+aift:repo_capital_city_provisions aift:documents aift:manual_capital_city_provisions .
+aift:repo_capital_city_provisions aift:provides aift:capability_capital_city_provisions_build .
+aift:repo_capital_city_provisions aift:provides aift:capability_capital_city_provisions_deploy .
+aift:repo_capital_city_provisions aift:provides aift:capability_capital_city_provisions_docs .
+aift:repo_capital_city_provisions aift:provides aift:capability_capital_city_provisions_health .
+aift:repo_capital_city_provisions aift:provides aift:capability_capital_city_provisions_start .
+aift:repo_capital_city_provisions aift:provides aift:capability_capital_city_provisions_status .
+aift:repo_capital_city_provisions aift:provides aift:capability_capital_city_provisions_stop .
+aift:repo_capital_city_provisions aift:provides aift:capability_capital_city_provisions_sync .
+aift:repo_capital_city_provisions aift:provides aift:capability_capital_city_provisions_test .
+aift:repo_capital_city_provisions aift:provides aift:capability_capital_city_provisions_verify .
+aift:repo_chktex aift:declares aift:CapabilitySet_chktex_capabilities .
+aift:repo_chktex aift:declares aift:Manifest_chktex_repo_manifest .
+aift:repo_chktex aift:declares aift:ManualContract_chktex_manual_contract .
+aift:repo_chktex aift:documents aift:Manual_chktex_unix_manual_source .
+aift:repo_chktex aift:documents aift:manual_chktex .
+aift:repo_chktex aift:provides aift:capability_chktex_build .
+aift:repo_chktex aift:provides aift:capability_chktex_deploy .
+aift:repo_chktex aift:provides aift:capability_chktex_docs .
+aift:repo_chktex aift:provides aift:capability_chktex_health .
+aift:repo_chktex aift:provides aift:capability_chktex_start .
+aift:repo_chktex aift:provides aift:capability_chktex_status .
+aift:repo_chktex aift:provides aift:capability_chktex_stop .
+aift:repo_chktex aift:provides aift:capability_chktex_sync .
+aift:repo_chktex aift:provides aift:capability_chktex_test .
+aift:repo_chktex aift:provides aift:capability_chktex_verify .
+aift:repo_mobox aift:declares aift:CapabilitySet_mobox_capabilities .
+aift:repo_mobox aift:declares aift:Manifest_mobox_repo_manifest .
+aift:repo_mobox aift:declares aift:ManualContract_mobox_manual_contract .
+aift:repo_mobox aift:documents aift:Manual_mobox_unix_manual_source .
+aift:repo_mobox aift:documents aift:ManualPage_mobox_readme .
+aift:repo_mobox aift:documents aift:manual_mobox .
+aift:repo_mobox aift:provides aift:capability_mobox_build .
+aift:repo_mobox aift:provides aift:capability_mobox_deploy .
+aift:repo_mobox aift:provides aift:capability_mobox_docs .
+aift:repo_mobox aift:provides aift:capability_mobox_health .
+aift:repo_mobox aift:provides aift:capability_mobox_start .
+aift:repo_mobox aift:provides aift:capability_mobox_status .
+aift:repo_mobox aift:provides aift:capability_mobox_stop .
+aift:repo_mobox aift:provides aift:capability_mobox_sync .
+aift:repo_mobox aift:provides aift:capability_mobox_test .
+aift:repo_mobox aift:provides aift:capability_mobox_verify .
+aift:repo_repo_brainstorm_backend_forge aift:contains aift:Package_repo_brainstorm_backend_forge_npm_package .
+aift:repo_repo_brainstorm_backend_forge aift:declares aift:CapabilitySet_repo_brainstorm_backend_forge_capabilities .
+aift:repo_repo_brainstorm_backend_forge aift:declares aift:Manifest_repo_brainstorm_backend_forge_repo_manifest .
+aift:repo_repo_brainstorm_backend_forge aift:declares aift:ManualContract_repo_brainstorm_backend_forge_manual_contract .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@eslint_js .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@hookform_resolvers .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_accordion .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_alert_dialog .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_aspect_ratio .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_avatar .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_checkbox .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_collapsible .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_context_menu .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_dialog .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_dropdown_menu .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_hover_card .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_label .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_menubar .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_navigation_menu .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_popover .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_progress .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_radio_group .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_scroll_area .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_select .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_separator .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_slider .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_slot .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_switch .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_tabs .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_toast .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_toggle .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_toggle_group .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@radix_ui_react_tooltip .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@tailwindcss_typography .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@tanstack_react_query .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@types_node .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@types_react .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@types_react_dom .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_@vitejs_plugin_react_swc .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_autoprefixer .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_class_variance_authority .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_clsx .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_cmdk .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_date_fns .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_embla_carousel_react .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_eslint .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_eslint_plugin_react_hooks .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_eslint_plugin_react_refresh .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_globals .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_input_otp .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_lovable_tagger .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_lucide_react .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_next_themes .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_postcss .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_react .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_react_day_picker .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_react_dom .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_react_hook_form .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_react_resizable_panels .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_react_router_dom .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_recharts .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_sonner .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_tailwind_merge .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_tailwindcss .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_tailwindcss_animate .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_typescript .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_typescript_eslint .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_vaul .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_vite .
+aift:repo_repo_brainstorm_backend_forge aift:depends_on aift:dependency_zod .
+aift:repo_repo_brainstorm_backend_forge aift:documents aift:Manual_repo_brainstorm_backend_forge_unix_manual_source .
+aift:repo_repo_brainstorm_backend_forge aift:documents aift:ManualPage_repo_brainstorm_backend_forge_readme .
+aift:repo_repo_brainstorm_backend_forge aift:documents aift:manual_repo_brainstorm_backend_forge .
+aift:repo_repo_brainstorm_backend_forge aift:provides aift:capability_repo_brainstorm_backend_forge_build .
+aift:repo_repo_brainstorm_backend_forge aift:provides aift:capability_repo_brainstorm_backend_forge_deploy .
+aift:repo_repo_brainstorm_backend_forge aift:provides aift:capability_repo_brainstorm_backend_forge_docs .
+aift:repo_repo_brainstorm_backend_forge aift:provides aift:capability_repo_brainstorm_backend_forge_health .
+aift:repo_repo_brainstorm_backend_forge aift:provides aift:capability_repo_brainstorm_backend_forge_start .
+aift:repo_repo_brainstorm_backend_forge aift:provides aift:capability_repo_brainstorm_backend_forge_status .
+aift:repo_repo_brainstorm_backend_forge aift:provides aift:capability_repo_brainstorm_backend_forge_stop .
+aift:repo_repo_brainstorm_backend_forge aift:provides aift:capability_repo_brainstorm_backend_forge_sync .
+aift:repo_repo_brainstorm_backend_forge aift:provides aift:capability_repo_brainstorm_backend_forge_test .
+aift:repo_repo_brainstorm_backend_forge aift:provides aift:capability_repo_brainstorm_backend_forge_verify .
+aift:repo_tastycutz aift:contains aift:Package_tastycutz_npm_package .
+aift:repo_tastycutz aift:declares aift:CapabilitySet_tastycutz_capabilities .
+aift:repo_tastycutz aift:declares aift:Manifest_tastycutz_repo_manifest .
+aift:repo_tastycutz aift:declares aift:ManualContract_tastycutz_manual_contract .
+aift:repo_tastycutz aift:depends_on aift:dependency_@huggingface_transformers .
+aift:repo_tastycutz aift:depends_on aift:dependency_@mlc_ai_web_llm .
+aift:repo_tastycutz aift:depends_on aift:dependency_@playwright_test .
+aift:repo_tastycutz aift:depends_on aift:dependency_@types_node .
+aift:repo_tastycutz aift:depends_on aift:dependency_@types_react .
+aift:repo_tastycutz aift:depends_on aift:dependency_@types_react_dom .
+aift:repo_tastycutz aift:depends_on aift:dependency_@vercel_analytics .
+aift:repo_tastycutz aift:depends_on aift:dependency_autoprefixer .
+aift:repo_tastycutz aift:depends_on aift:dependency_eslint .
+aift:repo_tastycutz aift:depends_on aift:dependency_eslint_config_next .
+aift:repo_tastycutz aift:depends_on aift:dependency_framer_motion .
+aift:repo_tastycutz aift:depends_on aift:dependency_lucide_react .
+aift:repo_tastycutz aift:depends_on aift:dependency_next .
+aift:repo_tastycutz aift:depends_on aift:dependency_postcss .
+aift:repo_tastycutz aift:depends_on aift:dependency_react .
+aift:repo_tastycutz aift:depends_on aift:dependency_react_dom .
+aift:repo_tastycutz aift:depends_on aift:dependency_tailwindcss .
+aift:repo_tastycutz aift:depends_on aift:dependency_tsx .
+aift:repo_tastycutz aift:depends_on aift:dependency_typescript .
+aift:repo_tastycutz aift:depends_on aift:dependency_vercel .
+aift:repo_tastycutz aift:documents aift:Manual_tastycutz_unix_manual_source .
+aift:repo_tastycutz aift:documents aift:ManualPage_tastycutz_readme .
+aift:repo_tastycutz aift:documents aift:manual_tastycutz .
+aift:repo_tastycutz aift:provides aift:capability_tastycutz_build .
+aift:repo_tastycutz aift:provides aift:capability_tastycutz_deploy .
+aift:repo_tastycutz aift:provides aift:capability_tastycutz_docs .
+aift:repo_tastycutz aift:provides aift:capability_tastycutz_health .
+aift:repo_tastycutz aift:provides aift:capability_tastycutz_start .
+aift:repo_tastycutz aift:provides aift:capability_tastycutz_status .
+aift:repo_tastycutz aift:provides aift:capability_tastycutz_stop .
+aift:repo_tastycutz aift:provides aift:capability_tastycutz_sync .
+aift:repo_tastycutz aift:provides aift:capability_tastycutz_test .
+aift:repo_tastycutz aift:provides aift:capability_tastycutz_verify .
+aift:repo_www_aifreedomtrust_com aift:declares aift:CapabilitySet_www_aifreedomtrust_com_capabilities .
+aift:repo_www_aifreedomtrust_com aift:declares aift:Manifest_www_aifreedomtrust_com_repo_manifest .
+aift:repo_www_aifreedomtrust_com aift:declares aift:ManualContract_www_aifreedomtrust_com_manual_contract .
+aift:repo_www_aifreedomtrust_com aift:documents aift:Manual_www_aifreedomtrust_com_unix_manual_source .
+aift:repo_www_aifreedomtrust_com aift:documents aift:ManualPage_www_aifreedomtrust_com_readme .
+aift:repo_www_aifreedomtrust_com aift:documents aift:manual_www_aifreedomtrust_com .
+aift:repo_www_aifreedomtrust_com aift:provides aift:capability_www_aifreedomtrust_com_build .
+aift:repo_www_aifreedomtrust_com aift:provides aift:capability_www_aifreedomtrust_com_deploy .
+aift:repo_www_aifreedomtrust_com aift:provides aift:capability_www_aifreedomtrust_com_docs .
+aift:repo_www_aifreedomtrust_com aift:provides aift:capability_www_aifreedomtrust_com_health .
+aift:repo_www_aifreedomtrust_com aift:provides aift:capability_www_aifreedomtrust_com_start .
+aift:repo_www_aifreedomtrust_com aift:provides aift:capability_www_aifreedomtrust_com_status .
+aift:repo_www_aifreedomtrust_com aift:provides aift:capability_www_aifreedomtrust_com_stop .
+aift:repo_www_aifreedomtrust_com aift:provides aift:capability_www_aifreedomtrust_com_sync .
+aift:repo_www_aifreedomtrust_com aift:provides aift:capability_www_aifreedomtrust_com_test .
+aift:repo_www_aifreedomtrust_com aift:provides aift:capability_www_aifreedomtrust_com_verify .

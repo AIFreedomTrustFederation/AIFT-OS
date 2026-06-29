@@ -1,0 +1,10 @@
+1698567 Sync AIFT phase updates
+a529cba Add AIFT service contract
+4b0542f Add AIFT event mesh contract
+b21be58 Add AIFT manual contract
+adc086d Style alternate premium meats homepage
+413984e Add alternate premium meats homepage route
+4180097 fix: add Vercel build script
+758299e Add GitHub Pages setup notes
+d168911 Link Aetherion flight paper
+c20e3c7 Standardize applied systems README

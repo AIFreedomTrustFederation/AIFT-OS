@@ -1,0 +1,5 @@
+c3b1ba4 Sync AIFT phase updates
+5177889 Add AIFT service contract
+442db09 Add AIFT event mesh contract
+4913973 Add AIFT manual contract
+be3f639 Publish federation root landing page

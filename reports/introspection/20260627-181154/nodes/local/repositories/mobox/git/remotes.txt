@@ -1,0 +1,2 @@
+origin	https://github.com/AIFreedomTrustFederation/mobox.git (fetch)
+origin	https://github.com/AIFreedomTrustFederation/mobox.git (push)

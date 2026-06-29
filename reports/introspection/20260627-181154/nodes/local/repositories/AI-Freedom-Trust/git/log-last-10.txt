@@ -1,0 +1,10 @@
+4a7cd2e Sync AIFT phase updates
+1854e77 Add AIFT service contract
+f82d81a Add AIFT event mesh contract
+1554aff Add AIFT manual contract
+bea91cc Link completed Phase 0 genome documents
+f4d1be5 Add Federation API doctrine
+0d3a20a Add Federation governance doctrine
+a4e26a9 Add Tree of Life doctrine
+2b5f136 Add holographic principle doctrine
+f3df92a Link Federation genome documents from README

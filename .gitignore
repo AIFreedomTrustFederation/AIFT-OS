@@ -47,3 +47,17 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# Backend build artifacts
+*.log
+*.tmp
+bin/aiftd
+build/
+cache/
+intelligence/*.json
+intelligence/cache/
+registry/*.json
+!registry/architecture.json
+reports/*.md
+!reports/architecture-report.md
+reports/*.txt

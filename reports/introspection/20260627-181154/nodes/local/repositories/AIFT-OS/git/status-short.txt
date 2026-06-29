@@ -1,0 +1,8 @@
+?? AI-Code-Training/scripts/phase-scripts/phase-16-introspection-kernel.sh
+?? ci-truth-repair-report.sh
+?? fix-introspection-and-push-federation.sh
+?? phase-16-diagnostics.sh
+?? phase-16-introspection-kernel.sh
+?? reports/diagnostics-20260627-174933.tar.gz
+?? reports/diagnostics/
+?? reports/introspection/

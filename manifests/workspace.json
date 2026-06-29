@@ -1,0 +1,158 @@
+{
+  "workspace": "/data/data/com.termux/files/home/AIFT",
+  "generatedAt": "2026-06-27T21:36:36Z",
+  "repositories": [
+    {
+      "name": "AI-Freedom-Trust",
+      "path": "/data/data/com.termux/files/home/AIFT/AI-Freedom-Trust",
+      "branch": "main",
+      "commit": "bea91cc",
+      "changedFiles": 2
+    }
+,
+    {
+      "name": "AIFT-Forge",
+      "path": "/data/data/com.termux/files/home/AIFT/AIFT-Forge",
+      "branch": "main",
+      "commit": "82717cb",
+      "changedFiles": 5
+    }
+,
+    {
+      "name": "AIFT-Genesis",
+      "path": "/data/data/com.termux/files/home/AIFT/AIFT-Genesis",
+      "branch": "main",
+      "commit": "4be5334",
+      "changedFiles": 4
+    }
+,
+    {
+      "name": "Aether_Coin_biozonecurrency",
+      "path": "/data/data/com.termux/files/home/AIFT/Aether_Coin_biozonecurrency",
+      "branch": "main",
+      "commit": "8401c0d",
+      "changedFiles": 2
+    }
+,
+    {
+      "name": "AetherianGovernance",
+      "path": "/data/data/com.termux/files/home/AIFT/AetherianGovernance",
+      "branch": "main",
+      "commit": "166932d",
+      "changedFiles": 2
+    }
+,
+    {
+      "name": "BookSmith-Federation-OS",
+      "path": "/data/data/com.termux/files/home/AIFT/BookSmith-Federation-OS",
+      "branch": "main",
+      "commit": "7722bd5",
+      "changedFiles": 2
+    }
+,
+    {
+      "name": "OpenMontage",
+      "path": "/data/data/com.termux/files/home/AIFT/OpenMontage",
+      "branch": "main",
+      "commit": "a5b5b12",
+      "changedFiles": 2
+    }
+,
+    {
+      "name": "TheMindofAll",
+      "path": "/data/data/com.termux/files/home/AIFT/TheMindofAll",
+      "branch": "main",
+      "commit": "315a55c",
+      "changedFiles": 2
+    }
+,
+    {
+      "name": "VPS",
+      "path": "/data/data/com.termux/files/home/AIFT/VPS",
+      "branch": "main",
+      "commit": "b87e96b",
+      "changedFiles": 2
+    }
+,
+    {
+      "name": "aifreedomtrustfederation.github.io",
+      "path": "/data/data/com.termux/files/home/AIFT/aifreedomtrustfederation.github.io",
+      "branch": "main",
+      "commit": "be3f639",
+      "changedFiles": 2
+    }
+,
+    {
+      "name": "biozone-harmony-boost",
+      "path": "/data/data/com.termux/files/home/AIFT/biozone-harmony-boost",
+      "branch": "main",
+      "commit": "2fee316",
+      "changedFiles": 2
+    }
+,
+    {
+      "name": "booksmith-ai",
+      "path": "/data/data/com.termux/files/home/AIFT/booksmith-ai",
+      "branch": "main",
+      "commit": "e730df7",
+      "changedFiles": 2
+    }
+,
+    {
+      "name": "c-848263",
+      "path": "/data/data/com.termux/files/home/AIFT/c-848263",
+      "branch": "main",
+      "commit": "ff7cf0f",
+      "changedFiles": 2
+    }
+,
+    {
+      "name": "capital-city-provisions",
+      "path": "/data/data/com.termux/files/home/AIFT/capital-city-provisions",
+      "branch": "main",
+      "commit": "adc086d",
+      "changedFiles": 2
+    }
+,
+    {
+      "name": "chktex",
+      "path": "/data/data/com.termux/files/home/AIFT/chktex",
+      "branch": "master",
+      "commit": "c9bd5e8",
+      "changedFiles": 2
+    }
+,
+    {
+      "name": "mobox",
+      "path": "/data/data/com.termux/files/home/AIFT/mobox",
+      "branch": "main",
+      "commit": "d03846e",
+      "changedFiles": 2
+    }
+,
+    {
+      "name": "repo-brainstorm-backend-forge",
+      "path": "/data/data/com.termux/files/home/AIFT/repo-brainstorm-backend-forge",
+      "branch": "main",
+      "commit": "387ce69",
+      "changedFiles": 2
+    }
+,
+    {
+      "name": "tastycutz",
+      "path": "/data/data/com.termux/files/home/AIFT/tastycutz",
+      "branch": "main",
+      "commit": "caddd7a",
+      "changedFiles": 2
+    }
+,
+    {
+      "name": "www.aifreedomtrust.com",
+      "path": "/data/data/com.termux/files/home/AIFT/www.aifreedomtrust.com",
+      "branch": "main",
+      "commit": "e0bffff",
+      "changedFiles": 2
+    }
+
+  ]
+}

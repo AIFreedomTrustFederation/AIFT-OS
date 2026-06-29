@@ -1,0 +1,40 @@
+{
+  "id": "repo.AIFT-OS",
+  "repo": "AIFT-OS",
+  "name": "AIFT-OS",
+  "version": "0.1.0",
+  "status": "detected",
+  "kind": "kernel",
+  "description": "Auto-discovered federation kernel module for AIFT-OS",
+  "dependsOn": [],
+  "provides": [
+    "go.module",
+    "manual.contract",
+    "service.contract"
+  ],
+  "consumes": [],
+  "publishes": [],
+  "commands": {
+    "go:build": "go build ./...",
+    "go:test": "go test ./..."
+  },
+  "services": [],
+  "capabilities": [],
+  "docs": [
+    ".aift/manual.json",
+    "README.md",
+    "docs/"
+  ],
+  "healthChecks": [],
+  "migrationLevel": "phase-17",
+  "evidence": [
+    ".aift/capabilities.json",
+    ".aift/manual.json",
+    ".aift/services.json",
+    ".git",
+    "README.md",
+    "docs/",
+    "go.mod"
+  ],
+  "generatedAt": "2026-06-28T02:31:01Z"
+}

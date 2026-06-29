@@ -1,0 +1,512 @@
+#!/usr/bin/env sh
+set -eu
+
+ROOT="${AIFT_ROOT:-$HOME/AIFT}"
+OS="${AIFT_OS_HOME:-$ROOT/AIFT-OS}"
+BIN="$OS/bin/aiftd"
+
+export AIFT_ROOT="$ROOT"
+export AIFT_OS_HOME="$OS"
+
+cd "$OS" || exit 1
+
+echo "== AIFT-OS Phase 7: Runtime + Internal API =="
+
+mkdir -p internal/{runtime,services,api,events,state,supervisor,jobs}
+
+cat > internal/state/state.go <<'GO'
+package state
+
+import (
+"encoding/json"
+"os"
+"path/filepath"
+"time"
+
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+)
+
+type RuntimeState struct {
+Name      string            `json:"name"`
+Status    string            `json:"status"`
+StartedAt string            `json:"startedAt"`
+UpdatedAt string            `json:"updatedAt"`
+Services  map[string]string `json:"services"`
+}
+
+func Path(cfg config.Config) string {
+return filepath.Join(cfg.OSHome, "var", "runtime-state.json")
+}
+
+func New() RuntimeState {
+now := time.Now().Format(time.RFC3339)
+return RuntimeState{
+Name:      "AIFT-OS",
+Status:    "running",
+StartedAt: now,
+UpdatedAt: now,
+Services:  map[string]string{},
+}
+}
+
+func Save(cfg config.Config, s RuntimeState) error {
+s.UpdatedAt = time.Now().Format(time.RFC3339)
+if err := os.MkdirAll(filepath.Dir(Path(cfg)), 0755); err != nil {
+return err
+}
+b, err := json.MarshalIndent(s, "", "  ")
+if err != nil {
+return err
+}
+return os.WriteFile(Path(cfg), append(b, '\n'), 0644)
+}
+
+func Load(cfg config.Config) (RuntimeState, error) {
+b, err := os.ReadFile(Path(cfg))
+if err != nil {
+return New(), err
+}
+var s RuntimeState
+err = json.Unmarshal(b, &s)
+return s, err
+}
+GO
+
+cat > internal/services/services.go <<'GO'
+package services
+
+import (
+"fmt"
+
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/state"
+)
+
+type Service struct {
+Name        string `json:"name"`
+Status      string `json:"status"`
+Description string `json:"description"`
+}
+
+func Defaults() []Service {
+return []Service{
+{Name: "api", Status: "available", Description: "Local HTTP API"},
+{Name: "scheduler", Status: "available", Description: "Federation scheduler"},
+{Name: "events", Status: "available", Description: "Event log and bus"},
+{Name: "providers", Status: "available", Description: "Provider registry"},
+{Name: "registry", Status: "available", Description: "Repository registry generator"},
+{Name: "reports", Status: "available", Description: "Dashboard and dependency reports"},
+}
+}
+
+func List(cfg config.Config) error {
+st, _ := state.Load(cfg)
+
+fmt.Printf("%-16s %-14s %s\n", "SERVICE", "STATUS", "DESCRIPTION")
+for _, svc := range Defaults() {
+status := svc.Status
+if st.Services != nil && st.Services[svc.Name] != "" {
+status = st.Services[svc.Name]
+}
+fmt.Printf("%-16s %-14s %s\n", svc.Name, status, svc.Description)
+}
+
+return nil
+}
+
+func Mark(cfg config.Config, name, statusValue string) error {
+st, _ := state.Load(cfg)
+if st.Services == nil {
+st.Services = map[string]string{}
+}
+st.Services[name] = statusValue
+if err := state.Save(cfg, st); err != nil {
+return err
+}
+return events.Emit(cfg, "service."+statusValue, name, "service state changed", map[string]string{"service": name, "status": statusValue})
+}
+GO
+
+cat > internal/jobs/jobs.go <<'GO'
+package jobs
+
+import (
+"fmt"
+"time"
+
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/providers"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/registry"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/reports"
+)
+
+type Job struct {
+Name string
+Run  func(config.Config) error
+}
+
+func Defaults() []Job {
+return []Job{
+{Name: "providers", Run: providers.WriteRegistry},
+{Name: "registry", Run: registry.Generate},
+{Name: "dashboard", Run: reports.Dashboard},
+{Name: "deps", Run: reports.Deps},
+}
+}
+
+func RunAll(cfg config.Config) error {
+start := time.Now()
+if err := events.Emit(cfg, "jobs.start", "jobs", "job batch started", nil); err != nil {
+return err
+}
+
+for _, job := range Defaults() {
+if err := events.Emit(cfg, "job.start", job.Name, "job started", nil); err != nil {
+return err
+}
+if err := job.Run(cfg); err != nil {
+_ = events.Emit(cfg, "job.error", job.Name, err.Error(), nil)
+return err
+}
+if err := events.Emit(cfg, "job.complete", job.Name, "job completed", nil); err != nil {
+return err
+}
+}
+
+return events.Emit(cfg, "jobs.complete", "jobs", fmt.Sprintf("job batch completed in %s", time.Since(start)), nil)
+}
+GO
+
+cat > internal/supervisor/supervisor.go <<'GO'
+package supervisor
+
+import (
+"time"
+
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/jobs"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/services"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/state"
+)
+
+type Supervisor struct {
+Config config.Config
+}
+
+func New(cfg config.Config) Supervisor {
+return Supervisor{Config: cfg}
+}
+
+func (s Supervisor) Boot() error {
+st := state.New()
+for _, svc := range services.Defaults() {
+st.Services[svc.Name] = "running"
+}
+if err := state.Save(s.Config, st); err != nil {
+return err
+}
+if err := events.Emit(s.Config, "supervisor.boot", "supervisor", "runtime supervisor booted", nil); err != nil {
+return err
+}
+return jobs.RunAll(s.Config)
+}
+
+func (s Supervisor) Tick() error {
+if err := events.Emit(s.Config, "supervisor.tick", "supervisor", "runtime supervisor tick", nil); err != nil {
+return err
+}
+return jobs.RunAll(s.Config)
+}
+
+func (s Supervisor) Loop(interval time.Duration) error {
+if err := s.Boot(); err != nil {
+return err
+}
+
+ticker := time.NewTicker(interval)
+defer ticker.Stop()
+
+for range ticker.C {
+_ = s.Tick()
+}
+
+return nil
+}
+GO
+
+cat > internal/runtime/runtime.go <<'GO'
+package runtime
+
+import (
+"fmt"
+"time"
+
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/jobs"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/supervisor"
+)
+
+func StartOnce(cfg config.Config) error {
+if err := events.Emit(cfg, "runtime.start", "runtime", "runtime one-shot start", nil); err != nil {
+return err
+}
+if err := supervisor.New(cfg).Boot(); err != nil {
+return err
+}
+fmt.Println("AIFT-OS runtime completed one-shot start")
+return events.Emit(cfg, "runtime.complete", "runtime", "runtime one-shot complete", nil)
+}
+
+func Tick(cfg config.Config) error {
+return jobs.RunAll(cfg)
+}
+
+func Loop(cfg config.Config) error {
+fmt.Println("AIFT-OS runtime loop started")
+return supervisor.New(cfg).Loop(5 * time.Minute)
+}
+GO
+
+cat > internal/api/api.go <<'GO'
+package api
+
+import (
+"encoding/json"
+"fmt"
+"net/http"
+"path/filepath"
+
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/jobs"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manifests"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/providers"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/registry"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/reports"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/services"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/state"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/sync"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/version"
+)
+
+type Server struct {
+Config config.Config
+Addr   string
+}
+
+func New(cfg config.Config, addr string) Server {
+return Server{Config: cfg, Addr: addr}
+}
+
+func (s Server) Serve() error {
+mux := http.NewServeMux()
+
+mux.HandleFunc("/health", s.json(map[string]string{
+"status":  "ok",
+"name":    version.Name,
+"version": version.Version,
+}))
+
+mux.HandleFunc("/state", func(w http.ResponseWriter, r *http.Request) {
+st, _ := state.Load(s.Config)
+_ = json.NewEncoder(w).Encode(st)
+})
+
+mux.HandleFunc("/services", func(w http.ResponseWriter, r *http.Request) {
+_ = json.NewEncoder(w).Encode(services.Defaults())
+})
+
+mux.HandleFunc("/actions/verify", s.action(func() error {
+if err := manifests.EnsureAll(s.Config); err != nil {
+return err
+}
+if err := providers.WriteRegistry(s.Config); err != nil {
+return err
+}
+if err := registry.Generate(s.Config); err != nil {
+return err
+}
+if err := reports.Dashboard(s.Config); err != nil {
+return err
+}
+return reports.Deps(s.Config)
+}))
+
+mux.HandleFunc("/actions/tick", s.action(func() error {
+return jobs.RunAll(s.Config)
+}))
+
+mux.HandleFunc("/actions/sync-safe", s.action(func() error {
+return sync.Safe(s.Config)
+}))
+
+mux.HandleFunc("/registry/repos", file(filepath.Join(s.Config.OSHome, "registry", "repos.json")))
+mux.HandleFunc("/registry/providers", file(filepath.Join(s.Config.OSHome, "registry", "providers.json")))
+mux.HandleFunc("/reports/dashboard", file(filepath.Join(s.Config.OSHome, "reports", "dashboard.md")))
+mux.HandleFunc("/events", file(filepath.Join(s.Config.OSHome, "var", "events", "events.jsonl")))
+
+fmt.Println("AIFT-OS API listening on", s.Addr)
+return http.ListenAndServe(s.Addr, mux)
+}
+
+func (s Server) json(v any) http.HandlerFunc {
+return func(w http.ResponseWriter, r *http.Request) {
+w.Header().Set("content-type", "application/json")
+_ = json.NewEncoder(w).Encode(v)
+}
+}
+
+func (s Server) action(fn func() error) http.HandlerFunc {
+return func(w http.ResponseWriter, r *http.Request) {
+if r.Method != http.MethodPost {
+w.WriteHeader(http.StatusMethodNotAllowed)
+_, _ = w.Write([]byte("method not allowed\n"))
+return
+}
+if err := fn(); err != nil {
+w.WriteHeader(http.StatusInternalServerError)
+_ = json.NewEncoder(w).Encode(map[string]string{"status": "error", "error": err.Error()})
+return
+}
+_ = json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
+}
+}
+
+func file(path string) http.HandlerFunc {
+return func(w http.ResponseWriter, r *http.Request) {
+http.ServeFile(w, r, path)
+}
+}
+GO
+
+cat > internal/daemon/daemon.go <<'GO'
+package daemon
+
+import (
+"fmt"
+
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/api"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
+"github.com/AIFreedomTrustFederation/AIFT-OS/internal/runtime"
+)
+
+func Start(cfg config.Config, addr string) error {
+if err := events.Emit(cfg, "daemon.start", "daemon", "AIFT-OS daemon starting", map[string]string{"addr": addr}); err != nil {
+return err
+}
+
+go func() {
+_ = runtime.Loop(cfg)
+}()
+
+fmt.Println("AIFT-OS daemon started")
+fmt.Println("API:", addr)
+fmt.Println("Press CTRL+C to stop.")
+
+return api.New(cfg, addr).Serve()
+}
+GO
+
+python - <<'PY'
+from pathlib import Path
+p = Path("cmd/aift/main.go")
+s = p.read_text()
+
+repls = {
+'fmt.Println("  events")': 'fmt.Println("  events")\n\tfmt.Println("  services")\n\tfmt.Println("  tick")',
+'case "events":\n\t\terr = events.Tail(cfg, 25)': 'case "events":\n\t\terr = events.Tail(cfg, 25)\n\tcase "services":\n\t\terr = services.List(cfg)\n\tcase "tick":\n\t\terr = runtime.Tick(cfg)',
+'"github.com/AIFreedomTrustFederation/AIFT-OS/internal/runtime"': '"github.com/AIFreedomTrustFederation/AIFT-OS/internal/runtime"\n\t"github.com/AIFreedomTrustFederation/AIFT-OS/internal/services"',
+}
+
+for old,new in repls.items():
+    if old in s and new not in s:
+        s = s.replace(old,new)
+
+p.write_text(s)
+PY
+
+cat > tests/runtime-api-smoke.sh <<'SH'
+#!/usr/bin/env sh
+set -eu
+
+ROOT="${AIFT_ROOT:-$HOME/AIFT}"
+OS="${AIFT_OS_HOME:-$ROOT/AIFT-OS}"
+BIN="$OS/bin/aiftd"
+
+cd "$OS" || exit 1
+
+go test ./...
+go build -o "$BIN" ./cmd/aift
+chmod +x "$BIN"
+
+"$ROOT/aift" start >/dev/null
+"$ROOT/aift" tick >/dev/null
+"$ROOT/aift" services >/dev/null
+"$ROOT/aift" verify >/dev/null
+
+echo "OK: runtime/API smoke passed"
+SH
+chmod +x tests/runtime-api-smoke.sh
+
+cat > docs/PHASE-7-RUNTIME-API.md <<'DOC'
+# Phase 7: Federation Runtime and Internal API
+
+Added:
+
+- runtime state file
+- service registry
+- supervisor
+- job runner
+- runtime tick
+- expanded HTTP API
+- action endpoints
+- services command
+- tick command
+
+Core commands:
+
+- `aift start`
+- `aift tick`
+- `aift services`
+- `aift daemon :8787`
+
+API endpoints:
+
+- `GET /health`
+- `GET /state`
+- `GET /services`
+- `GET /events`
+- `GET /registry/repos`
+- `GET /registry/providers`
+- `GET /reports/dashboard`
+- `POST /actions/verify`
+- `POST /actions/tick`
+- `POST /actions/sync-safe`
+DOC
+
+echo "== Build/test =="
+go clean -cache
+gofmt -w cmd internal
+go test ./...
+go build -o "$BIN" ./cmd/aift
+chmod +x "$BIN"
+
+"$ROOT/aift" start
+"$ROOT/aift" services
+"$ROOT/aift" tick
+sh tests/runtime-api-smoke.sh
+
+echo "== Commit/push =="
+git add .
+if git diff --cached --quiet; then
+  echo "Nothing staged to commit."
+else
+  git commit -m "Add AIFT-OS federation runtime and internal API"
+fi
+git push origin main
+
+echo "DONE"

@@ -1,0 +1,1580 @@
+{
+  "generated_at": "2026-06-28T21:26:06Z",
+  "version": "1.0.0",
+  "packages": [
+    {
+      "name": "api",
+      "path": "internal/api",
+      "depends_on": [
+        "internal/config",
+        "internal/jobs",
+        "internal/manifests",
+        "internal/providers",
+        "internal/registry",
+        "internal/reports",
+        "internal/services",
+        "internal/state",
+        "internal/sync",
+        "internal/version"
+      ],
+      "depended_by": [
+        "cmd/aift",
+        "internal/daemon"
+      ],
+      "has_tests": true,
+      "category": "runtime"
+    },
+    {
+      "name": "capabilities",
+      "path": "internal/capabilities",
+      "depends_on": [
+        "internal/config",
+        "internal/events",
+        "internal/fsutil",
+        "internal/jsonfile",
+        "internal/workspace"
+      ],
+      "depended_by": [
+        "cmd/aift",
+        "internal/intelligence"
+      ],
+      "has_tests": true,
+      "category": "analysis"
+    },
+    {
+      "name": "config",
+      "path": "internal/config",
+      "depends_on": null,
+      "depended_by": [
+        "cmd/aift",
+        "internal/api",
+        "internal/capabilities",
+        "internal/daemon",
+        "internal/discoveryengine",
+        "internal/doctor",
+        "internal/eventbus",
+        "internal/eventmesh",
+        "internal/events",
+        "internal/federation",
+        "internal/graph",
+        "internal/intelligence",
+        "internal/jobs",
+        "internal/kernel",
+        "internal/kernelregistry",
+        "internal/kernelruntime",
+        "internal/manifests",
+        "internal/manual",
+        "internal/modules",
+        "internal/patchengine",
+        "internal/planner",
+        "internal/plugins",
+        "internal/providers",
+        "internal/readiness",
+        "internal/registry",
+        "internal/repo",
+        "internal/reports",
+        "internal/runtime",
+        "internal/scheduler",
+        "internal/schedulerplan",
+        "internal/servicecontracts",
+        "internal/services",
+        "internal/state",
+        "internal/supervisor",
+        "internal/sync",
+        "internal/workflow",
+        "internal/workspace"
+      ],
+      "has_tests": true,
+      "category": "foundation"
+    },
+    {
+      "name": "daemon",
+      "path": "internal/daemon",
+      "depends_on": [
+        "internal/api",
+        "internal/config",
+        "internal/events",
+        "internal/runtime"
+      ],
+      "depended_by": [
+        "cmd/aift"
+      ],
+      "has_tests": false,
+      "category": "runtime"
+    },
+    {
+      "name": "discoveryengine",
+      "path": "internal/discoveryengine",
+      "depends_on": [
+        "internal/config",
+        "internal/events",
+        "internal/fsutil",
+        "internal/jsonfile",
+        "internal/sliceutil",
+        "internal/workspace"
+      ],
+      "depended_by": [
+        "cmd/aift",
+        "internal/kernelruntime"
+      ],
+      "has_tests": true,
+      "category": "analysis"
+    },
+    {
+      "name": "doctor",
+      "path": "internal/doctor",
+      "depends_on": [
+        "internal/config"
+      ],
+      "depended_by": [
+        "cmd/aift"
+      ],
+      "has_tests": false,
+      "category": "operations"
+    },
+    {
+      "name": "eventbus",
+      "path": "internal/eventbus",
+      "depends_on": [
+        "internal/config",
+        "internal/sliceutil"
+      ],
+      "depended_by": [
+        "cmd/aift",
+        "internal/kernelruntime"
+      ],
+      "has_tests": true,
+      "category": "events"
+    },
+    {
+      "name": "eventmesh",
+      "path": "internal/eventmesh",
+      "depends_on": [
+        "internal/config",
+        "internal/events",
+        "internal/jsonfile",
+        "internal/workspace"
+      ],
+      "depended_by": [
+        "cmd/aift"
+      ],
+      "has_tests": true,
+      "category": "events"
+    },
+    {
+      "name": "events",
+      "path": "internal/events",
+      "depends_on": [
+        "internal/config"
+      ],
+      "depended_by": [
+        "cmd/aift",
+        "internal/capabilities",
+        "internal/daemon",
+        "internal/discoveryengine",
+        "internal/eventmesh",
+        "internal/federation",
+        "internal/graph",
+        "internal/intelligence",
+        "internal/jobs",
+        "internal/kernelregistry",
+        "internal/manual",
+        "internal/modules",
+        "internal/planner",
+        "internal/readiness",
+        "internal/runtime",
+        "internal/scheduler",
+        "internal/schedulerplan",
+        "internal/servicecontracts",
+        "internal/services",
+        "internal/supervisor"
+      ],
+      "has_tests": true,
+      "category": "events"
+    },
+    {
+      "name": "federation",
+      "path": "internal/federation",
+      "depends_on": [
+        "internal/config",
+        "internal/events",
+        "internal/manifests",
+        "internal/providers",
+        "internal/registry",
+        "internal/repo",
+        "internal/reports",
+        "internal/workflow"
+      ],
+      "depended_by": [
+        "cmd/aift"
+      ],
+      "has_tests": false,
+      "category": "federation"
+    },
+    {
+      "name": "fsutil",
+      "path": "internal/fsutil",
+      "depends_on": null,
+      "depended_by": [
+        "internal/capabilities",
+        "internal/discoveryengine",
+        "internal/graph",
+        "internal/intelligence",
+        "internal/kernelregistry",
+        "internal/manual",
+        "internal/modules",
+        "internal/readiness",
+        "internal/servicecontracts"
+      ],
+      "has_tests": true,
+      "category": "foundation"
+    },
+    {
+      "name": "gitx",
+      "path": "internal/gitx",
+      "depends_on": null,
+      "depended_by": [
+        "cmd/aift",
+        "internal/intelligence",
+        "internal/registry",
+        "internal/repo",
+        "internal/reports",
+        "internal/sync"
+      ],
+      "has_tests": false,
+      "category": "foundation"
+    },
+    {
+      "name": "graph",
+      "path": "internal/graph",
+      "depends_on": [
+        "internal/config",
+        "internal/events",
+        "internal/fsutil",
+        "internal/jsonfile",
+        "internal/sliceutil",
+        "internal/workspace"
+      ],
+      "depended_by": [
+        "cmd/aift"
+      ],
+      "has_tests": true,
+      "category": "analysis"
+    },
+    {
+      "name": "intelligence",
+      "path": "internal/intelligence",
+      "depends_on": [
+        "internal/capabilities",
+        "internal/config",
+        "internal/events",
+        "internal/fsutil",
+        "internal/gitx",
+        "internal/jsonfile",
+        "internal/sliceutil",
+        "internal/workspace"
+      ],
+      "depended_by": [
+        "cmd/aift"
+      ],
+      "has_tests": true,
+      "category": "analysis"
+    },
+    {
+      "name": "jobs",
+      "path": "internal/jobs",
+      "depends_on": [
+        "internal/config",
+        "internal/events",
+        "internal/providers",
+        "internal/registry",
+        "internal/reports"
+      ],
+      "depended_by": [
+        "internal/api",
+        "internal/runtime",
+        "internal/supervisor"
+      ],
+      "has_tests": false,
+      "category": "runtime"
+    },
+    {
+      "name": "jsonfile",
+      "path": "internal/jsonfile",
+      "depends_on": null,
+      "depended_by": [
+        "internal/capabilities",
+        "internal/discoveryengine",
+        "internal/eventmesh",
+        "internal/graph",
+        "internal/intelligence",
+        "internal/kernelregistry",
+        "internal/kernelruntime",
+        "internal/manual",
+        "internal/modules",
+        "internal/patchengine",
+        "internal/planner",
+        "internal/providers",
+        "internal/readiness",
+        "internal/registry",
+        "internal/schedulerplan",
+        "internal/servicecontracts",
+        "internal/workflow"
+      ],
+      "has_tests": true,
+      "category": "foundation"
+    },
+    {
+      "name": "kernel",
+      "path": "internal/kernel",
+      "depends_on": [
+        "internal/config"
+      ],
+      "depended_by": [
+        "cmd/aift"
+      ],
+      "has_tests": false,
+      "category": "kernel"
+    },
+    {
+      "name": "kernelregistry",
+      "path": "internal/kernelregistry",
+      "depends_on": [
+        "internal/config",
+        "internal/events",
+        "internal/fsutil",
+        "internal/jsonfile",
+        "internal/sliceutil",
+        "internal/workspace"
+      ],
+      "depended_by": [
+        "cmd/aift",
+        "internal/kernelruntime"
+      ],
+      "has_tests": true,
+      "category": "kernel"
+    },
+    {
+      "name": "kernelruntime",
+      "path": "internal/kernelruntime",
+      "depends_on": [
+        "internal/config",
+        "internal/discoveryengine",
+        "internal/eventbus",
+        "internal/jsonfile",
+        "internal/kernelregistry"
+      ],
+      "depended_by": [
+        "cmd/aift"
+      ],
+      "has_tests": false,
+      "category": "kernel"
+    },
+    {
+      "name": "manifests",
+      "path": "internal/manifests",
+      "depends_on": [
+        "internal/config",
+        "internal/workspace"
+      ],
+      "depended_by": [
+        "cmd/aift",
+        "internal/api",
+        "internal/federation",
+        "internal/registry",
+        "internal/repo",
+        "internal/reports"
+      ],
+      "has_tests": true,
+      "category": "data"
+    },
+    {
+      "name": "manual",
+      "path": "internal/manual",
+      "depends_on": [
+        "internal/config",
+        "internal/events",
+        "internal/fsutil",
+        "internal/jsonfile",
+        "internal/workspace"
+      ],
+      "depended_by": [
+        "cmd/aift"
+      ],
+      "has_tests": false,
+      "category": "operations"
+    },
+    {
+      "name": "modules",
+      "path": "internal/modules",
+      "depends_on": [
+        "internal/config",
+        "internal/events",
+        "internal/fsutil",
+        "internal/jsonfile",
+        "internal/sliceutil",
+        "internal/workspace"
+      ],
+      "depended_by": [
+        "cmd/aift"
+      ],
+      "has_tests": true,
+      "category": "kernel"
+    },
+    {
+      "name": "patchengine",
+      "path": "internal/patchengine",
+      "depends_on": [
+        "internal/config",
+        "internal/jsonfile"
+      ],
+      "depended_by": [
+        "cmd/aift"
+      ],
+      "has_tests": true,
+      "category": "kernel"
+    },
+    {
+      "name": "planner",
+      "path": "internal/planner",
+      "depends_on": [
+        "internal/config",
+        "internal/events",
+        "internal/jsonfile",
+        "internal/sliceutil",
+        "internal/workspace"
+      ],
+      "depended_by": [
+        "cmd/aift"
+      ],
+      "has_tests": true,
+      "category": "planning"
+    },
+    {
+      "name": "plugins",
+      "path": "internal/plugins",
+      "depends_on": [
+        "internal/config",
+        "internal/workspace"
+      ],
+      "depended_by": [
+        "cmd/aift"
+      ],
+      "has_tests": false,
+      "category": "extensions"
+    },
+    {
+      "name": "providers",
+      "path": "internal/providers",
+      "depends_on": [
+        "internal/config",
+        "internal/jsonfile"
+      ],
+      "depended_by": [
+        "cmd/aift",
+        "internal/api",
+        "internal/federation",
+        "internal/jobs"
+      ],
+      "has_tests": false,
+      "category": "extensions"
+    },
+    {
+      "name": "readiness",
+      "path": "internal/readiness",
+      "depends_on": [
+        "internal/config",
+        "internal/events",
+        "internal/fsutil",
+        "internal/jsonfile",
+        "internal/workspace"
+      ],
+      "depended_by": [
+        "cmd/aift"
+      ],
+      "has_tests": true,
+      "category": "other"
+    },
+    {
+      "name": "registry",
+      "path": "internal/registry",
+      "depends_on": [
+        "internal/config",
+        "internal/gitx",
+        "internal/jsonfile",
+        "internal/manifests",
+        "internal/workspace"
+      ],
+      "depended_by": [
+        "cmd/aift",
+        "internal/api",
+        "internal/federation",
+        "internal/jobs",
+        "internal/scheduler"
+      ],
+      "has_tests": false,
+      "category": "data"
+    },
+    {
+      "name": "repo",
+      "path": "internal/repo",
+      "depends_on": [
+        "internal/config",
+        "internal/gitx",
+        "internal/manifests",
+        "internal/workspace"
+      ],
+      "depended_by": [
+        "cmd/aift",
+        "internal/federation"
+      ],
+      "has_tests": true,
+      "category": "data"
+    },
+    {
+      "name": "reports",
+      "path": "internal/reports",
+      "depends_on": [
+        "internal/config",
+        "internal/gitx",
+        "internal/manifests",
+        "internal/workspace"
+      ],
+      "depended_by": [
+        "cmd/aift",
+        "internal/api",
+        "internal/federation",
+        "internal/jobs",
+        "internal/scheduler"
+      ],
+      "has_tests": false,
+      "category": "data"
+    },
+    {
+      "name": "runtime",
+      "path": "internal/runtime",
+      "depends_on": [
+        "internal/config",
+        "internal/events",
+        "internal/jobs",
+        "internal/supervisor"
+      ],
+      "depended_by": [
+        "cmd/aift",
+        "internal/daemon"
+      ],
+      "has_tests": false,
+      "category": "runtime"
+    },
+    {
+      "name": "scheduler",
+      "path": "internal/scheduler",
+      "depends_on": [
+        "internal/config",
+        "internal/events",
+        "internal/registry",
+        "internal/reports"
+      ],
+      "depended_by": [
+        "cmd/aift"
+      ],
+      "has_tests": false,
+      "category": "runtime"
+    },
+    {
+      "name": "schedulerplan",
+      "path": "internal/schedulerplan",
+      "depends_on": [
+        "internal/config",
+        "internal/events",
+        "internal/jsonfile"
+      ],
+      "depended_by": [
+        "cmd/aift"
+      ],
+      "has_tests": true,
+      "category": "other"
+    },
+    {
+      "name": "servicecontracts",
+      "path": "internal/servicecontracts",
+      "depends_on": [
+        "internal/config",
+        "internal/events",
+        "internal/fsutil",
+        "internal/jsonfile",
+        "internal/workspace"
+      ],
+      "depended_by": [
+        "cmd/aift"
+      ],
+      "has_tests": true,
+      "category": "planning"
+    },
+    {
+      "name": "services",
+      "path": "internal/services",
+      "depends_on": [
+        "internal/config",
+        "internal/events",
+        "internal/state"
+      ],
+      "depended_by": [
+        "cmd/aift",
+        "internal/api",
+        "internal/supervisor"
+      ],
+      "has_tests": false,
+      "category": "planning"
+    },
+    {
+      "name": "sliceutil",
+      "path": "internal/sliceutil",
+      "depends_on": null,
+      "depended_by": [
+        "internal/discoveryengine",
+        "internal/eventbus",
+        "internal/graph",
+        "internal/intelligence",
+        "internal/kernelregistry",
+        "internal/modules",
+        "internal/planner"
+      ],
+      "has_tests": true,
+      "category": "foundation"
+    },
+    {
+      "name": "state",
+      "path": "internal/state",
+      "depends_on": [
+        "internal/config"
+      ],
+      "depended_by": [
+        "internal/api",
+        "internal/services",
+        "internal/supervisor"
+      ],
+      "has_tests": false,
+      "category": "data"
+    },
+    {
+      "name": "supervisor",
+      "path": "internal/supervisor",
+      "depends_on": [
+        "internal/config",
+        "internal/events",
+        "internal/jobs",
+        "internal/services",
+        "internal/state"
+      ],
+      "depended_by": [
+        "internal/runtime"
+      ],
+      "has_tests": false,
+      "category": "runtime"
+    },
+    {
+      "name": "sync",
+      "path": "internal/sync",
+      "depends_on": [
+        "internal/config",
+        "internal/gitx",
+        "internal/workspace"
+      ],
+      "depended_by": [
+        "cmd/aift",
+        "internal/api"
+      ],
+      "has_tests": false,
+      "category": "federation"
+    },
+    {
+      "name": "version",
+      "path": "internal/version",
+      "depends_on": null,
+      "depended_by": [
+        "cmd/aift",
+        "internal/api"
+      ],
+      "has_tests": false,
+      "category": "foundation"
+    },
+    {
+      "name": "workflow",
+      "path": "internal/workflow",
+      "depends_on": [
+        "internal/config",
+        "internal/jsonfile"
+      ],
+      "depended_by": [
+        "cmd/aift",
+        "internal/federation"
+      ],
+      "has_tests": false,
+      "category": "federation"
+    },
+    {
+      "name": "workspace",
+      "path": "internal/workspace",
+      "depends_on": [
+        "internal/config"
+      ],
+      "depended_by": [
+        "cmd/aift",
+        "internal/capabilities",
+        "internal/discoveryengine",
+        "internal/eventmesh",
+        "internal/graph",
+        "internal/intelligence",
+        "internal/kernelregistry",
+        "internal/manifests",
+        "internal/manual",
+        "internal/modules",
+        "internal/planner",
+        "internal/plugins",
+        "internal/readiness",
+        "internal/registry",
+        "internal/repo",
+        "internal/reports",
+        "internal/servicecontracts",
+        "internal/sync"
+      ],
+      "has_tests": false,
+      "category": "foundation"
+    }
+  ],
+  "commands": [
+    {
+      "name": "capabilities",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "daemon",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "dashboard",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "deps",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "discovery",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "doctor",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "event-bus",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "events",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "federation",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "graph",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "intelligence",
+      "has_handler": true,
+      "has_help": true,
+      "status": "planned"
+    },
+    {
+      "name": "kernel",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "kernel-registry",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "manifest",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "manual",
+      "has_handler": true,
+      "has_help": true,
+      "status": "planned"
+    },
+    {
+      "name": "mesh",
+      "has_handler": true,
+      "has_help": true,
+      "status": "planned"
+    },
+    {
+      "name": "modules",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "operator",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "patch-engine",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "plan",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "plugins",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "providers",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "registry",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "repo",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "runtime",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "scheduler",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "serve",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "service-contracts",
+      "has_handler": true,
+      "has_help": true,
+      "status": "planned"
+    },
+    {
+      "name": "services",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "start",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "status",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "sync",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "tick",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "verify",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "version",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    },
+    {
+      "name": "workflow",
+      "has_handler": true,
+      "has_help": true,
+      "status": "active"
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "internal/api",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/api",
+      "to": "internal/jobs"
+    },
+    {
+      "from": "internal/api",
+      "to": "internal/manifests"
+    },
+    {
+      "from": "internal/api",
+      "to": "internal/providers"
+    },
+    {
+      "from": "internal/api",
+      "to": "internal/registry"
+    },
+    {
+      "from": "internal/api",
+      "to": "internal/reports"
+    },
+    {
+      "from": "internal/api",
+      "to": "internal/services"
+    },
+    {
+      "from": "internal/api",
+      "to": "internal/state"
+    },
+    {
+      "from": "internal/api",
+      "to": "internal/sync"
+    },
+    {
+      "from": "internal/api",
+      "to": "internal/version"
+    },
+    {
+      "from": "internal/capabilities",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/capabilities",
+      "to": "internal/events"
+    },
+    {
+      "from": "internal/capabilities",
+      "to": "internal/fsutil"
+    },
+    {
+      "from": "internal/capabilities",
+      "to": "internal/jsonfile"
+    },
+    {
+      "from": "internal/capabilities",
+      "to": "internal/workspace"
+    },
+    {
+      "from": "internal/daemon",
+      "to": "internal/api"
+    },
+    {
+      "from": "internal/daemon",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/daemon",
+      "to": "internal/events"
+    },
+    {
+      "from": "internal/daemon",
+      "to": "internal/runtime"
+    },
+    {
+      "from": "internal/discoveryengine",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/discoveryengine",
+      "to": "internal/events"
+    },
+    {
+      "from": "internal/discoveryengine",
+      "to": "internal/fsutil"
+    },
+    {
+      "from": "internal/discoveryengine",
+      "to": "internal/jsonfile"
+    },
+    {
+      "from": "internal/discoveryengine",
+      "to": "internal/sliceutil"
+    },
+    {
+      "from": "internal/discoveryengine",
+      "to": "internal/workspace"
+    },
+    {
+      "from": "internal/doctor",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/eventbus",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/eventbus",
+      "to": "internal/sliceutil"
+    },
+    {
+      "from": "internal/eventmesh",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/eventmesh",
+      "to": "internal/events"
+    },
+    {
+      "from": "internal/eventmesh",
+      "to": "internal/jsonfile"
+    },
+    {
+      "from": "internal/eventmesh",
+      "to": "internal/workspace"
+    },
+    {
+      "from": "internal/events",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/federation",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/federation",
+      "to": "internal/events"
+    },
+    {
+      "from": "internal/federation",
+      "to": "internal/manifests"
+    },
+    {
+      "from": "internal/federation",
+      "to": "internal/providers"
+    },
+    {
+      "from": "internal/federation",
+      "to": "internal/registry"
+    },
+    {
+      "from": "internal/federation",
+      "to": "internal/repo"
+    },
+    {
+      "from": "internal/federation",
+      "to": "internal/reports"
+    },
+    {
+      "from": "internal/federation",
+      "to": "internal/workflow"
+    },
+    {
+      "from": "internal/graph",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/graph",
+      "to": "internal/events"
+    },
+    {
+      "from": "internal/graph",
+      "to": "internal/fsutil"
+    },
+    {
+      "from": "internal/graph",
+      "to": "internal/jsonfile"
+    },
+    {
+      "from": "internal/graph",
+      "to": "internal/sliceutil"
+    },
+    {
+      "from": "internal/graph",
+      "to": "internal/workspace"
+    },
+    {
+      "from": "internal/intelligence",
+      "to": "internal/capabilities"
+    },
+    {
+      "from": "internal/intelligence",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/intelligence",
+      "to": "internal/events"
+    },
+    {
+      "from": "internal/intelligence",
+      "to": "internal/fsutil"
+    },
+    {
+      "from": "internal/intelligence",
+      "to": "internal/gitx"
+    },
+    {
+      "from": "internal/intelligence",
+      "to": "internal/jsonfile"
+    },
+    {
+      "from": "internal/intelligence",
+      "to": "internal/sliceutil"
+    },
+    {
+      "from": "internal/intelligence",
+      "to": "internal/workspace"
+    },
+    {
+      "from": "internal/jobs",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/jobs",
+      "to": "internal/events"
+    },
+    {
+      "from": "internal/jobs",
+      "to": "internal/providers"
+    },
+    {
+      "from": "internal/jobs",
+      "to": "internal/registry"
+    },
+    {
+      "from": "internal/jobs",
+      "to": "internal/reports"
+    },
+    {
+      "from": "internal/kernel",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/kernelregistry",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/kernelregistry",
+      "to": "internal/events"
+    },
+    {
+      "from": "internal/kernelregistry",
+      "to": "internal/fsutil"
+    },
+    {
+      "from": "internal/kernelregistry",
+      "to": "internal/jsonfile"
+    },
+    {
+      "from": "internal/kernelregistry",
+      "to": "internal/sliceutil"
+    },
+    {
+      "from": "internal/kernelregistry",
+      "to": "internal/workspace"
+    },
+    {
+      "from": "internal/kernelruntime",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/kernelruntime",
+      "to": "internal/discoveryengine"
+    },
+    {
+      "from": "internal/kernelruntime",
+      "to": "internal/eventbus"
+    },
+    {
+      "from": "internal/kernelruntime",
+      "to": "internal/jsonfile"
+    },
+    {
+      "from": "internal/kernelruntime",
+      "to": "internal/kernelregistry"
+    },
+    {
+      "from": "internal/manifests",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/manifests",
+      "to": "internal/workspace"
+    },
+    {
+      "from": "internal/manual",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/manual",
+      "to": "internal/events"
+    },
+    {
+      "from": "internal/manual",
+      "to": "internal/fsutil"
+    },
+    {
+      "from": "internal/manual",
+      "to": "internal/jsonfile"
+    },
+    {
+      "from": "internal/manual",
+      "to": "internal/workspace"
+    },
+    {
+      "from": "internal/modules",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/modules",
+      "to": "internal/events"
+    },
+    {
+      "from": "internal/modules",
+      "to": "internal/fsutil"
+    },
+    {
+      "from": "internal/modules",
+      "to": "internal/jsonfile"
+    },
+    {
+      "from": "internal/modules",
+      "to": "internal/sliceutil"
+    },
+    {
+      "from": "internal/modules",
+      "to": "internal/workspace"
+    },
+    {
+      "from": "internal/patchengine",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/patchengine",
+      "to": "internal/jsonfile"
+    },
+    {
+      "from": "internal/planner",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/planner",
+      "to": "internal/events"
+    },
+    {
+      "from": "internal/planner",
+      "to": "internal/jsonfile"
+    },
+    {
+      "from": "internal/planner",
+      "to": "internal/sliceutil"
+    },
+    {
+      "from": "internal/planner",
+      "to": "internal/workspace"
+    },
+    {
+      "from": "internal/plugins",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/plugins",
+      "to": "internal/workspace"
+    },
+    {
+      "from": "internal/providers",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/providers",
+      "to": "internal/jsonfile"
+    },
+    {
+      "from": "internal/readiness",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/readiness",
+      "to": "internal/events"
+    },
+    {
+      "from": "internal/readiness",
+      "to": "internal/fsutil"
+    },
+    {
+      "from": "internal/readiness",
+      "to": "internal/jsonfile"
+    },
+    {
+      "from": "internal/readiness",
+      "to": "internal/workspace"
+    },
+    {
+      "from": "internal/registry",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/registry",
+      "to": "internal/gitx"
+    },
+    {
+      "from": "internal/registry",
+      "to": "internal/jsonfile"
+    },
+    {
+      "from": "internal/registry",
+      "to": "internal/manifests"
+    },
+    {
+      "from": "internal/registry",
+      "to": "internal/workspace"
+    },
+    {
+      "from": "internal/repo",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/repo",
+      "to": "internal/gitx"
+    },
+    {
+      "from": "internal/repo",
+      "to": "internal/manifests"
+    },
+    {
+      "from": "internal/repo",
+      "to": "internal/workspace"
+    },
+    {
+      "from": "internal/reports",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/reports",
+      "to": "internal/gitx"
+    },
+    {
+      "from": "internal/reports",
+      "to": "internal/manifests"
+    },
+    {
+      "from": "internal/reports",
+      "to": "internal/workspace"
+    },
+    {
+      "from": "internal/runtime",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/runtime",
+      "to": "internal/events"
+    },
+    {
+      "from": "internal/runtime",
+      "to": "internal/jobs"
+    },
+    {
+      "from": "internal/runtime",
+      "to": "internal/supervisor"
+    },
+    {
+      "from": "internal/scheduler",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/scheduler",
+      "to": "internal/events"
+    },
+    {
+      "from": "internal/scheduler",
+      "to": "internal/registry"
+    },
+    {
+      "from": "internal/scheduler",
+      "to": "internal/reports"
+    },
+    {
+      "from": "internal/schedulerplan",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/schedulerplan",
+      "to": "internal/events"
+    },
+    {
+      "from": "internal/schedulerplan",
+      "to": "internal/jsonfile"
+    },
+    {
+      "from": "internal/servicecontracts",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/servicecontracts",
+      "to": "internal/events"
+    },
+    {
+      "from": "internal/servicecontracts",
+      "to": "internal/fsutil"
+    },
+    {
+      "from": "internal/servicecontracts",
+      "to": "internal/jsonfile"
+    },
+    {
+      "from": "internal/servicecontracts",
+      "to": "internal/workspace"
+    },
+    {
+      "from": "internal/services",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/services",
+      "to": "internal/events"
+    },
+    {
+      "from": "internal/services",
+      "to": "internal/state"
+    },
+    {
+      "from": "internal/state",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/supervisor",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/supervisor",
+      "to": "internal/events"
+    },
+    {
+      "from": "internal/supervisor",
+      "to": "internal/jobs"
+    },
+    {
+      "from": "internal/supervisor",
+      "to": "internal/services"
+    },
+    {
+      "from": "internal/supervisor",
+      "to": "internal/state"
+    },
+    {
+      "from": "internal/sync",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/sync",
+      "to": "internal/gitx"
+    },
+    {
+      "from": "internal/sync",
+      "to": "internal/workspace"
+    },
+    {
+      "from": "internal/workflow",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/workflow",
+      "to": "internal/jsonfile"
+    },
+    {
+      "from": "internal/workspace",
+      "to": "internal/config"
+    }
+  ],
+  "invariants": [
+    {
+      "name": "no-circular-imports",
+      "passed": true
+    },
+    {
+      "name": "commands-have-handlers",
+      "passed": true
+    },
+    {
+      "name": "commands-have-help",
+      "passed": true
+    },
+    {
+      "name": "no-duplicate-commands",
+      "passed": true
+    },
+    {
+      "name": "no-orphaned-packages",
+      "passed": true
+    },
+    {
+      "name": "modules-have-source",
+      "passed": true
+    },
+    {
+      "name": "capabilities-have-evidence",
+      "passed": true
+    },
+    {
+      "name": "service-contracts-have-owner",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+80ea670 Sync AIFT phase updates
+e2b8d85 Add AIFT service contract
+61b61e6 Add AIFT event mesh contract
+2331425 Add AIFT manual contract
+4be5334 Document Genesis web dashboard
+77fccf9 Add Genesis web app package metadata
+04f86fd Add first local Genesis web dashboard
+e636dcc Add Phase 2 Genesis runtime plan
+ebf4e61 Start Phase 2 Genesis runtime commands
+98dde0e Preserve Termux trust validation helper

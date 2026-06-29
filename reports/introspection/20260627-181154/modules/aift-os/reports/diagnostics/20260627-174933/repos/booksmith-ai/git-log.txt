@@ -1,0 +1,10 @@
+1f7e43d Sync AIFT phase updates
+d6d4f85 Add AIFT service contract
+baa34f4 Add AIFT event mesh contract
+6ce2c10 Add AIFT manual contract
+e730df7 remove accidental pager output file
+2c3bca7 BookSmith Studio Phase 2: Figure Studio, Art Director, bootstrap installers, runtime, publishing pipeline
+597fc2b BookSmith Studio Phase 2
+1938689 add BookSmith OS publishing coordinator and managed artifacts
+53be626 add BookSmith OS pipeline coordinator
+9d2358f stabilize BookSmith publication architecture

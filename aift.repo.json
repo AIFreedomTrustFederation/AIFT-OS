@@ -1,0 +1,5 @@
+{
+  "name": "AIFT-OS",
+  "layer": "operating-system",
+  "role": "federation control plane, runtime, registry, intelligence, dashboards, and orchestration"
+}

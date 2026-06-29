@@ -1,0 +1,59 @@
+name: Release AIFT Android Runtime APK
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'android/aift-cloud-runtime/**'
+      - 'scripts/aift-android-runtime-bootstrap.sh'
+      - '.github/workflows/aift-android-runtime-release.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  release-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Bootstrap Android runtime build files
+        run: bash scripts/aift-android-runtime-bootstrap.sh
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+
+      - name: Build debug APK
+        working-directory: android/aift-cloud-runtime
+        run: gradle assembleDebug
+
+      - name: Prepare release APK
+        run: |
+          mkdir -p dist
+          cp android/aift-cloud-runtime/app/build/outputs/apk/debug/app-debug.apk dist/aift-cloud-runtime-debug.apk
+
+      - name: Publish latest APK release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: aift-cloud-runtime-latest
+          name: AIFT Cloud Runtime Latest
+          body: |
+            Latest debug APK for the AIFT Cloud Android Runtime.
+
+            Download the APK asset below and install it on Android.
+          files: dist/aift-cloud-runtime-debug.apk
+          draft: false
+          prerelease: true
+          make_latest: true

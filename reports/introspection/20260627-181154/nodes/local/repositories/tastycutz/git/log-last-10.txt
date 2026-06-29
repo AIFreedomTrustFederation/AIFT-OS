@@ -1,0 +1,10 @@
+d35f50b Sync AIFT phase updates
+f99c127 Add AIFT service contract
+fb9f763 Add AIFT event mesh contract
+f7332c8 Add AIFT manual contract
+caddd7a Refine customer-facing copy
+ece2b56 Refine premium hero composition
+047e81b Redesign homepage as premium storefront
+976a475 Replace old-branded hero artwork
+a06a95c Exclude QA screenshots from Vercel deploys
+3393216 Clean up visual QA issues

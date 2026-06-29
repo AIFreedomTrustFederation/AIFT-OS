@@ -1,0 +1,143 @@
+name: AIFT Auto Pipeline
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/aift-dashboard/**'
+      - 'registry-examples/**'
+      - '.github/workflows/aift-auto-pipeline.yml'
+  workflow_dispatch:
+
+jobs:
+  build-dashboard:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/aift-dashboard
+    env:
+      AIFT_REGISTRY_PATH: /tmp/aift/registry/apps.yml
+      AIFT_NODES_PATH: /tmp/aift/registry/nodes.yml
+      AIFT_TEMPLATES_PATH: /tmp/aift/registry/templates.yml
+      AIFT_BUILDS_PATH: /tmp/aift/registry/builds.yml
+      AIFT_DEPLOYMENTS_PATH: /tmp/aift/registry/deployments.yml
+      AIFT_LOG_PATH: /tmp/aift/logs
+      AIFT_DASHBOARD_TOKEN: test-dashboard-token
+      AIFT_NODE_TOKEN: test-node-token
+      COOLIFY_URL: https://example.invalid
+      COOLIFY_API_TOKEN: test-coolify-token
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Prepare registry files
+        run: |
+          mkdir -p /tmp/aift/registry /tmp/aift/logs ../../ops/build-reports
+          cp ../../registry-examples/nodes.yml /tmp/aift/registry/nodes.yml
+          cp ../../registry-examples/templates.yml /tmp/aift/registry/templates.yml
+          cp ../../registry-examples/builds.yml /tmp/aift/registry/builds.yml
+          cp ../../registry-examples/deployments.yml /tmp/aift/registry/deployments.yml
+          cat > /tmp/aift/registry/apps.yml <<'EOF'
+          apps:
+            aift-dashboard:
+              repo: https://github.com/AIFreedomTrustFederation/VPS
+              branch: main
+              domain: vps.aifreedomtrust.com
+              framework: nextjs
+              status: running
+              node: sacramento-node-001
+              trust_class: business-app
+          EOF
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build dashboard
+        run: |
+          set +e
+          npm run build > ../../ops/build-reports/dashboard-build.log 2>&1
+          code=$?
+          {
+            echo "# AIFT Auto Pipeline Build"
+            echo ""
+            echo "Commit: $GITHUB_SHA"
+            echo "Run: $GITHUB_RUN_ID"
+            echo "Exit code: $code"
+            if [ "$code" = "0" ]; then
+              echo "Status: passed"
+            else
+              echo "Status: failed"
+            fi
+          } > ../../ops/build-reports/latest-dashboard-build.md
+          exit $code
+
+      - name: Upload build logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aift-auto-pipeline-build-report
+          path: |
+            ops/build-reports/latest-dashboard-build.md
+            ops/build-reports/dashboard-build.log
+
+  deploy-dashboard:
+    runs-on: ubuntu-latest
+    needs: build-dashboard
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Check deployment settings
+        id: deploy_settings
+        env:
+          VPS_HOST_VALUE: ${{ secrets.VPS_HOST }}
+          VPS_USER_VALUE: ${{ secrets.VPS_USER }}
+          VPS_SSH_KEY_VALUE: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          if [ -n "$VPS_HOST_VALUE" ] && [ -n "$VPS_USER_VALUE" ] && [ -n "$VPS_SSH_KEY_VALUE" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "Deployment skipped. Add VPS_HOST, VPS_USER, VPS_PORT, and VPS_SSH_KEY secrets."
+          fi
+
+      - name: Configure SSH
+        if: steps.deploy_settings.outputs.ready == 'true'
+        env:
+          VPS_SSH_KEY_VALUE: ${{ secrets.VPS_SSH_KEY }}
+          VPS_HOST_VALUE: ${{ secrets.VPS_HOST }}
+          VPS_PORT_VALUE: ${{ secrets.VPS_PORT }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$VPS_SSH_KEY_VALUE" > ~/.ssh/aift_vps_key
+          chmod 600 ~/.ssh/aift_vps_key
+          ssh-keyscan -p "${VPS_PORT_VALUE:-22}" "$VPS_HOST_VALUE" >> ~/.ssh/known_hosts
+
+      - name: Deploy to node one
+        if: steps.deploy_settings.outputs.ready == 'true'
+        env:
+          VPS_HOST_VALUE: ${{ secrets.VPS_HOST }}
+          VPS_USER_VALUE: ${{ secrets.VPS_USER }}
+          VPS_PORT_VALUE: ${{ secrets.VPS_PORT }}
+        run: |
+          ssh -i ~/.ssh/aift_vps_key -p "${VPS_PORT_VALUE:-22}" "$VPS_USER_VALUE@$VPS_HOST_VALUE" <<'EOF'
+          set -Eeuo pipefail
+          APP_DIR="${VPS_APP_PATH:-/root/VPS}"
+          if [ ! -d "$APP_DIR/.git" ]; then
+            git clone https://github.com/AIFreedomTrustFederation/VPS.git "$APP_DIR"
+          fi
+          cd "$APP_DIR"
+          git pull --ff-only
+          mkdir -p /opt/aift/registry /opt/aift/logs /opt/aift/secrets
+          [ -f /opt/aift/registry/nodes.yml ] || cp registry-examples/nodes.yml /opt/aift/registry/nodes.yml
+          [ -f /opt/aift/registry/templates.yml ] || cp registry-examples/templates.yml /opt/aift/registry/templates.yml
+          [ -f /opt/aift/registry/builds.yml ] || cp registry-examples/builds.yml /opt/aift/registry/builds.yml
+          [ -f /opt/aift/registry/deployments.yml ] || cp registry-examples/deployments.yml /opt/aift/registry/deployments.yml
+          cd apps/aift-dashboard
+          docker compose -f compose.yml up -d --build
+          docker compose -f compose.yml ps
+          EOF

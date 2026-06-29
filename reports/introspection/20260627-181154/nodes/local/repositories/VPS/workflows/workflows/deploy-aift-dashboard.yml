@@ -1,0 +1,67 @@
+name: Deploy AIFT Dashboard to VPS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-dashboard:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/aift-dashboard
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build before deploy
+        run: npm run build
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/aift_vps_key
+          chmod 600 ~/.ssh/aift_vps_key
+          ssh-keyscan -p "${{ secrets.VPS_PORT || '22' }}" "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Deploy dashboard to Sacramento Node 001
+        working-directory: .
+        run: |
+          ssh -i ~/.ssh/aift_vps_key -p "${{ secrets.VPS_PORT || '22' }}" "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" <<'EOF'
+          set -Eeuo pipefail
+          APP_DIR="${VPS_APP_PATH:-/root/VPS}"
+          if [ ! -d "$APP_DIR/.git" ]; then
+            git clone https://github.com/AIFreedomTrustFederation/VPS.git "$APP_DIR"
+          fi
+          cd "$APP_DIR"
+          git pull --ff-only
+          mkdir -p /opt/aift/registry /opt/aift/logs
+          [ -f /opt/aift/registry/nodes.yml ] || cp registry-examples/nodes.yml /opt/aift/registry/nodes.yml
+          [ -f /opt/aift/registry/templates.yml ] || cp registry-examples/templates.yml /opt/aift/registry/templates.yml
+          [ -f /opt/aift/registry/builds.yml ] || cp registry-examples/builds.yml /opt/aift/registry/builds.yml
+          [ -f /opt/aift/registry/deployments.yml ] || cp registry-examples/deployments.yml /opt/aift/registry/deployments.yml
+          if [ ! -f /opt/aift/registry/apps.yml ]; then
+            cat > /opt/aift/registry/apps.yml <<'APPREGISTRY'
+          apps:
+            aift-dashboard:
+              repo: https://github.com/AIFreedomTrustFederation/VPS
+              branch: main
+              domain: vps.aifreedomtrust.com
+              framework: nextjs
+              status: running
+              node: sacramento-node-001
+              trust_class: business-app
+          APPREGISTRY
+          fi
+          cd apps/aift-dashboard
+          docker compose -f compose.yml up -d --build
+          docker compose -f compose.yml ps
+          echo "AIFT Dashboard deployed to Sacramento Node 001 on port 3000."
+          EOF

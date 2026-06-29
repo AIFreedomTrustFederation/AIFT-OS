@@ -1,0 +1,3 @@
+bacaf66 Link Aetherion flight paper
+40aa5af Standardize community health README
+17ccb7b Add federation community health files

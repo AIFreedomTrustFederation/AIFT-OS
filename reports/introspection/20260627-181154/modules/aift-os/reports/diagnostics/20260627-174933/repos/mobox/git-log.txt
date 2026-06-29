@@ -1,0 +1,10 @@
+4f77fc4 Sync AIFT phase updates
+de7457c Add AIFT service contract
+e4d03f9 Add AIFT event mesh contract
+4febc93 Add AIFT manual contract
+d03846e Add federation manifest for Mobox
+2d59370 Add public website index requirements
+772ffc0 Add Federation agent registry
+305aa39 Add Federation implementation registry
+e337a48 Add Federation concept registry
+878e3ae Add Federation repository registry

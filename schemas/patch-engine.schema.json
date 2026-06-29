@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AIFT Patch Engine Plan",
+  "type": "object",
+  "required": ["schemaVersion", "generatedAt", "root", "operations"],
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "generatedAt": { "type": "string" },
+    "root": { "type": "string" },
+    "operations": { "type": "array" }
+  }
+}

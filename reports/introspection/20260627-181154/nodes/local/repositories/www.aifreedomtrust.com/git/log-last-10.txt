@@ -1,0 +1,10 @@
+d2dec80 Sync AIFT phase updates
+4fdedc3 Add AIFT service contract
+a7b700c Add AIFT event mesh contract
+f293857 Add AIFT manual contract
+e0bffff Include TheMindofAll in Pages repair
+ef778c8 Restore TheMindofAll to public Pages map
+22b141d Add federation Pages repair script
+718b373 Normalize federation Pages map status
+62d44f6 Add automated federation Pages script
+fa632e0 Add federation Pages landing page

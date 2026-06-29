@@ -1,0 +1,551 @@
+{
+  "generatedAt": "2026-06-28T00:33:17Z",
+  "topics": [
+    {
+      "name": "capability.changed",
+      "status": "planned",
+      "description": "Capability status changed",
+      "evidence": "default event contract"
+    },
+    {
+      "name": "manual.changed",
+      "status": "planned",
+      "description": "Manual source changed",
+      "evidence": "default event contract"
+    },
+    {
+      "name": "repo.changed",
+      "status": "planned",
+      "description": "Repository content changed",
+      "evidence": "default event contract"
+    }
+  ],
+  "subscribers": null,
+  "contracts": [
+    {
+      "repo": ".github",
+      "publishes": [
+        {
+          "name": "repo.changed",
+          "status": "planned",
+          "description": "Repository content changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "capability.changed",
+          "status": "planned",
+          "description": "Capability status changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "manual.changed",
+          "status": "planned",
+          "description": "Manual source changed",
+          "evidence": "default event contract"
+        }
+      ],
+      "subscribes": [],
+      "generatedAt": "2026-06-28T00:23:57Z"
+    },
+    {
+      "repo": "AI-Freedom-Trust",
+      "publishes": [
+        {
+          "name": "repo.changed",
+          "status": "planned",
+          "description": "Repository content changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "capability.changed",
+          "status": "planned",
+          "description": "Capability status changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "manual.changed",
+          "status": "planned",
+          "description": "Manual source changed",
+          "evidence": "default event contract"
+        }
+      ],
+      "subscribes": [],
+      "generatedAt": "2026-06-28T00:23:57Z"
+    },
+    {
+      "repo": "AIFT-Forge",
+      "publishes": [
+        {
+          "name": "repo.changed",
+          "status": "planned",
+          "description": "Repository content changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "capability.changed",
+          "status": "planned",
+          "description": "Capability status changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "manual.changed",
+          "status": "planned",
+          "description": "Manual source changed",
+          "evidence": "default event contract"
+        }
+      ],
+      "subscribes": [],
+      "generatedAt": "2026-06-28T00:23:57Z"
+    },
+    {
+      "repo": "AIFT-Genesis",
+      "publishes": [
+        {
+          "name": "repo.changed",
+          "status": "planned",
+          "description": "Repository content changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "capability.changed",
+          "status": "planned",
+          "description": "Capability status changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "manual.changed",
+          "status": "planned",
+          "description": "Manual source changed",
+          "evidence": "default event contract"
+        }
+      ],
+      "subscribes": [],
+      "generatedAt": "2026-06-28T00:23:57Z"
+    },
+    {
+      "repo": "AIFT-OS",
+      "publishes": [
+        {
+          "name": "repo.changed",
+          "status": "planned",
+          "description": "Repository content changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "capability.changed",
+          "status": "planned",
+          "description": "Capability status changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "manual.changed",
+          "status": "planned",
+          "description": "Manual source changed",
+          "evidence": "default event contract"
+        }
+      ],
+      "subscribes": [],
+      "generatedAt": "2026-06-28T00:23:57Z"
+    },
+    {
+      "repo": "Aether_Coin_biozonecurrency",
+      "publishes": [
+        {
+          "name": "repo.changed",
+          "status": "planned",
+          "description": "Repository content changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "capability.changed",
+          "status": "planned",
+          "description": "Capability status changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "manual.changed",
+          "status": "planned",
+          "description": "Manual source changed",
+          "evidence": "default event contract"
+        }
+      ],
+      "subscribes": [],
+      "generatedAt": "2026-06-28T00:23:57Z"
+    },
+    {
+      "repo": "AetherianGovernance",
+      "publishes": [
+        {
+          "name": "repo.changed",
+          "status": "planned",
+          "description": "Repository content changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "capability.changed",
+          "status": "planned",
+          "description": "Capability status changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "manual.changed",
+          "status": "planned",
+          "description": "Manual source changed",
+          "evidence": "default event contract"
+        }
+      ],
+      "subscribes": [],
+      "generatedAt": "2026-06-28T00:23:57Z"
+    },
+    {
+      "repo": "BookSmith-Federation-OS",
+      "publishes": [
+        {
+          "name": "repo.changed",
+          "status": "planned",
+          "description": "Repository content changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "capability.changed",
+          "status": "planned",
+          "description": "Capability status changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "manual.changed",
+          "status": "planned",
+          "description": "Manual source changed",
+          "evidence": "default event contract"
+        }
+      ],
+      "subscribes": [],
+      "generatedAt": "2026-06-28T00:23:57Z"
+    },
+    {
+      "repo": "OpenMontage",
+      "publishes": [
+        {
+          "name": "repo.changed",
+          "status": "planned",
+          "description": "Repository content changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "capability.changed",
+          "status": "planned",
+          "description": "Capability status changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "manual.changed",
+          "status": "planned",
+          "description": "Manual source changed",
+          "evidence": "default event contract"
+        }
+      ],
+      "subscribes": [],
+      "generatedAt": "2026-06-28T00:23:57Z"
+    },
+    {
+      "repo": "TheMindofAll",
+      "publishes": [
+        {
+          "name": "repo.changed",
+          "status": "planned",
+          "description": "Repository content changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "capability.changed",
+          "status": "planned",
+          "description": "Capability status changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "manual.changed",
+          "status": "planned",
+          "description": "Manual source changed",
+          "evidence": "default event contract"
+        }
+      ],
+      "subscribes": [],
+      "generatedAt": "2026-06-28T00:23:57Z"
+    },
+    {
+      "repo": "VPS",
+      "publishes": [
+        {
+          "name": "repo.changed",
+          "status": "planned",
+          "description": "Repository content changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "capability.changed",
+          "status": "planned",
+          "description": "Capability status changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "manual.changed",
+          "status": "planned",
+          "description": "Manual source changed",
+          "evidence": "default event contract"
+        }
+      ],
+      "subscribes": [],
+      "generatedAt": "2026-06-28T00:23:57Z"
+    },
+    {
+      "repo": "aifreedomtrustfederation.github.io",
+      "publishes": [
+        {
+          "name": "repo.changed",
+          "status": "planned",
+          "description": "Repository content changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "capability.changed",
+          "status": "planned",
+          "description": "Capability status changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "manual.changed",
+          "status": "planned",
+          "description": "Manual source changed",
+          "evidence": "default event contract"
+        }
+      ],
+      "subscribes": [],
+      "generatedAt": "2026-06-28T00:23:57Z"
+    },
+    {
+      "repo": "biozone-harmony-boost",
+      "publishes": [
+        {
+          "name": "repo.changed",
+          "status": "planned",
+          "description": "Repository content changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "capability.changed",
+          "status": "planned",
+          "description": "Capability status changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "manual.changed",
+          "status": "planned",
+          "description": "Manual source changed",
+          "evidence": "default event contract"
+        }
+      ],
+      "subscribes": [],
+      "generatedAt": "2026-06-28T00:23:57Z"
+    },
+    {
+      "repo": "booksmith-ai",
+      "publishes": [
+        {
+          "name": "repo.changed",
+          "status": "planned",
+          "description": "Repository content changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "capability.changed",
+          "status": "planned",
+          "description": "Capability status changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "manual.changed",
+          "status": "planned",
+          "description": "Manual source changed",
+          "evidence": "default event contract"
+        }
+      ],
+      "subscribes": [],
+      "generatedAt": "2026-06-28T00:23:57Z"
+    },
+    {
+      "repo": "c-848263",
+      "publishes": [
+        {
+          "name": "repo.changed",
+          "status": "planned",
+          "description": "Repository content changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "capability.changed",
+          "status": "planned",
+          "description": "Capability status changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "manual.changed",
+          "status": "planned",
+          "description": "Manual source changed",
+          "evidence": "default event contract"
+        }
+      ],
+      "subscribes": [],
+      "generatedAt": "2026-06-28T00:23:57Z"
+    },
+    {
+      "repo": "capital-city-provisions",
+      "publishes": [
+        {
+          "name": "repo.changed",
+          "status": "planned",
+          "description": "Repository content changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "capability.changed",
+          "status": "planned",
+          "description": "Capability status changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "manual.changed",
+          "status": "planned",
+          "description": "Manual source changed",
+          "evidence": "default event contract"
+        }
+      ],
+      "subscribes": [],
+      "generatedAt": "2026-06-28T00:23:57Z"
+    },
+    {
+      "repo": "chktex",
+      "publishes": [
+        {
+          "name": "repo.changed",
+          "status": "planned",
+          "description": "Repository content changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "capability.changed",
+          "status": "planned",
+          "description": "Capability status changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "manual.changed",
+          "status": "planned",
+          "description": "Manual source changed",
+          "evidence": "default event contract"
+        }
+      ],
+      "subscribes": [],
+      "generatedAt": "2026-06-28T00:23:57Z"
+    },
+    {
+      "repo": "mobox",
+      "publishes": [
+        {
+          "name": "repo.changed",
+          "status": "planned",
+          "description": "Repository content changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "capability.changed",
+          "status": "planned",
+          "description": "Capability status changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "manual.changed",
+          "status": "planned",
+          "description": "Manual source changed",
+          "evidence": "default event contract"
+        }
+      ],
+      "subscribes": [],
+      "generatedAt": "2026-06-28T00:23:57Z"
+    },
+    {
+      "repo": "repo-brainstorm-backend-forge",
+      "publishes": [
+        {
+          "name": "repo.changed",
+          "status": "planned",
+          "description": "Repository content changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "capability.changed",
+          "status": "planned",
+          "description": "Capability status changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "manual.changed",
+          "status": "planned",
+          "description": "Manual source changed",
+          "evidence": "default event contract"
+        }
+      ],
+      "subscribes": [],
+      "generatedAt": "2026-06-28T00:23:57Z"
+    },
+    {
+      "repo": "tastycutz",
+      "publishes": [
+        {
+          "name": "repo.changed",
+          "status": "planned",
+          "description": "Repository content changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "capability.changed",
+          "status": "planned",
+          "description": "Capability status changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "manual.changed",
+          "status": "planned",
+          "description": "Manual source changed",
+          "evidence": "default event contract"
+        }
+      ],
+      "subscribes": [],
+      "generatedAt": "2026-06-28T00:23:57Z"
+    },
+    {
+      "repo": "www.aifreedomtrust.com",
+      "publishes": [
+        {
+          "name": "repo.changed",
+          "status": "planned",
+          "description": "Repository content changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "capability.changed",
+          "status": "planned",
+          "description": "Capability status changed",
+          "evidence": "default event contract"
+        },
+        {
+          "name": "manual.changed",
+          "status": "planned",
+          "description": "Manual source changed",
+          "evidence": "default event contract"
+        }
+      ],
+      "subscribes": [],
+      "generatedAt": "2026-06-28T00:23:57Z"
+    }
+  ]
+}

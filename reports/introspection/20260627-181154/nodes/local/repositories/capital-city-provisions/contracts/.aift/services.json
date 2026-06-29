@@ -1,0 +1,21 @@
+{
+  "repo": "capital-city-provisions",
+  "services": [
+    {
+      "name": "capital-city-provisions.service",
+      "kind": "web-app",
+      "status": "planned",
+      "version": "0.1.0",
+      "provides": [],
+      "requires": [],
+      "events": [
+        "repo.changed",
+        "capability.changed",
+        "manual.changed"
+      ],
+      "evidence": "default service contract",
+      "description": "Default planned federation service contract for capital-city-provisions"
+    }
+  ],
+  "generatedAt": "2026-06-28T00:28:09Z"
+}

@@ -1,0 +1,11 @@
+npm:dev=npm run dev
+npm:build=npm run build
+npm:start=npm run start
+npm:lint=npm run lint
+npm:typegen=npm run typegen
+npm:typecheck=npm run typecheck
+npm:test=npm run test
+npm:test:e2e=npm run test:e2e
+npm:knowledge:index=npm run knowledge:index
+npm:verify=npm run verify
+aift:status.sh=sh .aift/commands/status.sh

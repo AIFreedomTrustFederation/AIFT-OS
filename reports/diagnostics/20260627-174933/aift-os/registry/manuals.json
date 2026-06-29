@@ -1,0 +1,656 @@
+{
+  "generatedAt": "2026-06-28T00:33:17Z",
+  "manuals": [
+    {
+      "repo": ".github",
+      "title": ".github UNIX Manual",
+      "sourcePath": "docs/manual/source",
+      "assetsPath": "docs/manual/assets",
+      "builder": {
+        "repo": "booksmith-ai",
+        "capability": "manual.build.pdf",
+        "status": "planned"
+      },
+      "status": {
+        "manualSource": "ready",
+        "pdfBuild": "planned",
+        "webPublish": "planned"
+      },
+      "manualType": "unix-style-federation-manual",
+      "format": "markdown-source-booksmith-built-pdf",
+      "sections": [
+        "man0",
+        "man1",
+        "man2",
+        "man3",
+        "man4",
+        "man5",
+        "man6",
+        "man7",
+        "man8",
+        "man9"
+      ],
+      "generatedAt": "2026-06-28T00:33:17Z"
+    },
+    {
+      "repo": "AI-Freedom-Trust",
+      "title": "AI Freedom Trust UNIX Manual",
+      "sourcePath": "docs/manual/source",
+      "assetsPath": "docs/manual/assets",
+      "builder": {
+        "repo": "booksmith-ai",
+        "capability": "manual.build.pdf",
+        "status": "planned"
+      },
+      "status": {
+        "manualSource": "ready",
+        "pdfBuild": "planned",
+        "webPublish": "planned"
+      },
+      "manualType": "unix-style-federation-manual",
+      "format": "markdown-source-booksmith-built-pdf",
+      "sections": [
+        "man0",
+        "man1",
+        "man2",
+        "man3",
+        "man4",
+        "man5",
+        "man6",
+        "man7",
+        "man8",
+        "man9"
+      ],
+      "generatedAt": "2026-06-28T00:33:17Z"
+    },
+    {
+      "repo": "AIFT-Forge",
+      "title": "AIFT Forge UNIX Manual",
+      "sourcePath": "docs/manual/source",
+      "assetsPath": "docs/manual/assets",
+      "builder": {
+        "repo": "booksmith-ai",
+        "capability": "manual.build.pdf",
+        "status": "planned"
+      },
+      "status": {
+        "manualSource": "ready",
+        "pdfBuild": "planned",
+        "webPublish": "planned"
+      },
+      "manualType": "unix-style-federation-manual",
+      "format": "markdown-source-booksmith-built-pdf",
+      "sections": [
+        "man0",
+        "man1",
+        "man2",
+        "man3",
+        "man4",
+        "man5",
+        "man6",
+        "man7",
+        "man8",
+        "man9"
+      ],
+      "generatedAt": "2026-06-28T00:33:17Z"
+    },
+    {
+      "repo": "AIFT-Genesis",
+      "title": "AIFT Genesis UNIX Manual",
+      "sourcePath": "docs/manual/source",
+      "assetsPath": "docs/manual/assets",
+      "builder": {
+        "repo": "booksmith-ai",
+        "capability": "manual.build.pdf",
+        "status": "planned"
+      },
+      "status": {
+        "manualSource": "ready",
+        "pdfBuild": "planned",
+        "webPublish": "planned"
+      },
+      "manualType": "unix-style-federation-manual",
+      "format": "markdown-source-booksmith-built-pdf",
+      "sections": [
+        "man0",
+        "man1",
+        "man2",
+        "man3",
+        "man4",
+        "man5",
+        "man6",
+        "man7",
+        "man8",
+        "man9"
+      ],
+      "generatedAt": "2026-06-28T00:33:17Z"
+    },
+    {
+      "repo": "AIFT-OS",
+      "title": "AIFT OS UNIX Manual",
+      "sourcePath": "docs/manual/source",
+      "assetsPath": "docs/manual/assets",
+      "builder": {
+        "repo": "booksmith-ai",
+        "capability": "manual.build.pdf",
+        "status": "planned"
+      },
+      "status": {
+        "manualSource": "ready",
+        "pdfBuild": "planned",
+        "webPublish": "planned"
+      },
+      "manualType": "unix-style-federation-manual",
+      "format": "markdown-source-booksmith-built-pdf",
+      "sections": [
+        "man0",
+        "man1",
+        "man2",
+        "man3",
+        "man4",
+        "man5",
+        "man6",
+        "man7",
+        "man8",
+        "man9"
+      ],
+      "generatedAt": "2026-06-28T00:33:17Z"
+    },
+    {
+      "repo": "Aether_Coin_biozonecurrency",
+      "title": "Aether_Coin_biozonecurrency UNIX Manual",
+      "sourcePath": "docs/manual/source",
+      "assetsPath": "docs/manual/assets",
+      "builder": {
+        "repo": "booksmith-ai",
+        "capability": "manual.build.pdf",
+        "status": "planned"
+      },
+      "status": {
+        "manualSource": "ready",
+        "pdfBuild": "planned",
+        "webPublish": "planned"
+      },
+      "manualType": "unix-style-federation-manual",
+      "format": "markdown-source-booksmith-built-pdf",
+      "sections": [
+        "man0",
+        "man1",
+        "man2",
+        "man3",
+        "man4",
+        "man5",
+        "man6",
+        "man7",
+        "man8",
+        "man9"
+      ],
+      "generatedAt": "2026-06-28T00:33:17Z"
+    },
+    {
+      "repo": "AetherianGovernance",
+      "title": "AetherianGovernance UNIX Manual",
+      "sourcePath": "docs/manual/source",
+      "assetsPath": "docs/manual/assets",
+      "builder": {
+        "repo": "booksmith-ai",
+        "capability": "manual.build.pdf",
+        "status": "planned"
+      },
+      "status": {
+        "manualSource": "ready",
+        "pdfBuild": "planned",
+        "webPublish": "planned"
+      },
+      "manualType": "unix-style-federation-manual",
+      "format": "markdown-source-booksmith-built-pdf",
+      "sections": [
+        "man0",
+        "man1",
+        "man2",
+        "man3",
+        "man4",
+        "man5",
+        "man6",
+        "man7",
+        "man8",
+        "man9"
+      ],
+      "generatedAt": "2026-06-28T00:33:17Z"
+    },
+    {
+      "repo": "BookSmith-Federation-OS",
+      "title": "BookSmith Federation OS UNIX Manual",
+      "sourcePath": "docs/manual/source",
+      "assetsPath": "docs/manual/assets",
+      "builder": {
+        "repo": "booksmith-ai",
+        "capability": "manual.build.pdf",
+        "status": "planned"
+      },
+      "status": {
+        "manualSource": "ready",
+        "pdfBuild": "planned",
+        "webPublish": "planned"
+      },
+      "manualType": "unix-style-federation-manual",
+      "format": "markdown-source-booksmith-built-pdf",
+      "sections": [
+        "man0",
+        "man1",
+        "man2",
+        "man3",
+        "man4",
+        "man5",
+        "man6",
+        "man7",
+        "man8",
+        "man9"
+      ],
+      "generatedAt": "2026-06-28T00:33:17Z"
+    },
+    {
+      "repo": "OpenMontage",
+      "title": "OpenMontage UNIX Manual",
+      "sourcePath": "docs/manual/source",
+      "assetsPath": "docs/manual/assets",
+      "builder": {
+        "repo": "booksmith-ai",
+        "capability": "manual.build.pdf",
+        "status": "planned"
+      },
+      "status": {
+        "manualSource": "ready",
+        "pdfBuild": "planned",
+        "webPublish": "planned"
+      },
+      "manualType": "unix-style-federation-manual",
+      "format": "markdown-source-booksmith-built-pdf",
+      "sections": [
+        "man0",
+        "man1",
+        "man2",
+        "man3",
+        "man4",
+        "man5",
+        "man6",
+        "man7",
+        "man8",
+        "man9"
+      ],
+      "generatedAt": "2026-06-28T00:33:17Z"
+    },
+    {
+      "repo": "TheMindofAll",
+      "title": "TheMindofAll UNIX Manual",
+      "sourcePath": "docs/manual/source",
+      "assetsPath": "docs/manual/assets",
+      "builder": {
+        "repo": "booksmith-ai",
+        "capability": "manual.build.pdf",
+        "status": "planned"
+      },
+      "status": {
+        "manualSource": "ready",
+        "pdfBuild": "planned",
+        "webPublish": "planned"
+      },
+      "manualType": "unix-style-federation-manual",
+      "format": "markdown-source-booksmith-built-pdf",
+      "sections": [
+        "man0",
+        "man1",
+        "man2",
+        "man3",
+        "man4",
+        "man5",
+        "man6",
+        "man7",
+        "man8",
+        "man9"
+      ],
+      "generatedAt": "2026-06-28T00:33:17Z"
+    },
+    {
+      "repo": "VPS",
+      "title": "VPS UNIX Manual",
+      "sourcePath": "docs/manual/source",
+      "assetsPath": "docs/manual/assets",
+      "builder": {
+        "repo": "booksmith-ai",
+        "capability": "manual.build.pdf",
+        "status": "planned"
+      },
+      "status": {
+        "manualSource": "ready",
+        "pdfBuild": "planned",
+        "webPublish": "planned"
+      },
+      "manualType": "unix-style-federation-manual",
+      "format": "markdown-source-booksmith-built-pdf",
+      "sections": [
+        "man0",
+        "man1",
+        "man2",
+        "man3",
+        "man4",
+        "man5",
+        "man6",
+        "man7",
+        "man8",
+        "man9"
+      ],
+      "generatedAt": "2026-06-28T00:33:17Z"
+    },
+    {
+      "repo": "aifreedomtrustfederation.github.io",
+      "title": "aifreedomtrustfederation.github.io UNIX Manual",
+      "sourcePath": "docs/manual/source",
+      "assetsPath": "docs/manual/assets",
+      "builder": {
+        "repo": "booksmith-ai",
+        "capability": "manual.build.pdf",
+        "status": "planned"
+      },
+      "status": {
+        "manualSource": "ready",
+        "pdfBuild": "planned",
+        "webPublish": "planned"
+      },
+      "manualType": "unix-style-federation-manual",
+      "format": "markdown-source-booksmith-built-pdf",
+      "sections": [
+        "man0",
+        "man1",
+        "man2",
+        "man3",
+        "man4",
+        "man5",
+        "man6",
+        "man7",
+        "man8",
+        "man9"
+      ],
+      "generatedAt": "2026-06-28T00:33:17Z"
+    },
+    {
+      "repo": "biozone-harmony-boost",
+      "title": "biozone harmony boost UNIX Manual",
+      "sourcePath": "docs/manual/source",
+      "assetsPath": "docs/manual/assets",
+      "builder": {
+        "repo": "booksmith-ai",
+        "capability": "manual.build.pdf",
+        "status": "planned"
+      },
+      "status": {
+        "manualSource": "ready",
+        "pdfBuild": "planned",
+        "webPublish": "planned"
+      },
+      "manualType": "unix-style-federation-manual",
+      "format": "markdown-source-booksmith-built-pdf",
+      "sections": [
+        "man0",
+        "man1",
+        "man2",
+        "man3",
+        "man4",
+        "man5",
+        "man6",
+        "man7",
+        "man8",
+        "man9"
+      ],
+      "generatedAt": "2026-06-28T00:33:17Z"
+    },
+    {
+      "repo": "booksmith-ai",
+      "title": "booksmith ai UNIX Manual",
+      "sourcePath": "docs/manual/source",
+      "assetsPath": "docs/manual/assets",
+      "builder": {
+        "repo": "booksmith-ai",
+        "capability": "manual.build.pdf",
+        "status": "planned"
+      },
+      "status": {
+        "manualSource": "ready",
+        "pdfBuild": "planned",
+        "webPublish": "planned"
+      },
+      "manualType": "unix-style-federation-manual",
+      "format": "markdown-source-booksmith-built-pdf",
+      "sections": [
+        "man0",
+        "man1",
+        "man2",
+        "man3",
+        "man4",
+        "man5",
+        "man6",
+        "man7",
+        "man8",
+        "man9"
+      ],
+      "generatedAt": "2026-06-28T00:33:17Z"
+    },
+    {
+      "repo": "c-848263",
+      "title": "c 848263 UNIX Manual",
+      "sourcePath": "docs/manual/source",
+      "assetsPath": "docs/manual/assets",
+      "builder": {
+        "repo": "booksmith-ai",
+        "capability": "manual.build.pdf",
+        "status": "planned"
+      },
+      "status": {
+        "manualSource": "ready",
+        "pdfBuild": "planned",
+        "webPublish": "planned"
+      },
+      "manualType": "unix-style-federation-manual",
+      "format": "markdown-source-booksmith-built-pdf",
+      "sections": [
+        "man0",
+        "man1",
+        "man2",
+        "man3",
+        "man4",
+        "man5",
+        "man6",
+        "man7",
+        "man8",
+        "man9"
+      ],
+      "generatedAt": "2026-06-28T00:33:17Z"
+    },
+    {
+      "repo": "capital-city-provisions",
+      "title": "capital city provisions UNIX Manual",
+      "sourcePath": "docs/manual/source",
+      "assetsPath": "docs/manual/assets",
+      "builder": {
+        "repo": "booksmith-ai",
+        "capability": "manual.build.pdf",
+        "status": "planned"
+      },
+      "status": {
+        "manualSource": "ready",
+        "pdfBuild": "planned",
+        "webPublish": "planned"
+      },
+      "manualType": "unix-style-federation-manual",
+      "format": "markdown-source-booksmith-built-pdf",
+      "sections": [
+        "man0",
+        "man1",
+        "man2",
+        "man3",
+        "man4",
+        "man5",
+        "man6",
+        "man7",
+        "man8",
+        "man9"
+      ],
+      "generatedAt": "2026-06-28T00:33:17Z"
+    },
+    {
+      "repo": "chktex",
+      "title": "chktex UNIX Manual",
+      "sourcePath": "docs/manual/source",
+      "assetsPath": "docs/manual/assets",
+      "builder": {
+        "repo": "booksmith-ai",
+        "capability": "manual.build.pdf",
+        "status": "planned"
+      },
+      "status": {
+        "manualSource": "ready",
+        "pdfBuild": "planned",
+        "webPublish": "planned"
+      },
+      "manualType": "unix-style-federation-manual",
+      "format": "markdown-source-booksmith-built-pdf",
+      "sections": [
+        "man0",
+        "man1",
+        "man2",
+        "man3",
+        "man4",
+        "man5",
+        "man6",
+        "man7",
+        "man8",
+        "man9"
+      ],
+      "generatedAt": "2026-06-28T00:33:17Z"
+    },
+    {
+      "repo": "mobox",
+      "title": "mobox UNIX Manual",
+      "sourcePath": "docs/manual/source",
+      "assetsPath": "docs/manual/assets",
+      "builder": {
+        "repo": "booksmith-ai",
+        "capability": "manual.build.pdf",
+        "status": "planned"
+      },
+      "status": {
+        "manualSource": "ready",
+        "pdfBuild": "planned",
+        "webPublish": "planned"
+      },
+      "manualType": "unix-style-federation-manual",
+      "format": "markdown-source-booksmith-built-pdf",
+      "sections": [
+        "man0",
+        "man1",
+        "man2",
+        "man3",
+        "man4",
+        "man5",
+        "man6",
+        "man7",
+        "man8",
+        "man9"
+      ],
+      "generatedAt": "2026-06-28T00:33:17Z"
+    },
+    {
+      "repo": "repo-brainstorm-backend-forge",
+      "title": "repo brainstorm backend forge UNIX Manual",
+      "sourcePath": "docs/manual/source",
+      "assetsPath": "docs/manual/assets",
+      "builder": {
+        "repo": "booksmith-ai",
+        "capability": "manual.build.pdf",
+        "status": "planned"
+      },
+      "status": {
+        "manualSource": "ready",
+        "pdfBuild": "planned",
+        "webPublish": "planned"
+      },
+      "manualType": "unix-style-federation-manual",
+      "format": "markdown-source-booksmith-built-pdf",
+      "sections": [
+        "man0",
+        "man1",
+        "man2",
+        "man3",
+        "man4",
+        "man5",
+        "man6",
+        "man7",
+        "man8",
+        "man9"
+      ],
+      "generatedAt": "2026-06-28T00:33:17Z"
+    },
+    {
+      "repo": "tastycutz",
+      "title": "tastycutz UNIX Manual",
+      "sourcePath": "docs/manual/source",
+      "assetsPath": "docs/manual/assets",
+      "builder": {
+        "repo": "booksmith-ai",
+        "capability": "manual.build.pdf",
+        "status": "planned"
+      },
+      "status": {
+        "manualSource": "ready",
+        "pdfBuild": "planned",
+        "webPublish": "planned"
+      },
+      "manualType": "unix-style-federation-manual",
+      "format": "markdown-source-booksmith-built-pdf",
+      "sections": [
+        "man0",
+        "man1",
+        "man2",
+        "man3",
+        "man4",
+        "man5",
+        "man6",
+        "man7",
+        "man8",
+        "man9"
+      ],
+      "generatedAt": "2026-06-28T00:33:17Z"
+    },
+    {
+      "repo": "www.aifreedomtrust.com",
+      "title": "www.aifreedomtrust.com UNIX Manual",
+      "sourcePath": "docs/manual/source",
+      "assetsPath": "docs/manual/assets",
+      "builder": {
+        "repo": "booksmith-ai",
+        "capability": "manual.build.pdf",
+        "status": "planned"
+      },
+      "status": {
+        "manualSource": "ready",
+        "pdfBuild": "planned",
+        "webPublish": "planned"
+      },
+      "manualType": "unix-style-federation-manual",
+      "format": "markdown-source-booksmith-built-pdf",
+      "sections": [
+        "man0",
+        "man1",
+        "man2",
+        "man3",
+        "man4",
+        "man5",
+        "man6",
+        "man7",
+        "man8",
+        "man9"
+      ],
+      "generatedAt": "2026-06-28T00:33:17Z"
+    }
+  ]
+}
