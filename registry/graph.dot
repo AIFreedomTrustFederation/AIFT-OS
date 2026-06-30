@@ -103,6 +103,7 @@ digraph AIFT {
   "ManualPage:www.aifreedomtrust.com:readme" [label="readme\\nManualPage\\ndetected"];
   "Package:AIFT-Forge:npm-package" [label="npm-package\\nPackage\\ndetected"];
   "Package:AIFT-OS:go-module" [label="go-module\\nPackage\\ndetected"];
+  "Package:AIFT-OS:npm-package" [label="npm-package\\nPackage\\ndetected"];
   "Package:Aether_Coin_biozonecurrency:npm-package" [label="npm-package\\nPackage\\ndetected"];
   "Package:BookSmith-Federation-OS:npm-package" [label="npm-package\\nPackage\\ndetected"];
   "Package:VPS:npm-package" [label="npm-package\\nPackage\\ndetected"];
@@ -502,6 +503,7 @@ digraph AIFT {
   "dependency:pg" [label="pg\\nDependency\\ndetected"];
   "dependency:postcss" [label="postcss\\nDependency\\ndetected"];
   "dependency:postgres" [label="postgres\\nDependency\\ndetected"];
+  "dependency:prettier" [label="prettier\\nDependency\\ndetected"];
   "dependency:process" [label="process\\nDependency\\ndetected"];
   "dependency:qr" [label="qr\\nDependency\\ndetected"];
   "dependency:qrcode.react" [label="qrcode.react\\nDependency\\ndetected"];
@@ -604,6 +606,10 @@ digraph AIFT {
   "script:AIFT-Forge:provider:smoke" [label="provider:smoke\\nScript\\ndetected"];
   "script:AIFT-Forge:test" [label="test\\nScript\\ndetected"];
   "script:AIFT-Forge:typecheck" [label="typecheck\\nScript\\ndetected"];
+  "script:AIFT-OS:build" [label="build\\nScript\\ndetected"];
+  "script:AIFT-OS:preinstall" [label="preinstall\\nScript\\ndetected"];
+  "script:AIFT-OS:typecheck" [label="typecheck\\nScript\\ndetected"];
+  "script:AIFT-OS:typecheck:libs" [label="typecheck:libs\\nScript\\ndetected"];
   "script:Aether_Coin_biozonecurrency:build" [label="build\\nScript\\ndetected"];
   "script:Aether_Coin_biozonecurrency:check" [label="check\\nScript\\ndetected"];
   "script:Aether_Coin_biozonecurrency:db:push" [label="db:push\\nScript\\ndetected"];
@@ -909,6 +915,10 @@ digraph AIFT {
   "package:AIFT-Forge:npm" -> "script:AIFT-Forge:provider:smoke" [label="provides_script"];
   "package:AIFT-Forge:npm" -> "script:AIFT-Forge:test" [label="provides_script"];
   "package:AIFT-Forge:npm" -> "script:AIFT-Forge:typecheck" [label="provides_script"];
+  "package:AIFT-OS:npm" -> "script:AIFT-OS:build" [label="provides_script"];
+  "package:AIFT-OS:npm" -> "script:AIFT-OS:preinstall" [label="provides_script"];
+  "package:AIFT-OS:npm" -> "script:AIFT-OS:typecheck" [label="provides_script"];
+  "package:AIFT-OS:npm" -> "script:AIFT-OS:typecheck:libs" [label="provides_script"];
   "package:Aether_Coin_biozonecurrency:npm" -> "script:Aether_Coin_biozonecurrency:build" [label="provides_script"];
   "package:Aether_Coin_biozonecurrency:npm" -> "script:Aether_Coin_biozonecurrency:check" [label="provides_script"];
   "package:Aether_Coin_biozonecurrency:npm" -> "script:Aether_Coin_biozonecurrency:db:push" [label="provides_script"];
@@ -1190,10 +1200,13 @@ digraph AIFT {
   "repo:AIFT-Genesis" -> "capability:AIFT-Genesis:test" [label="provides"];
   "repo:AIFT-Genesis" -> "capability:AIFT-Genesis:verify" [label="provides"];
   "repo:AIFT-OS" -> "Package:AIFT-OS:go-module" [label="contains"];
+  "repo:AIFT-OS" -> "Package:AIFT-OS:npm-package" [label="contains"];
   "repo:AIFT-OS" -> "module:AIFT-OS:go" [label="contains"];
   "repo:AIFT-OS" -> "CapabilitySet:AIFT-OS:capabilities" [label="declares"];
   "repo:AIFT-OS" -> "Manifest:AIFT-OS:repo-manifest" [label="declares"];
   "repo:AIFT-OS" -> "ManualContract:AIFT-OS:manual-contract" [label="declares"];
+  "repo:AIFT-OS" -> "dependency:prettier" [label="depends_on"];
+  "repo:AIFT-OS" -> "dependency:typescript" [label="depends_on"];
   "repo:AIFT-OS" -> "Manual:AIFT-OS:unix-manual-source" [label="documents"];
   "repo:AIFT-OS" -> "ManualPage:AIFT-OS:readme" [label="documents"];
   "repo:AIFT-OS" -> "manual:AIFT-OS" [label="documents"];

@@ -102,6 +102,7 @@ MERGE (n:Node {id:"ManualPage:tastycutz:readme"}) SET n.type="ManualPage", n.nam
 MERGE (n:Node {id:"ManualPage:www.aifreedomtrust.com:readme"}) SET n.type="ManualPage", n.name="readme", n.status="detected";
 MERGE (n:Node {id:"Package:AIFT-Forge:npm-package"}) SET n.type="Package", n.name="npm-package", n.status="detected";
 MERGE (n:Node {id:"Package:AIFT-OS:go-module"}) SET n.type="Package", n.name="go-module", n.status="detected";
+MERGE (n:Node {id:"Package:AIFT-OS:npm-package"}) SET n.type="Package", n.name="npm-package", n.status="detected";
 MERGE (n:Node {id:"Package:Aether_Coin_biozonecurrency:npm-package"}) SET n.type="Package", n.name="npm-package", n.status="detected";
 MERGE (n:Node {id:"Package:BookSmith-Federation-OS:npm-package"}) SET n.type="Package", n.name="npm-package", n.status="detected";
 MERGE (n:Node {id:"Package:VPS:npm-package"}) SET n.type="Package", n.name="npm-package", n.status="detected";
@@ -501,6 +502,7 @@ MERGE (n:Node {id:"dependency:passport-local"}) SET n.type="Dependency", n.name=
 MERGE (n:Node {id:"dependency:pg"}) SET n.type="Dependency", n.name="pg", n.status="detected";
 MERGE (n:Node {id:"dependency:postcss"}) SET n.type="Dependency", n.name="postcss", n.status="detected";
 MERGE (n:Node {id:"dependency:postgres"}) SET n.type="Dependency", n.name="postgres", n.status="detected";
+MERGE (n:Node {id:"dependency:prettier"}) SET n.type="Dependency", n.name="prettier", n.status="detected";
 MERGE (n:Node {id:"dependency:process"}) SET n.type="Dependency", n.name="process", n.status="detected";
 MERGE (n:Node {id:"dependency:qr"}) SET n.type="Dependency", n.name="qr", n.status="detected";
 MERGE (n:Node {id:"dependency:qrcode.react"}) SET n.type="Dependency", n.name="qrcode.react", n.status="detected";
@@ -603,6 +605,10 @@ MERGE (n:Node {id:"script:AIFT-Forge:pipeline"}) SET n.type="Script", n.name="pi
 MERGE (n:Node {id:"script:AIFT-Forge:provider:smoke"}) SET n.type="Script", n.name="provider:smoke", n.status="detected";
 MERGE (n:Node {id:"script:AIFT-Forge:test"}) SET n.type="Script", n.name="test", n.status="detected";
 MERGE (n:Node {id:"script:AIFT-Forge:typecheck"}) SET n.type="Script", n.name="typecheck", n.status="detected";
+MERGE (n:Node {id:"script:AIFT-OS:build"}) SET n.type="Script", n.name="build", n.status="detected";
+MERGE (n:Node {id:"script:AIFT-OS:preinstall"}) SET n.type="Script", n.name="preinstall", n.status="detected";
+MERGE (n:Node {id:"script:AIFT-OS:typecheck"}) SET n.type="Script", n.name="typecheck", n.status="detected";
+MERGE (n:Node {id:"script:AIFT-OS:typecheck:libs"}) SET n.type="Script", n.name="typecheck:libs", n.status="detected";
 MERGE (n:Node {id:"script:Aether_Coin_biozonecurrency:build"}) SET n.type="Script", n.name="build", n.status="detected";
 MERGE (n:Node {id:"script:Aether_Coin_biozonecurrency:check"}) SET n.type="Script", n.name="check", n.status="detected";
 MERGE (n:Node {id:"script:Aether_Coin_biozonecurrency:db:push"}) SET n.type="Script", n.name="db:push", n.status="detected";
@@ -908,6 +914,10 @@ MATCH (a:Node {id:"package:AIFT-Forge:npm"}), (b:Node {id:"script:AIFT-Forge:pip
 MATCH (a:Node {id:"package:AIFT-Forge:npm"}), (b:Node {id:"script:AIFT-Forge:provider:smoke"}) MERGE (a)-[:PROVIDES_SCRIPT {evidence:"package.json scripts"}]->(b);
 MATCH (a:Node {id:"package:AIFT-Forge:npm"}), (b:Node {id:"script:AIFT-Forge:test"}) MERGE (a)-[:PROVIDES_SCRIPT {evidence:"package.json scripts"}]->(b);
 MATCH (a:Node {id:"package:AIFT-Forge:npm"}), (b:Node {id:"script:AIFT-Forge:typecheck"}) MERGE (a)-[:PROVIDES_SCRIPT {evidence:"package.json scripts"}]->(b);
+MATCH (a:Node {id:"package:AIFT-OS:npm"}), (b:Node {id:"script:AIFT-OS:build"}) MERGE (a)-[:PROVIDES_SCRIPT {evidence:"package.json scripts"}]->(b);
+MATCH (a:Node {id:"package:AIFT-OS:npm"}), (b:Node {id:"script:AIFT-OS:preinstall"}) MERGE (a)-[:PROVIDES_SCRIPT {evidence:"package.json scripts"}]->(b);
+MATCH (a:Node {id:"package:AIFT-OS:npm"}), (b:Node {id:"script:AIFT-OS:typecheck"}) MERGE (a)-[:PROVIDES_SCRIPT {evidence:"package.json scripts"}]->(b);
+MATCH (a:Node {id:"package:AIFT-OS:npm"}), (b:Node {id:"script:AIFT-OS:typecheck:libs"}) MERGE (a)-[:PROVIDES_SCRIPT {evidence:"package.json scripts"}]->(b);
 MATCH (a:Node {id:"package:Aether_Coin_biozonecurrency:npm"}), (b:Node {id:"script:Aether_Coin_biozonecurrency:build"}) MERGE (a)-[:PROVIDES_SCRIPT {evidence:"package.json scripts"}]->(b);
 MATCH (a:Node {id:"package:Aether_Coin_biozonecurrency:npm"}), (b:Node {id:"script:Aether_Coin_biozonecurrency:check"}) MERGE (a)-[:PROVIDES_SCRIPT {evidence:"package.json scripts"}]->(b);
 MATCH (a:Node {id:"package:Aether_Coin_biozonecurrency:npm"}), (b:Node {id:"script:Aether_Coin_biozonecurrency:db:push"}) MERGE (a)-[:PROVIDES_SCRIPT {evidence:"package.json scripts"}]->(b);
@@ -1189,10 +1199,13 @@ MATCH (a:Node {id:"repo:AIFT-Genesis"}), (b:Node {id:"capability:AIFT-Genesis:sy
 MATCH (a:Node {id:"repo:AIFT-Genesis"}), (b:Node {id:"capability:AIFT-Genesis:test"}) MERGE (a)-[:PROVIDES {evidence:".aift/capabilities.json declares capability"}]->(b);
 MATCH (a:Node {id:"repo:AIFT-Genesis"}), (b:Node {id:"capability:AIFT-Genesis:verify"}) MERGE (a)-[:PROVIDES {evidence:".aift/capabilities.json declares capability"}]->(b);
 MATCH (a:Node {id:"repo:AIFT-OS"}), (b:Node {id:"Package:AIFT-OS:go-module"}) MERGE (a)-[:CONTAINS {evidence:"go.mod exists"}]->(b);
+MATCH (a:Node {id:"repo:AIFT-OS"}), (b:Node {id:"Package:AIFT-OS:npm-package"}) MERGE (a)-[:CONTAINS {evidence:"package.json exists"}]->(b);
 MATCH (a:Node {id:"repo:AIFT-OS"}), (b:Node {id:"module:AIFT-OS:go"}) MERGE (a)-[:CONTAINS {evidence:"go.mod exists"}]->(b);
 MATCH (a:Node {id:"repo:AIFT-OS"}), (b:Node {id:"CapabilitySet:AIFT-OS:capabilities"}) MERGE (a)-[:DECLARES {evidence:".aift/capabilities.json exists"}]->(b);
 MATCH (a:Node {id:"repo:AIFT-OS"}), (b:Node {id:"Manifest:AIFT-OS:repo-manifest"}) MERGE (a)-[:DECLARES {evidence:".aift/repo.json exists"}]->(b);
 MATCH (a:Node {id:"repo:AIFT-OS"}), (b:Node {id:"ManualContract:AIFT-OS:manual-contract"}) MERGE (a)-[:DECLARES {evidence:".aift/manual.json exists"}]->(b);
+MATCH (a:Node {id:"repo:AIFT-OS"}), (b:Node {id:"dependency:prettier"}) MERGE (a)-[:DEPENDS_ON {evidence:"package.json devDependencies"}]->(b);
+MATCH (a:Node {id:"repo:AIFT-OS"}), (b:Node {id:"dependency:typescript"}) MERGE (a)-[:DEPENDS_ON {evidence:"package.json devDependencies"}]->(b);
 MATCH (a:Node {id:"repo:AIFT-OS"}), (b:Node {id:"Manual:AIFT-OS:unix-manual-source"}) MERGE (a)-[:DOCUMENTS {evidence:"docs/manual/source/index.md exists"}]->(b);
 MATCH (a:Node {id:"repo:AIFT-OS"}), (b:Node {id:"ManualPage:AIFT-OS:readme"}) MERGE (a)-[:DOCUMENTS {evidence:"README.md exists"}]->(b);
 MATCH (a:Node {id:"repo:AIFT-OS"}), (b:Node {id:"manual:AIFT-OS"}) MERGE (a)-[:DOCUMENTS {evidence:".aift/manual.json declares manual"}]->(b);

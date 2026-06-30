@@ -104,6 +104,7 @@ aift:ManualPage_tastycutz_readme a aift:ManualPage ; aift:name "readme" ; aift:s
 aift:ManualPage_www_aifreedomtrust_com_readme a aift:ManualPage ; aift:name "readme" ; aift:status "detected" .
 aift:Package_AIFT_Forge_npm_package a aift:Package ; aift:name "npm-package" ; aift:status "detected" .
 aift:Package_AIFT_OS_go_module a aift:Package ; aift:name "go-module" ; aift:status "detected" .
+aift:Package_AIFT_OS_npm_package a aift:Package ; aift:name "npm-package" ; aift:status "detected" .
 aift:Package_Aether_Coin_biozonecurrency_npm_package a aift:Package ; aift:name "npm-package" ; aift:status "detected" .
 aift:Package_BookSmith_Federation_OS_npm_package a aift:Package ; aift:name "npm-package" ; aift:status "detected" .
 aift:Package_VPS_npm_package a aift:Package ; aift:name "npm-package" ; aift:status "detected" .
@@ -503,6 +504,7 @@ aift:dependency_passport_local a aift:Dependency ; aift:name "passport-local" ; 
 aift:dependency_pg a aift:Dependency ; aift:name "pg" ; aift:status "detected" .
 aift:dependency_postcss a aift:Dependency ; aift:name "postcss" ; aift:status "detected" .
 aift:dependency_postgres a aift:Dependency ; aift:name "postgres" ; aift:status "detected" .
+aift:dependency_prettier a aift:Dependency ; aift:name "prettier" ; aift:status "detected" .
 aift:dependency_process a aift:Dependency ; aift:name "process" ; aift:status "detected" .
 aift:dependency_qr a aift:Dependency ; aift:name "qr" ; aift:status "detected" .
 aift:dependency_qrcode_react a aift:Dependency ; aift:name "qrcode.react" ; aift:status "detected" .
@@ -605,6 +607,10 @@ aift:script_AIFT_Forge_pipeline a aift:Script ; aift:name "pipeline" ; aift:stat
 aift:script_AIFT_Forge_provider_smoke a aift:Script ; aift:name "provider:smoke" ; aift:status "detected" .
 aift:script_AIFT_Forge_test a aift:Script ; aift:name "test" ; aift:status "detected" .
 aift:script_AIFT_Forge_typecheck a aift:Script ; aift:name "typecheck" ; aift:status "detected" .
+aift:script_AIFT_OS_build a aift:Script ; aift:name "build" ; aift:status "detected" .
+aift:script_AIFT_OS_preinstall a aift:Script ; aift:name "preinstall" ; aift:status "detected" .
+aift:script_AIFT_OS_typecheck a aift:Script ; aift:name "typecheck" ; aift:status "detected" .
+aift:script_AIFT_OS_typecheck_libs a aift:Script ; aift:name "typecheck:libs" ; aift:status "detected" .
 aift:script_Aether_Coin_biozonecurrency_build a aift:Script ; aift:name "build" ; aift:status "detected" .
 aift:script_Aether_Coin_biozonecurrency_check a aift:Script ; aift:name "check" ; aift:status "detected" .
 aift:script_Aether_Coin_biozonecurrency_db_push a aift:Script ; aift:name "db:push" ; aift:status "detected" .
@@ -910,6 +916,10 @@ aift:package_AIFT_Forge_npm aift:provides_script aift:script_AIFT_Forge_pipeline
 aift:package_AIFT_Forge_npm aift:provides_script aift:script_AIFT_Forge_provider_smoke .
 aift:package_AIFT_Forge_npm aift:provides_script aift:script_AIFT_Forge_test .
 aift:package_AIFT_Forge_npm aift:provides_script aift:script_AIFT_Forge_typecheck .
+aift:package_AIFT_OS_npm aift:provides_script aift:script_AIFT_OS_build .
+aift:package_AIFT_OS_npm aift:provides_script aift:script_AIFT_OS_preinstall .
+aift:package_AIFT_OS_npm aift:provides_script aift:script_AIFT_OS_typecheck .
+aift:package_AIFT_OS_npm aift:provides_script aift:script_AIFT_OS_typecheck_libs .
 aift:package_Aether_Coin_biozonecurrency_npm aift:provides_script aift:script_Aether_Coin_biozonecurrency_build .
 aift:package_Aether_Coin_biozonecurrency_npm aift:provides_script aift:script_Aether_Coin_biozonecurrency_check .
 aift:package_Aether_Coin_biozonecurrency_npm aift:provides_script aift:script_Aether_Coin_biozonecurrency_db_push .
@@ -1191,10 +1201,13 @@ aift:repo_AIFT_Genesis aift:provides aift:capability_AIFT_Genesis_sync .
 aift:repo_AIFT_Genesis aift:provides aift:capability_AIFT_Genesis_test .
 aift:repo_AIFT_Genesis aift:provides aift:capability_AIFT_Genesis_verify .
 aift:repo_AIFT_OS aift:contains aift:Package_AIFT_OS_go_module .
+aift:repo_AIFT_OS aift:contains aift:Package_AIFT_OS_npm_package .
 aift:repo_AIFT_OS aift:contains aift:module_AIFT_OS_go .
 aift:repo_AIFT_OS aift:declares aift:CapabilitySet_AIFT_OS_capabilities .
 aift:repo_AIFT_OS aift:declares aift:Manifest_AIFT_OS_repo_manifest .
 aift:repo_AIFT_OS aift:declares aift:ManualContract_AIFT_OS_manual_contract .
+aift:repo_AIFT_OS aift:depends_on aift:dependency_prettier .
+aift:repo_AIFT_OS aift:depends_on aift:dependency_typescript .
 aift:repo_AIFT_OS aift:documents aift:Manual_AIFT_OS_unix_manual_source .
 aift:repo_AIFT_OS aift:documents aift:ManualPage_AIFT_OS_readme .
 aift:repo_AIFT_OS aift:documents aift:manual_AIFT_OS .
