@@ -174,3 +174,32 @@
 {"time":"2026-06-30T04:38:05Z","type":"services.scan","source":"servicecontracts","message":"service contracts scanned","data":{"services":"21"}}
 {"time":"2026-06-30T04:38:05Z","type":"planner.build","source":"planner","message":"execution plan built","data":{"blocked":"21","ready":"0","repos":"21"}}
 {"time":"2026-06-30T04:38:05Z","type":"verify.complete","source":"verify","message":"federation verified"}
+{"time":"2026-06-30T09:11:41Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-30T09:11:41Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-30T09:11:43Z","type":"intelligence.scan","source":"intelligence","message":"real federation intelligence scan complete","data":{"repos":"21","score":"52"}}
+{"time":"2026-06-30T09:11:43Z","type":"manual.scan","source":"manual","message":"federation manual scan complete","data":{"manuals":"21"}}
+{"time":"2026-06-30T09:11:43Z","type":"graph.build","source":"graph","message":"federation graph built","data":{"edges":"1078","nodes":"824"}}
+{"time":"2026-06-30T09:11:43Z","type":"eventmesh.scan","source":"eventmesh","message":"event mesh scanned","data":{"subscribers":"0","topics":"3"}}
+{"time":"2026-06-30T09:11:43Z","type":"services.scan","source":"servicecontracts","message":"service contracts scanned","data":{"services":"21"}}
+{"time":"2026-06-30T09:11:43Z","type":"planner.build","source":"planner","message":"execution plan built","data":{"blocked":"21","ready":"0","repos":"21"}}
+{"time":"2026-06-30T09:11:43Z","type":"verify.complete","source":"verify","message":"federation verified"}
+{"time":"2026-06-30T10:36:57Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-30T10:36:59Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-30T10:37:00Z","type":"intelligence.scan","source":"intelligence","message":"real federation intelligence scan complete","data":{"repos":"21","score":"52"}}
+{"time":"2026-06-30T10:37:00Z","type":"manual.scan","source":"manual","message":"federation manual scan complete","data":{"manuals":"21"}}
+{"time":"2026-06-30T10:37:01Z","type":"graph.build","source":"graph","message":"federation graph built","data":{"edges":"1078","nodes":"824"}}
+{"time":"2026-06-30T10:37:01Z","type":"eventmesh.scan","source":"eventmesh","message":"event mesh scanned","data":{"subscribers":"0","topics":"3"}}
+{"time":"2026-06-30T10:37:01Z","type":"services.scan","source":"servicecontracts","message":"service contracts scanned","data":{"services":"21"}}
+{"time":"2026-06-30T10:37:01Z","type":"planner.build","source":"planner","message":"execution plan built","data":{"blocked":"21","ready":"0","repos":"21"}}
+{"time":"2026-06-30T10:37:01Z","type":"verify.complete","source":"verify","message":"federation verified"}
+{"time":"2026-06-30T10:43:20Z","type":"services.scan","source":"servicecontracts","message":"service contracts scanned","data":{"services":"21"}}
+{"time":"2026-06-30T10:43:20Z","type":"services.scan","source":"servicecontracts","message":"service contracts scanned","data":{"services":"21"}}
+{"time":"2026-06-30T10:43:27Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-30T10:43:28Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-30T10:43:28Z","type":"intelligence.scan","source":"intelligence","message":"real federation intelligence scan complete","data":{"repos":"21","score":"52"}}
+{"time":"2026-06-30T10:43:28Z","type":"manual.scan","source":"manual","message":"federation manual scan complete","data":{"manuals":"21"}}
+{"time":"2026-06-30T10:43:28Z","type":"graph.build","source":"graph","message":"federation graph built","data":{"edges":"1078","nodes":"824"}}
+{"time":"2026-06-30T10:43:29Z","type":"eventmesh.scan","source":"eventmesh","message":"event mesh scanned","data":{"subscribers":"0","topics":"3"}}
+{"time":"2026-06-30T10:43:29Z","type":"services.scan","source":"servicecontracts","message":"service contracts scanned","data":{"services":"21"}}
+{"time":"2026-06-30T10:43:29Z","type":"planner.build","source":"planner","message":"execution plan built","data":{"blocked":"21","ready":"0","repos":"21"}}
+{"time":"2026-06-30T10:43:29Z","type":"verify.complete","source":"verify","message":"federation verified"}

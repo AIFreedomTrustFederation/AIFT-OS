@@ -312,7 +312,7 @@ func TestScanDefaultsPersistInContracts(t *testing.T) {
 		os.MkdirAll(filepath.Join(osHome, d), 0755)
 	}
 
-	cfg := config.Config{Root: root, OSHome: osHome}
+	cfg := config.Load()
 	if err := Scan(cfg); err != nil {
 		t.Fatalf("Scan failed: %v", err)
 	}
@@ -391,7 +391,7 @@ func TestScanDefaultsDoNotOverwriteExplicit(t *testing.T) {
 		os.MkdirAll(filepath.Join(osHome, d), 0755)
 	}
 
-	cfg := config.Config{Root: root, OSHome: osHome}
+	cfg := config.Load()
 	if err := Scan(cfg); err != nil {
 		t.Fatalf("Scan failed: %v", err)
 	}

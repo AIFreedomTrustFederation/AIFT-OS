@@ -324,7 +324,7 @@ func TestFederationCapabilitiesJSON(t *testing.T) {
 
 func TestWriteReport(t *testing.T) {
 	dir := t.TempDir()
-	cfg := config.Config{Root: dir, OSHome: dir}
+	cfg := config.Load()
 
 	fc := FederationCapabilities{
 		GeneratedAt: "2024-01-01",
