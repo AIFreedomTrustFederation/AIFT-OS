@@ -1,63 +1,67 @@
-# See https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
-# compiled output
-dist
-tmp
-out-tsc
-*.tsbuildinfo
-.expo
-.expo-shared
-
-# dependencies
-node_modules
-
-# IDEs and editors
-/.idea
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
-
-# IDE - VSCode
-.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
 !.vscode/settings.json
 !.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-
+!registry/architecture.json
+!reports/architecture-report.md
+# AIFT generated runtime state
+# Backend build artifacts
+# IDE - VSCode
+# IDEs and editors
+# Replit
+# See https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+# System Files
+# compiled output
+# dependencies
 # misc
+*.launch
+*.log
+*.sublime-workspace
+*.tmp
+*.tsbuildinfo
+.DS_Store
+.aift/capabilities.json
+.aift/federation-snapshot.json
+.aift/providers.json
+.aift/repos.json
+.aift/workflows.json
+.c9/
+.cache/
+.classpath
+.cursor/rules/nx-rules.mdc
+.expo
+.expo-shared
+.github/instructions/nx.instructions.md
+.local/
+.project
+.settings/
+.vscode/*
+/.idea
 /.sass-cache
 /connect.lock
 /coverage
 /libpeerconnection.log
-npm-debug.log
-yarn-error.log
-testem.log
 /typings
-
-# System Files
-.DS_Store
 Thumbs.db
-
-.cursor/rules/nx-rules.mdc
-.github/instructions/nx.instructions.md
-
-# Replit
-.cache/
-.local/
-
-# Backend build artifacts
-*.log
-*.tmp
 bin/aiftd
 build/
 cache/
+dist
 intelligence/*.json
 intelligence/cache/
+node_modules
+npm-debug.log
+out-tsc
+registry/*.cypher
+registry/*.dot
+registry/*.graphml
 registry/*.json
-!registry/architecture.json
+registry/*.rdf
+reports/
 reports/*.md
-!reports/architecture-report.md
 reports/*.txt
+testem.log
+tmp
+var/events/
+yarn-error.log
