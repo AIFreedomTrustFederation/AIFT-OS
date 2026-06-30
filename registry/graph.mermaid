@@ -91,6 +91,10 @@ graph TD
   package_AIFT_Forge_npm -->|provides_script| script_AIFT_Forge_provider_smoke
   package_AIFT_Forge_npm -->|provides_script| script_AIFT_Forge_test
   package_AIFT_Forge_npm -->|provides_script| script_AIFT_Forge_typecheck
+  package_AIFT_OS_npm -->|provides_script| script_AIFT_OS_build
+  package_AIFT_OS_npm -->|provides_script| script_AIFT_OS_preinstall
+  package_AIFT_OS_npm -->|provides_script| script_AIFT_OS_typecheck
+  package_AIFT_OS_npm -->|provides_script| script_AIFT_OS_typecheck_libs
   package_Aether_Coin_biozonecurrency_npm -->|provides_script| script_Aether_Coin_biozonecurrency_build
   package_Aether_Coin_biozonecurrency_npm -->|provides_script| script_Aether_Coin_biozonecurrency_check
   package_Aether_Coin_biozonecurrency_npm -->|provides_script| script_Aether_Coin_biozonecurrency_db_push
@@ -372,10 +376,13 @@ graph TD
   repo_AIFT_Genesis -->|provides| capability_AIFT_Genesis_test
   repo_AIFT_Genesis -->|provides| capability_AIFT_Genesis_verify
   repo_AIFT_OS -->|contains| Package_AIFT_OS_go_module
+  repo_AIFT_OS -->|contains| Package_AIFT_OS_npm_package
   repo_AIFT_OS -->|contains| module_AIFT_OS_go
   repo_AIFT_OS -->|declares| CapabilitySet_AIFT_OS_capabilities
   repo_AIFT_OS -->|declares| Manifest_AIFT_OS_repo_manifest
   repo_AIFT_OS -->|declares| ManualContract_AIFT_OS_manual_contract
+  repo_AIFT_OS -->|depends_on| dependency_prettier
+  repo_AIFT_OS -->|depends_on| dependency_typescript
   repo_AIFT_OS -->|documents| Manual_AIFT_OS_unix_manual_source
   repo_AIFT_OS -->|documents| ManualPage_AIFT_OS_readme
   repo_AIFT_OS -->|documents| manual_AIFT_OS
