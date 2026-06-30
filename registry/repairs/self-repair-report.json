@@ -1,0 +1,41 @@
+{
+  "name": "AIFT Repair Engine",
+  "time": "2026-06-30T11:14:23Z",
+  "mode": "safe",
+  "workspace": "/data/data/com.termux/files/home/AIFT",
+  "verified": false,
+  "actions": [
+    "git: restored tracked generated runtime state",
+    "git: restored tracked generated runtime state",
+    "git: restored tracked generated runtime state",
+    "registry: created registry/repos",
+    "registry: created registry/modules",
+    "registry: created registry/providers",
+    "registry: created registry/commands",
+    "registry: created registry/graphs",
+    "go test passed"
+  ],
+  "blocked": [
+    "git: M  cmd/aift/main.go",
+    "git: A  docs/architecture/PHASE8-SELF-REPAIR-AI-KERNEL.md",
+    "git: A  internal/ai/ai.go",
+    "git: AM internal/repair/repair.go",
+    "git: ?? docs/architecture/PHASE9-AI-REPAIR-COMPILER.md",
+    "git: ?? docs/architecture/PHASE9-REAL-REPO-REPAIR.md",
+    "git: ?? docs/architecture/PHASE9-REPAIR-ENGINE.md",
+    "git: ?? fix-phase9-repair-compiler.sh",
+    "git: ?? internal/repair/compat.go",
+    "git: ?? internal/repair/engine.go",
+    "git: ?? internal/repair/engine_test.go",
+    "git: ?? internal/repair/gitutil.go",
+    "git: ?? internal/repair/repairs_git.go",
+    "git: ?? internal/repair/repairs_manifest.go",
+    "git: ?? internal/repair/repairs_registry.go",
+    "git: ?? internal/repair/repairs_runtime.go",
+    "git: ?? internal/repair/repairs_tests.go",
+    "git: ?? phase8-self-repair-ai-kernel.sh",
+    "git: ?? phase9-repair-engine.sh",
+    "git: ?? repair-all-go-tests-from-reality.sh",
+    "git: ?? repair-phase9-real-repo.sh"
+  ]
+}

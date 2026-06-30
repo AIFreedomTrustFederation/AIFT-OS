@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/ai"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/api"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/capabilities"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
@@ -143,6 +144,8 @@ func main() {
 		err = runOperator(cfg, args)
 	case "scheduler":
 		err = runScheduler(cfg, args)
+	case "ai":
+		err = ai.Run(cfg, args)
 	case "verify":
 		err = verify(cfg)
 	default:
@@ -200,6 +203,7 @@ func help() {
 	fmt.Println("  operator check")
 	fmt.Println("  scheduler plan|ready|blocked|report")
 	fmt.Println("  verify")
+	fmt.Println("  ai doctor|repair|verify|report")
 }
 
 func runFederation(cfg config.Config, args []string) error {
