@@ -1,0 +1,178 @@
+{
+  "name": "AIFT Repository Compiler",
+  "time": "2026-06-30T14:43:16Z",
+  "root": "/data/data/com.termux/files/home/AIFT",
+  "os_home": "/data/data/com.termux/files/home/AIFT/AIFT-OS",
+  "verified": true,
+  "repos": [
+    {
+      "name": ".github",
+      "path": "/data/data/com.termux/files/home/AIFT/.github",
+      "branch": "main",
+      "state": "dirty",
+      "manifest": "missing",
+      "remote": "https://github.com/AIFreedomTrustFederation/.github.git"
+    },
+    {
+      "name": "AI-Freedom-Trust",
+      "path": "/data/data/com.termux/files/home/AIFT/AI-Freedom-Trust",
+      "branch": "main",
+      "state": "dirty",
+      "manifest": "valid",
+      "remote": "https://github.com/AIFreedomTrustFederation/AI-Freedom-Trust.git"
+    },
+    {
+      "name": "AIFT-Forge",
+      "path": "/data/data/com.termux/files/home/AIFT/AIFT-Forge",
+      "branch": "main",
+      "state": "dirty",
+      "manifest": "valid",
+      "remote": "https://github.com/AIFreedomTrustFederation/AIFT-Forge.git"
+    },
+    {
+      "name": "AIFT-Genesis",
+      "path": "/data/data/com.termux/files/home/AIFT/AIFT-Genesis",
+      "branch": "main",
+      "state": "dirty",
+      "manifest": "valid",
+      "remote": "https://github.com/AIFreedomTrustFederation/AIFT-Genesis.git"
+    },
+    {
+      "name": "AIFT-OS",
+      "path": "/data/data/com.termux/files/home/AIFT/AIFT-OS",
+      "branch": "main",
+      "state": "dirty",
+      "manifest": "valid",
+      "remote": "https://github.com/AIFreedomTrustFederation/AIFT-OS.git"
+    },
+    {
+      "name": "Aether_Coin_biozonecurrency",
+      "path": "/data/data/com.termux/files/home/AIFT/Aether_Coin_biozonecurrency",
+      "branch": "main",
+      "state": "dirty",
+      "manifest": "valid",
+      "remote": "https://github.com/AIFreedomTrustFederation/Aether_Coin_biozonecurrency.git"
+    },
+    {
+      "name": "AetherianGovernance",
+      "path": "/data/data/com.termux/files/home/AIFT/AetherianGovernance",
+      "branch": "main",
+      "state": "dirty",
+      "manifest": "valid",
+      "remote": "https://github.com/AIFreedomTrustFederation/AetherianGovernance.git"
+    },
+    {
+      "name": "BookSmith-Federation-OS",
+      "path": "/data/data/com.termux/files/home/AIFT/BookSmith-Federation-OS",
+      "branch": "main",
+      "state": "dirty",
+      "manifest": "valid",
+      "remote": "https://github.com/AIFreedomTrustFederation/BookSmith-Federation-OS.git"
+    },
+    {
+      "name": "OpenMontage",
+      "path": "/data/data/com.termux/files/home/AIFT/OpenMontage",
+      "branch": "main",
+      "state": "dirty",
+      "manifest": "valid",
+      "remote": "https://github.com/AIFreedomTrustFederation/OpenMontage.git"
+    },
+    {
+      "name": "TheMindofAll",
+      "path": "/data/data/com.termux/files/home/AIFT/TheMindofAll",
+      "branch": "main",
+      "state": "dirty",
+      "manifest": "valid",
+      "remote": "https://github.com/AIFreedomTrustFederation/TheMindofAll.git"
+    },
+    {
+      "name": "VPS",
+      "path": "/data/data/com.termux/files/home/AIFT/VPS",
+      "branch": "main",
+      "state": "dirty",
+      "manifest": "valid",
+      "remote": "https://github.com/AIFreedomTrustFederation/VPS.git"
+    },
+    {
+      "name": "aifreedomtrustfederation.github.io",
+      "path": "/data/data/com.termux/files/home/AIFT/aifreedomtrustfederation.github.io",
+      "branch": "main",
+      "state": "dirty",
+      "manifest": "valid",
+      "remote": "https://github.com/AIFreedomTrustFederation/aifreedomtrustfederation.github.io.git"
+    },
+    {
+      "name": "biozone-harmony-boost",
+      "path": "/data/data/com.termux/files/home/AIFT/biozone-harmony-boost",
+      "branch": "main",
+      "state": "dirty",
+      "manifest": "valid",
+      "remote": "https://github.com/AIFreedomTrustFederation/biozone-harmony-boost.git"
+    },
+    {
+      "name": "booksmith-ai",
+      "path": "/data/data/com.termux/files/home/AIFT/booksmith-ai",
+      "branch": "main",
+      "state": "dirty",
+      "manifest": "valid",
+      "remote": "https://github.com/AIFreedomTrustFederation/booksmith-ai.git"
+    },
+    {
+      "name": "c-848263",
+      "path": "/data/data/com.termux/files/home/AIFT/c-848263",
+      "branch": "main",
+      "state": "dirty",
+      "manifest": "valid",
+      "remote": "https://github.com/AIFreedomTrustFederation/c-848263.git"
+    },
+    {
+      "name": "capital-city-provisions",
+      "path": "/data/data/com.termux/files/home/AIFT/capital-city-provisions",
+      "branch": "main",
+      "state": "dirty",
+      "manifest": "valid",
+      "remote": "https://github.com/AIFreedomTrustFederation/capital-city-provisions.git"
+    },
+    {
+      "name": "chktex",
+      "path": "/data/data/com.termux/files/home/AIFT/chktex",
+      "branch": "master",
+      "state": "dirty",
+      "manifest": "valid",
+      "remote": "https://github.com/AIFreedomTrustFederation/chktex.git"
+    },
+    {
+      "name": "mobox",
+      "path": "/data/data/com.termux/files/home/AIFT/mobox",
+      "branch": "main",
+      "state": "dirty",
+      "manifest": "valid",
+      "remote": "https://github.com/AIFreedomTrustFederation/mobox.git"
+    },
+    {
+      "name": "repo-brainstorm-backend-forge",
+      "path": "/data/data/com.termux/files/home/AIFT/repo-brainstorm-backend-forge",
+      "branch": "main",
+      "state": "dirty",
+      "manifest": "valid",
+      "remote": "https://github.com/AIFreedomTrustFederation/repo-brainstorm-backend-forge.git"
+    },
+    {
+      "name": "tastycutz",
+      "path": "/data/data/com.termux/files/home/AIFT/tastycutz",
+      "branch": "main",
+      "state": "dirty",
+      "manifest": "valid",
+      "remote": "https://github.com/AIFreedomTrustFederation/tastycutz.git"
+    },
+    {
+      "name": "www.aifreedomtrust.com",
+      "path": "/data/data/com.termux/files/home/AIFT/www.aifreedomtrust.com",
+      "branch": "main",
+      "state": "dirty",
+      "manifest": "valid",
+      "remote": "https://github.com/AIFreedomTrustFederation/www.aifreedomtrust.com.git"
+    }
+  ],
+  "blocked": null
+}

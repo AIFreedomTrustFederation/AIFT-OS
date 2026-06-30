@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/builder"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/compiler"
 	"os"
 
@@ -158,6 +159,10 @@ func main() {
 		if err := compiler.Run(cfg); err != nil {
 			panic(err)
 		}
+	case "build":
+		if err := builder.Run(cfg); err != nil {
+			panic(err)
+		}
 	case "verify":
 		err = verify(cfg)
 	default:
@@ -217,6 +222,7 @@ func help() {
 	fmt.Println("  ai")
 	fmt.Println("  compile")
 	fmt.Println("  compiler")
+	fmt.Println("  build")
 	fmt.Println("  verify")
 }
 
