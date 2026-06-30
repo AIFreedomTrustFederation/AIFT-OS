@@ -11,6 +11,7 @@ import (
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/doctor"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/eventmesh"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/execution"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/federation"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/gitx"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/graph"
@@ -143,6 +144,8 @@ func main() {
 		err = runOperator(cfg, args)
 	case "scheduler":
 		err = runScheduler(cfg, args)
+	case "execution":
+		err = runExecution(cfg, args)
 	case "verify":
 		err = verify(cfg)
 	default:
@@ -199,6 +202,7 @@ func help() {
 	fmt.Println("  capabilities scan|list|info|report")
 	fmt.Println("  operator check")
 	fmt.Println("  scheduler plan|ready|blocked|report")
+	fmt.Println("  execution plan|print|write")
 	fmt.Println("  verify")
 }
 
@@ -304,4 +308,14 @@ func status(cfg config.Config) error {
 	}
 
 	return nil
+}
+
+func runExecution(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "print" || args[0] == "plan" {
+		return execution.Print(cfg)
+	}
+	if args[0] == "write" {
+		return execution.Write(cfg)
+	}
+	return fmt.Errorf("usage: aift execution plan|print|write")
 }
