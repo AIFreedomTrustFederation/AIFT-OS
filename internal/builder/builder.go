@@ -3,6 +3,7 @@ package builder
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/lifecycle"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -47,6 +48,7 @@ func Run(cfg config.Config) error {
 	}
 
 	add("repository compiler", compiler.Run(cfg))
+	add("federation lifecycle", lifecycle.Run(cfg))
 	add("doctor", run(cfg.OSHome, "aift", "doctor"))
 	add("verify", run(cfg.OSHome, "aift", "verify"))
 	add("go test", run(cfg.OSHome, "go", "test", "./..."))

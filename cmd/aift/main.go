@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/builder"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/compiler"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/lifecycle"
 	"os"
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/ai"
@@ -163,6 +164,10 @@ func main() {
 		if err := builder.Run(cfg); err != nil {
 			panic(err)
 		}
+	case "lifecycle":
+		if err := lifecycle.Run(cfg); err != nil {
+			panic(err)
+		}
 	case "verify":
 		err = verify(cfg)
 	default:
@@ -223,6 +228,7 @@ func help() {
 	fmt.Println("  compile")
 	fmt.Println("  compiler")
 	fmt.Println("  build")
+	fmt.Println("  lifecycle")
 	fmt.Println("  verify")
 }
 
