@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/compiler"
 	"os"
 
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/ai"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/api"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/capabilities"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
@@ -143,6 +145,19 @@ func main() {
 		err = runOperator(cfg, args)
 	case "scheduler":
 		err = runScheduler(cfg, args)
+
+	case "ai":
+		if err := ai.Run(cfg); err != nil {
+			panic(err)
+		}
+	case "compile":
+		if err := compiler.Run(cfg); err != nil {
+			panic(err)
+		}
+	case "compiler":
+		if err := compiler.Run(cfg); err != nil {
+			panic(err)
+		}
 	case "verify":
 		err = verify(cfg)
 	default:
@@ -199,6 +214,9 @@ func help() {
 	fmt.Println("  capabilities scan|list|info|report")
 	fmt.Println("  operator check")
 	fmt.Println("  scheduler plan|ready|blocked|report")
+	fmt.Println("  ai")
+	fmt.Println("  compile")
+	fmt.Println("  compiler")
 	fmt.Println("  verify")
 }
 
