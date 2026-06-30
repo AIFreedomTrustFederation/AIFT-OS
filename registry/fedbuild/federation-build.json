@@ -1,21 +1,23 @@
 {
-  "name": "AIFT Federation Lifecycle",
-  "time": "2026-06-30T14:59:42Z",
+  "name": "AIFT Federation Build Engine",
+  "time": "2026-06-30T14:58:54Z",
   "root": "/data/data/com.termux/files/home/AIFT",
   "os_home": "/data/data/com.termux/files/home/AIFT/AIFT-OS",
-  "verified": true,
-  "repos": [
+  "verified": false,
+  "mode": "sync",
+  "modules": [
     {
       "name": ".github",
       "path": "/data/data/com.termux/files/home/AIFT/.github",
       "branch": "main",
       "state": "dirty",
-      "manifest": "missing",
-      "remote": "https://github.com/AIFreedomTrustFederation/.github.git",
-      "builds": null,
-      "tests": null,
+      "mode": "sync",
+      "runtime": "unknown",
+      "build": null,
+      "test": null,
+      "status": "blocked",
       "blocked": [
-        "no build system detected",
+        "no supported build runtime detected",
         "missing AIFT manifest"
       ],
       "artifacts": null
@@ -25,12 +27,13 @@
       "path": "/data/data/com.termux/files/home/AIFT/AI-Freedom-Trust",
       "branch": "main",
       "state": "dirty",
-      "manifest": "valid",
-      "remote": "https://github.com/AIFreedomTrustFederation/AI-Freedom-Trust.git",
-      "builds": null,
-      "tests": null,
+      "mode": "sync",
+      "runtime": "unknown",
+      "build": null,
+      "test": null,
+      "status": "blocked",
       "blocked": [
-        "no build system detected"
+        "no supported build runtime detected"
       ],
       "artifacts": null
     },
@@ -39,15 +42,18 @@
       "path": "/data/data/com.termux/files/home/AIFT/AIFT-Forge",
       "branch": "main",
       "state": "dirty",
-      "manifest": "valid",
-      "remote": "https://github.com/AIFreedomTrustFederation/AIFT-Forge.git",
-      "builds": [
+      "mode": "sync",
+      "runtime": "node",
+      "build": [
         "npm run build"
       ],
-      "tests": [
+      "test": [
         "npm test"
       ],
-      "blocked": null,
+      "status": "blocked",
+      "blocked": [
+        "build failed: npm run build: exit status 1"
+      ],
       "artifacts": null
     },
     {
@@ -55,12 +61,13 @@
       "path": "/data/data/com.termux/files/home/AIFT/AIFT-Genesis",
       "branch": "main",
       "state": "dirty",
-      "manifest": "valid",
-      "remote": "https://github.com/AIFreedomTrustFederation/AIFT-Genesis.git",
-      "builds": null,
-      "tests": null,
+      "mode": "sync",
+      "runtime": "unknown",
+      "build": null,
+      "test": null,
+      "status": "blocked",
       "blocked": [
-        "no build system detected"
+        "no supported build runtime detected"
       ],
       "artifacts": null
     },
@@ -69,18 +76,15 @@
       "path": "/data/data/com.termux/files/home/AIFT/AIFT-OS",
       "branch": "main",
       "state": "dirty",
-      "manifest": "valid",
-      "remote": "https://github.com/AIFreedomTrustFederation/AIFT-OS.git",
-      "builds": [
-        "go build ./...",
-        "npm run build",
-        "make"
+      "mode": "sync",
+      "runtime": "go",
+      "build": [
+        "go build ./..."
       ],
-      "tests": [
-        "go test ./...",
-        "npm test",
-        "make test"
+      "test": [
+        "go test ./..."
       ],
+      "status": "active",
       "blocked": null,
       "artifacts": null
     },
@@ -89,15 +93,18 @@
       "path": "/data/data/com.termux/files/home/AIFT/Aether_Coin_biozonecurrency",
       "branch": "main",
       "state": "dirty",
-      "manifest": "valid",
-      "remote": "https://github.com/AIFreedomTrustFederation/Aether_Coin_biozonecurrency.git",
-      "builds": [
+      "mode": "sync",
+      "runtime": "node",
+      "build": [
         "npm run build"
       ],
-      "tests": [
+      "test": [
         "npm test"
       ],
-      "blocked": null,
+      "status": "blocked",
+      "blocked": [
+        "build failed: npm run build: exit status 1"
+      ],
       "artifacts": null
     },
     {
@@ -105,12 +112,13 @@
       "path": "/data/data/com.termux/files/home/AIFT/AetherianGovernance",
       "branch": "main",
       "state": "dirty",
-      "manifest": "valid",
-      "remote": "https://github.com/AIFreedomTrustFederation/AetherianGovernance.git",
-      "builds": null,
-      "tests": null,
+      "mode": "sync",
+      "runtime": "unknown",
+      "build": null,
+      "test": null,
+      "status": "blocked",
       "blocked": [
-        "no build system detected"
+        "no supported build runtime detected"
       ],
       "artifacts": null
     },
@@ -119,15 +127,18 @@
       "path": "/data/data/com.termux/files/home/AIFT/BookSmith-Federation-OS",
       "branch": "main",
       "state": "dirty",
-      "manifest": "valid",
-      "remote": "https://github.com/AIFreedomTrustFederation/BookSmith-Federation-OS.git",
-      "builds": [
+      "mode": "sync",
+      "runtime": "node",
+      "build": [
         "npm run build"
       ],
-      "tests": [
+      "test": [
         "npm test"
       ],
-      "blocked": null,
+      "status": "blocked",
+      "blocked": [
+        "build failed: npm run build: exit status 1"
+      ],
       "artifacts": null
     },
     {
@@ -135,15 +146,18 @@
       "path": "/data/data/com.termux/files/home/AIFT/OpenMontage",
       "branch": "main",
       "state": "dirty",
-      "manifest": "valid",
-      "remote": "https://github.com/AIFreedomTrustFederation/OpenMontage.git",
-      "builds": [
+      "mode": "sync",
+      "runtime": "make",
+      "build": [
         "make"
       ],
-      "tests": [
+      "test": [
         "make test"
       ],
-      "blocked": null,
+      "status": "blocked",
+      "blocked": [
+        "build failed: make: exit status 2"
+      ],
       "artifacts": null
     },
     {
@@ -151,12 +165,13 @@
       "path": "/data/data/com.termux/files/home/AIFT/TheMindofAll",
       "branch": "main",
       "state": "dirty",
-      "manifest": "valid",
-      "remote": "https://github.com/AIFreedomTrustFederation/TheMindofAll.git",
-      "builds": null,
-      "tests": null,
+      "mode": "sync",
+      "runtime": "unknown",
+      "build": null,
+      "test": null,
+      "status": "blocked",
       "blocked": [
-        "no build system detected"
+        "no supported build runtime detected"
       ],
       "artifacts": null
     },
@@ -165,15 +180,18 @@
       "path": "/data/data/com.termux/files/home/AIFT/VPS",
       "branch": "main",
       "state": "dirty",
-      "manifest": "valid",
-      "remote": "https://github.com/AIFreedomTrustFederation/VPS.git",
-      "builds": [
+      "mode": "sync",
+      "runtime": "node",
+      "build": [
         "npm run build"
       ],
-      "tests": [
+      "test": [
         "npm test"
       ],
-      "blocked": null,
+      "status": "blocked",
+      "blocked": [
+        "build failed: npm run build: exit status 1"
+      ],
       "artifacts": null
     },
     {
@@ -181,12 +199,13 @@
       "path": "/data/data/com.termux/files/home/AIFT/aifreedomtrustfederation.github.io",
       "branch": "main",
       "state": "dirty",
-      "manifest": "valid",
-      "remote": "https://github.com/AIFreedomTrustFederation/aifreedomtrustfederation.github.io.git",
-      "builds": null,
-      "tests": null,
+      "mode": "sync",
+      "runtime": "unknown",
+      "build": null,
+      "test": null,
+      "status": "blocked",
       "blocked": [
-        "no build system detected"
+        "no supported build runtime detected"
       ],
       "artifacts": null
     },
@@ -195,15 +214,18 @@
       "path": "/data/data/com.termux/files/home/AIFT/biozone-harmony-boost",
       "branch": "main",
       "state": "dirty",
-      "manifest": "valid",
-      "remote": "https://github.com/AIFreedomTrustFederation/biozone-harmony-boost.git",
-      "builds": [
+      "mode": "sync",
+      "runtime": "node",
+      "build": [
         "npm run build"
       ],
-      "tests": [
+      "test": [
         "npm test"
       ],
-      "blocked": null,
+      "status": "blocked",
+      "blocked": [
+        "build failed: npm run build: exit status 1"
+      ],
       "artifacts": null
     },
     {
@@ -211,15 +233,18 @@
       "path": "/data/data/com.termux/files/home/AIFT/booksmith-ai",
       "branch": "main",
       "state": "dirty",
-      "manifest": "valid",
-      "remote": "https://github.com/AIFreedomTrustFederation/booksmith-ai.git",
-      "builds": [
+      "mode": "sync",
+      "runtime": "node",
+      "build": [
         "npm run build"
       ],
-      "tests": [
+      "test": [
         "npm test"
       ],
-      "blocked": null,
+      "status": "blocked",
+      "blocked": [
+        "build failed: npm run build: exit status 1"
+      ],
       "artifacts": null
     },
     {
@@ -227,15 +252,18 @@
       "path": "/data/data/com.termux/files/home/AIFT/c-848263",
       "branch": "main",
       "state": "dirty",
-      "manifest": "valid",
-      "remote": "https://github.com/AIFreedomTrustFederation/c-848263.git",
-      "builds": [
+      "mode": "sync",
+      "runtime": "node",
+      "build": [
         "npm run build"
       ],
-      "tests": [
+      "test": [
         "npm test"
       ],
-      "blocked": null,
+      "status": "blocked",
+      "blocked": [
+        "build failed: npm run build: exit status 1"
+      ],
       "artifacts": null
     },
     {
@@ -243,15 +271,18 @@
       "path": "/data/data/com.termux/files/home/AIFT/capital-city-provisions",
       "branch": "main",
       "state": "dirty",
-      "manifest": "valid",
-      "remote": "https://github.com/AIFreedomTrustFederation/capital-city-provisions.git",
-      "builds": [
+      "mode": "sync",
+      "runtime": "node",
+      "build": [
         "npm run build"
       ],
-      "tests": [
+      "test": [
         "npm test"
       ],
-      "blocked": null,
+      "status": "blocked",
+      "blocked": [
+        "build failed: npm run build: exit status 1"
+      ],
       "artifacts": null
     },
     {
@@ -259,12 +290,13 @@
       "path": "/data/data/com.termux/files/home/AIFT/chktex",
       "branch": "master",
       "state": "dirty",
-      "manifest": "valid",
-      "remote": "https://github.com/AIFreedomTrustFederation/chktex.git",
-      "builds": null,
-      "tests": null,
+      "mode": "sync",
+      "runtime": "unknown",
+      "build": null,
+      "test": null,
+      "status": "blocked",
       "blocked": [
-        "no build system detected"
+        "no supported build runtime detected"
       ],
       "artifacts": null
     },
@@ -273,12 +305,13 @@
       "path": "/data/data/com.termux/files/home/AIFT/mobox",
       "branch": "main",
       "state": "dirty",
-      "manifest": "valid",
-      "remote": "https://github.com/AIFreedomTrustFederation/mobox.git",
-      "builds": null,
-      "tests": null,
+      "mode": "sync",
+      "runtime": "unknown",
+      "build": null,
+      "test": null,
+      "status": "blocked",
       "blocked": [
-        "no build system detected"
+        "no supported build runtime detected"
       ],
       "artifacts": null
     },
@@ -287,15 +320,18 @@
       "path": "/data/data/com.termux/files/home/AIFT/repo-brainstorm-backend-forge",
       "branch": "main",
       "state": "dirty",
-      "manifest": "valid",
-      "remote": "https://github.com/AIFreedomTrustFederation/repo-brainstorm-backend-forge.git",
-      "builds": [
+      "mode": "sync",
+      "runtime": "node",
+      "build": [
         "npm run build"
       ],
-      "tests": [
+      "test": [
         "npm test"
       ],
-      "blocked": null,
+      "status": "blocked",
+      "blocked": [
+        "build failed: npm run build: exit status 1"
+      ],
       "artifacts": null
     },
     {
@@ -303,15 +339,18 @@
       "path": "/data/data/com.termux/files/home/AIFT/tastycutz",
       "branch": "main",
       "state": "dirty",
-      "manifest": "valid",
-      "remote": "https://github.com/AIFreedomTrustFederation/tastycutz.git",
-      "builds": [
+      "mode": "sync",
+      "runtime": "node",
+      "build": [
         "npm run build"
       ],
-      "tests": [
+      "test": [
         "npm test"
       ],
-      "blocked": null,
+      "status": "blocked",
+      "blocked": [
+        "build failed: npm run build: exit status 1"
+      ],
       "artifacts": null
     },
     {
@@ -319,12 +358,13 @@
       "path": "/data/data/com.termux/files/home/AIFT/www.aifreedomtrust.com",
       "branch": "main",
       "state": "dirty",
-      "manifest": "valid",
-      "remote": "https://github.com/AIFreedomTrustFederation/www.aifreedomtrust.com.git",
-      "builds": null,
-      "tests": null,
+      "mode": "sync",
+      "runtime": "unknown",
+      "build": null,
+      "test": null,
+      "status": "blocked",
       "blocked": [
-        "no build system detected"
+        "no supported build runtime detected"
       ],
       "artifacts": null
     }

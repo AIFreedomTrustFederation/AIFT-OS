@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/builder"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/compiler"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/fedbuild"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/lifecycle"
 	"os"
 
@@ -160,6 +161,11 @@ func main() {
 		if err := compiler.Run(cfg); err != nil {
 			panic(err)
 		}
+	case "federation-build":
+		async := len(args) > 1 && args[1] == "--async"
+		if err := fedbuild.Run(cfg, async); err != nil {
+			panic(err)
+		}
 	case "build":
 		if err := builder.Run(cfg); err != nil {
 			panic(err)
@@ -228,6 +234,7 @@ func help() {
 	fmt.Println("  compile")
 	fmt.Println("  compiler")
 	fmt.Println("  build")
+	fmt.Println("  federation-build")
 	fmt.Println("  lifecycle")
 	fmt.Println("  verify")
 }
