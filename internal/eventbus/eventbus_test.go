@@ -64,13 +64,7 @@ func TestEscapeTable(t *testing.T) {
 	}
 }
 
-func testConfig(t *testing.T) config.Config {
-	t.Helper()
-	dir := t.TempDir()
-	return config.Config{
-		Root:   dir,
-		OSHome: dir,
-	}
+func testConfig(t *testing.T) config.Load()
 }
 
 func TestPublishAndLoad(t *testing.T) {
@@ -252,7 +246,7 @@ func TestSnapshot(t *testing.T) {
 }
 
 func TestLogPath(t *testing.T) {
-	cfg := config.Config{OSHome: "/tmp/test-os"}
+	cfg := config.Load()
 	path := logPath(cfg)
 	want := filepath.Join("/tmp/test-os", "var", "events", "event-bus.jsonl")
 	if path != want {

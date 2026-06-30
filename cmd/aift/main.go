@@ -62,7 +62,15 @@ func main() {
 	case "version":
 		fmt.Printf("%s %s — %s\n", version.Name, version.Version, version.Role)
 	case "doctor":
-		err = doctor.Run(cfg)
+		if len(args) > 0 && args[0] == "repair" {
+			err = doctor.Repair(cfg)
+		} else if len(args) > 0 && args[0] == "git" {
+			err = doctor.Git(cfg)
+		} else if len(args) > 0 && args[0] == "full" {
+			err = doctor.Full(cfg)
+		} else {
+			err = doctor.Run(cfg)
+		}
 	case "status":
 		err = status(cfg)
 	case "manifest":
@@ -168,7 +176,7 @@ func help() {
 	fmt.Println("Commands:")
 	fmt.Println("  help")
 	fmt.Println("  version")
-	fmt.Println("  doctor")
+	fmt.Println("  doctor [repair|git|full]")
 	fmt.Println("  status")
 	fmt.Println("  manifest")
 	fmt.Println("  registry")
