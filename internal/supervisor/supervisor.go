@@ -21,20 +21,43 @@ func New(cfg config.Config) Supervisor {
 }
 
 func (s Supervisor) Boot() error {
-	st := state.New()
-	for _, svc := range services.Defaults() {
-		st.Services[svc.Name] = "running"
+	st, _ := state.Load(s.Config)
+	st.Name = "AIFT-OS"
+	st.Status = "running"
+
+	if err := services.Reconcile(s.Config); err != nil {
+		return err
 	}
+
+	discovered, err := services.Discover(s.Config)
+	if err != nil {
+		return err
+	}
+
+	st, _ = state.Load(s.Config)
+	for _, svc := range discovered {
+		if st.Services[svc.Name] == "" || st.Services[svc.Name] == "available" || st.Services[svc.Name] == "discovered" {
+			st.Services[svc.Name] = "ready"
+		}
+	}
+
 	if err := state.Save(s.Config, st); err != nil {
 		return err
 	}
-	if err := events.Emit(s.Config, "supervisor.boot", "supervisor", "runtime supervisor booted", nil); err != nil {
+
+	if err := events.Emit(s.Config, "supervisor.boot", "supervisor", "runtime supervisor booted from discovered service catalog", map[string]string{
+		"services": fmt.Sprintf("%d", len(discovered)),
+	}); err != nil {
 		return err
 	}
+
 	return jobs.RunAll(s.Config)
 }
 
 func (s Supervisor) Tick() error {
+	if err := services.Reconcile(s.Config); err != nil {
+		return err
+	}
 	if err := events.Emit(s.Config, "supervisor.tick", "supervisor", "runtime supervisor tick", nil); err != nil {
 		return err
 	}

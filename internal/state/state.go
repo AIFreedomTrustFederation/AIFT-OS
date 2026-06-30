@@ -9,12 +9,22 @@ import (
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
 )
 
+type ServiceState struct {
+	Name        string `json:"name"`
+	Repo        string `json:"repo"`
+	Status      string `json:"status"`
+	Kind        string `json:"kind"`
+	Description string `json:"description"`
+	UpdatedAt   string `json:"updatedAt"`
+}
+
 type RuntimeState struct {
-	Name      string            `json:"name"`
-	Status    string            `json:"status"`
-	StartedAt string            `json:"startedAt"`
-	UpdatedAt string            `json:"updatedAt"`
-	Services  map[string]string `json:"services"`
+	Name      string                  `json:"name"`
+	Status    string                  `json:"status"`
+	StartedAt string                  `json:"startedAt"`
+	UpdatedAt string                  `json:"updatedAt"`
+	Services  map[string]string       `json:"services"`
+	Catalog   map[string]ServiceState `json:"catalog"`
 }
 
 func Path(cfg config.Config) string {
@@ -29,11 +39,22 @@ func New() RuntimeState {
 		StartedAt: now,
 		UpdatedAt: now,
 		Services:  map[string]string{},
+		Catalog:   map[string]ServiceState{},
 	}
 }
 
 func Save(cfg config.Config, s RuntimeState) error {
-	s.UpdatedAt = time.Now().Format(time.RFC3339)
+	now := time.Now().Format(time.RFC3339)
+	s.UpdatedAt = now
+	if s.StartedAt == "" {
+		s.StartedAt = now
+	}
+	if s.Services == nil {
+		s.Services = map[string]string{}
+	}
+	if s.Catalog == nil {
+		s.Catalog = map[string]ServiceState{}
+	}
 	if err := os.MkdirAll(filepath.Dir(Path(cfg)), 0755); err != nil {
 		return err
 	}
@@ -50,6 +71,14 @@ func Load(cfg config.Config) (RuntimeState, error) {
 		return New(), err
 	}
 	var s RuntimeState
-	err = json.Unmarshal(b, &s)
-	return s, err
+	if err := json.Unmarshal(b, &s); err != nil {
+		return New(), err
+	}
+	if s.Services == nil {
+		s.Services = map[string]string{}
+	}
+	if s.Catalog == nil {
+		s.Catalog = map[string]ServiceState{}
+	}
+	return s, nil
 }
