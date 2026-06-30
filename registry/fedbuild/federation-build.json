@@ -1,6 +1,6 @@
 {
   "name": "AIFT Federation Build Engine",
-  "time": "2026-06-30T14:58:54Z",
+  "time": "2026-06-30T23:36:42Z",
   "root": "/data/data/com.termux/files/home/AIFT",
   "os_home": "/data/data/com.termux/files/home/AIFT/AIFT-OS",
   "verified": false,
@@ -15,9 +15,10 @@
       "runtime": "unknown",
       "build": null,
       "test": null,
-      "status": "blocked",
-      "blocked": [
-        "no supported build runtime detected",
+      "status": "planned",
+      "blocked": null,
+      "waiting": [
+        "no supported build provider detected",
         "missing AIFT manifest"
       ],
       "artifacts": null
@@ -31,9 +32,10 @@
       "runtime": "unknown",
       "build": null,
       "test": null,
-      "status": "blocked",
-      "blocked": [
-        "no supported build runtime detected"
+      "status": "planned",
+      "blocked": null,
+      "waiting": [
+        "no supported build provider detected"
       ],
       "artifacts": null
     },
@@ -43,7 +45,7 @@
       "branch": "main",
       "state": "dirty",
       "mode": "sync",
-      "runtime": "node",
+      "runtime": "node-npm",
       "build": [
         "npm run build"
       ],
@@ -54,6 +56,7 @@
       "blocked": [
         "build failed: npm run build: exit status 1"
       ],
+      "waiting": null,
       "artifacts": null
     },
     {
@@ -65,9 +68,10 @@
       "runtime": "unknown",
       "build": null,
       "test": null,
-      "status": "blocked",
-      "blocked": [
-        "no supported build runtime detected"
+      "status": "planned",
+      "blocked": null,
+      "waiting": [
+        "no supported build provider detected"
       ],
       "artifacts": null
     },
@@ -86,6 +90,7 @@
       ],
       "status": "active",
       "blocked": null,
+      "waiting": null,
       "artifacts": null
     },
     {
@@ -94,7 +99,7 @@
       "branch": "main",
       "state": "dirty",
       "mode": "sync",
-      "runtime": "node",
+      "runtime": "node-npm",
       "build": [
         "npm run build"
       ],
@@ -105,6 +110,7 @@
       "blocked": [
         "build failed: npm run build: exit status 1"
       ],
+      "waiting": null,
       "artifacts": null
     },
     {
@@ -116,9 +122,10 @@
       "runtime": "unknown",
       "build": null,
       "test": null,
-      "status": "blocked",
-      "blocked": [
-        "no supported build runtime detected"
+      "status": "planned",
+      "blocked": null,
+      "waiting": [
+        "no supported build provider detected"
       ],
       "artifacts": null
     },
@@ -139,6 +146,7 @@
       "blocked": [
         "build failed: npm run build: exit status 1"
       ],
+      "waiting": null,
       "artifacts": null
     },
     {
@@ -147,17 +155,18 @@
       "branch": "main",
       "state": "dirty",
       "mode": "sync",
-      "runtime": "make",
+      "runtime": "python",
       "build": [
-        "make"
+        "python -m compileall ."
       ],
       "test": [
-        "make test"
+        "python -m pytest"
       ],
       "status": "blocked",
       "blocked": [
-        "build failed: make: exit status 2"
+        "test failed: python -m pytest: exit status 1"
       ],
+      "waiting": null,
       "artifacts": null
     },
     {
@@ -169,9 +178,10 @@
       "runtime": "unknown",
       "build": null,
       "test": null,
-      "status": "blocked",
-      "blocked": [
-        "no supported build runtime detected"
+      "status": "planned",
+      "blocked": null,
+      "waiting": [
+        "no supported build provider detected"
       ],
       "artifacts": null
     },
@@ -192,6 +202,7 @@
       "blocked": [
         "build failed: npm run build: exit status 1"
       ],
+      "waiting": null,
       "artifacts": null
     },
     {
@@ -203,9 +214,10 @@
       "runtime": "unknown",
       "build": null,
       "test": null,
-      "status": "blocked",
-      "blocked": [
-        "no supported build runtime detected"
+      "status": "planned",
+      "blocked": null,
+      "waiting": [
+        "no supported build provider detected"
       ],
       "artifacts": null
     },
@@ -215,7 +227,7 @@
       "branch": "main",
       "state": "dirty",
       "mode": "sync",
-      "runtime": "node",
+      "runtime": "node-npm",
       "build": [
         "npm run build"
       ],
@@ -226,6 +238,7 @@
       "blocked": [
         "build failed: npm run build: exit status 1"
       ],
+      "waiting": null,
       "artifacts": null
     },
     {
@@ -234,7 +247,7 @@
       "branch": "main",
       "state": "dirty",
       "mode": "sync",
-      "runtime": "node",
+      "runtime": "node-npm",
       "build": [
         "npm run build"
       ],
@@ -245,6 +258,7 @@
       "blocked": [
         "build failed: npm run build: exit status 1"
       ],
+      "waiting": null,
       "artifacts": null
     },
     {
@@ -253,7 +267,7 @@
       "branch": "main",
       "state": "dirty",
       "mode": "sync",
-      "runtime": "node",
+      "runtime": "node-npm",
       "build": [
         "npm run build"
       ],
@@ -264,6 +278,7 @@
       "blocked": [
         "build failed: npm run build: exit status 1"
       ],
+      "waiting": null,
       "artifacts": null
     },
     {
@@ -272,7 +287,7 @@
       "branch": "main",
       "state": "dirty",
       "mode": "sync",
-      "runtime": "node",
+      "runtime": "node-npm",
       "build": [
         "npm run build"
       ],
@@ -283,6 +298,7 @@
       "blocked": [
         "build failed: npm run build: exit status 1"
       ],
+      "waiting": null,
       "artifacts": null
     },
     {
@@ -294,9 +310,10 @@
       "runtime": "unknown",
       "build": null,
       "test": null,
-      "status": "blocked",
-      "blocked": [
-        "no supported build runtime detected"
+      "status": "planned",
+      "blocked": null,
+      "waiting": [
+        "no supported build provider detected"
       ],
       "artifacts": null
     },
@@ -309,9 +326,10 @@
       "runtime": "unknown",
       "build": null,
       "test": null,
-      "status": "blocked",
-      "blocked": [
-        "no supported build runtime detected"
+      "status": "planned",
+      "blocked": null,
+      "waiting": [
+        "no supported build provider detected"
       ],
       "artifacts": null
     },
@@ -321,7 +339,7 @@
       "branch": "main",
       "state": "dirty",
       "mode": "sync",
-      "runtime": "node",
+      "runtime": "node-npm",
       "build": [
         "npm run build"
       ],
@@ -332,6 +350,7 @@
       "blocked": [
         "build failed: npm run build: exit status 1"
       ],
+      "waiting": null,
       "artifacts": null
     },
     {
@@ -340,7 +359,7 @@
       "branch": "main",
       "state": "dirty",
       "mode": "sync",
-      "runtime": "node",
+      "runtime": "node-npm",
       "build": [
         "npm run build"
       ],
@@ -351,6 +370,7 @@
       "blocked": [
         "build failed: npm run build: exit status 1"
       ],
+      "waiting": null,
       "artifacts": null
     },
     {
@@ -362,12 +382,130 @@
       "runtime": "unknown",
       "build": null,
       "test": null,
-      "status": "blocked",
-      "blocked": [
-        "no supported build runtime detected"
+      "status": "planned",
+      "blocked": null,
+      "waiting": [
+        "no supported build provider detected"
       ],
       "artifacts": null
     }
   ],
-  "blocked": null
+  "blocked": null,
+  "capabilities": {
+    "name": "AIFT Capability Discovery",
+    "time": "2026-06-30T23:36:40Z",
+    "root": "/data/data/com.termux/files/home/AIFT",
+    "os_home": "/data/data/com.termux/files/home/AIFT/AIFT-OS",
+    "verified": true,
+    "capabilities": [
+      {
+        "name": "go",
+        "command": "go",
+        "installed": true,
+        "path": "/data/data/com.termux/files/usr/bin/go"
+      },
+      {
+        "name": "git",
+        "command": "git",
+        "installed": true,
+        "path": "/data/data/com.termux/files/usr/bin/git"
+      },
+      {
+        "name": "node",
+        "command": "node",
+        "installed": true,
+        "path": "/data/data/com.termux/files/usr/bin/node"
+      },
+      {
+        "name": "npm",
+        "command": "npm",
+        "installed": true,
+        "path": "/data/data/com.termux/files/usr/bin/npm"
+      },
+      {
+        "name": "pnpm",
+        "command": "pnpm",
+        "installed": true,
+        "path": "/data/data/com.termux/files/usr/bin/pnpm"
+      },
+      {
+        "name": "bun",
+        "command": "bun",
+        "installed": false,
+        "path": ""
+      },
+      {
+        "name": "python",
+        "command": "python",
+        "installed": true,
+        "path": "/data/data/com.termux/files/usr/bin/python"
+      },
+      {
+        "name": "python3",
+        "command": "python3",
+        "installed": true,
+        "path": "/data/data/com.termux/files/usr/bin/python3"
+      },
+      {
+        "name": "pip",
+        "command": "pip",
+        "installed": true,
+        "path": "/data/data/com.termux/files/usr/bin/pip"
+      },
+      {
+        "name": "pip3",
+        "command": "pip3",
+        "installed": true,
+        "path": "/data/data/com.termux/files/usr/bin/pip3"
+      },
+      {
+        "name": "cargo",
+        "command": "cargo",
+        "installed": false,
+        "path": ""
+      },
+      {
+        "name": "rustc",
+        "command": "rustc",
+        "installed": false,
+        "path": ""
+      },
+      {
+        "name": "make",
+        "command": "make",
+        "installed": true,
+        "path": "/data/data/com.termux/files/usr/bin/make"
+      },
+      {
+        "name": "docker",
+        "command": "docker",
+        "installed": false,
+        "path": ""
+      },
+      {
+        "name": "java",
+        "command": "java",
+        "installed": true,
+        "path": "/data/data/com.termux/files/usr/bin/java"
+      },
+      {
+        "name": "mvn",
+        "command": "mvn",
+        "installed": false,
+        "path": ""
+      },
+      {
+        "name": "gradle",
+        "command": "gradle",
+        "installed": true,
+        "path": "/data/data/com.termux/files/usr/bin/gradle"
+      },
+      {
+        "name": "zig",
+        "command": "zig",
+        "installed": false,
+        "path": ""
+      }
+    ]
+  }
 }

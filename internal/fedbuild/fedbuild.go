@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/capability"
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
 )
 
@@ -23,37 +24,43 @@ type Module struct {
 	Test      []string `json:"test"`
 	Status    string   `json:"status"`
 	Blocked   []string `json:"blocked"`
+	Waiting   []string `json:"waiting"`
 	Artifacts []string `json:"artifacts"`
 }
 
 type Report struct {
-	Name     string   `json:"name"`
-	Time     string   `json:"time"`
-	Root     string   `json:"root"`
-	OSHome   string   `json:"os_home"`
-	Verified bool     `json:"verified"`
-	Mode     string   `json:"mode"`
-	Modules  []Module `json:"modules"`
-	Blocked  []string `json:"blocked"`
+	Name         string            `json:"name"`
+	Time         string            `json:"time"`
+	Root         string            `json:"root"`
+	OSHome       string            `json:"os_home"`
+	Verified     bool              `json:"verified"`
+	Mode         string            `json:"mode"`
+	Modules      []Module          `json:"modules"`
+	Blocked      []string          `json:"blocked"`
+	Capabilities capability.Report `json:"capabilities"`
 }
 
 func Run(cfg config.Config, async bool) error {
+	caps := capability.Discover(cfg)
+	_ = capability.Write(cfg, caps)
+
 	mode := "sync"
 	if async {
 		mode = "async-planned"
 	}
 
-	modules, blocked := discover(cfg.Root)
+	modules, blocked := discover(cfg.Root, caps)
 
 	report := Report{
-		Name:     "AIFT Federation Build Engine",
-		Time:     time.Now().Format(time.RFC3339),
-		Root:     cfg.Root,
-		OSHome:   cfg.OSHome,
-		Verified: true,
-		Mode:     mode,
-		Modules:  modules,
-		Blocked:  blocked,
+		Name:         "AIFT Federation Build Engine",
+		Time:         time.Now().Format(time.RFC3339),
+		Root:         cfg.Root,
+		OSHome:       cfg.OSHome,
+		Verified:     true,
+		Mode:         mode,
+		Modules:      modules,
+		Blocked:      blocked,
+		Capabilities: caps,
 	}
 
 	for i := range report.Modules {
@@ -63,6 +70,11 @@ func Run(cfg config.Config, async bool) error {
 		if len(module.Blocked) > 0 {
 			module.Status = "blocked"
 			report.Verified = false
+			continue
+		}
+
+		if len(module.Waiting) > 0 {
+			module.Status = "planned"
 			continue
 		}
 
@@ -97,6 +109,7 @@ func Run(cfg config.Config, async bool) error {
 	fmt.Println("verified:", report.Verified)
 	fmt.Println("modules:", len(report.Modules))
 	fmt.Println("blocked:", countBlocked(report.Modules)+len(report.Blocked))
+	fmt.Println("planned:", countPlanned(report.Modules))
 
 	if !report.Verified {
 		return fmt.Errorf("federation build completed with blocked modules")
@@ -105,7 +118,7 @@ func Run(cfg config.Config, async bool) error {
 	return nil
 }
 
-func discover(root string) ([]Module, []string) {
+func discover(root string, caps capability.Report) ([]Module, []string) {
 	var modules []Module
 	var blocked []string
 
@@ -126,7 +139,7 @@ func discover(root string) ([]Module, []string) {
 		}
 
 		if exists(filepath.Join(path, ".git")) {
-			modules = append(modules, inspect(path))
+			modules = append(modules, inspect(path, caps))
 			return filepath.SkipDir
 		}
 
@@ -140,7 +153,7 @@ func discover(root string) ([]Module, []string) {
 	return modules, blocked
 }
 
-func inspect(path string) Module {
+func inspect(path string, caps capability.Report) Module {
 	module := Module{
 		Name:   filepath.Base(path),
 		Path:   path,
@@ -162,28 +175,70 @@ func inspect(path string) Module {
 		module.Runtime = "go"
 		module.Build = []string{"go build ./..."}
 		module.Test = []string{"go test ./..."}
+		require(&module, caps, "go")
+
+	case exists(filepath.Join(path, "pnpm-lock.yaml")):
+		module.Runtime = "node-pnpm"
+		module.Build = []string{"pnpm build"}
+		module.Test = []string{"pnpm test"}
+		require(&module, caps, "node")
+		require(&module, caps, "pnpm")
+
+	case exists(filepath.Join(path, "package-lock.json")):
+		module.Runtime = "node-npm"
+		module.Build = []string{"npm run build"}
+		module.Test = []string{"npm test"}
+		require(&module, caps, "node")
+		require(&module, caps, "npm")
+
 	case exists(filepath.Join(path, "package.json")):
 		module.Runtime = "node"
 		module.Build = []string{"npm run build"}
 		module.Test = []string{"npm test"}
+		require(&module, caps, "node")
+		require(&module, caps, "npm")
+
 	case exists(filepath.Join(path, "Cargo.toml")):
 		module.Runtime = "rust"
 		module.Build = []string{"cargo build"}
 		module.Test = []string{"cargo test"}
+		require(&module, caps, "cargo")
+
+	case exists(filepath.Join(path, "pyproject.toml")):
+		module.Runtime = "python"
+		module.Build = []string{"python -m build"}
+		module.Test = []string{"python -m pytest"}
+		require(&module, caps, "python")
+
+	case exists(filepath.Join(path, "requirements.txt")):
+		module.Runtime = "python"
+		module.Build = []string{"python -m compileall ."}
+		module.Test = []string{"python -m pytest"}
+		require(&module, caps, "python")
+
 	case exists(filepath.Join(path, "Makefile")):
 		module.Runtime = "make"
 		module.Build = []string{"make"}
 		module.Test = []string{"make test"}
+		require(&module, caps, "make")
+
 	default:
 		module.Runtime = "unknown"
-		module.Blocked = append(module.Blocked, "no supported build runtime detected")
+		module.Status = "unsupported"
+		module.Waiting = append(module.Waiting, "no supported build provider detected")
 	}
 
 	if !exists(filepath.Join(path, "aift.repo.json")) && !exists(filepath.Join(path, ".aift", "module.json")) {
-		module.Blocked = append(module.Blocked, "missing AIFT manifest")
+		module.Waiting = append(module.Waiting, "missing AIFT manifest")
 	}
 
 	return module
+}
+
+func require(module *Module, caps capability.Report, name string) {
+	if !capability.Has(caps, name) {
+		module.Waiting = append(module.Waiting, "missing capability: "+name)
+	}
 }
 
 func runSteps(dir string, steps []string) error {
@@ -238,6 +293,10 @@ func writeReport(cfg config.Config, report Report) error {
 	for _, module := range report.Modules {
 		md += fmt.Sprintf("- %s | %s | %s | %s | %s\n", module.Name, module.Runtime, module.State, module.Status, module.Mode)
 
+		if len(module.Waiting) > 0 {
+			md += "  - waiting: " + strings.Join(module.Waiting, ", ") + "\n"
+		}
+
 		if len(module.Blocked) > 0 {
 			md += "  - blocked: " + strings.Join(module.Blocked, ", ") + "\n"
 		}
@@ -250,6 +309,16 @@ func countBlocked(modules []Module) int {
 	total := 0
 	for _, module := range modules {
 		if len(module.Blocked) > 0 || module.Status == "blocked" {
+			total++
+		}
+	}
+	return total
+}
+
+func countPlanned(modules []Module) int {
+	total := 0
+	for _, module := range modules {
+		if len(module.Waiting) > 0 || module.Status == "planned" || module.Status == "unsupported" {
 			total++
 		}
 	}
