@@ -1,0 +1,985 @@
+=== LOCATION ===
+/data/data/com.termux/files/home/AIFT/AIFT-OS
+
+=== GIT ===
+origin	https://github.com/AIFreedomTrustFederation/AIFT-OS.git (fetch)
+origin	https://github.com/AIFreedomTrustFederation/AIFT-OS.git (push)
+* main 9cc833d [origin/main] Merge pull request #13 from AIFreedomTrustFederation/aift-os-landing
+ M pnpm-workspace.yaml
+?? AIFT-OS-LOCAL-INSPECTION-20260629-210824.txt
+?? aift
+?? inspect-local-aift-os.sh
+9cc833d984f46a287878976a3b79ec4094ab4814
+
+=== GO VERSION ===
+go version go1.26.4 android/arm64
+
+=== ROOT FILES ===
+total 9487
+drwx------. 27 u0_a367 u0_a367    8192 Jun 29 21:08 .
+drwx------. 31 u0_a367 u0_a367    3488 Jun 29 18:33 ..
+drwx------.  3 u0_a367 u0_a367    3488 Jun 29 21:04 .aift
+drwx------.  7 u0_a367 u0_a367    3488 Jun 29 21:08 .git
+drwx------.  3 u0_a367 u0_a367    3488 Jun 29 21:04 .github
+-rw-------.  1 u0_a367 u0_a367     874 Jun 29 21:04 .gitignore
+-rw-------.  1 u0_a367 u0_a367      56 Jun 29 21:04 .npmrc
+-rw-------.  1 u0_a367 u0_a367     334 Jun 29 21:04 .replit
+-rw-------.  1 u0_a367 u0_a367     201 Jun 29 21:04 .replitignore
+drwx------.  7 u0_a367 u0_a367    3488 Jun 27 19:23 AI-Code-Training
+-rw-------.  1 u0_a367 u0_a367     537 Jun 29 21:08 AIFT-OS-LOCAL-INSPECTION-20260629-210824.txt
+-rw-------.  1 u0_a367 u0_a367     160 Jun 27 19:23 FEDERATION.md
+-rw-------.  1 u0_a367 u0_a367     490 Jun 27 19:23 Makefile
+-rw-------.  1 u0_a367 u0_a367    4973 Jun 29 21:04 README.md
+-rwx------.  1 u0_a367 u0_a367 9112952 Jun 29 21:04 aift
+-rwx------.  1 u0_a367 u0_a367     232 Jun 27 19:23 aift-os.sh
+-rw-------.  1 u0_a367 u0_a367     157 Jun 27 19:23 aift.repo.json
+-rw-------.  1 u0_a367 u0_a367     206 Jun 29 21:04 architecture-baseline.txt
+drwx------.  5 u0_a367 u0_a367    3488 Jun 29 21:04 artifacts
+drwx------.  2 u0_a367 u0_a367    3488 Jun 29 21:04 attached_assets
+drwx------.  2 u0_a367 u0_a367    3488 Jun 27 20:27 bin
+drwx------.  2 u0_a367 u0_a367    3488 Jun 27 19:23 ci
+-rwx------.  1 u0_a367 u0_a367    6447 Jun 27 19:23 ci-truth-repair-report.sh
+drwx------.  3 u0_a367 u0_a367    3488 Jun 27 19:23 cmd
+drwx------.  2 u0_a367 u0_a367    3488 Jun 27 19:23 config
+-rw-------.  1 u0_a367 u0_a367       5 Jun 29 21:04 coverage-baseline.txt
+drwx------.  3 u0_a367 u0_a367    3488 Jun 29 21:04 docs
+-rwx------.  1 u0_a367 u0_a367    7528 Jun 27 19:23 fix-introspection-and-push-federation.sh
+-rw-------.  1 u0_a367 u0_a367      60 Jun 27 19:23 go.mod
+-rwx------.  1 u0_a367 u0_a367     838 Jun 29 21:08 inspect-local-aift-os.sh
+drwx------.  2 u0_a367 u0_a367    3488 Jun 27 19:23 install
+drwx------.  2 u0_a367 u0_a367    3488 Jun 27 19:23 intelligence
+drwx------. 44 u0_a367 u0_a367    3488 Jun 29 21:04 internal
+drwx------.  3 u0_a367 u0_a367    3488 Jun 27 19:23 legacy
+drwx------.  6 u0_a367 u0_a367    3488 Jun 29 21:04 lib
+drwx------.  2 u0_a367 u0_a367    3488 Jun 27 19:23 manifests
+drwx------.  4 u0_a367 u0_a367    3488 Jun 29 21:05 node_modules
+-rw-------.  1 u0_a367 u0_a367     585 Jun 29 21:04 package.json
+-rwx------.  1 u0_a367 u0_a367   17973 Jun 27 19:23 phase-10-intelligence.sh
+-rwx------.  1 u0_a367 u0_a367   14865 Jun 27 19:23 phase-11-manual-contracts.sh
+-rwx------.  1 u0_a367 u0_a367   23026 Jun 27 19:23 phase-12-federation-graph.sh
+-rwx------.  1 u0_a367 u0_a367   14150 Jun 27 19:23 phase-13-event-mesh.sh
+-rwx------.  1 u0_a367 u0_a367   13934 Jun 27 19:23 phase-14-service-contracts.sh
+-rwx------.  1 u0_a367 u0_a367   16369 Jun 27 19:23 phase-15-execution-planner.sh
+-rwx------.  1 u0_a367 u0_a367    6001 Jun 27 19:23 phase-16-diagnostics.sh
+-rwx------.  1 u0_a367 u0_a367    5741 Jun 27 19:23 phase-16-introspection-kernel.sh
+-rwx------.  1 u0_a367 u0_a367   12457 Jun 27 19:23 phase-8-federation-integration.sh
+-rwx------.  1 u0_a367 u0_a367   18916 Jun 27 19:23 phase-9-capabilities.sh
+-rw-------.  1 u0_a367 u0_a367  211285 Jun 29 21:04 pnpm-lock.yaml
+-rw-------.  1 u0_a367 u0_a367    6630 Jun 29 21:05 pnpm-workspace.yaml
+-rwx------.  1 u0_a367 u0_a367    1204 Jun 27 19:23 push-all-aift-repos.sh
+drwx------.  2 u0_a367 u0_a367    3488 Jun 29 21:04 registry
+-rw-------.  1 u0_a367 u0_a367    2727 Jun 29 21:04 replit.md
+drwx------.  5 u0_a367 u0_a367    3488 Jun 29 21:04 reports
+drwx------.  2 u0_a367 u0_a367    3488 Jun 29 21:04 schemas
+drwx------.  5 u0_a367 u0_a367    3488 Jun 29 21:05 scripts
+-rwx------.  1 u0_a367 u0_a367   11316 Jun 27 19:23 stabilize-v030-services.sh
+drwx------.  3 u0_a367 u0_a367    3488 Jun 29 21:04 tests
+drwx------.  3 u0_a367 u0_a367    3488 Jun 29 21:04 tools
+-rw-------.  1 u0_a367 u0_a367     692 Jun 29 21:04 tsconfig.base.json
+-rw-------.  1 u0_a367 u0_a367     236 Jun 29 21:04 tsconfig.json
+drwx------.  3 u0_a367 u0_a367    3488 Jun 27 19:23 var
+
+=== CMD/AIFT FILES ===
+total 63
+drwx------. 2 u0_a367 u0_a367 3488 Jun 29 21:04 .
+drwx------. 3 u0_a367 u0_a367 3488 Jun 27 19:23 ..
+-rw-------. 1 u0_a367 u0_a367  704 Jun 29 21:04 capabilities.go
+-rw-------. 1 u0_a367 u0_a367  720 Jun 27 20:27 discovery_command.go
+-rw-------. 1 u0_a367 u0_a367  990 Jun 27 20:27 event_bus_command.go
+-rw-------. 1 u0_a367 u0_a367  731 Jun 27 20:27 kernel_registry_command.go
+-rw-------. 1 u0_a367 u0_a367  553 Jun 27 20:27 kernel_runtime_command.go
+-rw-------. 1 u0_a367 u0_a367  857 Jun 27 20:27 legacy_command_stubs.go
+-rw-------. 1 u0_a367 u0_a367 8652 Jun 29 21:04 main.go
+-rw-------. 1 u0_a367 u0_a367  705 Jun 27 20:27 modules_command.go
+-rw-------. 1 u0_a367 u0_a367 1645 Jun 29 21:04 operator.go
+-rw-------. 1 u0_a367 u0_a367  569 Jun 29 21:04 patch_engine_command.go
+-rw-------. 1 u0_a367 u0_a367  662 Jun 29 21:04 runtime.go
+-rw-------. 1 u0_a367 u0_a367  650 Jun 29 21:04 scheduler_cmd.go
+
+===== cmd/aift/capabilities.go =====
+package main
+
+import (
+	"fmt"
+
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/capabilities"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+)
+
+func runCapabilities(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "scan" {
+		return capabilities.Scan(cfg)
+	}
+
+	switch args[0] {
+	case "scan":
+		return capabilities.Scan(cfg)
+	case "list":
+		return capabilities.Scan(cfg)
+	case "info":
+		if len(args) < 2 {
+			return fmt.Errorf("usage: aift capabilities info <id-or-name>")
+		}
+		return capabilities.PrintRepo(cfg, args[1])
+	case "report":
+		return capabilities.Report(cfg)
+	default:
+		return fmt.Errorf("usage: aift capabilities scan|list|info|report")
+	}
+}
+
+===== cmd/aift/discovery_command.go =====
+package main
+
+import (
+	"fmt"
+
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/discoveryengine"
+)
+
+func runDiscovery(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "scan" {
+		return discoveryengine.Scan(cfg)
+	}
+
+	switch args[0] {
+	case "scan":
+		return discoveryengine.Scan(cfg)
+	case "list":
+		return discoveryengine.List(cfg)
+	case "object":
+		if len(args) < 2 {
+			return fmt.Errorf("usage: aift discovery object <id-or-name>")
+		}
+		return discoveryengine.ObjectInfo(cfg, args[1])
+	case "report":
+		return discoveryengine.Report(cfg)
+	default:
+		return fmt.Errorf("usage: aift discovery scan|list|object|report")
+	}
+}
+
+===== cmd/aift/event_bus_command.go =====
+package main
+
+import (
+	"fmt"
+	"strings"
+
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/eventbus"
+)
+
+func runEventBus(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "list" {
+		return eventbus.List(cfg)
+	}
+
+	switch args[0] {
+	case "publish":
+		if len(args) < 3 {
+			return fmt.Errorf("usage: aift event-bus publish <topic> <message> [key=value...]")
+		}
+		payload := map[string]string{}
+		for _, item := range args[3:] {
+			parts := strings.SplitN(item, "=", 2)
+			if len(parts) == 2 {
+				payload[parts[0]] = parts[1]
+			}
+		}
+		return eventbus.Publish(cfg, args[1], "manual", "aiftd", args[2], payload)
+	case "list":
+		return eventbus.List(cfg)
+	case "replay":
+		topic := ""
+		if len(args) > 1 {
+			topic = args[1]
+		}
+		return eventbus.Replay(cfg, topic)
+	case "report":
+		return eventbus.Report(cfg)
+	default:
+		return fmt.Errorf("usage: aift event-bus publish|list|replay|report")
+	}
+}
+
+===== cmd/aift/kernel_registry_command.go =====
+package main
+
+import (
+	"fmt"
+
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/kernelregistry"
+)
+
+func runKernelRegistry(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "scan" {
+		return kernelregistry.Scan(cfg)
+	}
+
+	switch args[0] {
+	case "scan":
+		return kernelregistry.Scan(cfg)
+	case "list":
+		return kernelregistry.List(cfg)
+	case "object":
+		if len(args) < 2 {
+			return fmt.Errorf("usage: aift kernel-registry object <id-or-name>")
+		}
+		return kernelregistry.ObjectInfo(cfg, args[1])
+	case "report":
+		return kernelregistry.Report(cfg)
+	default:
+		return fmt.Errorf("usage: aift kernel-registry scan|list|object|report")
+	}
+}
+
+===== cmd/aift/kernel_runtime_command.go =====
+package main
+
+import (
+	"fmt"
+
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/kernelruntime"
+)
+
+func runKernelRuntime(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "boot" {
+		return kernelruntime.Boot(cfg)
+	}
+
+	switch args[0] {
+	case "boot":
+		return kernelruntime.Boot(cfg)
+	case "status":
+		return kernelruntime.Status(cfg)
+	case "report":
+		return kernelruntime.Report(cfg)
+	default:
+		return fmt.Errorf("usage: aift kernel boot|status|report")
+	}
+}
+
+===== cmd/aift/legacy_command_stubs.go =====
+package main
+
+import (
+	"fmt"
+	"strings"
+
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+)
+
+func runIntelligence(cfg config.Config, args []string) error {
+	return plannedCommand("intelligence", args)
+}
+
+func runManual(cfg config.Config, args []string) error {
+	return plannedCommand("manual", args)
+}
+
+func runMesh(cfg config.Config, args []string) error {
+	return plannedCommand("mesh", args)
+}
+
+func runServiceContracts(cfg config.Config, args []string) error {
+	return plannedCommand("service-contracts", args)
+}
+
+func runPlanner(cfg config.Config, args []string) error {
+	return plannedCommand("planner", args)
+}
+
+func plannedCommand(name string, args []string) error {
+	detail := strings.Join(args, " ")
+	if detail == "" {
+		detail = "no subcommand"
+	}
+	return fmt.Errorf("%s command is planned but not active yet: %s", name, detail)
+}
+
+===== cmd/aift/main.go =====
+package main
+
+import (
+	"fmt"
+	"os"
+
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/api"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/capabilities"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/daemon"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/doctor"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/eventmesh"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/federation"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/gitx"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/graph"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/intelligence"
+	_ "github.com/AIFreedomTrustFederation/AIFT-OS/internal/kernel"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manifests"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manual"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/planner"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/plugins"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/providers"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/registry"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/repo"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/reports"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/runtime"
+	_ "github.com/AIFreedomTrustFederation/AIFT-OS/internal/scheduler"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/servicecontracts"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/services"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/sync"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/version"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/workflow"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/workspace"
+)
+
+func main() {
+	cfg := config.Load()
+	cmd := "help"
+	args := []string{}
+
+	if len(os.Args) > 1 {
+		cmd = os.Args[1]
+		args = os.Args[2:]
+	}
+
+	if looksLikeExecutablePath(cmd) {
+		if len(args) > 0 {
+			cmd = args[0]
+			args = args[1:]
+		} else {
+			cmd = "help"
+		}
+	}
+
+	var err error
+
+	switch cmd {
+	case "help", "-h", "--help":
+		help()
+	case "version":
+		fmt.Printf("%s %s — %s\n", version.Name, version.Version, version.Role)
+	case "doctor":
+		err = doctor.Run(cfg)
+	case "status":
+		err = status(cfg)
+	case "manifest":
+		err = manifests.EnsureAll(cfg)
+		if err == nil {
+			fmt.Println("OK: manifests ensured")
+		}
+	case "registry":
+		err = registry.Generate(cfg)
+	case "dashboard":
+		err = reports.Dashboard(cfg)
+	case "deps":
+		err = reports.Deps(cfg)
+	case "plugins":
+		err = plugins.List(cfg)
+	case "providers":
+		err = providers.List(cfg)
+	case "events":
+		err = events.Tail(cfg, 25)
+	case "services":
+		err = services.List(cfg)
+	case "start":
+		err = runtime.StartOnce(cfg)
+	case "tick":
+		err = runtime.Tick(cfg)
+	case "serve":
+		addr := ":8787"
+		if len(args) > 0 {
+			addr = args[0]
+		}
+		err = api.New(cfg, addr).Serve()
+	case "daemon":
+		addr := ":8787"
+		if len(args) > 0 {
+			addr = args[0]
+		}
+		err = daemon.Start(cfg, addr)
+	case "sync":
+		if len(args) == 0 || args[0] == "--safe" || args[0] == "safe" {
+			err = sync.Safe(cfg)
+		} else {
+			err = fmt.Errorf("only sync --safe is implemented in Go kernel")
+		}
+	case "federation":
+		err = runFederation(cfg, args)
+	case "repo":
+		err = runRepo(cfg, args)
+	case "workflow":
+		err = runWorkflow(cfg, args)
+	case "capabilities":
+		err = runCapabilities(cfg, args)
+	case "intelligence":
+		err = runIntelligence(cfg, args)
+	case "manual":
+		err = runManual(cfg, args)
+	case "graph":
+		err = graph.Query(cfg, args)
+	case "mesh":
+		err = runMesh(cfg, args)
+	case "service-contracts":
+		err = runServiceContracts(cfg, args)
+	case "plan":
+		err = runPlanner(cfg, args)
+	case "modules":
+		err = runModules(cfg, args)
+	case "kernel-registry":
+		err = runKernelRegistry(cfg, args)
+	case "discovery":
+		err = runDiscovery(cfg, args)
+	case "event-bus":
+		err = runEventBus(cfg, args)
+	case "patch-engine":
+		err = runPatchEngine(cfg, args)
+	case "kernel":
+		err = runKernelRuntime(cfg, args)
+	case "runtime":
+		err = runRuntime(cfg, args)
+	case "operator":
+		err = runOperator(cfg, args)
+	case "scheduler":
+		err = runScheduler(cfg, args)
+	case "verify":
+		err = verify(cfg)
+	default:
+		err = fmt.Errorf("unknown command: %s", cmd)
+	}
+
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "ERROR:", err)
+		os.Exit(1)
+	}
+}
+
+func looksLikeExecutablePath(s string) bool {
+	return len(s) > 0 && (s[0] == '/' || s == "aiftd" || s == "./aiftd" || s == "bin/aiftd")
+}
+
+func help() {
+	fmt.Println("AIFT-OS Federation Control Plane")
+	fmt.Println()
+	fmt.Println("Commands:")
+	fmt.Println("  help")
+	fmt.Println("  version")
+	fmt.Println("  doctor")
+	fmt.Println("  status")
+	fmt.Println("  manifest")
+	fmt.Println("  registry")
+	fmt.Println("  dashboard")
+	fmt.Println("  deps")
+	fmt.Println("  plugins")
+	fmt.Println("  providers")
+	fmt.Println("  events")
+	fmt.Println("  services")
+	fmt.Println("  start")
+	fmt.Println("  tick")
+	fmt.Println("  serve [:8787]")
+	fmt.Println("  daemon [:8787]")
+	fmt.Println("  sync --safe")
+	fmt.Println("  federation scan|graph|verify")
+	fmt.Println("  repo list|inspect|run")
+	fmt.Println("  workflow list")
+	fmt.Println("  intelligence scan|report|repo|roadmap")
+	fmt.Println("  manual init-all|scan|report|repo")
+	fmt.Println("  graph [summary|repo|type|status]")
+	fmt.Println("  mesh init-all|scan|topics|subscribers|publish|replay|tail|report")
+	fmt.Println("  service-contracts init-all|scan|list|repo|report")
+	fmt.Println("  plan build|summary|repo|ready|blocked|report")
+	fmt.Println("  modules init-all|scan|list|repo|report")
+	fmt.Println("  kernel-registry scan|list|object|report")
+	fmt.Println("  discovery scan|list|object|report")
+	fmt.Println("  event-bus publish|list|replay|report")
+	fmt.Println("  patch-engine inspect|plan|validate")
+	fmt.Println("  kernel boot|status|report")
+	fmt.Println("  runtime scan|status|ready|blocked|report")
+	fmt.Println("  capabilities scan|list|info|report")
+	fmt.Println("  operator check")
+	fmt.Println("  scheduler plan|ready|blocked|report")
+	fmt.Println("  verify")
+}
+
+func runFederation(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "scan" {
+		return federation.Scan(cfg)
+	}
+	if args[0] == "graph" {
+		return federation.Graph(cfg)
+	}
+	if args[0] == "verify" {
+		return federation.Verify(cfg)
+	}
+	return fmt.Errorf("usage: aift federation scan|graph|verify")
+}
+
+func runRepo(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "list" {
+		return repo.PrintList(cfg)
+	}
+	if args[0] == "inspect" {
+		if len(args) < 2 {
+			return fmt.Errorf("usage: aift repo inspect <name>")
+		}
+		return repo.PrintInspect(cfg, repo.NormalizeName(args[1]))
+	}
+	if args[0] == "run" {
+		if len(args) < 3 {
+			return fmt.Errorf("usage: aift repo run <name> <command> [args...]")
+		}
+		return repo.RunCommand(cfg, repo.NormalizeName(args[1]), args[2], args[3:])
+	}
+	return fmt.Errorf("usage: aift repo list|inspect|run")
+}
+
+func runWorkflow(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "list" {
+		return workflow.List(cfg)
+	}
+	return fmt.Errorf("usage: aift workflow list")
+}
+
+func verify(cfg config.Config) error {
+	if err := doctor.Run(cfg); err != nil {
+		return err
+	}
+	if err := manifests.EnsureAll(cfg); err != nil {
+		return err
+	}
+	if err := providers.WriteRegistry(cfg); err != nil {
+		return err
+	}
+	if err := registry.Generate(cfg); err != nil {
+		return err
+	}
+	if err := reports.Dashboard(cfg); err != nil {
+		return err
+	}
+	if err := reports.Deps(cfg); err != nil {
+
+===== cmd/aift/modules_command.go =====
+package main
+
+import (
+	"fmt"
+
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/modules"
+)
+
+func runModules(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "scan" {
+		return modules.Scan(cfg)
+	}
+
+	switch args[0] {
+	case "init-all":
+		return modules.InitAll(cfg)
+	case "scan":
+		return modules.Scan(cfg)
+	case "list":
+		return modules.List(cfg)
+	case "repo":
+		if len(args) < 2 {
+			return fmt.Errorf("usage: aift modules repo <repo>")
+		}
+		return modules.Repo(cfg, args[1])
+	case "report":
+		return modules.Report(cfg)
+	default:
+		return fmt.Errorf("usage: aift modules init-all|scan|list|repo|report")
+	}
+}
+
+===== cmd/aift/operator.go =====
+package main
+
+import (
+	"fmt"
+	"os/exec"
+	"strings"
+
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/readiness"
+)
+
+func runOperator(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] != "check" {
+		return fmt.Errorf("usage: aift operator check")
+	}
+
+	return operatorCheck(cfg)
+}
+
+func operatorCheck(cfg config.Config) error {
+	type step struct {
+		name string
+		fn   func() error
+	}
+
+	steps := []step{
+		{"verify", func() error { return verify(cfg) }},
+		{"architecture", func() error { return runArchitectureCheck(cfg) }},
+		{"runtime scan", func() error { return readiness.Scan(cfg) }},
+	}
+
+	var failed []string
+
+	for _, s := range steps {
+		fmt.Printf("--- %s ---\n", s.name)
+		if err := s.fn(); err != nil {
+			fmt.Printf("FAIL: %s: %v\n", s.name, err)
+			failed = append(failed, s.name)
+		} else {
+			fmt.Printf("OK: %s\n", s.name)
+		}
+		fmt.Println()
+	}
+
+	// Print readiness summary
+	fmt.Println("--- readiness summary ---")
+	if err := readiness.Status(cfg); err != nil {
+		fmt.Printf("FAIL: readiness summary: %v\n", err)
+		failed = append(failed, "readiness summary")
+	}
+	fmt.Println()
+
+	if len(failed) > 0 {
+		return fmt.Errorf("operator check failed: %s", strings.Join(failed, ", "))
+	}
+
+	fmt.Println("OK: operator check passed")
+	return nil
+}
+
+func runArchitectureCheck(cfg config.Config) error {
+	cmd := exec.Command("go", "run", "./tools/architecture", "--ci")
+	cmd.Dir = cfg.OSHome
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("architecture check failed: %s", string(out))
+	}
+	fmt.Print(string(out))
+	return nil
+}
+
+===== cmd/aift/patch_engine_command.go =====
+package main
+
+import (
+	"fmt"
+
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/patchengine"
+)
+
+func runPatchEngine(cfg config.Config, args []string) error {
+	if len(args) == 0 || args[0] == "inspect" {
+		return patchengine.Inspect(cfg)
+	}
+
+	switch args[0] {
+	case "inspect":
+		return patchengine.Inspect(cfg)
+	case "plan":
+		return patchengine.PlanCommand(cfg)
+	case "validate":
+		return patchengine.Validate(cfg)
+	default:
+		return fmt.Errorf("usage: aift patch-engine inspect|plan|validate")
+	}
+}
+
+===== cmd/aift/runtime.go =====
+package main
+
+import (
+	"fmt"
+
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/readiness"
+)
+
+func runRuntime(cfg config.Config, args []string) error {
+	if len(args) == 0 {
+		return fmt.Errorf("usage: aift runtime scan|status|ready|blocked|report")
+	}
+
+	switch args[0] {
+	case "scan":
+		return readiness.Scan(cfg)
+	case "status":
+		return readiness.Status(cfg)
+	case "ready":
+		return readiness.Ready(cfg)
+	case "blocked":
+		return readiness.Blocked(cfg)
+	case "report":
+		return readiness.Report(cfg)
+	default:
+		return fmt.Errorf("usage: aift runtime scan|status|ready|blocked|report")
+	}
+}
+
+===== cmd/aift/scheduler_cmd.go =====
+package main
+
+import (
+	"fmt"
+
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/schedulerplan"
+)
+
+func runScheduler(cfg config.Config, args []string) error {
+	if len(args) == 0 {
+		return fmt.Errorf("usage: aift scheduler plan|ready|blocked|report")
+	}
+
+	switch args[0] {
+	case "plan":
+		return schedulerplan.GeneratePlan(cfg)
+	case "ready":
+		return schedulerplan.PrintReady(cfg)
+	case "blocked":
+		return schedulerplan.PrintBlocked(cfg)
+	case "report":
+		return schedulerplan.PrintReport(cfg)
+	default:
+		return fmt.Errorf("usage: aift scheduler plan|ready|blocked|report")
+	}
+}
+
+=== INTERNAL PACKAGES ===
+internal/api/api.go
+internal/api/api_test.go
+internal/capabilities/capabilities.go
+internal/capabilities/capabilities_test.go
+internal/config/config.go
+internal/config/config_test.go
+internal/daemon/daemon.go
+internal/discoveryengine/discovery.go
+internal/discoveryengine/discovery_test.go
+internal/doctor/doctor.go
+internal/eventbus/eventbus.go
+internal/eventbus/eventbus_test.go
+internal/eventmesh/eventmesh.go
+internal/eventmesh/eventmesh_test.go
+internal/events/events.go
+internal/events/events_test.go
+internal/federation/federation.go
+internal/fsutil/fsutil.go
+internal/fsutil/fsutil_test.go
+internal/gitx/gitx.go
+internal/graph/graph.go
+internal/graph/graph_test.go
+internal/intelligence/intelligence.go
+internal/intelligence/intelligence_test.go
+internal/jobs/jobs.go
+internal/jsonfile/jsonfile.go
+internal/jsonfile/jsonfile_test.go
+internal/kernel/doc.go
+internal/kernel/kernel.go
+internal/kernelregistry/registry.go
+internal/kernelregistry/registry_test.go
+internal/kernelruntime/runtime.go
+internal/manifests/manifests.go
+internal/manifests/manifests_test.go
+internal/manual/manual.go
+internal/modules/modules.go
+internal/modules/modules_test.go
+internal/patchengine/patchengine.go
+internal/patchengine/patchengine_test.go
+internal/planner/planner.go
+internal/planner/planner_test.go
+internal/plugins/plugins.go
+internal/providers/providers.go
+internal/readiness/readiness.go
+internal/readiness/readiness_test.go
+internal/registry/registry.go
+internal/repo/repo.go
+internal/repo/repo_test.go
+internal/reports/reports.go
+internal/runtime/runtime.go
+internal/scheduler/doc.go
+internal/scheduler/scheduler.go
+internal/schedulerplan/schedulerplan.go
+internal/schedulerplan/schedulerplan_test.go
+internal/servicecontracts/servicecontracts.go
+internal/servicecontracts/servicecontracts_test.go
+internal/services/services.go
+internal/sliceutil/sliceutil.go
+internal/sliceutil/sliceutil_test.go
+internal/state/state.go
+internal/supervisor/supervisor.go
+internal/sync/sync.go
+internal/version/version.go
+internal/workflow/workflow.go
+internal/workspace/workspace.go
+
+=== BUILD OUTPUT ===
+
+=== PACKAGE REFERENCES ===
+internal/api/api.go:1:package api
+internal/api/api_test.go:1:package api
+internal/api/api_test.go:109:func TestGenerateTokenLength(t *testing.T) {
+internal/api/api_test.go:116:func TestGenerateTokenUnique(t *testing.T) {
+internal/capabilities/capabilities.go:1:package capabilities
+internal/capabilities/capabilities.go:65:func Scan(cfg config.Config) error {
+internal/capabilities/capabilities.go:97:func ScanRepo(cfg config.Config, r workspace.Repo) (RepoCapabilities, error) {
+internal/capabilities/capabilities_test.go:1:package capabilities
+internal/config/config.go:1:package config
+internal/config/config_test.go:1:package config
+internal/daemon/daemon.go:1:package daemon
+internal/doctor/doctor.go:1:package doctor
+internal/doctor/doctor.go:11:func Run(cfg config.Config) error {
+internal/eventmesh/eventmesh.go:1:package eventmesh
+internal/eventmesh/eventmesh.go:93:func Scan(cfg config.Config) error {
+internal/eventmesh/eventmesh.go:261:func loadOrScan(cfg config.Config) (Registry, error) {
+internal/eventmesh/eventmesh_test.go:1:package eventmesh
+internal/events/events.go:1:package events
+internal/events/events_test.go:1:package events
+internal/federation/federation.go:1:package federation
+internal/federation/federation.go:25:func Scan(cfg config.Config) error {
+internal/gitx/gitx.go:1:package gitx
+internal/gitx/gitx.go:9:func Run(repo string, args ...string) (string, error) {
+internal/graph/graph.go:1:package graph
+internal/graph/graph_test.go:1:package graph
+internal/intelligence/intelligence.go:1:package intelligence
+internal/intelligence/intelligence.go:58:func Scan(cfg config.Config) error {
+internal/intelligence/intelligence_test.go:1:package intelligence
+internal/jobs/jobs.go:1:package jobs
+internal/jobs/jobs.go:29:func RunAll(cfg config.Config) error {
+internal/kernel/kernel.go:1:package kernel
+internal/kernel/doc.go:5:// The kernel package defines a Command type and Kernel struct that will
+internal/kernel/doc.go:10:// This package is part of the intended architecture but not yet wired
+internal/kernel/doc.go:13:package kernel
+internal/manifests/manifests.go:1:package manifests
+internal/manifests/manifests.go:26:func EnsureAll(cfg config.Config) error {
+internal/manifests/manifests_test.go:1:package manifests
+internal/manual/manual.go:1:package manual
+internal/manual/manual.go:99:func Scan(cfg config.Config) error {
+internal/planner/planner.go:1:package planner
+internal/planner/planner_test.go:1:package planner
+internal/plugins/plugins.go:1:package plugins
+internal/plugins/plugins.go:13:func List(cfg config.Config) error {
+internal/providers/providers.go:1:package providers
+internal/providers/providers.go:34:func List(cfg config.Config) error {
+internal/registry/registry.go:1:package registry
+internal/registry/registry.go:22:func Generate(cfg config.Config) error {
+internal/repo/repo.go:1:package repo
+internal/repo/repo.go:28:func List(cfg config.Config) ([]Info, error) {
+internal/repo/repo.go:71:func PrintList(cfg config.Config) error {
+internal/repo/repo.go:112:func RunCommand(cfg config.Config, name string, commandName string, args []string) error {
+internal/repo/repo_test.go:1:package repo
+internal/repo/repo_test.go:82:func TestRunCommandInvalidName(t *testing.T) {
+internal/repo/repo_test.go:93:func TestRunCommandDotDot(t *testing.T) {
+internal/repo/repo_test.go:103:func TestRunCommandDot(t *testing.T) {
+internal/reports/reports.go:1:package reports
+internal/runtime/runtime.go:1:package runtime
+internal/scheduler/scheduler.go:1:package scheduler
+internal/scheduler/scheduler.go:22:func (s Scheduler) RunOnce() error {
+internal/scheduler/doc.go:9:// This package is part of the intended architecture but not yet wired
+internal/scheduler/doc.go:12:package scheduler
+internal/servicecontracts/servicecontracts.go:1:package servicecontracts
+internal/servicecontracts/servicecontracts.go:109:func Scan(cfg config.Config) error {
+internal/servicecontracts/servicecontracts.go:176:func List(cfg config.Config) error {
+internal/servicecontracts/servicecontracts.go:281:func loadOrScan(cfg config.Config) (Registry, error) {
+internal/servicecontracts/servicecontracts_test.go:1:package servicecontracts
+internal/servicecontracts/servicecontracts_test.go:290:func TestScanDefaultsPersistInContracts(t *testing.T) {
+internal/servicecontracts/servicecontracts_test.go:365:func TestScanDefaultsDoNotOverwriteExplicit(t *testing.T) {
+internal/services/services.go:1:package services
+internal/services/services.go:28:func List(cfg config.Config) error {
+internal/state/state.go:1:package state
+internal/state/state.go:24:func New() RuntimeState {
+internal/state/state.go:35:func Save(cfg config.Config, s RuntimeState) error {
+internal/state/state.go:47:func Load(cfg config.Config) (RuntimeState, error) {
+internal/supervisor/supervisor.go:1:package supervisor
+internal/sync/sync.go:1:package sync
+internal/version/version.go:1:package version
+internal/workflow/workflow.go:1:package workflow
+internal/workflow/workflow.go:51:func List(cfg config.Config) error {
+internal/workspace/workspace.go:1:package workspace
+internal/modules/modules.go:1:package modules
+internal/modules/modules.go:73:func Scan(cfg config.Config) error {
+internal/modules/modules.go:197:func List(cfg config.Config) error {
+internal/modules/modules.go:264:func loadOrScan(cfg config.Config) (Registry, error) {
+internal/modules/modules_test.go:1:package modules
+internal/kernelregistry/registry.go:1:package kernelregistry
+internal/kernelregistry/registry.go:66:func Scan(cfg config.Config) error {
+internal/kernelregistry/registry.go:149:		evidence = append(evidence, ev(now, "manifest", filepath.Join(path, "package.json"), "Node package manifest exists."))
+internal/kernelregistry/registry.go:257:func List(cfg config.Config) error {
+internal/kernelregistry/registry_test.go:1:package kernelregistry
+internal/discoveryengine/discovery.go:1:package discoveryengine
+internal/discoveryengine/discovery.go:61:func Scan(cfg config.Config) error {
+internal/discoveryengine/discovery.go:211:func discoverRuntimes(obj *DiscoveryObject, now string, root string) {
+internal/discoveryengine/discovery.go:255:func List(cfg config.Config) error {
+internal/discoveryengine/discovery.go:358:func runtimeNames(runtimes []Runtime) string {
+internal/discoveryengine/discovery_test.go:1:package discoveryengine
+internal/discoveryengine/discovery_test.go:29:func TestRuntimeNames(t *testing.T) {
+internal/discoveryengine/discovery_test.go:41:func TestRuntimeNamesEmpty(t *testing.T) {
+internal/discoveryengine/discovery_test.go:48:func TestRuntimeNamesDeduplicated(t *testing.T) {
+internal/eventbus/eventbus.go:1:package eventbus
+internal/eventbus/eventbus.go:83:func List(cfg config.Config) error {
+internal/eventbus/eventbus_test.go:1:package eventbus
+internal/patchengine/patchengine.go:1:package patchengine
+internal/patchengine/patchengine_test.go:1:package patchengine
+internal/patchengine/patchengine_test.go:73:	os.WriteFile(filepath.Join(dir, "main.go"), []byte("package main"), 0644)
+internal/patchengine/patchengine_test.go:113:	os.WriteFile(filepath.Join(dir, "main.go"), []byte("package main"), 0644)
+internal/patchengine/patchengine_test.go:141:	os.WriteFile(filepath.Join(sub, "handler.go"), []byte("package pkg"), 0644)
+internal/patchengine/patchengine_test.go:151:	os.WriteFile(filepath.Join(dir, "main.go"), []byte("package main"), 0644)
+internal/kernelruntime/runtime.go:1:package kernelruntime
+internal/fsutil/fsutil.go:1:package fsutil
+internal/fsutil/fsutil_test.go:1:package fsutil
+internal/jsonfile/jsonfile.go:1:package jsonfile
+internal/jsonfile/jsonfile.go:49:func ReadNamedList(repoPath, fileName, field string) []string {
+internal/jsonfile/jsonfile_test.go:1:package jsonfile
+internal/jsonfile/jsonfile_test.go:138:func TestReadNamedList(t *testing.T) {
+internal/jsonfile/jsonfile_test.go:159:func TestReadNamedListMissing(t *testing.T) {
+internal/jsonfile/jsonfile_test.go:167:func TestReadNamedListInvalidJSON(t *testing.T) {
+internal/jsonfile/jsonfile_test.go:179:func TestReadNamedListWrongField(t *testing.T) {
+internal/readiness/readiness.go:1:package readiness
+internal/readiness/readiness.go:111:func Scan(cfg config.Config) error {
+internal/readiness/readiness.go:567:func loadOrScan(cfg config.Config) (Registry, error) {
+internal/readiness/readiness_test.go:1:package readiness
+internal/readiness/readiness_test.go:260:func TestScanRepositories(t *testing.T) {
+internal/readiness/readiness_test.go:283:func TestScanRepositoriesWithManifest(t *testing.T) {
+internal/readiness/readiness_test.go:304:func TestScanModules(t *testing.T) {
+internal/readiness/readiness_test.go:332:func TestScanModulesMissing(t *testing.T) {
+internal/readiness/readiness_test.go:341:func TestScanCapabilities(t *testing.T) {
+internal/readiness/readiness_test.go:374:func TestScanServices(t *testing.T) {
+internal/readiness/readiness_test.go:398:func TestScanEventsNoFile(t *testing.T) {
+internal/readiness/readiness_test.go:407:func TestScanEventsWithContent(t *testing.T) {
+internal/readiness/readiness_test.go:424:func TestScanCommands(t *testing.T) {
+internal/readiness/readiness_test.go:452:func TestScanScripts(t *testing.T) {
+internal/readiness/readiness_test.go:479:func TestScanScriptsNoDir(t *testing.T) {
+internal/readiness/readiness_test.go:488:func TestScanServicesConsumesPersistedDefaults(t *testing.T) {
+internal/readiness/readiness_test.go:534:func TestScanServicesEmptyEvidence(t *testing.T) {
+internal/schedulerplan/schedulerplan.go:1:package schedulerplan
+internal/schedulerplan/schedulerplan.go:127:func GeneratePlan(cfg config.Config) error {
+internal/schedulerplan/schedulerplan_test.go:1:package schedulerplan
+internal/schedulerplan/schedulerplan_test.go:200:func TestResolveDependenciesAllowsCommandsWithRunnableRepo(t *testing.T) {
+internal/schedulerplan/schedulerplan_test.go:255:func TestResolveDependenciesAllowsCapabilityWithRunnableRepo(t *testing.T) {
+internal/schedulerplan/schedulerplan_test.go:437:func TestGeneratePlanWritesFiles(t *testing.T) {
+internal/sliceutil/sliceutil.go:1:package sliceutil
+internal/sliceutil/sliceutil_test.go:1:package sliceutil
+cmd/aift/main.go:1:package main
+cmd/aift/capabilities.go:1:package main
+cmd/aift/discovery_command.go:1:package main
+cmd/aift/kernel_registry_command.go:1:package main
+cmd/aift/kernel_runtime_command.go:1:package main
+cmd/aift/kernel_runtime_command.go:10:func runKernelRuntime(cfg config.Config, args []string) error {
+cmd/aift/event_bus_command.go:1:package main
+cmd/aift/patch_engine_command.go:1:package main
+cmd/aift/modules_command.go:1:package main
+cmd/aift/legacy_command_stubs.go:1:package main
+cmd/aift/operator.go:1:package main
+cmd/aift/runtime.go:1:package main
+cmd/aift/runtime.go:10:func runRuntime(cfg config.Config, args []string) error {
+cmd/aift/scheduler_cmd.go:1:package main
