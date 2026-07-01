@@ -4,13 +4,29 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
 
+func hasTool(name string) bool {
+	_, err := exec.LookPath(name)
+	return err == nil
+}
+
+func skipIfNoShell(t *testing.T) {
+	t.Helper()
+	if runtime.GOOS == "windows" {
+		if !hasTool("bash") && !hasTool("sh") {
+			t.Skip("shell smoke test skipped: bash/sh unavailable on Windows PATH")
+		}
+	}
+}
+
 // TestAllShellScriptsPassSyntaxCheck runs bash -n on every .sh file in the repo.
 func TestAllShellScriptsPassSyntaxCheck(t *testing.T) {
-	if _, err := exec.LookPath("bash"); err != nil {
+	skipIfNoShell(t)
+	if !hasTool("bash") {
 		t.Skip("bash is required for shell syntax checks")
 	}
 
