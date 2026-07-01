@@ -8,6 +8,7 @@ cli|planned|Legacy registry generator package is not the active cmd/aift dispatc
 daemon|planned|Daemon runtime exists but is not launched by the active CLI.
 doctor|planned|Doctor diagnostics package exists but is not exposed as active.
 eventmesh|planned|Event mesh reporting package exists but is not integrated with runtime events.
+execution|planned|Execution contracts exist but are not wired into the active CLI.
 fedbuild|planned|Federated build runner exists but is not exposed as active.
 federation|planned|Federation scan and graph package exists but command group remains planned.
 graph|planned|Graph generation package exists but is not active in cmd/aift.

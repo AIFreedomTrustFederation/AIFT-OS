@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-01T13:54:43Z",
+  "generated_at": "2026-07-01T14:05:14Z",
   "version": "1.0.0",
   "packages": [
     {
@@ -123,6 +123,7 @@
         "internal/eventbus",
         "internal/eventmesh",
         "internal/events",
+        "internal/execution",
         "internal/fedbuild",
         "internal/federation",
         "internal/graph",
@@ -197,7 +198,7 @@
         "internal/config"
       ],
       "depended_by": null,
-      "has_tests": false,
+      "has_tests": true,
       "category": "operations",
       "root_status": "planned",
       "root_reason": "Doctor diagnostics package exists but is not exposed as active."
@@ -258,6 +259,19 @@
       ],
       "has_tests": true,
       "category": "events"
+    },
+    {
+      "name": "execution",
+      "path": "internal/execution",
+      "depends_on": [
+        "internal/config",
+        "internal/workspace"
+      ],
+      "depended_by": null,
+      "has_tests": false,
+      "category": "other",
+      "root_status": "planned",
+      "root_reason": "Execution contracts exist but are not wired into the active CLI."
     },
     {
       "name": "fedbuild",
@@ -811,6 +825,7 @@
         "internal/capabilities",
         "internal/discoveryengine",
         "internal/eventmesh",
+        "internal/execution",
         "internal/graph",
         "internal/intelligence",
         "internal/kernelregistry",
@@ -1048,6 +1063,14 @@
     {
       "from": "internal/events",
       "to": "internal/config"
+    },
+    {
+      "from": "internal/execution",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/execution",
+      "to": "internal/workspace"
     },
     {
       "from": "internal/fedbuild",

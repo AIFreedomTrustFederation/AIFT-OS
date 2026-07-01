@@ -1,6 +1,6 @@
 # AIFT-OS Architecture
 
-Generated: 2026-07-01T13:54:43Z
+Generated: 2026-07-01T14:05:14Z
 
 ## Package Categories
 
@@ -8,13 +8,13 @@ Generated: 2026-07-01T13:54:43Z
 
 | Package | Dependencies | Dependents | Tests |
 |---|---:|---:|---:|
-| `config` | 0 | 44 | yes |
+| `config` | 0 | 45 | yes |
 | `fsutil` | 0 | 9 | yes |
 | `gitx` | 0 | 5 | yes |
 | `jsonfile` | 0 | 17 | yes |
 | `sliceutil` | 0 | 7 | yes |
 | `version` | 0 | 1 | no |
-| `workspace` | 1 | 17 | yes |
+| `workspace` | 1 | 18 | yes |
 
 ### Runtime
 
@@ -76,7 +76,7 @@ Generated: 2026-07-01T13:54:43Z
 
 | Package | Dependencies | Dependents | Tests |
 |---|---:|---:|---:|
-| `doctor` | 1 | 0 | no |
+| `doctor` | 1 | 0 | yes |
 | `manual` | 5 | 0 | no |
 
 ### Planning
@@ -103,6 +103,7 @@ Generated: 2026-07-01T13:54:43Z
 | `capability` | 1 | 2 | no |
 | `cli` | 1 | 0 | yes |
 | `compiler` | 1 | 2 | no |
+| `execution` | 2 | 0 | no |
 | `fedbuild` | 2 | 0 | no |
 | `lifecycle` | 1 | 1 | no |
 | `providerregistry` | 1 | 0 | yes |
@@ -168,6 +169,8 @@ graph TD
     eventmesh --> jsonfile
     eventmesh --> workspace
     events --> config
+    execution --> config
+    execution --> workspace
     fedbuild --> capability
     fedbuild --> config
     federation --> config

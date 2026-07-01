@@ -1,13 +1,13 @@
 # Architecture Report
 
-Generated: 2026-07-01T13:54:43Z
+Generated: 2026-07-01T14:05:14Z
 
 ## Summary
 
-- **Packages**: 50
+- **Packages**: 51
 - **Commands**: 8
-- **Dependencies**: 156 internal edges
-- **Tested packages**: 31 / 50
+- **Dependencies**: 158 internal edges
+- **Tested packages**: 32 / 51
 
 ## Invariant Check Results
 
