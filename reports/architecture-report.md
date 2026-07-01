@@ -1,13 +1,13 @@
 # Architecture Report
 
-Generated: 2026-06-28T21:26:06Z
+Generated: 2026-07-01T14:03:58Z
 
 ## Summary
 
-- **Packages**: 42
-- **Commands**: 36
-- **Dependencies**: 145 internal edges
-- **Tested packages**: 21 / 42
+- **Packages**: 50
+- **Commands**: 8
+- **Dependencies**: 156 internal edges
+- **Tested packages**: 31 / 50
 
 ## Invariant Check Results
 
@@ -31,14 +31,13 @@ Generated: 2026-06-28T21:26:06Z
 
 ## Command Status
 
-- **Active**: 32
-- **Planned**: 4
+- **Active**: 5
+- **Planned**: 3
 
 Planned commands:
-- `intelligence`
-- `manual`
-- `mesh`
-- `service-contracts`
+- `federation`
+- `repo`
+- `workflow`
 
 ## Package Categories
 
