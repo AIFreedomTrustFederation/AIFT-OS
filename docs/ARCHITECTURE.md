@@ -14,7 +14,7 @@ Generated: 2026-07-01T13:55:57Z
 | `jsonfile` | 0 | 17 | yes |
 | `sliceutil` | 0 | 7 | yes |
 | `version` | 0 | 1 | no |
-| `workspace` | 1 | 17 | yes |
+| `workspace` | 1 | 18 | yes |
 
 ### Runtime
 
@@ -23,7 +23,7 @@ Generated: 2026-07-01T13:55:57Z
 | `api` | 10 | 1 | yes |
 | `daemon` | 4 | 0 | no |
 | `jobs` | 5 | 3 | no |
-| `runtime` | 4 | 1 | no |
+| `runtime` | 6 | 1 | no |
 | `scheduler` | 2 | 1 | no |
 | `supervisor` | 5 | 1 | no |
 
@@ -62,7 +62,7 @@ Generated: 2026-07-01T13:55:57Z
 | `registry` | 5 | 3 | yes |
 | `repo` | 4 | 1 | yes |
 | `reports` | 4 | 3 | yes |
-| `state` | 1 | 3 | yes |
+| `state` | 1 | 4 | yes |
 
 ### Federation
 
@@ -85,7 +85,7 @@ Generated: 2026-07-01T13:55:57Z
 |---|---:|---:|---:|
 | `planner` | 5 | 0 | yes |
 | `servicecontracts` | 5 | 0 | yes |
-| `services` | 3 | 2 | yes |
+| `services` | 4 | 3 | yes |
 
 ### Extensions
 
@@ -256,6 +256,8 @@ graph TD
     runtime --> config
     runtime --> events
     runtime --> jobs
+    runtime --> services
+    runtime --> state
     runtime --> supervisor
     scheduler --> capability
     scheduler --> config
@@ -270,6 +272,7 @@ graph TD
     services --> config
     services --> events
     services --> state
+    services --> workspace
     state --> config
     supervisor --> config
     supervisor --> events
