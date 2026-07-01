@@ -41,7 +41,10 @@ function ToroidalCanvas() {
         const p = i / (count - 1); // 0..1
         // Map 0=bottom (max expansion, red) → 0.5=equator (green) → 1=top (blue/violet)
         const specP = 1 - p; // flip so top=high freq
-        const color = spectrumColor(specP, 0.18 + Math.sin(t * 0.02 + i * 0.3) * 0.06);
+        const color = spectrumColor(
+          specP,
+          0.18 + Math.sin(t * 0.02 + i * 0.3) * 0.06,
+        );
 
         // Vertical position: field lines crowd near the equator
         const rawY = (p - 0.5) * H * 0.85;
@@ -49,7 +52,7 @@ function ToroidalCanvas() {
 
         // Horizontal radius: widest at equator (torus shape)
         const equatorR = W * 0.44;
-        const squeeze = Math.cos(rawY / (H * 0.43) * (Math.PI / 2));
+        const squeeze = Math.cos((rawY / (H * 0.43)) * (Math.PI / 2));
         const rx = equatorR * squeeze;
         const ry = Math.max(4, rx * 0.12);
 
@@ -105,7 +108,8 @@ function ToroidalCanvas() {
         const ctrlX = cx + sideX * envW * 1.05;
 
         // Animate alpha
-        const alpha = (0.07 + Math.abs(Math.sin(t * 0.02 + f)) * 0.08) * Math.abs(sideX);
+        const alpha =
+          (0.07 + Math.abs(Math.sin(t * 0.02 + f)) * 0.08) * Math.abs(sideX);
         const hue = ((f / flowCount) * 280 + t * 0.3) % 360;
         gfx.beginPath();
         gfx.moveTo(bx, botY);
@@ -118,13 +122,13 @@ function ToroidalCanvas() {
 
     // Chakra nodes along vertical axis
     const CHAKRAS = [
-      { name: "Crown",       p: 0.02, color: "#cc88ff" },
-      { name: "Third Eye",   p: 0.14, color: "#8855ff" },
-      { name: "Throat",      p: 0.27, color: "#44aaff" },
-      { name: "Heart",       p: 0.40, color: "#00ff88" },
-      { name: "Solar Plexus",p: 0.55, color: "#ffdd00" },
-      { name: "Sacral",      p: 0.68, color: "#ff8800" },
-      { name: "Root",        p: 0.82, color: "#ff2200" },
+      { name: "Crown", p: 0.02, color: "#cc88ff" },
+      { name: "Third Eye", p: 0.14, color: "#8855ff" },
+      { name: "Throat", p: 0.27, color: "#44aaff" },
+      { name: "Heart", p: 0.4, color: "#00ff88" },
+      { name: "Solar Plexus", p: 0.55, color: "#ffdd00" },
+      { name: "Sacral", p: 0.68, color: "#ff8800" },
+      { name: "Root", p: 0.82, color: "#ff2200" },
     ];
 
     function drawChakraNodes() {
@@ -161,11 +165,11 @@ function ToroidalCanvas() {
     function drawAxis() {
       const envH = H * 0.46;
       const grad = gfx.createLinearGradient(cx, cy - envH, cx, cy + envH);
-      grad.addColorStop(0,   "rgba(200,150,255,0.8)");
-      grad.addColorStop(0.25,"rgba(60,160,255,0.6)");
+      grad.addColorStop(0, "rgba(200,150,255,0.8)");
+      grad.addColorStop(0.25, "rgba(60,160,255,0.6)");
       grad.addColorStop(0.5, "rgba(0,255,140,0.5)");
-      grad.addColorStop(0.75,"rgba(255,180,0,0.6)");
-      grad.addColorStop(1,   "rgba(255,40,0,0.7)");
+      grad.addColorStop(0.75, "rgba(255,180,0,0.6)");
+      grad.addColorStop(1, "rgba(255,40,0,0.7)");
       gfx.beginPath();
       gfx.moveTo(cx, cy - envH);
       gfx.lineTo(cx, cy + envH);
@@ -193,8 +197,18 @@ function ToroidalCanvas() {
       const envH = H * 0.45;
 
       // Top (blueshift convergence)
-      const topGrad = gfx.createRadialGradient(cx, cy - envH * 0.9, 0, cx, cy - envH * 0.9, W * 0.25);
-      topGrad.addColorStop(0, `rgba(150,100,255,${0.12 + Math.sin(t * 0.02) * 0.04})`);
+      const topGrad = gfx.createRadialGradient(
+        cx,
+        cy - envH * 0.9,
+        0,
+        cx,
+        cy - envH * 0.9,
+        W * 0.25,
+      );
+      topGrad.addColorStop(
+        0,
+        `rgba(150,100,255,${0.12 + Math.sin(t * 0.02) * 0.04})`,
+      );
       topGrad.addColorStop(1, "transparent");
       gfx.beginPath();
       gfx.arc(cx, cy - envH * 0.9, W * 0.25, 0, Math.PI * 2);
@@ -202,8 +216,18 @@ function ToroidalCanvas() {
       gfx.fill();
 
       // Bottom (redshift expansion)
-      const botGrad = gfx.createRadialGradient(cx, cy + envH * 0.9, 0, cx, cy + envH * 0.9, W * 0.25);
-      botGrad.addColorStop(0, `rgba(255,60,0,${0.10 + Math.sin(t * 0.02 + 1) * 0.04})`);
+      const botGrad = gfx.createRadialGradient(
+        cx,
+        cy + envH * 0.9,
+        0,
+        cx,
+        cy + envH * 0.9,
+        W * 0.25,
+      );
+      botGrad.addColorStop(
+        0,
+        `rgba(255,60,0,${0.1 + Math.sin(t * 0.02 + 1) * 0.04})`,
+      );
       botGrad.addColorStop(1, "transparent");
       gfx.beginPath();
       gfx.arc(cx, cy + envH * 0.9, W * 0.25, 0, Math.PI * 2);
@@ -305,16 +329,26 @@ export function Hero() {
           {/* Left annotation */}
           <div className="hidden lg:block absolute left-0 top-1/4 w-52 text-right">
             <p className="font-mono text-xs text-white/50 leading-relaxed uppercase tracking-wide">
-              Convergence Flow<br/>
-              <span className="text-white/30 normal-case tracking-normal">Into Unity · Coherence<br/>Information Integrates</span>
+              Convergence Flow
+              <br />
+              <span className="text-white/30 normal-case tracking-normal">
+                Into Unity · Coherence
+                <br />
+                Information Integrates
+              </span>
             </p>
           </div>
 
           {/* Right annotation */}
           <div className="hidden lg:block absolute right-0 top-1/4 w-52 text-left">
             <p className="font-mono text-xs text-white/50 leading-relaxed uppercase tracking-wide">
-              Expansion Flow<br/>
-              <span className="text-white/30 normal-case tracking-normal">Into Form · Diversity<br/>Information Unfolds</span>
+              Expansion Flow
+              <br />
+              <span className="text-white/30 normal-case tracking-normal">
+                Into Form · Diversity
+                <br />
+                Information Unfolds
+              </span>
             </p>
           </div>
 
@@ -335,13 +369,18 @@ export function Hero() {
         >
           <div className="flex items-center gap-3 mb-4">
             <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 shadow-[0_0_10px_rgba(255,220,50,0.8)] animate-pulse" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-yellow-400/70">Core Principle</span>
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-yellow-400/70">
+              Core Principle
+            </span>
           </div>
           <p className="text-lg md:text-2xl font-medium leading-relaxed text-white/85 font-sans">
-            "Everything visible within the operating system must first be discovered. Repositories. Capabilities. Services. Modules. Commands. Documentation. Workflows. Registries. Events. Tests."
+            "Everything visible within the operating system must first be
+            discovered. Repositories. Capabilities. Services. Modules. Commands.
+            Documentation. Workflows. Registries. Events. Tests."
           </p>
           <p className="mt-5 font-mono text-sm text-white/40 leading-relaxed italic">
-            Nothing appears because someone declared it. Everything appears because the operating system found evidence.
+            Nothing appears because someone declared it. Everything appears
+            because the operating system found evidence.
           </p>
         </motion.div>
 
@@ -351,7 +390,9 @@ export function Hero() {
           transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
           className="mt-16 flex flex-col items-center gap-2"
         >
-          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-white/25">Inspect Reality</span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-white/25">
+            Inspect Reality
+          </span>
           <div className="w-px h-12 bg-gradient-to-b from-white/20 to-transparent" />
         </motion.div>
       </div>
