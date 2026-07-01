@@ -1,4 +1,5 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
+# no-harness: phase bootstrap script; intentionally standalone migration utility
 set -euo pipefail
 
 ROOT="${AIFT_ROOT:-$HOME/AIFT}"
