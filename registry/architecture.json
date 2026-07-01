@@ -652,6 +652,8 @@
         "internal/config",
         "internal/events",
         "internal/jobs",
+        "internal/services",
+        "internal/state",
         "internal/supervisor"
       ],
       "depended_by": [
@@ -709,10 +711,12 @@
       "depends_on": [
         "internal/config",
         "internal/events",
-        "internal/state"
+        "internal/state",
+        "internal/workspace"
       ],
       "depended_by": [
         "internal/api",
+        "internal/runtime",
         "internal/supervisor"
       ],
       "has_tests": true,
@@ -742,6 +746,7 @@
       ],
       "depended_by": [
         "internal/api",
+        "internal/runtime",
         "internal/services",
         "internal/supervisor"
       ],
@@ -824,6 +829,7 @@
         "internal/repo",
         "internal/reports",
         "internal/servicecontracts",
+        "internal/services",
         "internal/sync"
       ],
       "has_tests": true,
@@ -1403,6 +1409,14 @@
     },
     {
       "from": "internal/runtime",
+      "to": "internal/services"
+    },
+    {
+      "from": "internal/runtime",
+      "to": "internal/state"
+    },
+    {
+      "from": "internal/runtime",
       "to": "internal/supervisor"
     },
     {
@@ -1456,6 +1470,10 @@
     {
       "from": "internal/services",
       "to": "internal/state"
+    },
+    {
+      "from": "internal/services",
+      "to": "internal/workspace"
     },
     {
       "from": "internal/state",

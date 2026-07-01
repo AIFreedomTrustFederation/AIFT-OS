@@ -66,3 +66,9 @@ testem.log
 tmp
 var/events/
 yarn-error.log
+*.back
+*.bak
+*.old
+*.orig
+*.rej
+.aift-backups/

@@ -6,7 +6,7 @@ Generated: 2026-07-01T13:55:57Z
 
 - **Packages**: 50
 - **Commands**: 8
-- **Dependencies**: 156 internal edges
+- **Dependencies**: 159 internal edges
 - **Tested packages**: 31 / 50
 
 ## Invariant Check Results
