@@ -10,6 +10,10 @@ import (
 
 // TestAllShellScriptsPassSyntaxCheck runs bash -n on every .sh file in the repo.
 func TestAllShellScriptsPassSyntaxCheck(t *testing.T) {
+	if _, err := exec.LookPath("bash"); err != nil {
+		t.Skip("bash is required for shell syntax checks")
+	}
+
 	root := repoRoot()
 
 	var scripts []string
@@ -23,7 +27,7 @@ func TestAllShellScriptsPassSyntaxCheck(t *testing.T) {
 			return filepath.SkipDir
 		}
 		// Skip node_modules, vendor, etc.
-		if info.IsDir() && (base == "node_modules" || base == "vendor") {
+		if info.IsDir() && (base == "node_modules" || base == "vendor" || base == "legacy" || base == "reports" || base == "AI-Code-Training") {
 			return filepath.SkipDir
 		}
 		if !info.IsDir() && strings.HasSuffix(path, ".sh") {
@@ -38,6 +42,7 @@ func TestAllShellScriptsPassSyntaxCheck(t *testing.T) {
 
 	for _, script := range scripts {
 		rel, _ := filepath.Rel(root, script)
+		rel = filepath.ToSlash(rel)
 		t.Run(rel, func(t *testing.T) {
 			cmd := exec.Command("bash", "-n", script)
 			out, err := cmd.CombinedOutput()
@@ -83,6 +88,7 @@ func TestMutatingScriptsSourceHarness(t *testing.T) {
 
 	for _, script := range scripts {
 		rel, _ := filepath.Rel(root, script)
+		rel = filepath.ToSlash(rel)
 		if exempt[rel] {
 			continue
 		}

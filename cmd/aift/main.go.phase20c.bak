@@ -27,45 +27,27 @@ type Check struct {
 }
 
 func main() {
-	code := run(os.Args[1:])
-	if code != 0 {
-		os.Exit(code)
-	}
-}
+	commands := commands()
 
-func run(args []string) int {
-	cmds := commands()
-
-	if len(args) == 0 {
-		printHelp(cmds)
-		return 0
+	if len(os.Args) < 2 {
+		printHelp(commands)
+		return
 	}
 
-	if args[0] == "--" {
-		args = args[1:]
-	}
+	name := os.Args[1]
+	args := os.Args[2:]
 
-	if len(args) == 0 {
-		printHelp(cmds)
-		return 0
-	}
-
-	name := args[0]
-	commandArgs := args[1:]
-
-	cmd, ok := resolve(cmds, name)
+	cmd, ok := resolve(commands, name)
 	if !ok {
 		fmt.Fprintf(os.Stderr, "unknown command: %s\n\n", name)
-		printHelp(cmds)
-		return 2
+		printHelp(commands)
+		os.Exit(2)
 	}
 
-	if err := cmd.Handler(commandArgs); err != nil {
+	if err := cmd.Handler(args); err != nil {
 		fmt.Fprintf(os.Stderr, "command failed: %v\n", err)
-		return 1
+		os.Exit(1)
 	}
-
-	return 0
 }
 
 func commands() []Command {
@@ -129,7 +111,7 @@ func runRegistry(args []string) error {
 
 func runStatus(args []string) error {
 	root, _ := os.Getwd()
-	checks := collectChecks()
+	checks := collectChecks(root)
 
 	return printJSON(map[string]any{
 		"status":       aggregate(checks),
@@ -143,7 +125,8 @@ func runStatus(args []string) error {
 }
 
 func runVerify(args []string) error {
-	checks := collectChecks()
+	root, _ := os.Getwd()
+	checks := collectChecks(root)
 	status := aggregate(checks)
 
 	if err := printJSON(map[string]any{
@@ -182,7 +165,7 @@ func runBootstrap(args []string) error {
 	})
 }
 
-func collectChecks() []Check {
+func collectChecks(root string) []Check {
 	checks := []Check{
 		fileCheck("git-repository", ".git", "Local Git repository exists."),
 		fileCheck("go-module", "go.mod", "Go module manifest exists."),
