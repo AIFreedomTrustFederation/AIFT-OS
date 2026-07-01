@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"runtime"
 	"sort"
 	"strings"
@@ -28,15 +27,23 @@ type Check struct {
 }
 
 func main() {
-	code := run(os.Args)
+	code := run(os.Args[1:])
 	if code != 0 {
 		os.Exit(code)
 	}
 }
 
-func run(rawArgs []string) int {
+func run(args []string) int {
 	cmds := commands()
-	args := normalizeArgs(rawArgs)
+
+	if len(args) == 0 {
+		printHelp(cmds)
+		return 0
+	}
+
+	if args[0] == "--" {
+		args = args[1:]
+	}
 
 	if len(args) == 0 {
 		printHelp(cmds)
@@ -59,27 +66,6 @@ func run(rawArgs []string) int {
 	}
 
 	return 0
-}
-
-func normalizeArgs(raw []string) []string {
-	if len(raw) == 0 {
-		return nil
-	}
-
-	args := append([]string{}, raw...)
-
-	if len(args) > 0 {
-		base := filepath.Base(args[0])
-		if base == "aift" || strings.HasSuffix(base, ".exe") || strings.Contains(args[0], "/") {
-			args = args[1:]
-		}
-	}
-
-	if len(args) > 0 && args[0] == "--" {
-		args = args[1:]
-	}
-
-	return args
 }
 
 func commands() []Command {

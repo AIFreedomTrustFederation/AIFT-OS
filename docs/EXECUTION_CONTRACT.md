@@ -77,9 +77,9 @@ Call `aift_validate` to run the standard validation suite:
 
 1. `go test ./...`
 2. `go build ./cmd/aift`
-3. `go run ./cmd/aift doctor`
-4. `go run ./cmd/aift introspect scan`
-5. `go run ./cmd/aift introspect check`
+3. `mkdir -p bin && go build -o bin/aift ./cmd/aift`
+4. `./bin/aift status`
+5. `./bin/aift verify`
 6. `bash -n` for all shell scripts
 
 ## Commit Behavior

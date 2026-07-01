@@ -262,17 +262,18 @@ GO
 gofmt -w "$CMD_DIR/main.go"
 
 echo "Building CLI..."
-go build ./cmd/aift
+mkdir -p bin
+go build -o bin/aift ./cmd/aift
 
 echo "Writing registry..."
-go run ./cmd/aift registry > "$REGISTRY"
+./bin/aift registry > "$REGISTRY"
 
 echo "Writing bootstrap discovery..."
-go run ./cmd/aift bootstrap > "$BOOTSTRAP"
+./bin/aift bootstrap > "$BOOTSTRAP"
 
 echo "Running verification..."
 VERIFY_STATUS="PASS"
-go run ./cmd/aift verify || VERIFY_STATUS="FAIL"
+./bin/aift verify || VERIFY_STATUS="FAIL"
 
 {
   echo "# Phase 20 Federation Bootstrap Report"
@@ -281,7 +282,7 @@ go run ./cmd/aift verify || VERIFY_STATUS="FAIL"
   echo ""
   echo "## Result"
   echo ""
-  echo "- go build ./cmd/aift: PASS"
+  echo "- go build -o bin/aift ./cmd/aift: PASS"
   echo "- registry generated: $REGISTRY"
   echo "- bootstrap discovery generated: $BOOTSTRAP"
   echo "- aift verify: $VERIFY_STATUS"
@@ -300,9 +301,9 @@ echo "Registry: $REGISTRY"
 echo "Bootstrap: $BOOTSTRAP"
 echo ""
 echo "Test now:"
-echo "  go run ./cmd/aift -- status"
-echo "  go run ./cmd/aift -- verify"
-echo "  go run ./cmd/aift -- bootstrap"
+echo "  ./bin/aift status"
+echo "  ./bin/aift verify"
+echo "  ./bin/aift bootstrap"
 echo ""
 echo "Commit:"
 echo "  git commit -m 'Phase 20: add truthful federation bootstrap CLI'"

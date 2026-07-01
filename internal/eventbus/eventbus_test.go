@@ -254,7 +254,8 @@ func TestSnapshot(t *testing.T) {
 func TestLogPath(t *testing.T) {
 	cfg := config.Config{OSHome: "/tmp/test-os"}
 	path := logPath(cfg)
-	if path != "/tmp/test-os/var/events/event-bus.jsonl" {
-		t.Errorf("logPath = %q", path)
+	want := filepath.Join("/tmp/test-os", "var", "events", "event-bus.jsonl")
+	if path != want {
+		t.Errorf("logPath = %q, want %q", path, want)
 	}
 }

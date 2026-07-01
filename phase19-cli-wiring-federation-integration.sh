@@ -249,11 +249,13 @@ echo "Formatting Go files..."
 gofmt -w "$CMD_DIR/main.go"
 
 echo "Generating command registry..."
-go run ./cmd/aift registry > "$REGISTRY"
+mkdir -p bin
+go build -o bin/aift ./cmd/aift
+./bin/aift registry > "$REGISTRY"
 
 echo "Running go build..."
-if go build ./cmd/aift; then
-  echo "- go build ./cmd/aift: PASS" >> "$REPORT"
+if go build -o bin/aift ./cmd/aift; then
+  echo "- go build -o bin/aift ./cmd/aift: PASS" >> "$REPORT"
 else
   echo "- go build ./cmd/aift: FAIL" >> "$REPORT"
   exit 1
@@ -270,7 +272,7 @@ fi
 echo "" >> "$REPORT"
 echo "## CLI Commands" >> "$REPORT"
 echo "" >> "$REPORT"
-go run ./cmd/aift registry >> "$REPORT"
+./bin/aift registry >> "$REPORT"
 
 git add cmd/aift/main.go "$REGISTRY" "$REPORT" phase19-cli-wiring-federation-integration.sh
 

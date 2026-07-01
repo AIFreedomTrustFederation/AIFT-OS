@@ -39,12 +39,13 @@ echo "Verifying no stale compiled verify references remain..."
 grep -Rnw "$CMD_DIR" -e '\bverify\b' || true
 
 echo "Building..."
-go build ./cmd/aift
+mkdir -p bin
+go build -o bin/aift ./cmd/aift
 
 echo "Testing CLI..."
-go run ./cmd/aift status
-go run ./cmd/aift verify
-go run ./cmd/aift registry > registry/cli/commands.json
+./bin/aift status
+./bin/aift verify
+./bin/aift registry > registry/cli/commands.json
 
 {
   echo ""
@@ -57,9 +58,9 @@ go run ./cmd/aift registry > registry/cli/commands.json
   echo ""
   echo "## Result"
   echo ""
-  echo "- go build ./cmd/aift: PASS"
-  echo "- go run ./cmd/aift status: PASS"
-  echo "- go run ./cmd/aift verify: PASS"
+  echo "- go build -o bin/aift ./cmd/aift: PASS"
+  echo "- ./bin/aift status: PASS"
+  echo "- ./bin/aift verify: PASS"
 } >> "$REPORT"
 
 git add cmd/aift legacy/cmd-aift-phase19c registry/cli/commands.json "$REPORT" phase19c-quarantine-stale-cli.sh || true

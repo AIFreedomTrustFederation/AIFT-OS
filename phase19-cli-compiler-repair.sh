@@ -265,13 +265,14 @@ if grep -nE 'Handler:[[:space:]]*verify|[^A-Za-z0-9_]verify\(' "$CMD_DIR/main.go
 fi
 
 echo "Building CLI..."
-go build ./cmd/aift
+mkdir -p bin
+go build -o bin/aift ./cmd/aift
 
 echo "Generating registry..."
-go run ./cmd/aift registry > "$REGISTRY"
+./bin/aift registry > "$REGISTRY"
 
 echo "Running CLI verification..."
-go run ./cmd/aift verify
+./bin/aift verify
 
 echo "Running full tests..."
 if go test ./...; then
@@ -284,9 +285,9 @@ fi
   echo ""
   echo "## Results"
   echo ""
-  echo "- go build ./cmd/aift: PASS"
-  echo "- go run ./cmd/aift registry: PASS"
-  echo "- go run ./cmd/aift verify: PASS"
+  echo "- go build -o bin/aift ./cmd/aift: PASS"
+  echo "- ./bin/aift registry: PASS"
+  echo "- ./bin/aift verify: PASS"
   echo "- go test ./...: $TEST_STATUS"
   echo ""
   echo "## Notes"
@@ -306,9 +307,9 @@ echo "Report: $REPORT"
 echo "Registry: $REGISTRY"
 echo ""
 echo "Now test:"
-echo "  go run ./cmd/aift status"
-echo "  go run ./cmd/aift verify"
-echo "  go run ./cmd/aift registry"
+echo "  ./bin/aift status"
+echo "  ./bin/aift verify"
+echo "  ./bin/aift registry"
 echo ""
 echo "Then commit:"
 echo "  git commit -m 'Phase 19B: repair and stabilize AIFT CLI compiler shell'"
