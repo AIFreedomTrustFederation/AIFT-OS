@@ -10,8 +10,18 @@ const LAYERS = [
     spectrum: "#9922ff",
     spectrumRgb: "153,34,255",
     phase: "Violet · Convergence · Highest Integration",
-    quote: "The frontier of the known, reached only by those who first understood the foundation.",
-    items: ["Scientific research", "Distributed computation", "Robotics", "Autonomous laboratories", "Advanced visualization", "Digital twins", "Space infrastructure", "Simulation environments"],
+    quote:
+      "The frontier of the known, reached only by those who first understood the foundation.",
+    items: [
+      "Scientific research",
+      "Distributed computation",
+      "Robotics",
+      "Autonomous laboratories",
+      "Advanced visualization",
+      "Digital twins",
+      "Space infrastructure",
+      "Simulation environments",
+    ],
   },
   {
     id: "VI",
@@ -20,8 +30,18 @@ const LAYERS = [
     spectrum: "#3355ff",
     spectrumRgb: "51,85,255",
     phase: "Blue · Truth · Higher Mind",
-    quote: "Software as civilization. Applications that serve sovereign beings.",
-    items: ["DynastyLink", "AIFT Forge", "Capital City Provisions", "Publishing systems", "Websites", "Mobile apps", "Community portals", "Business platforms"],
+    quote:
+      "Software as civilization. Applications that serve sovereign beings.",
+    items: [
+      "DynastyLink",
+      "AIFT Forge",
+      "Capital City Provisions",
+      "Publishing systems",
+      "Websites",
+      "Mobile apps",
+      "Community portals",
+      "Business platforms",
+    ],
   },
   {
     id: "V",
@@ -31,7 +51,16 @@ const LAYERS = [
     spectrumRgb: "0,204,255",
     phase: "Cyan · Harmony · Communication",
     quote: "Wealth measured in truth, contribution, and verified capability.",
-    items: ["Aether Coin", "Token systems", "Trust accounting", "Marketplace", "Cooperative exchanges", "Asset registries", "Treasury systems", "Economic governance"],
+    items: [
+      "Aether Coin",
+      "Token systems",
+      "Trust accounting",
+      "Marketplace",
+      "Cooperative exchanges",
+      "Asset registries",
+      "Treasury systems",
+      "Economic governance",
+    ],
   },
   {
     id: "IV",
@@ -41,7 +70,16 @@ const LAYERS = [
     spectrumRgb: "0,221,85",
     phase: "Green · Equilibrium · The Observer · Present Moment",
     quote: "No centralized authority. Every participant remains sovereign.",
-    items: ["Trust relationships", "Federation registries", "Service contracts", "Capability publication", "Synchronization", "Discovery", "Permissions", "Shared governance"],
+    items: [
+      "Trust relationships",
+      "Federation registries",
+      "Service contracts",
+      "Capability publication",
+      "Synchronization",
+      "Discovery",
+      "Permissions",
+      "Shared governance",
+    ],
   },
   {
     id: "III",
@@ -51,7 +89,16 @@ const LAYERS = [
     spectrumRgb: "255,221,0",
     phase: "Yellow · Intellect · Discernment",
     quote: "AI never invents reality. It assists discovery.",
-    items: ["Local LLM providers", "Prompt registries", "Agent orchestration", "Planning engines", "Code analysis", "Architecture reasoning", "Diagnostics", "Knowledge synthesis"],
+    items: [
+      "Local LLM providers",
+      "Prompt registries",
+      "Agent orchestration",
+      "Planning engines",
+      "Code analysis",
+      "Architecture reasoning",
+      "Diagnostics",
+      "Knowledge synthesis",
+    ],
   },
   {
     id: "II",
@@ -60,8 +107,19 @@ const LAYERS = [
     spectrum: "#ff8800",
     spectrumRgb: "255,136,0",
     phase: "Orange · Creation · Memory",
-    quote: "Documentation is not overhead. Documentation is how the system remembers.",
-    items: ["BookSmith AI", "Documentation generation", "Manuals", "API references", "Knowledge graphs", "Research", "Educational content", "Publications", "Evidence registries"],
+    quote:
+      "Documentation is not overhead. Documentation is how the system remembers.",
+    items: [
+      "BookSmith AI",
+      "Documentation generation",
+      "Manuals",
+      "API references",
+      "Knowledge graphs",
+      "Research",
+      "Educational content",
+      "Publications",
+      "Evidence registries",
+    ],
   },
   {
     id: "I",
@@ -71,7 +129,18 @@ const LAYERS = [
     spectrumRgb: "255,34,0",
     phase: "Red · Foundation · Survival · Root",
     quote: "Nothing above can stand without what is verified below.",
-    items: ["Identity", "Local storage", "Security", "Trust", "Discovery", "Registry", "Configuration", "Diagnostics", "Runtime", "Verification"],
+    items: [
+      "Identity",
+      "Local storage",
+      "Security",
+      "Trust",
+      "Discovery",
+      "Registry",
+      "Configuration",
+      "Diagnostics",
+      "Runtime",
+      "Verification",
+    ],
   },
 ];
 
@@ -103,7 +172,9 @@ export function LivingLayers() {
             The Seven Living Layers
           </h2>
           <p className="font-mono text-sm text-white/40 max-w-2xl mx-auto">
-            Each layer is a stable resonance pattern in the field. The layers do not exist in linear time — they are simultaneous, self-reinforcing, and holographic.
+            Each layer is a stable resonance pattern in the field. The layers do
+            not exist in linear time — they are simultaneous, self-reinforcing,
+            and holographic.
           </p>
         </motion.div>
 
@@ -115,11 +186,17 @@ export function LivingLayers() {
             <div
               key={l.id}
               className="flex items-center gap-1.5 px-2 py-1 rounded font-mono text-[9px] uppercase tracking-wider"
-              style={{ background: `rgba(${l.spectrumRgb},0.06)`, color: l.spectrum }}
+              style={{
+                background: `rgba(${l.spectrumRgb},0.06)`,
+                color: l.spectrum,
+              }}
             >
               <span
                 className="w-2 h-2 rounded-full shrink-0"
-                style={{ background: l.spectrum, boxShadow: `0 0 6px ${l.spectrum}` }}
+                style={{
+                  background: l.spectrum,
+                  boxShadow: `0 0 6px ${l.spectrum}`,
+                }}
               />
               {l.id} {l.name}
             </div>
@@ -132,7 +209,8 @@ export function LivingLayers() {
           <div
             className="absolute left-6 top-6 bottom-6 w-px"
             style={{
-              background: "linear-gradient(to bottom, #9922ff, #3355ff, #00ccff, #00dd55, #ffdd00, #ff8800, #ff2200)",
+              background:
+                "linear-gradient(to bottom, #9922ff, #3355ff, #00ccff, #00dd55, #ffdd00, #ff8800, #ff2200)",
               opacity: 0.3,
             }}
           />
@@ -154,7 +232,9 @@ export function LivingLayers() {
                   background: isHovered
                     ? `rgba(${layer.spectrumRgb},0.05)`
                     : "rgba(255,255,255,0.01)",
-                  boxShadow: isHovered ? `0 0 40px rgba(${layer.spectrumRgb},0.12)` : "none",
+                  boxShadow: isHovered
+                    ? `0 0 40px rgba(${layer.spectrumRgb},0.12)`
+                    : "none",
                 }}
               >
                 {/* Spectrum left bar */}
@@ -163,7 +243,9 @@ export function LivingLayers() {
                   style={{
                     background: layer.spectrum,
                     opacity: isHovered ? 0.8 : 0.2,
-                    boxShadow: isHovered ? `0 0 12px ${layer.spectrum}` : "none",
+                    boxShadow: isHovered
+                      ? `0 0 12px ${layer.spectrum}`
+                      : "none",
                   }}
                 />
 
@@ -173,9 +255,15 @@ export function LivingLayers() {
                     className="shrink-0 w-14 h-14 rounded-full flex items-center justify-center font-cinzel font-bold text-lg transition-all duration-500"
                     style={{
                       border: `1px solid ${layer.spectrum}${isHovered ? "88" : "33"}`,
-                      color: isHovered ? layer.spectrum : `rgba(${layer.spectrumRgb},0.4)`,
-                      background: isHovered ? `rgba(${layer.spectrumRgb},0.08)` : "transparent",
-                      boxShadow: isHovered ? `0 0 20px rgba(${layer.spectrumRgb},0.2), inset 0 0 20px rgba(${layer.spectrumRgb},0.05)` : "none",
+                      color: isHovered
+                        ? layer.spectrum
+                        : `rgba(${layer.spectrumRgb},0.4)`,
+                      background: isHovered
+                        ? `rgba(${layer.spectrumRgb},0.08)`
+                        : "transparent",
+                      boxShadow: isHovered
+                        ? `0 0 20px rgba(${layer.spectrumRgb},0.2), inset 0 0 20px rgba(${layer.spectrumRgb},0.05)`
+                        : "none",
                     }}
                   >
                     {layer.id}
@@ -186,13 +274,19 @@ export function LivingLayers() {
                     <div className="flex flex-wrap items-baseline gap-3 mb-1">
                       <h3
                         className="font-cinzel text-xl font-bold transition-colors duration-300"
-                        style={{ color: isHovered ? layer.spectrum : "rgba(255,255,255,0.75)" }}
+                        style={{
+                          color: isHovered
+                            ? layer.spectrum
+                            : "rgba(255,255,255,0.75)",
+                        }}
                       >
                         {layer.name}
                       </h3>
                       <span
                         className="font-mono text-[9px] uppercase tracking-widest"
-                        style={{ color: `rgba(${layer.spectrumRgb},${isHovered ? 0.6 : 0.25})` }}
+                        style={{
+                          color: `rgba(${layer.spectrumRgb},${isHovered ? 0.6 : 0.25})`,
+                        }}
                       >
                         {layer.phase}
                       </span>
@@ -201,14 +295,21 @@ export function LivingLayers() {
                     {/* Quote */}
                     <p
                       className="font-mono text-xs italic mb-3 transition-colors duration-300"
-                      style={{ color: isHovered ? `rgba(${layer.spectrumRgb},0.7)` : "rgba(255,255,255,0.2)" }}
+                      style={{
+                        color: isHovered
+                          ? `rgba(${layer.spectrumRgb},0.7)`
+                          : "rgba(255,255,255,0.2)",
+                      }}
                     >
                       "{layer.quote}"
                     </p>
 
                     {/* Items — expanded on hover */}
                     <motion.div
-                      animate={{ height: isHovered ? "auto" : 0, opacity: isHovered ? 1 : 0 }}
+                      animate={{
+                        height: isHovered ? "auto" : 0,
+                        opacity: isHovered ? 1 : 0,
+                      }}
                       transition={{ duration: 0.35 }}
                       className="overflow-hidden"
                     >
@@ -238,7 +339,8 @@ export function LivingLayers() {
         {/* Bottom tagline */}
         <div className="mt-10 text-center">
           <p className="font-mono text-[10px] uppercase tracking-widest text-white/20">
-            Expansion (Redshift) ←— Foundation to Exploration —→ Convergence (Blueshift)
+            Expansion (Redshift) ←— Foundation to Exploration —→ Convergence
+            (Blueshift)
           </p>
         </div>
       </div>

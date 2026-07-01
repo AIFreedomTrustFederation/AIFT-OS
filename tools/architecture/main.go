@@ -39,6 +39,8 @@ type Package struct {
 	DependedBy []string `json:"depended_by"`
 	HasTests   bool     `json:"has_tests"`
 	Category   string   `json:"category"`
+	RootStatus string   `json:"root_status,omitempty"`
+	RootReason string   `json:"root_reason,omitempty"`
 }
 
 type Command struct {
@@ -182,6 +184,7 @@ func gatherPackageDeps(root string) map[string][]string {
 func buildPackages(root string, pkgDeps map[string][]string) []Package {
 	// Build reverse dependency map
 	revDeps := map[string][]string{}
+	roots := loadArchitectureRoots(root)
 	for pkg, deps := range pkgDeps {
 		for _, dep := range deps {
 			revDeps[dep] = append(revDeps[dep], pkg)
@@ -205,6 +208,7 @@ func buildPackages(root string, pkgDeps map[string][]string) []Package {
 			}
 		}
 
+		rootInfo := roots[strings.TrimPrefix(pkg, "internal/")]
 		packages = append(packages, Package{
 			Name:       strings.TrimPrefix(pkg, "internal/"),
 			Path:       pkg,
@@ -212,12 +216,49 @@ func buildPackages(root string, pkgDeps map[string][]string) []Package {
 			DependedBy: revDeps[pkg],
 			HasTests:   hasTests,
 			Category:   categorize(pkg),
+			RootStatus: rootInfo.Status,
+			RootReason: rootInfo.Reason,
 		})
 	}
 	sort.Slice(packages, func(i, j int) bool {
 		return packages[i].Name < packages[j].Name
 	})
 	return packages
+}
+
+type rootPackage struct {
+	Status string
+	Reason string
+}
+
+func loadArchitectureRoots(root string) map[string]rootPackage {
+	path := filepath.Join(root, "architecture-roots.txt")
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return map[string]rootPackage{}
+	}
+
+	roots := map[string]rootPackage{}
+	for _, line := range strings.Split(string(data), "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+		parts := strings.SplitN(line, "|", 3)
+		if len(parts) < 2 {
+			continue
+		}
+		name := strings.TrimSpace(parts[0])
+		status := strings.TrimSpace(parts[1])
+		reason := ""
+		if len(parts) == 3 {
+			reason = strings.TrimSpace(parts[2])
+		}
+		if name != "" && status != "" {
+			roots[name] = rootPackage{Status: status, Reason: reason}
+		}
+	}
+	return roots
 }
 
 func categorize(pkg string) string {
@@ -276,57 +317,17 @@ func buildCommands(root string) []Command {
 	}
 	src := string(data)
 
-	// Extract case labels from main switch
-	caseRe := regexp.MustCompile(`case "([a-z][-a-z]*)"`)
-	caseMatches := caseRe.FindAllStringSubmatch(src, -1)
-	handlers := map[string]bool{}
-	for _, m := range caseMatches {
-		handlers[m[1]] = true
-	}
-
-	// Extract help entries
-	helpRe := regexp.MustCompile(`fmt\.Println\("  ([a-z][-a-z]*)`)
-	helpMatches := helpRe.FindAllStringSubmatch(src, -1)
-	helpEntries := map[string]bool{}
-	for _, m := range helpMatches {
-		helpEntries[m[1]] = true
-	}
-
-	// Planned commands from legacy stubs
-	stubPath := filepath.Join(root, "cmd", "aift", "legacy_command_stubs.go")
-	planned := map[string]bool{}
-	if stubData, err := os.ReadFile(stubPath); err == nil {
-		stubRe := regexp.MustCompile(`plannedCommand\("([a-z][-a-z]*)"`)
-		for _, m := range stubRe.FindAllStringSubmatch(string(stubData), -1) {
-			planned[m[1]] = true
-		}
-	}
-
-	// Merge all known commands
-	all := map[string]bool{}
-	for k := range handlers {
-		all[k] = true
-	}
-	for k := range helpEntries {
-		all[k] = true
-	}
-
-	meta := map[string]bool{"help": true, "-h": true, "--help": true}
-
 	var commands []Command
-	for name := range all {
-		if meta[name] {
-			continue
-		}
-		status := "active"
-		if planned[name] {
-			status = "planned"
-		}
-
+	commandRe := regexp.MustCompile(`\{\s*"([a-z][-a-z]*)"\s*,\s*"[^"]*"\s*,\s*"([^"]+)"\s*,\s*(?:\[\]string\{[^}]*\}|nil)\s*,\s*"([a-z]+)"\s*,\s*([^}]+)\}`)
+	for _, m := range commandRe.FindAllStringSubmatch(src, -1) {
+		name := m[1]
+		usage := strings.TrimSpace(m[2])
+		status := strings.TrimSpace(m[3])
+		handler := strings.TrimSpace(m[4])
 		commands = append(commands, Command{
 			Name:       name,
-			HasHandler: handlers[name],
-			HasHelp:    helpEntries[name],
+			HasHandler: handler != "",
+			HasHelp:    usage != "",
 			Status:     status,
 		})
 	}
@@ -376,7 +377,7 @@ func checkCommandsHaveHandlers(arch Architecture) InvariantResult {
 	var missing []string
 	for _, cmd := range arch.Commands {
 		if !cmd.HasHandler && cmd.HasHelp {
-			missing = append(missing, cmd.Name+" (in help but no case in switch)")
+			missing = append(missing, cmd.Name+" (in command registry but no handler)")
 		}
 	}
 	return InvariantResult{
@@ -404,9 +405,8 @@ func checkNoDuplicateCommands(root string) InvariantResult {
 	mainPath := filepath.Join(root, "cmd", "aift", "main.go")
 	data, _ := os.ReadFile(mainPath)
 
-	// Count help entries
-	helpRe := regexp.MustCompile(`fmt\.Println\("  ([a-z][-a-z]*)`)
-	matches := helpRe.FindAllStringSubmatch(string(data), -1)
+	commandRe := regexp.MustCompile(`\{\s*"([a-z][-a-z]*)"\s*,\s*"[^"]*"\s*,`)
+	matches := commandRe.FindAllStringSubmatch(string(data), -1)
 	counts := map[string]int{}
 	for _, m := range matches {
 		counts[m[1]]++
@@ -415,7 +415,7 @@ func checkNoDuplicateCommands(root string) InvariantResult {
 	var dups []string
 	for name, count := range counts {
 		if count > 1 {
-			dups = append(dups, fmt.Sprintf("%s appears %d times in help", name, count))
+			dups = append(dups, fmt.Sprintf("%s appears %d times in command registry", name, count))
 		}
 	}
 	sort.Strings(dups)
@@ -427,40 +427,20 @@ func checkNoDuplicateCommands(root string) InvariantResult {
 }
 
 func checkNoOrphanedPackages(arch Architecture) InvariantResult {
-	var orphans []string
+	var undeclared []string
 	for _, pkg := range arch.Packages {
 		if len(pkg.DependedBy) == 0 && pkg.Name != "version" {
-			// Check if imported by cmd/aift
-			orphans = append(orphans, pkg.Name+" (not imported by any other package)")
-		}
-	}
-
-	// Filter: packages imported by cmd/aift are not orphans
-	var filtered []string
-	for _, o := range orphans {
-		name := strings.Split(o, " ")[0]
-		isUsed := false
-		for _, pkg := range arch.Packages {
-			if pkg.Name == name {
-				// Check if cmd/aift depends on it
-				for _, dep := range pkg.DependedBy {
-					if strings.HasPrefix(dep, "cmd/") {
-						isUsed = true
-						break
-					}
-				}
-				break
+			if pkg.RootStatus == "" {
+				undeclared = append(undeclared, pkg.Name+" (top-level package is neither imported nor declared in architecture-roots.txt)")
 			}
 		}
-		if !isUsed {
-			filtered = append(filtered, o)
-		}
 	}
+	sort.Strings(undeclared)
 
 	return InvariantResult{
 		Name:    "no-orphaned-packages",
-		Passed:  len(filtered) == 0,
-		Details: filtered,
+		Passed:  len(undeclared) == 0,
+		Details: undeclared,
 	}
 }
 
