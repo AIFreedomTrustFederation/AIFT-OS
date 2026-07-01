@@ -49,6 +49,11 @@ func TestRepositoryHasRuntimeArchitectureDocs(t *testing.T) {
 	root := repoRoot(t)
 
 	candidates := []string{
+		"docs/ARCHITECTURE.md",
+		"docs/KERNEL-RUNTIME.md",
+		"docs/LAUNCHER-ARCHITECTURE.md",
+		"docs/PHASE-7-RUNTIME-API.md",
+		"docs/RUNTIME-READINESS.md",
 		"docs/architecture/PHASE2-CENTRAL-FEDERATION-RUNTIME.md",
 		"docs/architecture/PHASE3-RECURSIVE-DISCOVERY-ENGINE.md",
 		"docs/architecture/PHASE4-FEDERATION-RUNTIME-GRAPH.md",
