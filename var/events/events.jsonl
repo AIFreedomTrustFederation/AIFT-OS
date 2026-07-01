@@ -174,12 +174,84 @@
 {"time":"2026-06-30T04:38:05Z","type":"services.scan","source":"servicecontracts","message":"service contracts scanned","data":{"services":"21"}}
 {"time":"2026-06-30T04:38:05Z","type":"planner.build","source":"planner","message":"execution plan built","data":{"blocked":"21","ready":"0","repos":"21"}}
 {"time":"2026-06-30T04:38:05Z","type":"verify.complete","source":"verify","message":"federation verified"}
-{"time":"2026-06-30T11:14:38Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
-{"time":"2026-06-30T11:14:39Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
-{"time":"2026-06-30T11:14:40Z","type":"intelligence.scan","source":"intelligence","message":"real federation intelligence scan complete","data":{"repos":"21","score":"52"}}
-{"time":"2026-06-30T11:14:40Z","type":"manual.scan","source":"manual","message":"federation manual scan complete","data":{"manuals":"21"}}
-{"time":"2026-06-30T11:14:40Z","type":"graph.build","source":"graph","message":"federation graph built","data":{"edges":"1078","nodes":"824"}}
-{"time":"2026-06-30T11:14:40Z","type":"eventmesh.scan","source":"eventmesh","message":"event mesh scanned","data":{"subscribers":"0","topics":"3"}}
-{"time":"2026-06-30T11:14:40Z","type":"services.scan","source":"servicecontracts","message":"service contracts scanned","data":{"services":"21"}}
-{"time":"2026-06-30T11:14:40Z","type":"planner.build","source":"planner","message":"execution plan built","data":{"blocked":"21","ready":"0","repos":"21"}}
-{"time":"2026-06-30T11:14:40Z","type":"verify.complete","source":"verify","message":"federation verified"}
+{"time":"2026-06-30T14:37:56Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-30T14:37:58Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-30T14:38:00Z","type":"intelligence.scan","source":"intelligence","message":"real federation intelligence scan complete","data":{"repos":"21","score":"52"}}
+{"time":"2026-06-30T14:38:00Z","type":"manual.scan","source":"manual","message":"federation manual scan complete","data":{"manuals":"21"}}
+{"time":"2026-06-30T14:38:00Z","type":"graph.build","source":"graph","message":"federation graph built","data":{"edges":"1078","nodes":"824"}}
+{"time":"2026-06-30T14:38:00Z","type":"eventmesh.scan","source":"eventmesh","message":"event mesh scanned","data":{"subscribers":"0","topics":"3"}}
+{"time":"2026-06-30T14:38:00Z","type":"services.scan","source":"servicecontracts","message":"service contracts scanned","data":{"services":"21"}}
+{"time":"2026-06-30T14:38:00Z","type":"planner.build","source":"planner","message":"execution plan built","data":{"blocked":"21","ready":"0","repos":"21"}}
+{"time":"2026-06-30T14:38:00Z","type":"verify.complete","source":"verify","message":"federation verified"}
+{"time":"2026-06-30T14:43:19Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-30T14:43:20Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-30T14:43:21Z","type":"intelligence.scan","source":"intelligence","message":"real federation intelligence scan complete","data":{"repos":"21","score":"52"}}
+{"time":"2026-06-30T14:43:22Z","type":"manual.scan","source":"manual","message":"federation manual scan complete","data":{"manuals":"21"}}
+{"time":"2026-06-30T14:43:22Z","type":"graph.build","source":"graph","message":"federation graph built","data":{"edges":"1078","nodes":"824"}}
+{"time":"2026-06-30T14:43:22Z","type":"eventmesh.scan","source":"eventmesh","message":"event mesh scanned","data":{"subscribers":"0","topics":"3"}}
+{"time":"2026-06-30T14:43:22Z","type":"services.scan","source":"servicecontracts","message":"service contracts scanned","data":{"services":"21"}}
+{"time":"2026-06-30T14:43:22Z","type":"planner.build","source":"planner","message":"execution plan built","data":{"blocked":"21","ready":"0","repos":"21"}}
+{"time":"2026-06-30T14:43:22Z","type":"verify.complete","source":"verify","message":"federation verified"}
+{"time":"2026-06-30T14:43:36Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-30T14:43:37Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-30T14:43:38Z","type":"intelligence.scan","source":"intelligence","message":"real federation intelligence scan complete","data":{"repos":"21","score":"52"}}
+{"time":"2026-06-30T14:43:38Z","type":"manual.scan","source":"manual","message":"federation manual scan complete","data":{"manuals":"21"}}
+{"time":"2026-06-30T14:43:38Z","type":"graph.build","source":"graph","message":"federation graph built","data":{"edges":"1078","nodes":"824"}}
+{"time":"2026-06-30T14:43:38Z","type":"eventmesh.scan","source":"eventmesh","message":"event mesh scanned","data":{"subscribers":"0","topics":"3"}}
+{"time":"2026-06-30T14:43:38Z","type":"services.scan","source":"servicecontracts","message":"service contracts scanned","data":{"services":"21"}}
+{"time":"2026-06-30T14:43:38Z","type":"planner.build","source":"planner","message":"execution plan built","data":{"blocked":"21","ready":"0","repos":"21"}}
+{"time":"2026-06-30T14:43:38Z","type":"verify.complete","source":"verify","message":"federation verified"}
+{"time":"2026-06-30T14:50:15Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-30T14:50:15Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-30T14:50:17Z","type":"intelligence.scan","source":"intelligence","message":"real federation intelligence scan complete","data":{"repos":"21","score":"52"}}
+{"time":"2026-06-30T14:50:17Z","type":"manual.scan","source":"manual","message":"federation manual scan complete","data":{"manuals":"21"}}
+{"time":"2026-06-30T14:50:17Z","type":"graph.build","source":"graph","message":"federation graph built","data":{"edges":"1078","nodes":"824"}}
+{"time":"2026-06-30T14:50:17Z","type":"eventmesh.scan","source":"eventmesh","message":"event mesh scanned","data":{"subscribers":"0","topics":"3"}}
+{"time":"2026-06-30T14:50:17Z","type":"services.scan","source":"servicecontracts","message":"service contracts scanned","data":{"services":"21"}}
+{"time":"2026-06-30T14:50:17Z","type":"planner.build","source":"planner","message":"execution plan built","data":{"blocked":"21","ready":"0","repos":"21"}}
+{"time":"2026-06-30T14:50:17Z","type":"verify.complete","source":"verify","message":"federation verified"}
+{"time":"2026-06-30T14:50:31Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-30T14:50:32Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-30T14:50:33Z","type":"intelligence.scan","source":"intelligence","message":"real federation intelligence scan complete","data":{"repos":"21","score":"52"}}
+{"time":"2026-06-30T14:50:33Z","type":"manual.scan","source":"manual","message":"federation manual scan complete","data":{"manuals":"21"}}
+{"time":"2026-06-30T14:50:33Z","type":"graph.build","source":"graph","message":"federation graph built","data":{"edges":"1078","nodes":"824"}}
+{"time":"2026-06-30T14:50:34Z","type":"eventmesh.scan","source":"eventmesh","message":"event mesh scanned","data":{"subscribers":"0","topics":"3"}}
+{"time":"2026-06-30T14:50:34Z","type":"services.scan","source":"servicecontracts","message":"service contracts scanned","data":{"services":"21"}}
+{"time":"2026-06-30T14:50:34Z","type":"planner.build","source":"planner","message":"execution plan built","data":{"blocked":"21","ready":"0","repos":"21"}}
+{"time":"2026-06-30T14:50:34Z","type":"verify.complete","source":"verify","message":"federation verified"}
+{"time":"2026-06-30T14:59:46Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-30T14:59:47Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-30T14:59:48Z","type":"intelligence.scan","source":"intelligence","message":"real federation intelligence scan complete","data":{"repos":"21","score":"52"}}
+{"time":"2026-06-30T14:59:48Z","type":"manual.scan","source":"manual","message":"federation manual scan complete","data":{"manuals":"21"}}
+{"time":"2026-06-30T14:59:49Z","type":"graph.build","source":"graph","message":"federation graph built","data":{"edges":"1078","nodes":"824"}}
+{"time":"2026-06-30T14:59:49Z","type":"eventmesh.scan","source":"eventmesh","message":"event mesh scanned","data":{"subscribers":"0","topics":"3"}}
+{"time":"2026-06-30T14:59:49Z","type":"services.scan","source":"servicecontracts","message":"service contracts scanned","data":{"services":"21"}}
+{"time":"2026-06-30T14:59:49Z","type":"planner.build","source":"planner","message":"execution plan built","data":{"blocked":"21","ready":"0","repos":"21"}}
+{"time":"2026-06-30T14:59:49Z","type":"verify.complete","source":"verify","message":"federation verified"}
+{"time":"2026-06-30T15:00:08Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-30T15:00:09Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-30T15:00:11Z","type":"intelligence.scan","source":"intelligence","message":"real federation intelligence scan complete","data":{"repos":"21","score":"52"}}
+{"time":"2026-06-30T15:00:11Z","type":"manual.scan","source":"manual","message":"federation manual scan complete","data":{"manuals":"21"}}
+{"time":"2026-06-30T15:00:11Z","type":"graph.build","source":"graph","message":"federation graph built","data":{"edges":"1078","nodes":"824"}}
+{"time":"2026-06-30T15:00:11Z","type":"eventmesh.scan","source":"eventmesh","message":"event mesh scanned","data":{"subscribers":"0","topics":"3"}}
+{"time":"2026-06-30T15:00:11Z","type":"services.scan","source":"servicecontracts","message":"service contracts scanned","data":{"services":"21"}}
+{"time":"2026-06-30T15:00:11Z","type":"planner.build","source":"planner","message":"execution plan built","data":{"blocked":"21","ready":"0","repos":"21"}}
+{"time":"2026-06-30T15:00:11Z","type":"verify.complete","source":"verify","message":"federation verified"}
+{"time":"2026-06-30T23:37:12Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-30T23:37:13Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-30T23:37:15Z","type":"intelligence.scan","source":"intelligence","message":"real federation intelligence scan complete","data":{"repos":"21","score":"52"}}
+{"time":"2026-06-30T23:37:15Z","type":"manual.scan","source":"manual","message":"federation manual scan complete","data":{"manuals":"21"}}
+{"time":"2026-06-30T23:37:15Z","type":"graph.build","source":"graph","message":"federation graph built","data":{"edges":"1078","nodes":"824"}}
+{"time":"2026-06-30T23:37:15Z","type":"eventmesh.scan","source":"eventmesh","message":"event mesh scanned","data":{"subscribers":"0","topics":"3"}}
+{"time":"2026-06-30T23:37:15Z","type":"services.scan","source":"servicecontracts","message":"service contracts scanned","data":{"services":"21"}}
+{"time":"2026-06-30T23:37:15Z","type":"planner.build","source":"planner","message":"execution plan built","data":{"blocked":"21","ready":"0","repos":"21"}}
+{"time":"2026-06-30T23:37:15Z","type":"verify.complete","source":"verify","message":"federation verified"}
+{"time":"2026-06-30T23:37:27Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-30T23:37:28Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}
+{"time":"2026-06-30T23:37:28Z","type":"intelligence.scan","source":"intelligence","message":"real federation intelligence scan complete","data":{"repos":"21","score":"52"}}
+{"time":"2026-06-30T23:37:28Z","type":"manual.scan","source":"manual","message":"federation manual scan complete","data":{"manuals":"21"}}
+{"time":"2026-06-30T23:37:28Z","type":"graph.build","source":"graph","message":"federation graph built","data":{"edges":"1078","nodes":"824"}}
+{"time":"2026-06-30T23:37:28Z","type":"eventmesh.scan","source":"eventmesh","message":"event mesh scanned","data":{"subscribers":"0","topics":"3"}}
+{"time":"2026-06-30T23:37:28Z","type":"services.scan","source":"servicecontracts","message":"service contracts scanned","data":{"services":"21"}}
+{"time":"2026-06-30T23:37:29Z","type":"planner.build","source":"planner","message":"execution plan built","data":{"blocked":"21","ready":"0","repos":"21"}}
+{"time":"2026-06-30T23:37:29Z","type":"verify.complete","source":"verify","message":"federation verified"}

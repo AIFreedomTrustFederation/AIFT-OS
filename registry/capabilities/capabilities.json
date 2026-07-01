@@ -1,0 +1,117 @@
+{
+  "name": "AIFT Capability Discovery",
+  "time": "2026-06-30T23:36:40Z",
+  "root": "/data/data/com.termux/files/home/AIFT",
+  "os_home": "/data/data/com.termux/files/home/AIFT/AIFT-OS",
+  "verified": true,
+  "capabilities": [
+    {
+      "name": "go",
+      "command": "go",
+      "installed": true,
+      "path": "/data/data/com.termux/files/usr/bin/go"
+    },
+    {
+      "name": "git",
+      "command": "git",
+      "installed": true,
+      "path": "/data/data/com.termux/files/usr/bin/git"
+    },
+    {
+      "name": "node",
+      "command": "node",
+      "installed": true,
+      "path": "/data/data/com.termux/files/usr/bin/node"
+    },
+    {
+      "name": "npm",
+      "command": "npm",
+      "installed": true,
+      "path": "/data/data/com.termux/files/usr/bin/npm"
+    },
+    {
+      "name": "pnpm",
+      "command": "pnpm",
+      "installed": true,
+      "path": "/data/data/com.termux/files/usr/bin/pnpm"
+    },
+    {
+      "name": "bun",
+      "command": "bun",
+      "installed": false,
+      "path": ""
+    },
+    {
+      "name": "python",
+      "command": "python",
+      "installed": true,
+      "path": "/data/data/com.termux/files/usr/bin/python"
+    },
+    {
+      "name": "python3",
+      "command": "python3",
+      "installed": true,
+      "path": "/data/data/com.termux/files/usr/bin/python3"
+    },
+    {
+      "name": "pip",
+      "command": "pip",
+      "installed": true,
+      "path": "/data/data/com.termux/files/usr/bin/pip"
+    },
+    {
+      "name": "pip3",
+      "command": "pip3",
+      "installed": true,
+      "path": "/data/data/com.termux/files/usr/bin/pip3"
+    },
+    {
+      "name": "cargo",
+      "command": "cargo",
+      "installed": false,
+      "path": ""
+    },
+    {
+      "name": "rustc",
+      "command": "rustc",
+      "installed": false,
+      "path": ""
+    },
+    {
+      "name": "make",
+      "command": "make",
+      "installed": true,
+      "path": "/data/data/com.termux/files/usr/bin/make"
+    },
+    {
+      "name": "docker",
+      "command": "docker",
+      "installed": false,
+      "path": ""
+    },
+    {
+      "name": "java",
+      "command": "java",
+      "installed": true,
+      "path": "/data/data/com.termux/files/usr/bin/java"
+    },
+    {
+      "name": "mvn",
+      "command": "mvn",
+      "installed": false,
+      "path": ""
+    },
+    {
+      "name": "gradle",
+      "command": "gradle",
+      "installed": true,
+      "path": "/data/data/com.termux/files/usr/bin/gradle"
+    },
+    {
+      "name": "zig",
+      "command": "zig",
+      "installed": false,
+      "path": ""
+    }
+  ]
+}

@@ -244,7 +244,7 @@ func rel(root, path string) string {
 	if err != nil {
 		return path
 	}
-	return value
+	return filepath.ToSlash(value)
 }
 
 func safeID(value string) string {
