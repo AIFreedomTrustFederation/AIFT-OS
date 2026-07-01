@@ -45,6 +45,7 @@
 /typings
 Thumbs.db
 bin/aiftd
+bin/
 build/
 cache/
 dist

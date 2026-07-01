@@ -372,7 +372,7 @@ func TestBuildPlanFromReadiness(t *testing.T) {
 	archData, _ := json.Marshal(ar)
 	os.WriteFile(filepath.Join(regDir, "architecture.json"), archData, 0644)
 
-	cfg := config.Load()
+	cfg := config.Config{Root: dir, OSHome: dir}
 	plan, err := BuildPlan(cfg)
 	if err != nil {
 		t.Fatalf("BuildPlan: %v", err)
@@ -403,7 +403,7 @@ func TestBuildPlanFromReadiness(t *testing.T) {
 
 func TestBuildPlanMissingReadiness(t *testing.T) {
 	dir := t.TempDir()
-	cfg := config.Load()
+	cfg := config.Config{Root: dir, OSHome: dir}
 	_, err := BuildPlan(cfg)
 	if err == nil {
 		t.Error("BuildPlan should fail when readiness registry is missing")
@@ -424,7 +424,7 @@ func TestBuildPlanMissingArchitecture(t *testing.T) {
 	data, _ := json.Marshal(rr)
 	os.WriteFile(filepath.Join(regDir, "runtime-readiness.json"), data, 0644)
 
-	cfg := config.Load()
+	cfg := config.Config{Root: dir, OSHome: dir}
 	plan, err := BuildPlan(cfg)
 	if err != nil {
 		t.Fatalf("BuildPlan should succeed without architecture: %v", err)
@@ -449,7 +449,7 @@ func TestGeneratePlanWritesFiles(t *testing.T) {
 	data, _ := json.Marshal(rr)
 	os.WriteFile(filepath.Join(regDir, "runtime-readiness.json"), data, 0644)
 
-	cfg := config.Load()
+	cfg := config.Config{Root: dir, OSHome: dir}
 	if err := GeneratePlan(cfg); err != nil {
 		t.Fatalf("GeneratePlan: %v", err)
 	}
@@ -493,7 +493,7 @@ func TestReportContainsExpectedSections(t *testing.T) {
 	data, _ := json.Marshal(rr)
 	os.WriteFile(filepath.Join(regDir, "runtime-readiness.json"), data, 0644)
 
-	cfg := config.Load()
+	cfg := config.Config{Root: dir, OSHome: dir}
 	if err := GeneratePlan(cfg); err != nil {
 		t.Fatalf("GeneratePlan: %v", err)
 	}

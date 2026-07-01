@@ -3,6 +3,7 @@ package capabilities
 import (
 	"encoding/json"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"testing"
 
@@ -150,6 +151,10 @@ func TestDetectCapabilityPlannedNoEvidence(t *testing.T) {
 }
 
 func TestDetectCapabilityWithCommand(t *testing.T) {
+	if _, err := exec.LookPath("sh"); err != nil {
+		t.Skip("sh is required to execute .aift command capability checks")
+	}
+
 	dir := t.TempDir()
 	cmdDir := filepath.Join(dir, ".aift", "commands")
 	os.MkdirAll(cmdDir, 0755)
@@ -324,7 +329,7 @@ func TestFederationCapabilitiesJSON(t *testing.T) {
 
 func TestWriteReport(t *testing.T) {
 	dir := t.TempDir()
-	cfg := config.Load()
+	cfg := config.Config{Root: dir, OSHome: dir}
 
 	fc := FederationCapabilities{
 		GeneratedAt: "2024-01-01",

@@ -556,5 +556,9 @@ func TestScanServicesEmptyEvidence(t *testing.T) {
 	}
 }
 
-func makeTestConfig(osHome, root string) config.Load()
+func makeTestConfig(osHome, root string) config.Config {
+	return config.Config{
+		Root:   root,
+		OSHome: osHome,
+	}
 }

@@ -47,8 +47,9 @@ func TestLoadRootOnly(t *testing.T) {
 	if cfg.Root != "/custom/root" {
 		t.Errorf("Root = %q", cfg.Root)
 	}
-	if cfg.OSHome != "/custom/root/AIFT-OS" {
-		t.Errorf("OSHome = %q, want /custom/root/AIFT-OS", cfg.OSHome)
+	expectedOSHome := filepath.Join("/custom/root", "AIFT-OS")
+	if cfg.OSHome != expectedOSHome {
+		t.Errorf("OSHome = %q, want %q", cfg.OSHome, expectedOSHome)
 	}
 }
 

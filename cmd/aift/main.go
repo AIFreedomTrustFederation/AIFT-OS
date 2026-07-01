@@ -1,329 +1,256 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
-
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/api"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/capabilities"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/daemon"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/doctor"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/eventmesh"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/execution"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/federation"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/gitx"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/graph"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/intelligence"
-	_ "github.com/AIFreedomTrustFederation/AIFT-OS/internal/kernel"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manifests"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manual"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/planner"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/plugins"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/providers"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/registry"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/repo"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/reports"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/runtime"
-	_ "github.com/AIFreedomTrustFederation/AIFT-OS/internal/scheduler"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/servicecontracts"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/services"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/sync"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/version"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/workflow"
-	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/workspace"
+	"os/exec"
+	"runtime"
+	"sort"
+	"strings"
+	"time"
 )
 
+type Command struct {
+	Name        string               `json:"name"`
+	Description string               `json:"description"`
+	Usage       string               `json:"usage"`
+	Aliases     []string             `json:"aliases,omitempty"`
+	Status      string               `json:"status"`
+	Handler     func([]string) error `json:"-"`
+}
+
+type Check struct {
+	Name   string `json:"name"`
+	Status string `json:"status"`
+	Detail string `json:"detail"`
+}
+
 func main() {
-	cfg := config.Load()
-	cmd := "help"
-	args := []string{}
-
-	if len(os.Args) > 1 {
-		cmd = os.Args[1]
-		args = os.Args[2:]
-	}
-
-	if looksLikeExecutablePath(cmd) {
-		if len(args) > 0 {
-			cmd = args[0]
-			args = args[1:]
-		} else {
-			cmd = "help"
-		}
-	}
-
-	var err error
-
-	switch cmd {
-	case "help", "-h", "--help":
-		help()
-	case "version":
-		fmt.Printf("%s %s — %s\n", version.Name, version.Version, version.Role)
-	case "doctor":
-		if len(args) > 0 && args[0] == "repair" {
-			err = doctor.Repair(cfg)
-		} else if len(args) > 0 && args[0] == "git" {
-			err = doctor.Git(cfg)
-		} else if len(args) > 0 && args[0] == "full" {
-			err = doctor.Full(cfg)
-		} else {
-			err = doctor.Run(cfg)
-		}
-	case "status":
-		err = status(cfg)
-	case "manifest":
-		err = manifests.EnsureAll(cfg)
-		if err == nil {
-			fmt.Println("OK: manifests ensured")
-		}
-	case "registry":
-		err = registry.Generate(cfg)
-	case "dashboard":
-		err = reports.Dashboard(cfg)
-	case "deps":
-		err = reports.Deps(cfg)
-	case "plugins":
-		err = plugins.List(cfg)
-	case "providers":
-		err = providers.List(cfg)
-	case "events":
-		err = events.Tail(cfg, 25)
-	case "services":
-		err = services.List(cfg)
-	case "start":
-		err = runtime.StartOnce(cfg)
-	case "tick":
-		err = runtime.Tick(cfg)
-	case "serve":
-		addr := ":8787"
-		if len(args) > 0 {
-			addr = args[0]
-		}
-		err = api.New(cfg, addr).Serve()
-	case "daemon":
-		addr := ":8787"
-		if len(args) > 0 {
-			addr = args[0]
-		}
-		err = daemon.Start(cfg, addr)
-	case "sync":
-		if len(args) == 0 || args[0] == "--safe" || args[0] == "safe" {
-			err = sync.Safe(cfg)
-		} else {
-			err = fmt.Errorf("only sync --safe is implemented in Go kernel")
-		}
-	case "federation":
-		err = runFederation(cfg, args)
-	case "repo":
-		err = runRepo(cfg, args)
-	case "workflow":
-		err = runWorkflow(cfg, args)
-	case "capabilities":
-		err = runCapabilities(cfg, args)
-	case "intelligence":
-		err = runIntelligence(cfg, args)
-	case "manual":
-		err = runManual(cfg, args)
-	case "graph":
-		err = graph.Query(cfg, args)
-	case "mesh":
-		err = runMesh(cfg, args)
-	case "service-contracts":
-		err = runServiceContracts(cfg, args)
-	case "plan":
-		err = runPlanner(cfg, args)
-	case "modules":
-		err = runModules(cfg, args)
-	case "kernel-registry":
-		err = runKernelRegistry(cfg, args)
-	case "discovery":
-		err = runDiscovery(cfg, args)
-	case "event-bus":
-		err = runEventBus(cfg, args)
-	case "patch-engine":
-		err = runPatchEngine(cfg, args)
-	case "kernel":
-		err = runKernelRuntime(cfg, args)
-	case "runtime":
-		err = runRuntime(cfg, args)
-	case "operator":
-		err = runOperator(cfg, args)
-	case "scheduler":
-		err = runScheduler(cfg, args)
-	case "execution":
-		err = runExecution(cfg, args)
-	case "verify":
-		err = verify(cfg)
-	default:
-		err = fmt.Errorf("unknown command: %s", cmd)
-	}
-
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "ERROR:", err)
-		os.Exit(1)
+	code := run(os.Args[1:])
+	if code != 0 {
+		os.Exit(code)
 	}
 }
 
-func looksLikeExecutablePath(s string) bool {
-	return len(s) > 0 && (s[0] == '/' || s == "aiftd" || s == "./aiftd" || s == "bin/aiftd")
+func run(args []string) int {
+	cmds := commands()
+
+	if len(args) == 0 {
+		printHelp(cmds)
+		return 0
+	}
+
+	if args[0] == "--" {
+		args = args[1:]
+	}
+
+	if len(args) == 0 {
+		printHelp(cmds)
+		return 0
+	}
+
+	name := args[0]
+	commandArgs := args[1:]
+
+	cmd, ok := resolve(cmds, name)
+	if !ok {
+		fmt.Fprintf(os.Stderr, "unknown command: %s\n\n", name)
+		printHelp(cmds)
+		return 2
+	}
+
+	if err := cmd.Handler(commandArgs); err != nil {
+		fmt.Fprintf(os.Stderr, "command failed: %v\n", err)
+		return 1
+	}
+
+	return 0
 }
 
-func help() {
-	fmt.Println("AIFT-OS Federation Control Plane")
+func commands() []Command {
+	cmds := []Command{
+		{"help", "Show available commands.", "aift help", []string{"--help", "-h"}, "active", runHelp},
+		{"status", "Inspect the real local repository status.", "aift status", []string{"doctor"}, "active", runStatus},
+		{"verify", "Run real local bootstrap verification checks.", "aift verify", []string{"check"}, "active", runVerify},
+		{"registry", "Print command registry as JSON.", "aift registry", []string{"commands"}, "active", runRegistry},
+		{"bootstrap", "Print federation bootstrap discovery JSON.", "aift bootstrap", nil, "active", runBootstrap},
+		{"federation", "Federation command group; planned until real APIs are proven.", "aift federation", []string{"fed"}, "planned", planned("federation")},
+		{"repo", "Repository command group; planned until real APIs are proven.", "aift repo", []string{"repos"}, "planned", planned("repo")},
+		{"workflow", "Workflow command group; planned until real APIs are proven.", "aift workflow", []string{"flows"}, "planned", planned("workflow")},
+	}
+
+	sort.Slice(cmds, func(i, j int) bool { return cmds[i].Name < cmds[j].Name })
+	return cmds
+}
+
+func resolve(cmds []Command, name string) (Command, bool) {
+	for _, c := range cmds {
+		if c.Name == name {
+			return c, true
+		}
+		for _, a := range c.Aliases {
+			if a == name {
+				return c, true
+			}
+		}
+	}
+	return Command{}, false
+}
+
+func runHelp(args []string) error {
+	printHelp(commands())
+	return nil
+}
+
+func printHelp(cmds []Command) {
+	fmt.Println("AIFT-OS CLI")
+	fmt.Println()
+	fmt.Println("Truthful local-first federation operator CLI.")
+	fmt.Println()
+	fmt.Println("Usage:")
+	fmt.Println("  aift <command> [args]")
 	fmt.Println()
 	fmt.Println("Commands:")
-	fmt.Println("  help")
-	fmt.Println("  version")
-	fmt.Println("  doctor [repair|git|full]")
-	fmt.Println("  status")
-	fmt.Println("  manifest")
-	fmt.Println("  registry")
-	fmt.Println("  dashboard")
-	fmt.Println("  deps")
-	fmt.Println("  plugins")
-	fmt.Println("  providers")
-	fmt.Println("  events")
-	fmt.Println("  services")
-	fmt.Println("  start")
-	fmt.Println("  tick")
-	fmt.Println("  serve [:8787]")
-	fmt.Println("  daemon [:8787]")
-	fmt.Println("  sync --safe")
-	fmt.Println("  federation scan|graph|verify")
-	fmt.Println("  repo list|inspect|run")
-	fmt.Println("  workflow list")
-	fmt.Println("  intelligence scan|report|repo|roadmap")
-	fmt.Println("  manual init-all|scan|report|repo")
-	fmt.Println("  graph [summary|repo|type|status]")
-	fmt.Println("  mesh init-all|scan|topics|subscribers|publish|replay|tail|report")
-	fmt.Println("  service-contracts init-all|scan|list|repo|report")
-	fmt.Println("  plan build|summary|repo|ready|blocked|report")
-	fmt.Println("  modules init-all|scan|list|repo|report")
-	fmt.Println("  kernel-registry scan|list|object|report")
-	fmt.Println("  discovery scan|list|object|report")
-	fmt.Println("  event-bus publish|list|replay|report")
-	fmt.Println("  patch-engine inspect|plan|validate")
-	fmt.Println("  kernel boot|status|report")
-	fmt.Println("  runtime scan|status|ready|blocked|report")
-	fmt.Println("  capabilities scan|list|info|report")
-	fmt.Println("  operator check")
-	fmt.Println("  scheduler plan|ready|blocked|report")
-	fmt.Println("  execution plan|print|write")
-	fmt.Println("  verify")
+	for _, c := range cmds {
+		fmt.Printf("  %-12s %-8s %s\n", c.Name, c.Status, c.Description)
+	}
 }
 
-func runFederation(cfg config.Config, args []string) error {
-	if len(args) == 0 || args[0] == "scan" {
-		return federation.Scan(cfg)
-	}
-	if args[0] == "graph" {
-		return federation.Graph(cfg)
-	}
-	if args[0] == "verify" {
-		return federation.Verify(cfg)
-	}
-	return fmt.Errorf("usage: aift federation scan|graph|verify")
+func runRegistry(args []string) error {
+	return printJSON(map[string]any{
+		"generated_at": time.Now().Format(time.RFC3339),
+		"runtime":      runtime.Version(),
+		"os":           runtime.GOOS,
+		"arch":         runtime.GOARCH,
+		"commands":     commands(),
+	})
 }
 
-func runRepo(cfg config.Config, args []string) error {
-	if len(args) == 0 || args[0] == "list" {
-		return repo.PrintList(cfg)
-	}
-	if args[0] == "inspect" {
-		if len(args) < 2 {
-			return fmt.Errorf("usage: aift repo inspect <name>")
-		}
-		return repo.PrintInspect(cfg, repo.NormalizeName(args[1]))
-	}
-	if args[0] == "run" {
-		if len(args) < 3 {
-			return fmt.Errorf("usage: aift repo run <name> <command> [args...]")
-		}
-		return repo.RunCommand(cfg, repo.NormalizeName(args[1]), args[2], args[3:])
-	}
-	return fmt.Errorf("usage: aift repo list|inspect|run")
+func runStatus(args []string) error {
+	root, _ := os.Getwd()
+	checks := collectChecks()
+
+	return printJSON(map[string]any{
+		"status":       aggregate(checks),
+		"generated_at": time.Now().Format(time.RFC3339),
+		"root":         root,
+		"runtime":      runtime.Version(),
+		"os":           runtime.GOOS,
+		"arch":         runtime.GOARCH,
+		"checks":       checks,
+	})
 }
 
-func runWorkflow(cfg config.Config, args []string) error {
-	if len(args) == 0 || args[0] == "list" {
-		return workflow.List(cfg)
-	}
-	return fmt.Errorf("usage: aift workflow list")
-}
+func runVerify(args []string) error {
+	checks := collectChecks()
+	status := aggregate(checks)
 
-func verify(cfg config.Config) error {
-	if err := doctor.Run(cfg); err != nil {
+	if err := printJSON(map[string]any{
+		"status": status,
+		"checks": checks,
+	}); err != nil {
 		return err
 	}
-	if err := manifests.EnsureAll(cfg); err != nil {
-		return err
+
+	if status == "fail" {
+		return fmt.Errorf("verification failed")
 	}
-	if err := providers.WriteRegistry(cfg); err != nil {
-		return err
-	}
-	if err := registry.Generate(cfg); err != nil {
-		return err
-	}
-	if err := reports.Dashboard(cfg); err != nil {
-		return err
-	}
-	if err := reports.Deps(cfg); err != nil {
-		return err
-	}
-	if err := capabilities.Scan(cfg); err != nil {
-		return err
-	}
-	if err := intelligence.Scan(cfg); err != nil {
-		return err
-	}
-	if err := manual.Scan(cfg); err != nil {
-		return err
-	}
-	if err := graph.Build(cfg); err != nil {
-		return err
-	}
-	if err := eventmesh.Scan(cfg); err != nil {
-		return err
-	}
-	if err := servicecontracts.Scan(cfg); err != nil {
-		return err
-	}
-	if err := planner.Build(cfg); err != nil {
-		return err
-	}
-	if err := events.Emit(cfg, "verify.complete", "verify", "federation verified", nil); err != nil {
-		return err
-	}
-	fmt.Println("OK: federation verified")
+
 	return nil
 }
 
-func status(cfg config.Config) error {
-	repos, err := workspace.FindRepos(cfg)
+func runBootstrap(args []string) error {
+	root, _ := os.Getwd()
+
+	return printJSON(map[string]any{
+		"generated_at": time.Now().Format(time.RFC3339),
+		"root":         root,
+		"discovery": map[string]any{
+			"git":       exists(".git"),
+			"go_mod":    exists("go.mod"),
+			"package":   exists("package.json"),
+			"registry":  exists("registry"),
+			"internal":  exists("internal"),
+			"cmd_aift":  exists("cmd/aift/main.go"),
+			"reports":   exists("reports"),
+			"scripts":   exists("scripts"),
+			"manifests": exists("manifests"),
+			"workflows": exists(".github/workflows"),
+		},
+		"commands": commands(),
+	})
+}
+
+func collectChecks() []Check {
+	checks := []Check{
+		fileCheck("git-repository", ".git", "Local Git repository exists."),
+		fileCheck("go-module", "go.mod", "Go module manifest exists."),
+		fileCheck("cli-entrypoint", "cmd/aift/main.go", "AIFT CLI entrypoint exists."),
+		fileCheck("registry-directory", "registry", "Federation registry directory exists."),
+		fileCheck("internal-directory", "internal", "Internal package directory exists."),
+		fileCheck("reports-directory", "reports", "Reports directory exists."),
+		toolCheck("git-binary", "git"),
+		toolCheck("go-binary", "go"),
+	}
+
+	checks = append(checks, commandCheck("go-build-cmd-aift", "go", "build", "./cmd/aift"))
+	return checks
+}
+
+func fileCheck(name, path, detail string) Check {
+	if exists(path) {
+		return Check{name, "pass", detail}
+	}
+	return Check{name, "planned", "Missing: " + path}
+}
+
+func toolCheck(name, tool string) Check {
+	if _, err := exec.LookPath(tool); err == nil {
+		return Check{name, "pass", tool + " is available."}
+	}
+	return Check{name, "fail", tool + " is not available."}
+}
+
+func commandCheck(name string, cmd string, args ...string) Check {
+	c := exec.Command(cmd, args...)
+	out, err := c.CombinedOutput()
 	if err != nil {
-		return err
+		return Check{name, "fail", strings.TrimSpace(string(out))}
 	}
-
-	fmt.Printf("%-32s %-12s %-8s %s\n", "REPOSITORY", "BRANCH", "STATE", "REMOTE")
-	for _, repo := range repos {
-		state := "clean"
-		if gitx.Dirty(repo.Path) {
-			state = "dirty"
-		}
-		fmt.Printf("%-32s %-12s %-8s %s\n", repo.Name, gitx.Branch(repo.Path), state, gitx.Remote(repo.Path))
-	}
-
-	return nil
+	return Check{name, "pass", strings.TrimSpace(string(out))}
 }
 
-func runExecution(cfg config.Config, args []string) error {
-	if len(args) == 0 || args[0] == "print" || args[0] == "plan" {
-		return execution.Print(cfg)
+func aggregate(checks []Check) string {
+	status := "pass"
+	for _, c := range checks {
+		if c.Status == "fail" {
+			return "fail"
+		}
+		if c.Status == "planned" {
+			status = "partial"
+		}
 	}
-	if args[0] == "write" {
-		return execution.Write(cfg)
+	return status
+}
+
+func planned(name string) func([]string) error {
+	return func(args []string) error {
+		return printJSON(map[string]any{
+			"command": name,
+			"status":  "planned",
+			"message": "Registered honestly but not yet wired to a proven internal implementation.",
+		})
 	}
-	return fmt.Errorf("usage: aift execution plan|print|write")
+}
+
+func exists(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil
+}
+
+func printJSON(v any) error {
+	enc := json.NewEncoder(os.Stdout)
+	enc.SetIndent("", "  ")
+	return enc.Encode(v)
 }

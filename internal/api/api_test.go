@@ -124,7 +124,7 @@ func TestGenerateTokenUnique(t *testing.T) {
 func TestNewWithEnvToken(t *testing.T) {
 	t.Setenv("AIFT_API_TOKEN", "env-token-value")
 	dir := t.TempDir()
-	cfg := config.Load()
+	cfg := config.Config{Root: dir, OSHome: dir}
 
 	srv := New(cfg, ":8787")
 	if srv.Token != "env-token-value" {
@@ -138,7 +138,7 @@ func TestNewWithEnvToken(t *testing.T) {
 func TestNewWithoutEnvToken(t *testing.T) {
 	t.Setenv("AIFT_API_TOKEN", "")
 	dir := t.TempDir()
-	cfg := config.Load()
+	cfg := config.Config{Root: dir, OSHome: dir}
 
 	srv := New(cfg, ":9999")
 	if srv.Token != "" {
@@ -164,7 +164,7 @@ func testServer(t *testing.T) Server {
 	t.Helper()
 	dir := t.TempDir()
 	return Server{
-		Config: config.Load(),
+		Config: config.Config{Root: dir, OSHome: dir},
 		Addr:   ":0",
 		Token:  "test-token-123",
 	}

@@ -143,26 +143,26 @@ aift_validate() {
     fail=1
   fi
 
-  _log "  go build ./cmd/aift"
-  if ! (cd "$REPO_ROOT" && go build -o /dev/null ./cmd/aift >> "${_AIFT_RUN_DIR}/terminal.log" 2>&1); then
+  _log "  go build -o bin/aift ./cmd/aift"
+  if ! (cd "$REPO_ROOT" && mkdir -p bin && go build -o bin/aift ./cmd/aift >> "${_AIFT_RUN_DIR}/terminal.log" 2>&1); then
     _log "  FAIL: go build"
     fail=1
   fi
 
   if command -v go >/dev/null 2>&1; then
-    _log "  go run ./cmd/aift doctor"
-    if ! (cd "$REPO_ROOT" && go run ./cmd/aift doctor >> "${_AIFT_RUN_DIR}/terminal.log" 2>&1); then
-      _log "  WARN: aift doctor returned non-zero (non-blocking)"
+    _log "  ./bin/aift status"
+    if ! (cd "$REPO_ROOT" && ./bin/aift status >> "${_AIFT_RUN_DIR}/terminal.log" 2>&1); then
+      _log "  WARN: aift status returned non-zero (non-blocking)"
     fi
 
-    _log "  go run ./cmd/aift introspect scan"
-    if ! (cd "$REPO_ROOT" && go run ./cmd/aift introspect scan >> "${_AIFT_RUN_DIR}/terminal.log" 2>&1); then
-      _log "  WARN: aift introspect scan returned non-zero (non-blocking)"
+    _log "  ./bin/aift verify"
+    if ! (cd "$REPO_ROOT" && ./bin/aift verify >> "${_AIFT_RUN_DIR}/terminal.log" 2>&1); then
+      _log "  WARN: aift verify returned non-zero (non-blocking)"
     fi
 
-    _log "  go run ./cmd/aift introspect check"
-    if ! (cd "$REPO_ROOT" && go run ./cmd/aift introspect check >> "${_AIFT_RUN_DIR}/terminal.log" 2>&1); then
-      _log "  WARN: aift introspect check returned non-zero (non-blocking)"
+    _log "  ./bin/aift registry"
+    if ! (cd "$REPO_ROOT" && ./bin/aift registry >> "${_AIFT_RUN_DIR}/terminal.log" 2>&1); then
+      _log "  WARN: aift registry returned non-zero (non-blocking)"
     fi
   fi
 

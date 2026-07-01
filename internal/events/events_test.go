@@ -12,7 +12,7 @@ import (
 
 func TestEmit(t *testing.T) {
 	dir := t.TempDir()
-	cfg := config.Load()
+	cfg := config.Config{Root: dir, OSHome: dir}
 
 	err := Emit(cfg, "test.event", "unit-test", "hello", map[string]string{"key": "value"})
 	if err != nil {
@@ -48,7 +48,7 @@ func TestEmit(t *testing.T) {
 
 func TestEmitNilData(t *testing.T) {
 	dir := t.TempDir()
-	cfg := config.Load()
+	cfg := config.Config{Root: dir, OSHome: dir}
 
 	err := Emit(cfg, "test.event", "src", "msg", nil)
 	if err != nil {
@@ -66,7 +66,7 @@ func TestEmitNilData(t *testing.T) {
 
 func TestEmitMultiple(t *testing.T) {
 	dir := t.TempDir()
-	cfg := config.Load()
+	cfg := config.Config{Root: dir, OSHome: dir}
 
 	Emit(cfg, "e1", "s", "m1", nil)
 	Emit(cfg, "e2", "s", "m2", nil)
@@ -82,7 +82,7 @@ func TestEmitMultiple(t *testing.T) {
 
 func TestTailNoEvents(t *testing.T) {
 	dir := t.TempDir()
-	cfg := config.Load()
+	cfg := config.Config{Root: dir, OSHome: dir}
 
 	err := Tail(cfg, 10)
 	if err != nil {
@@ -92,7 +92,7 @@ func TestTailNoEvents(t *testing.T) {
 
 func TestTailAfterEmit(t *testing.T) {
 	dir := t.TempDir()
-	cfg := config.Load()
+	cfg := config.Config{Root: dir, OSHome: dir}
 
 	Emit(cfg, "e1", "s", "m1", nil)
 	Emit(cfg, "e2", "s", "m2", nil)
@@ -106,7 +106,7 @@ func TestTailAfterEmit(t *testing.T) {
 
 func TestTailZeroLimit(t *testing.T) {
 	dir := t.TempDir()
-	cfg := config.Load()
+	cfg := config.Config{Root: dir, OSHome: dir}
 
 	Emit(cfg, "e1", "s", "m1", nil)
 
@@ -118,7 +118,7 @@ func TestTailZeroLimit(t *testing.T) {
 
 func TestTailEmptyFile(t *testing.T) {
 	dir := t.TempDir()
-	cfg := config.Load()
+	cfg := config.Config{Root: dir, OSHome: dir}
 
 	evDir := filepath.Join(dir, "var", "events")
 	os.MkdirAll(evDir, 0755)

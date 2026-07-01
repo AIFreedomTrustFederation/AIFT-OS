@@ -110,5 +110,7 @@ func TestRunCommandDot(t *testing.T) {
 	}
 }
 
-func testCfg(t *testing.T, dir string) config.Load()
+func testCfg(t *testing.T, dir string) config.Config {
+	t.Helper()
+	return config.Config{Root: dir, OSHome: dir}
 }

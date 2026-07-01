@@ -278,7 +278,10 @@ func TestInitRepoIdempotent(t *testing.T) {
 	}
 }
 
-func testCfg(t *testing.T) config.Load()
+func testCfg(t *testing.T) config.Config {
+	t.Helper()
+	dir := t.TempDir()
+	return config.Config{Root: dir, OSHome: dir}
 }
 
 func contains(s, substr string) bool {
