@@ -1,6 +1,6 @@
 # AIFT-OS Architecture
 
-Generated: 2026-06-28T21:26:06Z
+Generated: 2026-07-01T14:05:14Z
 
 ## Package Categories
 
@@ -8,144 +8,127 @@ Generated: 2026-06-28T21:26:06Z
 
 | Package | Dependencies | Dependents | Tests |
 |---|---:|---:|---:|
-| `config` | 0 | 37 | yes |
+| `config` | 0 | 45 | yes |
 | `fsutil` | 0 | 9 | yes |
-| `gitx` | 0 | 6 | no |
+| `gitx` | 0 | 5 | yes |
 | `jsonfile` | 0 | 17 | yes |
 | `sliceutil` | 0 | 7 | yes |
-| `version` | 0 | 2 | no |
-| `workspace` | 1 | 18 | no |
+| `version` | 0 | 1 | no |
+| `workspace` | 1 | 18 | yes |
 
 ### Runtime
 
 | Package | Dependencies | Dependents | Tests |
 |---|---:|---:|---:|
-| `api` | 10 | 2 | yes |
-| `daemon` | 4 | 1 | no |
+| `api` | 10 | 1 | yes |
+| `daemon` | 4 | 0 | no |
 | `jobs` | 5 | 3 | no |
-| `runtime` | 4 | 2 | no |
-| `scheduler` | 4 | 1 | no |
+| `runtime` | 4 | 1 | no |
+| `scheduler` | 2 | 1 | no |
 | `supervisor` | 5 | 1 | no |
 
 ### Events
 
 | Package | Dependencies | Dependents | Tests |
 |---|---:|---:|---:|
-| `eventbus` | 2 | 2 | yes |
-| `eventmesh` | 4 | 1 | yes |
-| `events` | 1 | 20 | yes |
+| `eventbus` | 2 | 1 | yes |
+| `eventmesh` | 4 | 0 | yes |
+| `events` | 1 | 18 | yes |
 
 ### Analysis
 
 | Package | Dependencies | Dependents | Tests |
 |---|---:|---:|---:|
-| `capabilities` | 5 | 2 | yes |
-| `discoveryengine` | 6 | 2 | yes |
-| `graph` | 6 | 1 | yes |
-| `intelligence` | 8 | 1 | yes |
+| `capabilities` | 5 | 1 | yes |
+| `discoveryengine` | 6 | 1 | yes |
+| `graph` | 6 | 0 | yes |
+| `intelligence` | 8 | 0 | yes |
 
 ### Kernel
 
 | Package | Dependencies | Dependents | Tests |
 |---|---:|---:|---:|
-| `kernel` | 1 | 1 | no |
-| `kernelregistry` | 6 | 2 | yes |
-| `kernelruntime` | 5 | 1 | no |
-| `modules` | 6 | 1 | yes |
-| `patchengine` | 2 | 1 | yes |
+| `kernel` | 1 | 0 | no |
+| `kernelregistry` | 6 | 1 | yes |
+| `kernelruntime` | 5 | 0 | no |
+| `modules` | 6 | 0 | yes |
+| `patchengine` | 2 | 0 | yes |
 
 ### Data
 
 | Package | Dependencies | Dependents | Tests |
 |---|---:|---:|---:|
-| `manifests` | 2 | 6 | yes |
-| `registry` | 5 | 5 | no |
-| `repo` | 4 | 2 | yes |
-| `reports` | 4 | 5 | no |
-| `state` | 1 | 3 | no |
+| `manifests` | 2 | 5 | yes |
+| `registry` | 5 | 3 | yes |
+| `repo` | 4 | 1 | yes |
+| `reports` | 4 | 3 | yes |
+| `state` | 1 | 3 | yes |
 
 ### Federation
 
 | Package | Dependencies | Dependents | Tests |
 |---|---:|---:|---:|
-| `federation` | 8 | 1 | no |
-| `sync` | 3 | 2 | no |
-| `workflow` | 2 | 2 | no |
+| `federation` | 8 | 0 | no |
+| `sync` | 3 | 1 | no |
+| `workflow` | 2 | 1 | yes |
 
 ### Operations
 
 | Package | Dependencies | Dependents | Tests |
 |---|---:|---:|---:|
-| `doctor` | 1 | 1 | no |
-| `manual` | 5 | 1 | no |
+| `doctor` | 1 | 0 | yes |
+| `manual` | 5 | 0 | no |
 
 ### Planning
 
 | Package | Dependencies | Dependents | Tests |
 |---|---:|---:|---:|
-| `planner` | 5 | 1 | yes |
-| `servicecontracts` | 5 | 1 | yes |
-| `services` | 3 | 3 | no |
+| `planner` | 5 | 0 | yes |
+| `servicecontracts` | 5 | 0 | yes |
+| `services` | 3 | 2 | yes |
 
 ### Extensions
 
 | Package | Dependencies | Dependents | Tests |
 |---|---:|---:|---:|
-| `plugins` | 2 | 1 | no |
-| `providers` | 2 | 4 | no |
+| `plugins` | 2 | 0 | no |
+| `providers` | 2 | 3 | yes |
 
 ### Other
 
 | Package | Dependencies | Dependents | Tests |
 |---|---:|---:|---:|
-| `readiness` | 5 | 1 | yes |
-| `schedulerplan` | 3 | 1 | yes |
+| `ai` | 2 | 0 | no |
+| `builder` | 4 | 0 | no |
+| `capability` | 1 | 2 | no |
+| `cli` | 1 | 0 | yes |
+| `compiler` | 1 | 2 | no |
+| `execution` | 2 | 0 | no |
+| `fedbuild` | 2 | 0 | no |
+| `lifecycle` | 1 | 1 | no |
+| `providerregistry` | 1 | 0 | yes |
+| `readiness` | 5 | 0 | yes |
+| `schedulerplan` | 3 | 0 | yes |
 
 ## Command Registry
 
 | Command | Status | Handler | Help |
 |---|---|---|---|
-| `capabilities` | active | yes | yes |
-| `daemon` | active | yes | yes |
-| `dashboard` | active | yes | yes |
-| `deps` | active | yes | yes |
-| `discovery` | active | yes | yes |
-| `doctor` | active | yes | yes |
-| `event-bus` | active | yes | yes |
-| `events` | active | yes | yes |
-| `federation` | active | yes | yes |
-| `graph` | active | yes | yes |
-| `intelligence` | planned | yes | yes |
-| `kernel` | active | yes | yes |
-| `kernel-registry` | active | yes | yes |
-| `manifest` | active | yes | yes |
-| `manual` | planned | yes | yes |
-| `mesh` | planned | yes | yes |
-| `modules` | active | yes | yes |
-| `operator` | active | yes | yes |
-| `patch-engine` | active | yes | yes |
-| `plan` | active | yes | yes |
-| `plugins` | active | yes | yes |
-| `providers` | active | yes | yes |
+| `bootstrap` | active | yes | yes |
+| `federation` | planned | yes | yes |
+| `help` | active | yes | yes |
 | `registry` | active | yes | yes |
-| `repo` | active | yes | yes |
-| `runtime` | active | yes | yes |
-| `scheduler` | active | yes | yes |
-| `serve` | active | yes | yes |
-| `service-contracts` | planned | yes | yes |
-| `services` | active | yes | yes |
-| `start` | active | yes | yes |
+| `repo` | planned | yes | yes |
 | `status` | active | yes | yes |
-| `sync` | active | yes | yes |
-| `tick` | active | yes | yes |
 | `verify` | active | yes | yes |
-| `version` | active | yes | yes |
-| `workflow` | active | yes | yes |
+| `workflow` | planned | yes | yes |
 
 ## Package Dependency Graph
 
 ```mermaid
 graph TD
+    ai --> compiler
+    ai --> config
     api --> config
     api --> jobs
     api --> manifests
@@ -156,11 +139,18 @@ graph TD
     api --> state
     api --> sync
     api --> version
+    builder --> compiler
+    builder --> config
+    builder --> lifecycle
+    builder --> scheduler
     capabilities --> config
     capabilities --> events
     capabilities --> fsutil
     capabilities --> jsonfile
     capabilities --> workspace
+    capability --> config
+    cli --> config
+    compiler --> config
     daemon --> api
     daemon --> config
     daemon --> events
@@ -179,6 +169,10 @@ graph TD
     eventmesh --> jsonfile
     eventmesh --> workspace
     events --> config
+    execution --> config
+    execution --> workspace
+    fedbuild --> capability
+    fedbuild --> config
     federation --> config
     federation --> events
     federation --> manifests
@@ -218,6 +212,7 @@ graph TD
     kernelruntime --> eventbus
     kernelruntime --> jsonfile
     kernelruntime --> kernelregistry
+    lifecycle --> config
     manifests --> config
     manifests --> workspace
     manual --> config
@@ -240,6 +235,7 @@ graph TD
     planner --> workspace
     plugins --> config
     plugins --> workspace
+    providerregistry --> config
     providers --> config
     providers --> jsonfile
     readiness --> config
@@ -264,10 +260,8 @@ graph TD
     runtime --> events
     runtime --> jobs
     runtime --> supervisor
+    scheduler --> capability
     scheduler --> config
-    scheduler --> events
-    scheduler --> registry
-    scheduler --> reports
     schedulerplan --> config
     schedulerplan --> events
     schedulerplan --> jsonfile

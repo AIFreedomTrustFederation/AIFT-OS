@@ -1,7 +1,20 @@
 {
-  "generated_at": "2026-06-28T21:26:06Z",
+  "generated_at": "2026-07-01T14:05:14Z",
   "version": "1.0.0",
   "packages": [
+    {
+      "name": "ai",
+      "path": "internal/ai",
+      "depends_on": [
+        "internal/compiler",
+        "internal/config"
+      ],
+      "depended_by": null,
+      "has_tests": false,
+      "category": "other",
+      "root_status": "planned",
+      "root_reason": "AI provider execution is not wired into the active CLI."
+    },
     {
       "name": "api",
       "path": "internal/api",
@@ -18,11 +31,25 @@
         "internal/version"
       ],
       "depended_by": [
-        "cmd/aift",
         "internal/daemon"
       ],
       "has_tests": true,
       "category": "runtime"
+    },
+    {
+      "name": "builder",
+      "path": "internal/builder",
+      "depends_on": [
+        "internal/compiler",
+        "internal/config",
+        "internal/lifecycle",
+        "internal/scheduler"
+      ],
+      "depended_by": null,
+      "has_tests": false,
+      "category": "other",
+      "root_status": "planned",
+      "root_reason": "Federated build orchestration exists but is not an active command."
     },
     {
       "name": "capabilities",
@@ -35,26 +62,69 @@
         "internal/workspace"
       ],
       "depended_by": [
-        "cmd/aift",
         "internal/intelligence"
       ],
       "has_tests": true,
       "category": "analysis"
     },
     {
+      "name": "capability",
+      "path": "internal/capability",
+      "depends_on": [
+        "internal/config"
+      ],
+      "depended_by": [
+        "internal/fedbuild",
+        "internal/scheduler"
+      ],
+      "has_tests": false,
+      "category": "other"
+    },
+    {
+      "name": "cli",
+      "path": "internal/cli",
+      "depends_on": [
+        "internal/config"
+      ],
+      "depended_by": null,
+      "has_tests": true,
+      "category": "other",
+      "root_status": "planned",
+      "root_reason": "Legacy registry generator package is not the active cmd/aift dispatcher."
+    },
+    {
+      "name": "compiler",
+      "path": "internal/compiler",
+      "depends_on": [
+        "internal/config"
+      ],
+      "depended_by": [
+        "internal/ai",
+        "internal/builder"
+      ],
+      "has_tests": false,
+      "category": "other"
+    },
+    {
       "name": "config",
       "path": "internal/config",
       "depends_on": null,
       "depended_by": [
-        "cmd/aift",
+        "internal/ai",
         "internal/api",
+        "internal/builder",
         "internal/capabilities",
+        "internal/capability",
+        "internal/cli",
+        "internal/compiler",
         "internal/daemon",
         "internal/discoveryengine",
         "internal/doctor",
         "internal/eventbus",
         "internal/eventmesh",
         "internal/events",
+        "internal/execution",
+        "internal/fedbuild",
         "internal/federation",
         "internal/graph",
         "internal/intelligence",
@@ -62,12 +132,14 @@
         "internal/kernel",
         "internal/kernelregistry",
         "internal/kernelruntime",
+        "internal/lifecycle",
         "internal/manifests",
         "internal/manual",
         "internal/modules",
         "internal/patchengine",
         "internal/planner",
         "internal/plugins",
+        "internal/providerregistry",
         "internal/providers",
         "internal/readiness",
         "internal/registry",
@@ -96,11 +168,11 @@
         "internal/events",
         "internal/runtime"
       ],
-      "depended_by": [
-        "cmd/aift"
-      ],
+      "depended_by": null,
       "has_tests": false,
-      "category": "runtime"
+      "category": "runtime",
+      "root_status": "planned",
+      "root_reason": "Daemon runtime exists but is not launched by the active CLI."
     },
     {
       "name": "discoveryengine",
@@ -114,7 +186,6 @@
         "internal/workspace"
       ],
       "depended_by": [
-        "cmd/aift",
         "internal/kernelruntime"
       ],
       "has_tests": true,
@@ -126,11 +197,11 @@
       "depends_on": [
         "internal/config"
       ],
-      "depended_by": [
-        "cmd/aift"
-      ],
-      "has_tests": false,
-      "category": "operations"
+      "depended_by": null,
+      "has_tests": true,
+      "category": "operations",
+      "root_status": "planned",
+      "root_reason": "Doctor diagnostics package exists but is not exposed as active."
     },
     {
       "name": "eventbus",
@@ -140,7 +211,6 @@
         "internal/sliceutil"
       ],
       "depended_by": [
-        "cmd/aift",
         "internal/kernelruntime"
       ],
       "has_tests": true,
@@ -155,11 +225,11 @@
         "internal/jsonfile",
         "internal/workspace"
       ],
-      "depended_by": [
-        "cmd/aift"
-      ],
+      "depended_by": null,
       "has_tests": true,
-      "category": "events"
+      "category": "events",
+      "root_status": "planned",
+      "root_reason": "Event mesh reporting package exists but is not integrated with runtime events."
     },
     {
       "name": "events",
@@ -168,7 +238,6 @@
         "internal/config"
       ],
       "depended_by": [
-        "cmd/aift",
         "internal/capabilities",
         "internal/daemon",
         "internal/discoveryengine",
@@ -183,7 +252,6 @@
         "internal/planner",
         "internal/readiness",
         "internal/runtime",
-        "internal/scheduler",
         "internal/schedulerplan",
         "internal/servicecontracts",
         "internal/services",
@@ -191,6 +259,32 @@
       ],
       "has_tests": true,
       "category": "events"
+    },
+    {
+      "name": "execution",
+      "path": "internal/execution",
+      "depends_on": [
+        "internal/config",
+        "internal/workspace"
+      ],
+      "depended_by": null,
+      "has_tests": false,
+      "category": "other",
+      "root_status": "planned",
+      "root_reason": "Execution contracts exist but are not wired into the active CLI."
+    },
+    {
+      "name": "fedbuild",
+      "path": "internal/fedbuild",
+      "depends_on": [
+        "internal/capability",
+        "internal/config"
+      ],
+      "depended_by": null,
+      "has_tests": false,
+      "category": "other",
+      "root_status": "planned",
+      "root_reason": "Federated build runner exists but is not exposed as active."
     },
     {
       "name": "federation",
@@ -205,11 +299,11 @@
         "internal/reports",
         "internal/workflow"
       ],
-      "depended_by": [
-        "cmd/aift"
-      ],
+      "depended_by": null,
       "has_tests": false,
-      "category": "federation"
+      "category": "federation",
+      "root_status": "planned",
+      "root_reason": "Federation scan and graph package exists but command group remains planned."
     },
     {
       "name": "fsutil",
@@ -234,14 +328,13 @@
       "path": "internal/gitx",
       "depends_on": null,
       "depended_by": [
-        "cmd/aift",
         "internal/intelligence",
         "internal/registry",
         "internal/repo",
         "internal/reports",
         "internal/sync"
       ],
-      "has_tests": false,
+      "has_tests": true,
       "category": "foundation"
     },
     {
@@ -255,11 +348,11 @@
         "internal/sliceutil",
         "internal/workspace"
       ],
-      "depended_by": [
-        "cmd/aift"
-      ],
+      "depended_by": null,
       "has_tests": true,
-      "category": "analysis"
+      "category": "analysis",
+      "root_status": "planned",
+      "root_reason": "Graph generation package exists but is not active in cmd/aift."
     },
     {
       "name": "intelligence",
@@ -274,11 +367,11 @@
         "internal/sliceutil",
         "internal/workspace"
       ],
-      "depended_by": [
-        "cmd/aift"
-      ],
+      "depended_by": null,
       "has_tests": true,
-      "category": "analysis"
+      "category": "analysis",
+      "root_status": "planned",
+      "root_reason": "Intelligence scan/report package exists but is not active."
     },
     {
       "name": "jobs",
@@ -330,11 +423,11 @@
       "depends_on": [
         "internal/config"
       ],
-      "depended_by": [
-        "cmd/aift"
-      ],
+      "depended_by": null,
       "has_tests": false,
-      "category": "kernel"
+      "category": "kernel",
+      "root_status": "planned",
+      "root_reason": "Kernel registry primitives exist but are not wired into active runtime."
     },
     {
       "name": "kernelregistry",
@@ -348,7 +441,6 @@
         "internal/workspace"
       ],
       "depended_by": [
-        "cmd/aift",
         "internal/kernelruntime"
       ],
       "has_tests": true,
@@ -364,11 +456,23 @@
         "internal/jsonfile",
         "internal/kernelregistry"
       ],
+      "depended_by": null,
+      "has_tests": false,
+      "category": "kernel",
+      "root_status": "planned",
+      "root_reason": "Kernel runtime package exists but boot/status/report are not active CLI commands."
+    },
+    {
+      "name": "lifecycle",
+      "path": "internal/lifecycle",
+      "depends_on": [
+        "internal/config"
+      ],
       "depended_by": [
-        "cmd/aift"
+        "internal/builder"
       ],
       "has_tests": false,
-      "category": "kernel"
+      "category": "other"
     },
     {
       "name": "manifests",
@@ -378,7 +482,6 @@
         "internal/workspace"
       ],
       "depended_by": [
-        "cmd/aift",
         "internal/api",
         "internal/federation",
         "internal/registry",
@@ -398,11 +501,11 @@
         "internal/jsonfile",
         "internal/workspace"
       ],
-      "depended_by": [
-        "cmd/aift"
-      ],
+      "depended_by": null,
       "has_tests": false,
-      "category": "operations"
+      "category": "operations",
+      "root_status": "planned",
+      "root_reason": "Manual/service contract reporting exists but is not active."
     },
     {
       "name": "modules",
@@ -415,11 +518,11 @@
         "internal/sliceutil",
         "internal/workspace"
       ],
-      "depended_by": [
-        "cmd/aift"
-      ],
+      "depended_by": null,
       "has_tests": true,
-      "category": "kernel"
+      "category": "kernel",
+      "root_status": "planned",
+      "root_reason": "Module registry package exists but module lifecycle is not active."
     },
     {
       "name": "patchengine",
@@ -428,11 +531,11 @@
         "internal/config",
         "internal/jsonfile"
       ],
-      "depended_by": [
-        "cmd/aift"
-      ],
+      "depended_by": null,
       "has_tests": true,
-      "category": "kernel"
+      "category": "kernel",
+      "root_status": "planned",
+      "root_reason": "Patch planning engine exists but repair execution is not active."
     },
     {
       "name": "planner",
@@ -444,11 +547,11 @@
         "internal/sliceutil",
         "internal/workspace"
       ],
-      "depended_by": [
-        "cmd/aift"
-      ],
+      "depended_by": null,
       "has_tests": true,
-      "category": "planning"
+      "category": "planning",
+      "root_status": "planned",
+      "root_reason": "Planning report package exists but workflow planner is not active."
     },
     {
       "name": "plugins",
@@ -457,11 +560,23 @@
         "internal/config",
         "internal/workspace"
       ],
-      "depended_by": [
-        "cmd/aift"
-      ],
+      "depended_by": null,
       "has_tests": false,
-      "category": "extensions"
+      "category": "extensions",
+      "root_status": "planned",
+      "root_reason": "Plugin listing package exists but plugin management is not active."
+    },
+    {
+      "name": "providerregistry",
+      "path": "internal/providerregistry",
+      "depends_on": [
+        "internal/config"
+      ],
+      "depended_by": null,
+      "has_tests": true,
+      "category": "other",
+      "root_status": "planned",
+      "root_reason": "Provider registry generator exists but is not active."
     },
     {
       "name": "providers",
@@ -471,12 +586,11 @@
         "internal/jsonfile"
       ],
       "depended_by": [
-        "cmd/aift",
         "internal/api",
         "internal/federation",
         "internal/jobs"
       ],
-      "has_tests": false,
+      "has_tests": true,
       "category": "extensions"
     },
     {
@@ -489,11 +603,11 @@
         "internal/jsonfile",
         "internal/workspace"
       ],
-      "depended_by": [
-        "cmd/aift"
-      ],
+      "depended_by": null,
       "has_tests": true,
-      "category": "other"
+      "category": "other",
+      "root_status": "planned",
+      "root_reason": "Readiness reports exist but are not active runtime checks."
     },
     {
       "name": "registry",
@@ -506,13 +620,11 @@
         "internal/workspace"
       ],
       "depended_by": [
-        "cmd/aift",
         "internal/api",
         "internal/federation",
-        "internal/jobs",
-        "internal/scheduler"
+        "internal/jobs"
       ],
-      "has_tests": false,
+      "has_tests": true,
       "category": "data"
     },
     {
@@ -525,7 +637,6 @@
         "internal/workspace"
       ],
       "depended_by": [
-        "cmd/aift",
         "internal/federation"
       ],
       "has_tests": true,
@@ -541,13 +652,11 @@
         "internal/workspace"
       ],
       "depended_by": [
-        "cmd/aift",
         "internal/api",
         "internal/federation",
-        "internal/jobs",
-        "internal/scheduler"
+        "internal/jobs"
       ],
-      "has_tests": false,
+      "has_tests": true,
       "category": "data"
     },
     {
@@ -560,7 +669,6 @@
         "internal/supervisor"
       ],
       "depended_by": [
-        "cmd/aift",
         "internal/daemon"
       ],
       "has_tests": false,
@@ -570,13 +678,11 @@
       "name": "scheduler",
       "path": "internal/scheduler",
       "depends_on": [
-        "internal/config",
-        "internal/events",
-        "internal/registry",
-        "internal/reports"
+        "internal/capability",
+        "internal/config"
       ],
       "depended_by": [
-        "cmd/aift"
+        "internal/builder"
       ],
       "has_tests": false,
       "category": "runtime"
@@ -589,11 +695,11 @@
         "internal/events",
         "internal/jsonfile"
       ],
-      "depended_by": [
-        "cmd/aift"
-      ],
+      "depended_by": null,
       "has_tests": true,
-      "category": "other"
+      "category": "other",
+      "root_status": "planned",
+      "root_reason": "Scheduler planning exists but scheduler execution is not active."
     },
     {
       "name": "servicecontracts",
@@ -605,11 +711,11 @@
         "internal/jsonfile",
         "internal/workspace"
       ],
-      "depended_by": [
-        "cmd/aift"
-      ],
+      "depended_by": null,
       "has_tests": true,
-      "category": "planning"
+      "category": "planning",
+      "root_status": "planned",
+      "root_reason": "Service contract package exists but is not active."
     },
     {
       "name": "services",
@@ -620,11 +726,10 @@
         "internal/state"
       ],
       "depended_by": [
-        "cmd/aift",
         "internal/api",
         "internal/supervisor"
       ],
-      "has_tests": false,
+      "has_tests": true,
       "category": "planning"
     },
     {
@@ -654,7 +759,7 @@
         "internal/services",
         "internal/supervisor"
       ],
-      "has_tests": false,
+      "has_tests": true,
       "category": "data"
     },
     {
@@ -682,7 +787,6 @@
         "internal/workspace"
       ],
       "depended_by": [
-        "cmd/aift",
         "internal/api"
       ],
       "has_tests": false,
@@ -693,7 +797,6 @@
       "path": "internal/version",
       "depends_on": null,
       "depended_by": [
-        "cmd/aift",
         "internal/api"
       ],
       "has_tests": false,
@@ -707,10 +810,9 @@
         "internal/jsonfile"
       ],
       "depended_by": [
-        "cmd/aift",
         "internal/federation"
       ],
-      "has_tests": false,
+      "has_tests": true,
       "category": "federation"
     },
     {
@@ -720,10 +822,10 @@
         "internal/config"
       ],
       "depended_by": [
-        "cmd/aift",
         "internal/capabilities",
         "internal/discoveryengine",
         "internal/eventmesh",
+        "internal/execution",
         "internal/graph",
         "internal/intelligence",
         "internal/kernelregistry",
@@ -739,55 +841,13 @@
         "internal/servicecontracts",
         "internal/sync"
       ],
-      "has_tests": false,
+      "has_tests": true,
       "category": "foundation"
     }
   ],
   "commands": [
     {
-      "name": "capabilities",
-      "has_handler": true,
-      "has_help": true,
-      "status": "active"
-    },
-    {
-      "name": "daemon",
-      "has_handler": true,
-      "has_help": true,
-      "status": "active"
-    },
-    {
-      "name": "dashboard",
-      "has_handler": true,
-      "has_help": true,
-      "status": "active"
-    },
-    {
-      "name": "deps",
-      "has_handler": true,
-      "has_help": true,
-      "status": "active"
-    },
-    {
-      "name": "discovery",
-      "has_handler": true,
-      "has_help": true,
-      "status": "active"
-    },
-    {
-      "name": "doctor",
-      "has_handler": true,
-      "has_help": true,
-      "status": "active"
-    },
-    {
-      "name": "event-bus",
-      "has_handler": true,
-      "has_help": true,
-      "status": "active"
-    },
-    {
-      "name": "events",
+      "name": "bootstrap",
       "has_handler": true,
       "has_help": true,
       "status": "active"
@@ -796,82 +856,10 @@
       "name": "federation",
       "has_handler": true,
       "has_help": true,
-      "status": "active"
-    },
-    {
-      "name": "graph",
-      "has_handler": true,
-      "has_help": true,
-      "status": "active"
-    },
-    {
-      "name": "intelligence",
-      "has_handler": true,
-      "has_help": true,
       "status": "planned"
     },
     {
-      "name": "kernel",
-      "has_handler": true,
-      "has_help": true,
-      "status": "active"
-    },
-    {
-      "name": "kernel-registry",
-      "has_handler": true,
-      "has_help": true,
-      "status": "active"
-    },
-    {
-      "name": "manifest",
-      "has_handler": true,
-      "has_help": true,
-      "status": "active"
-    },
-    {
-      "name": "manual",
-      "has_handler": true,
-      "has_help": true,
-      "status": "planned"
-    },
-    {
-      "name": "mesh",
-      "has_handler": true,
-      "has_help": true,
-      "status": "planned"
-    },
-    {
-      "name": "modules",
-      "has_handler": true,
-      "has_help": true,
-      "status": "active"
-    },
-    {
-      "name": "operator",
-      "has_handler": true,
-      "has_help": true,
-      "status": "active"
-    },
-    {
-      "name": "patch-engine",
-      "has_handler": true,
-      "has_help": true,
-      "status": "active"
-    },
-    {
-      "name": "plan",
-      "has_handler": true,
-      "has_help": true,
-      "status": "active"
-    },
-    {
-      "name": "plugins",
-      "has_handler": true,
-      "has_help": true,
-      "status": "active"
-    },
-    {
-      "name": "providers",
+      "name": "help",
       "has_handler": true,
       "has_help": true,
       "status": "active"
@@ -886,58 +874,10 @@
       "name": "repo",
       "has_handler": true,
       "has_help": true,
-      "status": "active"
-    },
-    {
-      "name": "runtime",
-      "has_handler": true,
-      "has_help": true,
-      "status": "active"
-    },
-    {
-      "name": "scheduler",
-      "has_handler": true,
-      "has_help": true,
-      "status": "active"
-    },
-    {
-      "name": "serve",
-      "has_handler": true,
-      "has_help": true,
-      "status": "active"
-    },
-    {
-      "name": "service-contracts",
-      "has_handler": true,
-      "has_help": true,
       "status": "planned"
     },
     {
-      "name": "services",
-      "has_handler": true,
-      "has_help": true,
-      "status": "active"
-    },
-    {
-      "name": "start",
-      "has_handler": true,
-      "has_help": true,
-      "status": "active"
-    },
-    {
       "name": "status",
-      "has_handler": true,
-      "has_help": true,
-      "status": "active"
-    },
-    {
-      "name": "sync",
-      "has_handler": true,
-      "has_help": true,
-      "status": "active"
-    },
-    {
-      "name": "tick",
       "has_handler": true,
       "has_help": true,
       "status": "active"
@@ -949,19 +889,21 @@
       "status": "active"
     },
     {
-      "name": "version",
-      "has_handler": true,
-      "has_help": true,
-      "status": "active"
-    },
-    {
       "name": "workflow",
       "has_handler": true,
       "has_help": true,
-      "status": "active"
+      "status": "planned"
     }
   ],
   "dependencies": [
+    {
+      "from": "internal/ai",
+      "to": "internal/compiler"
+    },
+    {
+      "from": "internal/ai",
+      "to": "internal/config"
+    },
     {
       "from": "internal/api",
       "to": "internal/config"
@@ -1003,6 +945,22 @@
       "to": "internal/version"
     },
     {
+      "from": "internal/builder",
+      "to": "internal/compiler"
+    },
+    {
+      "from": "internal/builder",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/builder",
+      "to": "internal/lifecycle"
+    },
+    {
+      "from": "internal/builder",
+      "to": "internal/scheduler"
+    },
+    {
       "from": "internal/capabilities",
       "to": "internal/config"
     },
@@ -1021,6 +979,18 @@
     {
       "from": "internal/capabilities",
       "to": "internal/workspace"
+    },
+    {
+      "from": "internal/capability",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/cli",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/compiler",
+      "to": "internal/config"
     },
     {
       "from": "internal/daemon",
@@ -1092,6 +1062,22 @@
     },
     {
       "from": "internal/events",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/execution",
+      "to": "internal/config"
+    },
+    {
+      "from": "internal/execution",
+      "to": "internal/workspace"
+    },
+    {
+      "from": "internal/fedbuild",
+      "to": "internal/capability"
+    },
+    {
+      "from": "internal/fedbuild",
       "to": "internal/config"
     },
     {
@@ -1251,6 +1237,10 @@
       "to": "internal/kernelregistry"
     },
     {
+      "from": "internal/lifecycle",
+      "to": "internal/config"
+    },
+    {
       "from": "internal/manifests",
       "to": "internal/config"
     },
@@ -1337,6 +1327,10 @@
     {
       "from": "internal/plugins",
       "to": "internal/workspace"
+    },
+    {
+      "from": "internal/providerregistry",
+      "to": "internal/config"
     },
     {
       "from": "internal/providers",
@@ -1436,19 +1430,11 @@
     },
     {
       "from": "internal/scheduler",
+      "to": "internal/capability"
+    },
+    {
+      "from": "internal/scheduler",
       "to": "internal/config"
-    },
-    {
-      "from": "internal/scheduler",
-      "to": "internal/events"
-    },
-    {
-      "from": "internal/scheduler",
-      "to": "internal/registry"
-    },
-    {
-      "from": "internal/scheduler",
-      "to": "internal/reports"
     },
     {
       "from": "internal/schedulerplan",
