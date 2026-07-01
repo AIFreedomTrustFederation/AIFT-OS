@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"runtime"
 	"sort"
 	"strings"
@@ -34,6 +35,7 @@ func main() {
 }
 
 func run(args []string) int {
+	args = stripArgv0(args)
 	cmds := commands()
 
 	if len(args) == 0 {
@@ -66,6 +68,27 @@ func run(args []string) int {
 	}
 
 	return 0
+}
+
+func stripArgv0(args []string) []string {
+	if len(args) == 0 {
+		return args
+	}
+
+	first := args[0]
+	base := filepath.Base(first)
+
+	if base == "aift" || base == "aift.exe" {
+		return args[1:]
+	}
+
+	if strings.Contains(first, string(os.PathSeparator)) {
+		if _, err := os.Stat(first); err == nil {
+			return args[1:]
+		}
+	}
+
+	return args
 }
 
 func commands() []Command {
