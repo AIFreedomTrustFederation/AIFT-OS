@@ -1,6 +1,6 @@
 # AIFT-OS Pull Request Audit Report
 
-Generated: 2026-07-01T07:06:04-07:00
+Generated: 2026-07-01T07:07:10-07:00
 
 Branch audited from: fix/windows-verification-bootstrap
 
@@ -12,8 +12,7 @@ All seven open PR branches were inspected, repaired, and pushed.
 
 At the latest GitHub check:
 
-- PR #16, #17, #18, and #19 are mergeable with successful CI and CodeRabbit checks.
-- PR #20, #21, and #22 are mergeable with fresh CI runs in progress after conflict repair.
+- PR #16 through #22 are mergeable with successful CI and CodeRabbit checks.
 - No compiled binaries, `node_modules`, or generated build output were committed.
 - Broken repair code from PR #22 was quarantined under `legacy/internal-repair-phase9/*.go.bak` rather than deleted or left compiling.
 
@@ -49,9 +48,9 @@ At the latest GitHub check:
 | #17 | `phase3-recursive-discovery-engine` | Go, coverage, architecture PASS | CI PASS, mergeable | Merge after review |
 | #18 | `phase4-federation-runtime-graph` | Go, coverage, architecture PASS | CI PASS, mergeable | Merge after review |
 | #19 | `phase5-upgrade-existing-runtime` | Go, coverage, architecture PASS | CI PASS, mergeable | Merge after review |
-| #20 | `phase7-doctor-git-housekeeping` | Go, coverage, architecture PASS | CI in progress, mergeable | Merge after CI PASS |
-| #21 | `phase7-repair-tests-from-reality` | Go, coverage, architecture PASS | CI in progress, mergeable | Merge after CI PASS |
-| #22 | `phase9-repair-real-repo-interfaces` | Go, coverage, architecture PASS | CI in progress, mergeable | Merge after CI PASS; repair remains planned/quarantined |
+| #20 | `phase7-doctor-git-housekeeping` | Go, coverage, architecture PASS | CI PASS, mergeable | Merge after review |
+| #21 | `phase7-repair-tests-from-reality` | Go, coverage, architecture PASS | CI PASS, mergeable | Merge after review |
+| #22 | `phase9-repair-real-repo-interfaces` | Go, coverage, architecture PASS | CI PASS, mergeable | Merge after review; repair remains planned/quarantined |
 
 ## Remaining Issues
 
@@ -63,6 +62,6 @@ At the latest GitHub check:
 ## Checks After
 
 - PR #16-#19: GitHub CI PASS.
-- PR #20-#22: GitHub CI running at the time of this report; local Go, coverage, and architecture checks PASS.
+- PR #20-#22: GitHub CI PASS; local Go, coverage, and architecture checks PASS.
 
 No functionality was marked working unless proven by local tests, local command output, or successful GitHub checks.
