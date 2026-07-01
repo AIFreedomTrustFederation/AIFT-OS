@@ -1,0 +1,257 @@
+package main
+
+import (
+	"fmt"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/builder"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/capability"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/cli"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/compiler"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/fedbuild"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/lifecycle"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/providerregistry"
+	"os"
+
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/ai"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/api"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/capabilities"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/daemon"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/doctor"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/eventmesh"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/events"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/federation"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/gitx"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/graph"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/intelligence"
+	_ "github.com/AIFreedomTrustFederation/AIFT-OS/internal/kernel"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manifests"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/manual"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/planner"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/plugins"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/providers"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/registry"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/repo"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/reports"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/runtime"
+	_ "github.com/AIFreedomTrustFederation/AIFT-OS/internal/scheduler"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/servicecontracts"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/services"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/sync"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/version"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/workflow"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/workspace"
+)
+
+func main() {
+	cfg := config.Load()
+	cmd := "help"
+	args := []string{}
+
+	if len(os.Args) > 1 {
+		cmd = os.Args[1]
+		args = os.Args[2:]
+	}
+
+	if looksLikeExecutablePath(cmd) {
+		if len(args) > 0 {
+			cmd = args[0]
+			args = args[1:]
+		} else {
+			cmd = "help"
+		}
+	}
+
+	var err error
+
+	switch cmd {
+	case "help", "-h", "--help":
+		help()
+	case "version":
+		fmt.Printf("%s %s — %s\n", version.Name, version.Version, version.Role)
+	case "doctor":
+		err = doctor.Run(cfg)
+	case "status":
+		err = status(cfg)
+	case "manifest":
+		err = manifests.EnsureAll(cfg)
+		if err == nil {
+			fmt.Println("OK: manifests ensured")
+		}
+	case "registry":
+		err = registry.Generate(cfg)
+	case "dashboard":
+		err = reports.Dashboard(cfg)
+	case "deps":
+		err = reports.Deps(cfg)
+	case "plugins":
+		err = plugins.List(cfg)
+	case "providers":
+		err = providers.List(cfg)
+	case "events":
+		err = events.Tail(cfg, 25)
+	case "services":
+		err = services.List(cfg)
+	case "start":
+		err = runtime.StartOnce(cfg)
+	case "tick":
+		err = runtime.Tick(cfg)
+	case "serve":
+		addr := ":8787"
+		if len(args) > 0 {
+			addr = args[0]
+		}
+		err = api.New(cfg, addr).Serve()
+	case "daemon":
+		addr := ":8787"
+		if len(args) > 0 {
+			addr = args[0]
+		}
+		err = daemon.Start(cfg, addr)
+	case "sync":
+		if len(args) == 0 || args[0] == "--safe" || args[0] == "safe" {
+			err = sync.Safe(cfg)
+		} else {
+			err = fmt.Errorf("only sync --safe is implemented in Go kernel")
+		}
+	case "federation":
+		err = runFederation(cfg, args)
+	case "repo":
+		err = runRepo(cfg, args)
+	case "workflow":
+		err = runWorkflow(cfg, args)
+	case "capabilities":
+		err = runCapabilities(cfg, args)
+	case "intelligence":
+		err = runIntelligence(cfg, args)
+	case "manual":
+		err = runManual(cfg, args)
+	case "graph":
+		err = graph.Query(cfg, args)
+	case "mesh":
+		err = runMesh(cfg, args)
+	case "service-contracts":
+		err = runServiceContracts(cfg, args)
+	case "plan":
+		err = runPlanner(cfg, args)
+	case "modules":
+		err = runModules(cfg, args)
+	case "kernel-registry":
+		err = runKernelRegistry(cfg, args)
+	case "discovery":
+		err = runDiscovery(cfg, args)
+	case "event-bus":
+		err = runEventBus(cfg, args)
+	case "patch-engine":
+		err = runPatchEngine(cfg, args)
+	case "kernel":
+		err = runKernelRuntime(cfg, args)
+	case "runtime":
+		err = runRuntime(cfg, args)
+	case "operator":
+		err = runOperator(cfg, args)
+	case "cli-registry":
+		if err := cli.Run(cfg); err != nil {
+			panic(err)
+		}
+	case "provider-registry":
+		if err := providerregistry.Run(cfg); err != nil {
+			panic(err)
+		}
+	case "scheduler":
+		err = runScheduler(cfg, args)
+
+	case "ai":
+		if err := ai.Run(cfg); err != nil {
+			panic(err)
+		}
+	case "compile":
+		if err := compiler.Run(cfg); err != nil {
+			panic(err)
+		}
+	case "compiler":
+		if err := compiler.Run(cfg); err != nil {
+			panic(err)
+		}
+	case "capability":
+		if err := capability.Run(cfg); err != nil {
+			panic(err)
+		}
+	case "federation-build":
+		async := len(args) > 1 && args[1] == "--async"
+		if err := fedbuild.Run(cfg, async); err != nil {
+			panic(err)
+		}
+	case "build":
+		if err := builder.Run(cfg); err != nil {
+			panic(err)
+		}
+	case "lifecycle":
+		if err := lifecycle.Run(cfg); err != nil {
+			panic(err)
+		}
+	case "verify":
+		err = verify(cfg)
+	default:
+		err = fmt.Errorf("unknown command: %s", cmd)
+	}
+
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "ERROR:", err)
+		os.Exit(1)
+	}
+}
+
+func looksLikeExecutablePath(s string) bool {
+	return len(s) > 0 && (s[0] == '/' || s == "aiftd" || s == "./aiftd" || s == "bin/aiftd")
+}
+
+func help() {
+	fmt.Println("AIFT-OS Federation Control Plane")
+	fmt.Println("")
+	fmt.Println("Commands:")
+	fmt.Println("  ai")
+	fmt.Println("  build")
+	fmt.Println("  capabilities")
+	fmt.Println("  capability")
+	fmt.Println("  cli-registry")
+	fmt.Println("  compile")
+	fmt.Println("  compiler")
+	fmt.Println("  daemon")
+	fmt.Println("  dashboard")
+	fmt.Println("  deps")
+	fmt.Println("  discovery")
+	fmt.Println("  doctor")
+	fmt.Println("  event-bus")
+	fmt.Println("  events")
+	fmt.Println("  federation")
+	fmt.Println("  federation-build")
+	fmt.Println("  graph")
+	fmt.Println("  intelligence")
+	fmt.Println("  kernel")
+	fmt.Println("  kernel-registry")
+	fmt.Println("  lifecycle")
+	fmt.Println("  manifest")
+	fmt.Println("  manual")
+	fmt.Println("  mesh")
+	fmt.Println("  modules")
+	fmt.Println("  operator")
+	fmt.Println("  patch-engine")
+	fmt.Println("  plan")
+	fmt.Println("  plugins")
+	fmt.Println("  provider-registry")
+	fmt.Println("  providers")
+	fmt.Println("  registry")
+	fmt.Println("  repo")
+	fmt.Println("  runtime")
+	fmt.Println("  scheduler")
+	fmt.Println("  serve")
+	fmt.Println("  service-contracts")
+	fmt.Println("  services")
+	fmt.Println("  start")
+	fmt.Println("  status")
+	fmt.Println("  sync")
+	fmt.Println("  tick")
+	fmt.Println("  verify")
+	fmt.Println("  version")
+	fmt.Println("  workflow")
+}
