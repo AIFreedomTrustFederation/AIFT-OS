@@ -1,4 +1,5 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
+# no-harness: phase bootstrap script; intentionally standalone runtime check utility
 set -euo pipefail
 
 cd "$HOME/AIFT/AIFT-OS"
