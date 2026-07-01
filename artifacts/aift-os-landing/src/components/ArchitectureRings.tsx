@@ -3,24 +3,68 @@ import { useState } from "react";
 
 // Spectrum colors for governance layers (inner=violet/high-coherence → outer=red/expansion)
 const RING_COLORS = [
-  { stroke: "#cc88ff", glow: "rgba(200,136,255,0.6)", label: "255,255,255" },   // Core — white/unity
-  { stroke: "#8855ee", glow: "rgba(136,85,238,0.5)", label: "136,85,238" },     // Council — violet
-  { stroke: "#4499ff", glow: "rgba(68,153,255,0.5)", label: "68,153,255" },     // Validators — blue
-  { stroke: "#00ddaa", glow: "rgba(0,221,170,0.5)", label: "0,221,170" },       // Runtime — cyan/green
-  { stroke: "#88dd00", glow: "rgba(136,221,0,0.4)", label: "136,221,0" },       // Nodes — yellow-green
-  { stroke: "#ff9900", glow: "rgba(255,153,0,0.4)", label: "255,153,0" },       // Sovereign — amber
+  { stroke: "#cc88ff", glow: "rgba(200,136,255,0.6)", label: "255,255,255" }, // Core — white/unity
+  { stroke: "#8855ee", glow: "rgba(136,85,238,0.5)", label: "136,85,238" }, // Council — violet
+  { stroke: "#4499ff", glow: "rgba(68,153,255,0.5)", label: "68,153,255" }, // Validators — blue
+  { stroke: "#00ddaa", glow: "rgba(0,221,170,0.5)", label: "0,221,170" }, // Runtime — cyan/green
+  { stroke: "#88dd00", glow: "rgba(136,221,0,0.4)", label: "136,221,0" }, // Nodes — yellow-green
+  { stroke: "#ff9900", glow: "rgba(255,153,0,0.4)", label: "255,153,0" }, // Sovereign — amber
 ];
 
 const LAYERS = [
-  { id: 0, name: "Constitutional Core",          radius: 55,  strokeWidth: 2.5, dashArray: "0" },
-  { id: 1, name: "Council of 24 Elders",         radius: 110, strokeWidth: 1.5, dashArray: "4 4",  nodes: 24 },
-  { id: 2, name: "12 Validator Orders",           radius: 175, strokeWidth: 2,   dashArray: "0",    nodes: 12 },
-  { id: 3, name: "Federation Runtime & Services", radius: 250, strokeWidth: 1,   dashArray: "3 7",  nodes: 10 },
-  { id: 4, name: "Sovereign Federation Nodes",    radius: 335, strokeWidth: 1.5, dashArray: "10 5", nodes: 6 },
-  { id: 5, name: "Individual Sovereign Trees",    radius: 430, strokeWidth: 0.5, dashArray: "1 10", nodes: 32 },
+  {
+    id: 0,
+    name: "Constitutional Core",
+    radius: 55,
+    strokeWidth: 2.5,
+    dashArray: "0",
+  },
+  {
+    id: 1,
+    name: "Council of 24 Elders",
+    radius: 110,
+    strokeWidth: 1.5,
+    dashArray: "4 4",
+    nodes: 24,
+  },
+  {
+    id: 2,
+    name: "12 Validator Orders",
+    radius: 175,
+    strokeWidth: 2,
+    dashArray: "0",
+    nodes: 12,
+  },
+  {
+    id: 3,
+    name: "Federation Runtime & Services",
+    radius: 250,
+    strokeWidth: 1,
+    dashArray: "3 7",
+    nodes: 10,
+  },
+  {
+    id: 4,
+    name: "Sovereign Federation Nodes",
+    radius: 335,
+    strokeWidth: 1.5,
+    dashArray: "10 5",
+    nodes: 6,
+  },
+  {
+    id: 5,
+    name: "Individual Sovereign Trees",
+    radius: 430,
+    strokeWidth: 0.5,
+    dashArray: "1 10",
+    nodes: 32,
+  },
 ];
 
-const LAYER_DETAILS: Record<number, { title: string; sub: string; desc: string; color: string }> = {
+const LAYER_DETAILS: Record<
+  number,
+  { title: string; sub: string; desc: string; color: string }
+> = {
   0: {
     title: "Constitutional Core",
     sub: "Unity · Maximum Coherence",
@@ -88,7 +132,8 @@ export function ArchitectureRings() {
           The Governance Architecture
         </h2>
         <p className="font-mono text-sm text-white/40 max-w-xl mx-auto">
-          From constitutional coherence at the center outward to sovereign expansion. Click any ring to inspect its domain.
+          From constitutional coherence at the center outward to sovereign
+          expansion. Click any ring to inspect its domain.
         </p>
       </motion.div>
 
@@ -98,38 +143,51 @@ export function ArchitectureRings() {
       <div className="relative w-full max-w-[1000px] flex flex-col items-center">
         {/* Info panel */}
         <motion.div
-          animate={{ opacity: activeLayer !== null ? 1 : 0, y: activeLayer !== null ? 0 : 10 }}
+          animate={{
+            opacity: activeLayer !== null ? 1 : 0,
+            y: activeLayer !== null ? 0 : 10,
+          }}
           transition={{ duration: 0.3 }}
           className="absolute top-4 right-0 md:-right-4 z-20 w-72 pointer-events-none"
           style={{ maxWidth: "90vw" }}
         >
-          {activeLayer !== null && (() => {
-            const d = LAYER_DETAILS[activeLayer];
-            const c = RING_COLORS[activeLayer];
-            return (
-              <div
-                className="p-5 rounded-xl backdrop-blur-xl pointer-events-auto"
-                style={{
-                  border: `1px solid ${c.stroke}44`,
-                  background: `rgba(0,0,0,0.7)`,
-                  boxShadow: `0 0 30px ${c.glow}33`,
-                }}
-              >
-                <div className="font-mono text-[10px] uppercase tracking-widest mb-1" style={{ color: d.color }}>
-                  Layer {activeLayer}
+          {activeLayer !== null &&
+            (() => {
+              const d = LAYER_DETAILS[activeLayer];
+              const c = RING_COLORS[activeLayer];
+              return (
+                <div
+                  className="p-5 rounded-xl backdrop-blur-xl pointer-events-auto"
+                  style={{
+                    border: `1px solid ${c.stroke}44`,
+                    background: `rgba(0,0,0,0.7)`,
+                    boxShadow: `0 0 30px ${c.glow}33`,
+                  }}
+                >
+                  <div
+                    className="font-mono text-[10px] uppercase tracking-widest mb-1"
+                    style={{ color: d.color }}
+                  >
+                    Layer {activeLayer}
+                  </div>
+                  <h3
+                    className="font-cinzel text-lg font-bold mb-1"
+                    style={{ color: d.color }}
+                  >
+                    {d.title}
+                  </h3>
+                  <p
+                    className="font-mono text-[10px] mb-3"
+                    style={{ color: d.color + "99" }}
+                  >
+                    {d.sub}
+                  </p>
+                  <p className="text-sm text-white/60 leading-relaxed">
+                    {d.desc}
+                  </p>
                 </div>
-                <h3 className="font-cinzel text-lg font-bold mb-1" style={{ color: d.color }}>
-                  {d.title}
-                </h3>
-                <p className="font-mono text-[10px] mb-3" style={{ color: d.color + "99" }}>
-                  {d.sub}
-                </p>
-                <p className="text-sm text-white/60 leading-relaxed">
-                  {d.desc}
-                </p>
-              </div>
-            );
-          })()}
+              );
+            })()}
         </motion.div>
 
         {/* SVG diagram */}
@@ -146,7 +204,13 @@ export function ArchitectureRings() {
                 <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
-            <filter id="coreGlow" x="-100%" y="-100%" width="300%" height="300%">
+            <filter
+              id="coreGlow"
+              x="-100%"
+              y="-100%"
+              width="300%"
+              height="300%"
+            >
               <feGaussianBlur stdDeviation="12" result="coloredBlur" />
               <feMerge>
                 <feMergeNode in="coloredBlur" />
@@ -167,7 +231,16 @@ export function ArchitectureRings() {
             const r = 480 - (i % 5) * 20;
             const x = center + Math.cos(angle) * r;
             const y = center + Math.sin(angle) * r;
-            return <circle key={i} cx={x} cy={y} r={0.8} fill="white" opacity={0.15 + (i % 3) * 0.1} />;
+            return (
+              <circle
+                key={i}
+                cx={x}
+                cy={y}
+                r={0.8}
+                fill="white"
+                opacity={0.15 + (i % 3) * 0.1}
+              />
+            );
           })}
 
           {/* Core ambient glow */}
@@ -189,11 +262,12 @@ export function ArchitectureRings() {
                 nodes.push(
                   <circle
                     key={`n-${layer.id}-${i}`}
-                    cx={nx} cy={ny}
+                    cx={nx}
+                    cy={ny}
                     r={isActive ? 5 : 2.5}
                     fill={isActive ? rc.stroke : `rgba(${rc.label},0.4)`}
                     className="transition-all duration-300"
-                  />
+                  />,
                 );
               }
             }
@@ -208,19 +282,29 @@ export function ArchitectureRings() {
               >
                 {/* Wide hit area */}
                 <circle
-                  cx={center} cy={center} r={layer.radius + 20}
-                  fill="transparent" stroke="transparent" strokeWidth={40}
+                  cx={center}
+                  cy={center}
+                  r={layer.radius + 20}
+                  fill="transparent"
+                  stroke="transparent"
+                  strokeWidth={40}
                 />
 
                 <motion.g
                   animate={{ rotate: index % 2 === 0 ? 360 : -360 }}
-                  transition={{ duration: 80 + index * 25, repeat: Infinity, ease: "linear" }}
+                  transition={{
+                    duration: 80 + index * 25,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
                   style={{ originX: `${center}px`, originY: `${center}px` }}
                 >
                   {/* Glow halo when active */}
                   {isActive && (
                     <circle
-                      cx={center} cy={center} r={layer.radius}
+                      cx={center}
+                      cy={center}
+                      r={layer.radius}
                       fill="transparent"
                       stroke={rc.stroke}
                       strokeWidth={14}
@@ -230,10 +314,18 @@ export function ArchitectureRings() {
                   )}
 
                   <circle
-                    cx={center} cy={center} r={layer.radius}
+                    cx={center}
+                    cy={center}
+                    r={layer.radius}
                     fill="transparent"
-                    stroke={isActive ? rc.stroke : `rgba(${rc.label},${index === 0 ? 0.5 : 0.2})`}
-                    strokeWidth={isActive ? layer.strokeWidth * 2.5 : layer.strokeWidth}
+                    stroke={
+                      isActive
+                        ? rc.stroke
+                        : `rgba(${rc.label},${index === 0 ? 0.5 : 0.2})`
+                    }
+                    strokeWidth={
+                      isActive ? layer.strokeWidth * 2.5 : layer.strokeWidth
+                    }
                     strokeDasharray={layer.dashArray}
                     filter={isActive ? "url(#ringGlow)" : ""}
                     className="transition-all duration-500"
@@ -260,8 +352,15 @@ export function ArchitectureRings() {
           })}
 
           {/* Core center dot */}
-          <circle cx={center} cy={center} r={12} fill="#ffffff" filter="url(#coreGlow)" opacity={0.9} />
-          <circle cx={center} cy={center} r={6}  fill="#ffffff" opacity={1} />
+          <circle
+            cx={center}
+            cy={center}
+            r={12}
+            fill="#ffffff"
+            filter="url(#coreGlow)"
+            opacity={0.9}
+          />
+          <circle cx={center} cy={center} r={6} fill="#ffffff" opacity={1} />
 
           {/* Labels for each ring at fixed angle */}
           {LAYERS.map((layer, index) => {
@@ -272,7 +371,8 @@ export function ArchitectureRings() {
             return (
               <text
                 key={`lbl-${layer.id}`}
-                x={lx} y={ly}
+                x={lx}
+                y={ly}
                 fill={`rgba(${rc.label},0.5)`}
                 fontSize="8"
                 fontFamily="Space Mono, monospace"
@@ -290,15 +390,28 @@ export function ArchitectureRings() {
           {LAYERS.map((layer, i) => (
             <button
               key={layer.id}
-              onClick={() => setActiveLayer(activeLayer === layer.id ? null : layer.id)}
+              onClick={() =>
+                setActiveLayer(activeLayer === layer.id ? null : layer.id)
+              }
               className="flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-300"
               style={{
                 border: `1px solid ${RING_COLORS[i].stroke}${activeLayer === layer.id ? "88" : "22"}`,
-                background: activeLayer === layer.id ? `${RING_COLORS[i].stroke}11` : "transparent",
+                background:
+                  activeLayer === layer.id
+                    ? `${RING_COLORS[i].stroke}11`
+                    : "transparent",
               }}
             >
-              <span className="w-2 h-2 rounded-full" style={{ background: RING_COLORS[i].stroke, boxShadow: `0 0 6px ${RING_COLORS[i].stroke}` }} />
-              <span className="font-mono text-[10px] text-white/50">{layer.name}</span>
+              <span
+                className="w-2 h-2 rounded-full"
+                style={{
+                  background: RING_COLORS[i].stroke,
+                  boxShadow: `0 0 6px ${RING_COLORS[i].stroke}`,
+                }}
+              />
+              <span className="font-mono text-[10px] text-white/50">
+                {layer.name}
+              </span>
             </button>
           ))}
         </div>
