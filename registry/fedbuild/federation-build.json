@@ -1,0 +1,511 @@
+{
+  "name": "AIFT Federation Build Engine",
+  "time": "2026-06-30T23:36:42Z",
+  "root": "/data/data/com.termux/files/home/AIFT",
+  "os_home": "/data/data/com.termux/files/home/AIFT/AIFT-OS",
+  "verified": false,
+  "mode": "sync",
+  "modules": [
+    {
+      "name": ".github",
+      "path": "/data/data/com.termux/files/home/AIFT/.github",
+      "branch": "main",
+      "state": "dirty",
+      "mode": "sync",
+      "runtime": "unknown",
+      "build": null,
+      "test": null,
+      "status": "planned",
+      "blocked": null,
+      "waiting": [
+        "no supported build provider detected",
+        "missing AIFT manifest"
+      ],
+      "artifacts": null
+    },
+    {
+      "name": "AI-Freedom-Trust",
+      "path": "/data/data/com.termux/files/home/AIFT/AI-Freedom-Trust",
+      "branch": "main",
+      "state": "dirty",
+      "mode": "sync",
+      "runtime": "unknown",
+      "build": null,
+      "test": null,
+      "status": "planned",
+      "blocked": null,
+      "waiting": [
+        "no supported build provider detected"
+      ],
+      "artifacts": null
+    },
+    {
+      "name": "AIFT-Forge",
+      "path": "/data/data/com.termux/files/home/AIFT/AIFT-Forge",
+      "branch": "main",
+      "state": "dirty",
+      "mode": "sync",
+      "runtime": "node-npm",
+      "build": [
+        "npm run build"
+      ],
+      "test": [
+        "npm test"
+      ],
+      "status": "blocked",
+      "blocked": [
+        "build failed: npm run build: exit status 1"
+      ],
+      "waiting": null,
+      "artifacts": null
+    },
+    {
+      "name": "AIFT-Genesis",
+      "path": "/data/data/com.termux/files/home/AIFT/AIFT-Genesis",
+      "branch": "main",
+      "state": "dirty",
+      "mode": "sync",
+      "runtime": "unknown",
+      "build": null,
+      "test": null,
+      "status": "planned",
+      "blocked": null,
+      "waiting": [
+        "no supported build provider detected"
+      ],
+      "artifacts": null
+    },
+    {
+      "name": "AIFT-OS",
+      "path": "/data/data/com.termux/files/home/AIFT/AIFT-OS",
+      "branch": "main",
+      "state": "dirty",
+      "mode": "sync",
+      "runtime": "go",
+      "build": [
+        "go build ./..."
+      ],
+      "test": [
+        "go test ./..."
+      ],
+      "status": "active",
+      "blocked": null,
+      "waiting": null,
+      "artifacts": null
+    },
+    {
+      "name": "Aether_Coin_biozonecurrency",
+      "path": "/data/data/com.termux/files/home/AIFT/Aether_Coin_biozonecurrency",
+      "branch": "main",
+      "state": "dirty",
+      "mode": "sync",
+      "runtime": "node-npm",
+      "build": [
+        "npm run build"
+      ],
+      "test": [
+        "npm test"
+      ],
+      "status": "blocked",
+      "blocked": [
+        "build failed: npm run build: exit status 1"
+      ],
+      "waiting": null,
+      "artifacts": null
+    },
+    {
+      "name": "AetherianGovernance",
+      "path": "/data/data/com.termux/files/home/AIFT/AetherianGovernance",
+      "branch": "main",
+      "state": "dirty",
+      "mode": "sync",
+      "runtime": "unknown",
+      "build": null,
+      "test": null,
+      "status": "planned",
+      "blocked": null,
+      "waiting": [
+        "no supported build provider detected"
+      ],
+      "artifacts": null
+    },
+    {
+      "name": "BookSmith-Federation-OS",
+      "path": "/data/data/com.termux/files/home/AIFT/BookSmith-Federation-OS",
+      "branch": "main",
+      "state": "dirty",
+      "mode": "sync",
+      "runtime": "node",
+      "build": [
+        "npm run build"
+      ],
+      "test": [
+        "npm test"
+      ],
+      "status": "blocked",
+      "blocked": [
+        "build failed: npm run build: exit status 1"
+      ],
+      "waiting": null,
+      "artifacts": null
+    },
+    {
+      "name": "OpenMontage",
+      "path": "/data/data/com.termux/files/home/AIFT/OpenMontage",
+      "branch": "main",
+      "state": "dirty",
+      "mode": "sync",
+      "runtime": "python",
+      "build": [
+        "python -m compileall ."
+      ],
+      "test": [
+        "python -m pytest"
+      ],
+      "status": "blocked",
+      "blocked": [
+        "test failed: python -m pytest: exit status 1"
+      ],
+      "waiting": null,
+      "artifacts": null
+    },
+    {
+      "name": "TheMindofAll",
+      "path": "/data/data/com.termux/files/home/AIFT/TheMindofAll",
+      "branch": "main",
+      "state": "dirty",
+      "mode": "sync",
+      "runtime": "unknown",
+      "build": null,
+      "test": null,
+      "status": "planned",
+      "blocked": null,
+      "waiting": [
+        "no supported build provider detected"
+      ],
+      "artifacts": null
+    },
+    {
+      "name": "VPS",
+      "path": "/data/data/com.termux/files/home/AIFT/VPS",
+      "branch": "main",
+      "state": "dirty",
+      "mode": "sync",
+      "runtime": "node",
+      "build": [
+        "npm run build"
+      ],
+      "test": [
+        "npm test"
+      ],
+      "status": "blocked",
+      "blocked": [
+        "build failed: npm run build: exit status 1"
+      ],
+      "waiting": null,
+      "artifacts": null
+    },
+    {
+      "name": "aifreedomtrustfederation.github.io",
+      "path": "/data/data/com.termux/files/home/AIFT/aifreedomtrustfederation.github.io",
+      "branch": "main",
+      "state": "dirty",
+      "mode": "sync",
+      "runtime": "unknown",
+      "build": null,
+      "test": null,
+      "status": "planned",
+      "blocked": null,
+      "waiting": [
+        "no supported build provider detected"
+      ],
+      "artifacts": null
+    },
+    {
+      "name": "biozone-harmony-boost",
+      "path": "/data/data/com.termux/files/home/AIFT/biozone-harmony-boost",
+      "branch": "main",
+      "state": "dirty",
+      "mode": "sync",
+      "runtime": "node-npm",
+      "build": [
+        "npm run build"
+      ],
+      "test": [
+        "npm test"
+      ],
+      "status": "blocked",
+      "blocked": [
+        "build failed: npm run build: exit status 1"
+      ],
+      "waiting": null,
+      "artifacts": null
+    },
+    {
+      "name": "booksmith-ai",
+      "path": "/data/data/com.termux/files/home/AIFT/booksmith-ai",
+      "branch": "main",
+      "state": "dirty",
+      "mode": "sync",
+      "runtime": "node-npm",
+      "build": [
+        "npm run build"
+      ],
+      "test": [
+        "npm test"
+      ],
+      "status": "blocked",
+      "blocked": [
+        "build failed: npm run build: exit status 1"
+      ],
+      "waiting": null,
+      "artifacts": null
+    },
+    {
+      "name": "c-848263",
+      "path": "/data/data/com.termux/files/home/AIFT/c-848263",
+      "branch": "main",
+      "state": "dirty",
+      "mode": "sync",
+      "runtime": "node-npm",
+      "build": [
+        "npm run build"
+      ],
+      "test": [
+        "npm test"
+      ],
+      "status": "blocked",
+      "blocked": [
+        "build failed: npm run build: exit status 1"
+      ],
+      "waiting": null,
+      "artifacts": null
+    },
+    {
+      "name": "capital-city-provisions",
+      "path": "/data/data/com.termux/files/home/AIFT/capital-city-provisions",
+      "branch": "main",
+      "state": "dirty",
+      "mode": "sync",
+      "runtime": "node-npm",
+      "build": [
+        "npm run build"
+      ],
+      "test": [
+        "npm test"
+      ],
+      "status": "blocked",
+      "blocked": [
+        "build failed: npm run build: exit status 1"
+      ],
+      "waiting": null,
+      "artifacts": null
+    },
+    {
+      "name": "chktex",
+      "path": "/data/data/com.termux/files/home/AIFT/chktex",
+      "branch": "master",
+      "state": "dirty",
+      "mode": "sync",
+      "runtime": "unknown",
+      "build": null,
+      "test": null,
+      "status": "planned",
+      "blocked": null,
+      "waiting": [
+        "no supported build provider detected"
+      ],
+      "artifacts": null
+    },
+    {
+      "name": "mobox",
+      "path": "/data/data/com.termux/files/home/AIFT/mobox",
+      "branch": "main",
+      "state": "dirty",
+      "mode": "sync",
+      "runtime": "unknown",
+      "build": null,
+      "test": null,
+      "status": "planned",
+      "blocked": null,
+      "waiting": [
+        "no supported build provider detected"
+      ],
+      "artifacts": null
+    },
+    {
+      "name": "repo-brainstorm-backend-forge",
+      "path": "/data/data/com.termux/files/home/AIFT/repo-brainstorm-backend-forge",
+      "branch": "main",
+      "state": "dirty",
+      "mode": "sync",
+      "runtime": "node-npm",
+      "build": [
+        "npm run build"
+      ],
+      "test": [
+        "npm test"
+      ],
+      "status": "blocked",
+      "blocked": [
+        "build failed: npm run build: exit status 1"
+      ],
+      "waiting": null,
+      "artifacts": null
+    },
+    {
+      "name": "tastycutz",
+      "path": "/data/data/com.termux/files/home/AIFT/tastycutz",
+      "branch": "main",
+      "state": "dirty",
+      "mode": "sync",
+      "runtime": "node-npm",
+      "build": [
+        "npm run build"
+      ],
+      "test": [
+        "npm test"
+      ],
+      "status": "blocked",
+      "blocked": [
+        "build failed: npm run build: exit status 1"
+      ],
+      "waiting": null,
+      "artifacts": null
+    },
+    {
+      "name": "www.aifreedomtrust.com",
+      "path": "/data/data/com.termux/files/home/AIFT/www.aifreedomtrust.com",
+      "branch": "main",
+      "state": "dirty",
+      "mode": "sync",
+      "runtime": "unknown",
+      "build": null,
+      "test": null,
+      "status": "planned",
+      "blocked": null,
+      "waiting": [
+        "no supported build provider detected"
+      ],
+      "artifacts": null
+    }
+  ],
+  "blocked": null,
+  "capabilities": {
+    "name": "AIFT Capability Discovery",
+    "time": "2026-06-30T23:36:40Z",
+    "root": "/data/data/com.termux/files/home/AIFT",
+    "os_home": "/data/data/com.termux/files/home/AIFT/AIFT-OS",
+    "verified": true,
+    "capabilities": [
+      {
+        "name": "go",
+        "command": "go",
+        "installed": true,
+        "path": "/data/data/com.termux/files/usr/bin/go"
+      },
+      {
+        "name": "git",
+        "command": "git",
+        "installed": true,
+        "path": "/data/data/com.termux/files/usr/bin/git"
+      },
+      {
+        "name": "node",
+        "command": "node",
+        "installed": true,
+        "path": "/data/data/com.termux/files/usr/bin/node"
+      },
+      {
+        "name": "npm",
+        "command": "npm",
+        "installed": true,
+        "path": "/data/data/com.termux/files/usr/bin/npm"
+      },
+      {
+        "name": "pnpm",
+        "command": "pnpm",
+        "installed": true,
+        "path": "/data/data/com.termux/files/usr/bin/pnpm"
+      },
+      {
+        "name": "bun",
+        "command": "bun",
+        "installed": false,
+        "path": ""
+      },
+      {
+        "name": "python",
+        "command": "python",
+        "installed": true,
+        "path": "/data/data/com.termux/files/usr/bin/python"
+      },
+      {
+        "name": "python3",
+        "command": "python3",
+        "installed": true,
+        "path": "/data/data/com.termux/files/usr/bin/python3"
+      },
+      {
+        "name": "pip",
+        "command": "pip",
+        "installed": true,
+        "path": "/data/data/com.termux/files/usr/bin/pip"
+      },
+      {
+        "name": "pip3",
+        "command": "pip3",
+        "installed": true,
+        "path": "/data/data/com.termux/files/usr/bin/pip3"
+      },
+      {
+        "name": "cargo",
+        "command": "cargo",
+        "installed": false,
+        "path": ""
+      },
+      {
+        "name": "rustc",
+        "command": "rustc",
+        "installed": false,
+        "path": ""
+      },
+      {
+        "name": "make",
+        "command": "make",
+        "installed": true,
+        "path": "/data/data/com.termux/files/usr/bin/make"
+      },
+      {
+        "name": "docker",
+        "command": "docker",
+        "installed": false,
+        "path": ""
+      },
+      {
+        "name": "java",
+        "command": "java",
+        "installed": true,
+        "path": "/data/data/com.termux/files/usr/bin/java"
+      },
+      {
+        "name": "mvn",
+        "command": "mvn",
+        "installed": false,
+        "path": ""
+      },
+      {
+        "name": "gradle",
+        "command": "gradle",
+        "installed": true,
+        "path": "/data/data/com.termux/files/usr/bin/gradle"
+      },
+      {
+        "name": "zig",
+        "command": "zig",
+        "installed": false,
+        "path": ""
+      }
+    ]
+  }
+}
