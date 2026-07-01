@@ -1,0 +1,5 @@
+digraph AIFT_Federation_Runtime {
+  rankdir=LR;
+  federation [label="AIFT Federation Runtime"];
+  federation -> repo__github;
+  repo__github [label=".github"];
