@@ -1,0 +1,16 @@
+AIFT-OS CLI
+
+Truthful local-first federation operator CLI.
+
+Usage:
+  aift <command> [args]
+
+Commands:
+  bootstrap    active   Print federation bootstrap discovery JSON.
+  federation   planned  Federation command group; planned until real APIs are proven.
+  help         active   Show available commands.
+  registry     active   Print command registry as JSON.
+  repo         planned  Repository command group; planned until real APIs are proven.
+  status       active   Inspect the real local repository status.
+  verify       active   Run real local bootstrap verification checks.
+  workflow     planned  Workflow command group; planned until real APIs are proven.
