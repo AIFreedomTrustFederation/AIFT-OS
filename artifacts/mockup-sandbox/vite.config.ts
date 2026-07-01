@@ -5,30 +5,21 @@ import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 import { mockupPreviewPlugin } from "./mockupPreviewPlugin";
 
-const rawPort = process.env.PORT;
+function resolvePort() {
+  const rawPort = process.env.PORT;
+  if (!rawPort) {
+    return 5173;
+  }
 
-if (!rawPort) {
-  throw new Error(
-    "PORT environment variable is required but was not provided.",
-  );
-}
-
-const port = Number(rawPort);
-
-if (Number.isNaN(port) || port <= 0) {
-  throw new Error(`Invalid PORT value: "${rawPort}"`);
-}
-
-const basePath = process.env.BASE_PATH;
-
-if (!basePath) {
-  throw new Error(
-    "BASE_PATH environment variable is required but was not provided.",
-  );
+  const port = Number(rawPort);
+  if (Number.isNaN(port) || port <= 0) {
+    throw new Error(`Invalid PORT value: "${rawPort}"`);
+  }
+  return port;
 }
 
 export default defineConfig({
-  base: basePath,
+  base: process.env.BASE_PATH || "/",
   plugins: [
     mockupPreviewPlugin(),
     react(),
@@ -56,7 +47,7 @@ export default defineConfig({
     emptyOutDir: true,
   },
   server: {
-    port,
+    port: resolvePort(),
     host: "0.0.0.0",
     allowedHosts: true,
     fs: {
@@ -64,7 +55,7 @@ export default defineConfig({
     },
   },
   preview: {
-    port,
+    port: resolvePort(),
     host: "0.0.0.0",
     allowedHosts: true,
   },

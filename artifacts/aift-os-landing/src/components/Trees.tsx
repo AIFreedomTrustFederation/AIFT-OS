@@ -68,7 +68,7 @@ export function TreeVisualizer({
       len: number,
       angle: number,
       depth: number,
-      t: number
+      t: number,
     ) {
       if (depth === 0 || len < 1) return;
 
@@ -80,7 +80,7 @@ export function TreeVisualizer({
       gfx.lineTo(endX, endY);
       gfx.lineWidth = Math.max(0.3, depth * branchWidthMult);
       gfx.strokeStyle = branchColor(depth, maxDepth, t);
-      gfx.shadowBlur = depth === maxDepth ? 0 : (isLife ? 4 : 2);
+      gfx.shadowBlur = depth === maxDepth ? 0 : isLife ? 4 : 2;
       gfx.shadowColor = branchColor(depth, maxDepth, t);
       gfx.stroke();
       gfx.shadowBlur = 0;
@@ -98,8 +98,18 @@ export function TreeVisualizer({
 
       // Subtle glow node at junction
       if (depth === maxDepth) {
-        const grad = gfx.createRadialGradient(startX, startY, 0, startX, startY, 12);
-        grad.addColorStop(0, isLife ? "rgba(0,220,180,0.15)" : "rgba(255,180,50,0.12)");
+        const grad = gfx.createRadialGradient(
+          startX,
+          startY,
+          0,
+          startX,
+          startY,
+          12,
+        );
+        grad.addColorStop(
+          0,
+          isLife ? "rgba(0,220,180,0.15)" : "rgba(255,180,50,0.12)",
+        );
         grad.addColorStop(1, "transparent");
         gfx.beginPath();
         gfx.arc(startX, startY, 12, 0, Math.PI * 2);
@@ -122,15 +132,32 @@ export function TreeVisualizer({
       gfx.clearRect(0, 0, width, height);
 
       // Background radial glow at base
-      const baseGrad = gfx.createRadialGradient(width / 2, height - 10, 0, width / 2, height - 10, 80);
-      baseGrad.addColorStop(0, isLife ? "rgba(0,200,150,0.08)" : "rgba(255,160,40,0.08)");
+      const baseGrad = gfx.createRadialGradient(
+        width / 2,
+        height - 10,
+        0,
+        width / 2,
+        height - 10,
+        80,
+      );
+      baseGrad.addColorStop(
+        0,
+        isLife ? "rgba(0,200,150,0.08)" : "rgba(255,160,40,0.08)",
+      );
       baseGrad.addColorStop(1, "transparent");
       gfx.beginPath();
       gfx.arc(width / 2, height - 10, 80, 0, Math.PI * 2);
       gfx.fillStyle = baseGrad;
       gfx.fill();
 
-      drawBranch(width / 2, height - 20, height * 0.26, -Math.PI / 2, maxDepth, time);
+      drawBranch(
+        width / 2,
+        height - 20,
+        height * 0.26,
+        -Math.PI / 2,
+        maxDepth,
+        time,
+      );
 
       time++;
       if (isLife) {
@@ -152,7 +179,13 @@ export function TreeVisualizer({
       <div className="mb-4 text-center">
         {type === "life" ? (
           <>
-            <h3 className="font-cinzel text-xl font-bold mb-1" style={{ color: lifeColor, textShadow: `0 0 20px ${lifeColor}66` }}>
+            <h3
+              className="font-cinzel text-xl font-bold mb-1"
+              style={{
+                color: lifeColor,
+                textShadow: `0 0 20px ${lifeColor}66`,
+              }}
+            >
               Tree of Life
             </h3>
             <p className="font-mono text-[10px] uppercase tracking-widest text-white/30">
@@ -161,7 +194,13 @@ export function TreeVisualizer({
           </>
         ) : (
           <>
-            <h3 className="font-cinzel text-xl font-bold mb-1" style={{ color: knowledgeColor, textShadow: `0 0 20px ${knowledgeColor}66` }}>
+            <h3
+              className="font-cinzel text-xl font-bold mb-1"
+              style={{
+                color: knowledgeColor,
+                textShadow: `0 0 20px ${knowledgeColor}66`,
+              }}
+            >
               Tree of Knowledge
             </h3>
             <p className="font-mono text-[10px] uppercase tracking-widest text-white/30">
@@ -183,7 +222,9 @@ export function TreeVisualizer({
         {/* Root ground glow */}
         <div
           className="absolute bottom-0 left-1/2 -translate-x-1/2 w-48 h-1 blur-sm"
-          style={{ background: `linear-gradient(90deg, transparent, ${type === "life" ? lifeColor : knowledgeColor}60, transparent)` }}
+          style={{
+            background: `linear-gradient(90deg, transparent, ${type === "life" ? lifeColor : knowledgeColor}60, transparent)`,
+          }}
         />
       </div>
     </div>
@@ -215,7 +256,10 @@ export function TreeSection() {
             Two Trees, One Root
           </h2>
           <p className="font-mono text-sm text-white/40 max-w-2xl mx-auto">
-            Expansion and convergence are two directions of one circulation. The Tree of Life is the outward flow — throughput, events, living services. The Tree of Knowledge is the inward flow — depth, memory, understanding.
+            Expansion and convergence are two directions of one circulation. The
+            Tree of Life is the outward flow — throughput, events, living
+            services. The Tree of Knowledge is the inward flow — depth, memory,
+            understanding.
           </p>
         </motion.div>
 
@@ -234,7 +278,10 @@ export function TreeSection() {
             <div className="w-px h-24 bg-gradient-to-b from-transparent via-white/20 to-transparent" />
             <div
               className="w-8 h-8 rounded-full border flex items-center justify-center text-white/40 font-mono text-[8px] uppercase"
-              style={{ borderColor: "rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.02)" }}
+              style={{
+                borderColor: "rgba(255,255,255,0.1)",
+                background: "rgba(255,255,255,0.02)",
+              }}
             >
               ⊕
             </div>
@@ -254,17 +301,33 @@ export function TreeSection() {
         {/* Core principles row */}
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
           {[
-            { label: "Logarithmic Growth", desc: "Fibonacci spiral (φ = 1.618) governs branch ratios in both trees." },
-            { label: "Holographic Encoding", desc: "Every node contains information about the whole federation." },
-            { label: "Phase Coherence", desc: "When both trees synchronize, the field enters coherence interference." },
+            {
+              label: "Logarithmic Growth",
+              desc: "Fibonacci spiral (φ = 1.618) governs branch ratios in both trees.",
+            },
+            {
+              label: "Holographic Encoding",
+              desc: "Every node contains information about the whole federation.",
+            },
+            {
+              label: "Phase Coherence",
+              desc: "When both trees synchronize, the field enters coherence interference.",
+            },
           ].map((p) => (
             <div
               key={p.label}
               className="p-4 rounded-xl text-center"
-              style={{ border: "1px solid rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.01)" }}
+              style={{
+                border: "1px solid rgba(255,255,255,0.06)",
+                background: "rgba(255,255,255,0.01)",
+              }}
             >
-              <p className="font-mono text-[10px] uppercase tracking-widest text-white/35 mb-2">{p.label}</p>
-              <p className="font-mono text-xs text-white/25 leading-relaxed">{p.desc}</p>
+              <p className="font-mono text-[10px] uppercase tracking-widest text-white/35 mb-2">
+                {p.label}
+              </p>
+              <p className="font-mono text-xs text-white/25 leading-relaxed">
+                {p.desc}
+              </p>
             </div>
           ))}
         </div>
