@@ -1,16 +1,16 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Toaster } from '@/components/ui/toaster';
-import { TooltipProvider } from '@/components/ui/tooltip';
-import NotFound from '@/pages/not-found';
-import { Route, Switch, Router as WouterRouter } from 'wouter';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "@/components/ui/toaster";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import NotFound from "@/pages/not-found";
+import { Route, Switch, Router as WouterRouter } from "wouter";
 
-import { Hero } from '@/components/Hero';
-import { ArchitectureRings } from '@/components/ArchitectureRings';
-import { LivingLayers } from '@/components/LivingLayers';
-import { TreeSection } from '@/components/Trees';
-import { LivingSpectrum } from '@/components/LivingSpectrum';
-import { DiscoveryLifecycle } from '@/components/DiscoveryLifecycle';
-import { Footer } from '@/components/Footer';
+import { Hero } from "@/components/Hero";
+import { ArchitectureRings } from "@/components/ArchitectureRings";
+import { LivingLayers } from "@/components/LivingLayers";
+import { TreeSection } from "@/components/Trees";
+import { LivingSpectrum } from "@/components/LivingSpectrum";
+import { DiscoveryLifecycle } from "@/components/DiscoveryLifecycle";
+import { Footer } from "@/components/Footer";
 
 const queryClient = new QueryClient();
 
@@ -41,7 +41,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
           <Router />
         </WouterRouter>
         <Toaster />

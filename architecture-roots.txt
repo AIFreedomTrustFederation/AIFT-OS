@@ -1,0 +1,25 @@
+# Top-level internal packages that intentionally have no inbound package import yet.
+# Format: package|status|reason
+# status is active when the package is currently wired to a proven runtime path.
+# status is planned when the package exists for a documented OS surface that is not active yet.
+ai|planned|AI provider execution is not wired into the active CLI.
+builder|planned|Federated build orchestration exists but is not an active command.
+cli|planned|Legacy registry generator package is not the active cmd/aift dispatcher.
+daemon|planned|Daemon runtime exists but is not launched by the active CLI.
+doctor|planned|Doctor diagnostics package exists but is not exposed as active.
+eventmesh|planned|Event mesh reporting package exists but is not integrated with runtime events.
+fedbuild|planned|Federated build runner exists but is not exposed as active.
+federation|planned|Federation scan and graph package exists but command group remains planned.
+graph|planned|Graph generation package exists but is not active in cmd/aift.
+intelligence|planned|Intelligence scan/report package exists but is not active.
+kernel|planned|Kernel registry primitives exist but are not wired into active runtime.
+kernelruntime|planned|Kernel runtime package exists but boot/status/report are not active CLI commands.
+manual|planned|Manual/service contract reporting exists but is not active.
+modules|planned|Module registry package exists but module lifecycle is not active.
+patchengine|planned|Patch planning engine exists but repair execution is not active.
+planner|planned|Planning report package exists but workflow planner is not active.
+plugins|planned|Plugin listing package exists but plugin management is not active.
+providerregistry|planned|Provider registry generator exists but is not active.
+readiness|planned|Readiness reports exist but are not active runtime checks.
+schedulerplan|planned|Scheduler planning exists but scheduler execution is not active.
+servicecontracts|planned|Service contract package exists but is not active.

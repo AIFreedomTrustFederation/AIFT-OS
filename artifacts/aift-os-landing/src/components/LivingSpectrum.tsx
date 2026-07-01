@@ -108,8 +108,11 @@ export function LivingSpectrum() {
             The Living Spectrum
           </h2>
           <p className="font-mono text-sm text-white/40 max-w-2xl mx-auto">
-            Every color is a phase of the same field. The operating system communicates state through coherence, not labels.{" "}
-            <span className="text-white/60 italic">Nothing glows without verification.</span>
+            Every color is a phase of the same field. The operating system
+            communicates state through coherence, not labels.{" "}
+            <span className="text-white/60 italic">
+              Nothing glows without verification.
+            </span>
           </p>
         </motion.div>
 
@@ -124,8 +127,22 @@ export function LivingSpectrum() {
             }}
           />
           <div className="flex justify-between mt-2">
-            {["Unknown", "Planned", "Detected", "Ready", "Active", "Blocked", "Deprecated", "Removed"].map((s) => (
-              <span key={s} className="font-mono text-[8px] text-white/20 uppercase">{s}</span>
+            {[
+              "Unknown",
+              "Planned",
+              "Detected",
+              "Ready",
+              "Active",
+              "Blocked",
+              "Deprecated",
+              "Removed",
+            ].map((s) => (
+              <span
+                key={s}
+                className="font-mono text-[8px] text-white/20 uppercase"
+              >
+                {s}
+              </span>
             ))}
           </div>
         </div>
@@ -161,11 +178,12 @@ export function LivingSpectrum() {
                     className="w-4 h-4 rounded-full"
                     style={{
                       background: state.color,
-                      boxShadow: state.status === "Removed"
-                        ? `0 0 20px rgba(255,255,255,0.5), 0 0 40px rgba(255,255,255,0.2)`
-                        : state.status === "Unknown"
-                        ? "none"
-                        : `0 0 12px ${state.color}, 0 0 24px ${state.color}66`,
+                      boxShadow:
+                        state.status === "Removed"
+                          ? `0 0 20px rgba(255,255,255,0.5), 0 0 40px rgba(255,255,255,0.2)`
+                          : state.status === "Unknown"
+                            ? "none"
+                            : `0 0 12px ${state.color}, 0 0 24px ${state.color}66`,
                     }}
                   />
                 </div>
@@ -194,7 +212,8 @@ export function LivingSpectrum() {
         {/* Bottom note */}
         <div className="mt-10 text-center">
           <p className="font-mono text-[10px] text-white/20 uppercase tracking-widest">
-            All colors are present at every point · They differ only in dominant phase
+            All colors are present at every point · They differ only in dominant
+            phase
           </p>
         </div>
       </div>
