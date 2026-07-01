@@ -5,6 +5,8 @@
   "scripts": {
     "preinstall": "node scripts/ensure-pnpm-install.mjs",
     "build": "pnpm run typecheck && pnpm -r --if-present run build",
+    "lint": "prettier --check package.json pnpm-workspace.yaml \"artifacts/**/*.{ts,tsx,js,jsx,json,css,md}\" \"lib/**/*.{ts,tsx,js,jsx,json,css,md}\" \"scripts/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "test": "node scripts/check-js-tests.mjs",
     "typecheck:libs": "tsc --build",
     "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck"
   },
