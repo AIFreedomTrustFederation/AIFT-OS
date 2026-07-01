@@ -6,6 +6,14 @@ Branch: fix/windows-verification-bootstrap
 
 Evidence commit: 2b5cd51
 
+Latest remediation update: 2026-07-01T07:06:04-07:00
+
+- Root JS verification was repaired: `pnpm run lint`, `pnpm test`, `pnpm run typecheck`, and `pnpm run build` pass locally.
+- Go verification was repaired: `go test ./...`, coverage, and `go run ./tools/architecture --ci` pass locally.
+- Open PRs #16-#19 have passing GitHub CI.
+- Open PRs #20-#22 were conflict-resolved and pushed; local Go, coverage, and architecture checks pass, and GitHub CI is running.
+- Broken PR #22 repair code was quarantined under `legacy/internal-repair-phase9/*.go.bak`; repair remains planned, not active.
+
 ## 1. Current Working Functionality
 
 - `go test ./...` passes on the current branch.

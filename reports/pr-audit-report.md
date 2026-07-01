@@ -1,131 +1,68 @@
 # AIFT-OS Pull Request Audit Report
 
-Generated: 2026-07-01T06:29:08-07:00
+Generated: 2026-07-01T07:06:04-07:00
 
 Branch audited from: fix/windows-verification-bootstrap
 
-Commit before report: 2b5cd51
-
 Repository: https://github.com/AIFreedomTrustFederation/AIFT-OS
 
-## Verification Commands
+## Current Summary
 
-- git status: clean before report generation
-- git branch --show-current: fix/windows-verification-bootstrap
-- git remote -v: origin https://github.com/AIFreedomTrustFederation/AIFT-OS.git
-- go test ./...: PASS on fix/windows-verification-bootstrap
-- pnpm install: PASS
-- pnpm run typecheck: PASS
-- pnpm run lint: FAIL, root package has no lint script
-- pnpm test: FAIL, root package/workspace has no test script
-- pnpm run build: FAIL, artifacts/mockup-sandbox cannot load @rollup/rollup-win32-x64-msvc from local node_modules
+All seven open PR branches were inspected, repaired, and pushed.
 
-## Open PR Summary
+At the latest GitHub check:
 
-| PR | Title | Branch | Mergeable | Checks After Audit | Recommendation |
-| --- | --- | --- | --- | --- | --- |
-| #16 | phase2: establish central federation runtime layout | phase2-central-federation-runtime | yes | CI test FAIL, CodeRabbit PASS | Hold until coverage is restored |
-| #17 | phase3: add recursive federation discovery engine | phase3-recursive-discovery-engine | yes | CI test FAIL, CodeRabbit PASS | Hold until coverage is restored |
-| #18 | phase4: build federation runtime graph | phase4-federation-runtime-graph | yes | CI test FAIL, CodeRabbit PENDING | Hold until coverage is restored and review completes |
-| #19 | phase5: upgrade existing runtime supervisor | phase5-upgrade-existing-runtime | yes | CI test FAIL, CodeRabbit PASS | Hold until coverage is restored |
-| #20 | phase7: repair doctor output compatibility | phase7-doctor-git-housekeeping | conflicting | CI test FAIL, CodeRabbit PASS | Close/rebuild or manually resolve conflicts |
-| #21 | test: repair tests from repository reality | phase7-repair-tests-from-reality | conflicting | CI test FAIL, CodeRabbit PASS | Close/rebuild or manually resolve conflicts |
-| #22 | phase9: repair real repo interfaces | phase9-repair-real-repo-interfaces | conflicting | CI test FAIL, CodeRabbit PASS | Close/rebuild or manually resolve conflicts |
+- PR #16, #17, #18, and #19 are mergeable with successful CI and CodeRabbit checks.
+- PR #20, #21, and #22 are mergeable with fresh CI runs in progress after conflict repair.
+- No compiled binaries, `node_modules`, or generated build output were committed.
+- Broken repair code from PR #22 was quarantined under `legacy/internal-repair-phase9/*.go.bak` rather than deleted or left compiling.
+
+## Verification Run Locally
+
+- `go test ./...`: PASS on `fix/windows-verification-bootstrap`.
+- `scripts/check-coverage.sh` through Git Bash: PASS, 34.7% coverage versus 33.3% baseline.
+- `go run ./tools/architecture --ci`: PASS.
+- `pnpm run lint`: PASS.
+- `pnpm test`: PASS with honest SKIP because no active JS/TS test files exist.
+- `pnpm run typecheck`: PASS.
+- `pnpm run build`: PASS.
 
 ## Fixes Applied
 
-- PR #16: committed and pushed 421c599, Fix phase script harness portability.
-- PR #17: committed and pushed d108d1e, Fix phase script harness portability.
-- PR #18: committed and pushed 70d560d, Fix phase script harness portability.
-- PR #19: committed and pushed 7eb0729, Fix phase script harness portability.
+- Added focused Go coverage for CLI, registry, providers, services, reports, state, workflow, workspace, and git helpers.
+- Fixed Windows pnpm/native package assumptions by allowing required Windows optional native packages.
+- Fixed Vite build config so `PORT` and `BASE_PATH` are not required during production build.
+- Added truthful root `lint` and `test` scripts.
+- Updated the architecture checker to parse the active registry-based CLI instead of stale `switch` dispatch.
+- Added `architecture-roots.txt` so planned top-level internal packages are recorded as planned, not falsely treated as active.
+- Restored generated architecture artifacts per PR branch after successful architecture verification.
+- Resolved PR #20-#22 merge conflicts against current `main`.
+- Fixed PR #20 doctor shell housekeeping to detect `bash`/`sh` and let tests skip honestly when shell support is unavailable.
+- Fixed PR #21 reality tests to check actual architecture documentation instead of narrow stale filenames.
+- Quarantined PR #22 broken repair interfaces under `legacy/` with `.go.bak` suffixes.
 
-The fix changed Termux-only script shebangs to `#!/usr/bin/env bash` and added explicit `# no-harness` annotations for standalone phase bootstrap utilities. Local `go test ./...` passed on each updated branch after merging current main into a temporary audit worktree.
+## PR Status
 
-## Failure Categorization
+| PR | Branch | Local Checks | GitHub Status At Last Check | Merge Recommendation |
+| --- | --- | --- | --- | --- |
+| #16 | `phase2-central-federation-runtime` | Go, coverage, architecture PASS | CI PASS, mergeable | Merge after review |
+| #17 | `phase3-recursive-discovery-engine` | Go, coverage, architecture PASS | CI PASS, mergeable | Merge after review |
+| #18 | `phase4-federation-runtime-graph` | Go, coverage, architecture PASS | CI PASS, mergeable | Merge after review |
+| #19 | `phase5-upgrade-existing-runtime` | Go, coverage, architecture PASS | CI PASS, mergeable | Merge after review |
+| #20 | `phase7-doctor-git-housekeeping` | Go, coverage, architecture PASS | CI in progress, mergeable | Merge after CI PASS |
+| #21 | `phase7-repair-tests-from-reality` | Go, coverage, architecture PASS | CI in progress, mergeable | Merge after CI PASS |
+| #22 | `phase9-repair-real-repo-interfaces` | Go, coverage, architecture PASS | CI in progress, mergeable | Merge after CI PASS; repair remains planned/quarantined |
 
-### PR #16
+## Remaining Issues
 
-- Cause category: H, incorrect test assumption; C, CI quality gate configuration; B, cross-platform script portability.
-- Before fix: `TestMutatingScriptsSourceHarness` failed because phase2 standalone scripts neither sourced `scripts/lib/aift-run.sh` nor declared an exemption.
-- After fix: local `go test ./...` passed.
-- GitHub CI after fix: FAIL in `scripts/check-coverage.sh`; current coverage 29.6% versus baseline 33.3%.
-- Files changed by fix: `scripts/phase2-central-runtime-scan.sh`, `scripts/phase2-clean-generated-runtime.sh`, `scripts/phase2-status.sh`.
-- Mergeable: no, because required CI is still red.
-
-### PR #17
-
-- Cause category: H, incorrect test assumption; C, CI quality gate configuration; F, generated registry drift risk.
-- Before fix: phase2 and phase3 standalone scripts failed the harness test.
-- After fix: local `go test ./...` passed.
-- GitHub CI after fix: FAIL in coverage gate; current coverage 29.6% versus baseline 33.3%.
-- Files changed by fix: phase2 scripts plus `scripts/phase3-recursive-discovery.sh`.
-- Mergeable: no, because required CI is still red.
-
-### PR #18
-
-- Cause category: H, incorrect test assumption; C, CI quality gate configuration; F, generated registry drift risk.
-- Before fix: phase2, phase3, and phase4 standalone scripts failed the harness test.
-- After fix: local `go test ./...` passed.
-- GitHub CI after fix: FAIL in coverage gate; current coverage 29.6% versus baseline 33.3%.
-- Files changed by fix: phase2 scripts plus `scripts/phase3-recursive-discovery.sh` and `scripts/phase4-federation-runtime-graph.sh`.
-- Mergeable: no, because required CI is still red and CodeRabbit was still pending at last check.
-
-### PR #19
-
-- Cause category: H, incorrect test assumption; C, CI quality gate configuration; A, insufficient test coverage for new runtime code.
-- Before fix: phase2, phase3, phase4, and phase5 standalone scripts failed the harness test.
-- After fix: local `go test ./...` passed.
-- GitHub CI after fix: FAIL in coverage gate; current coverage 28.7% versus baseline 33.3%.
-- Files changed by fix: phase2, phase3, phase4 scripts plus `scripts/phase5-upgrade-existing-runtime-check.sh`.
-- Mergeable: no, because required CI is still red.
-
-### PR #20
-
-- Cause category: A, real code/test defect; G, merge conflict.
-- Conflicts with main: `.aift/capabilities.json`, `cmd/aift/main.go`, `var/events/events.jsonl`.
-- CI failures from log: syntax errors in several tests, unused variables, report path failures, and doctor tests that assume a `cmd/aift` path shape that no longer matches the active CLI layout.
-- Mergeable: no.
-
-### PR #21
-
-- Cause category: H, incorrect assumptions in tests; G, merge conflict.
-- Conflicts with main: `.aift/capabilities.json`, deleted/modified tests in `internal/capabilities` and `internal/eventbus`, `var/events/events.jsonl`.
-- CI failure from log: `tests/reality` expected a runtime architecture document that is not present in the branch state.
-- Mergeable: no.
-
-### PR #22
-
-- Cause category: A, real code defect; G, merge conflict.
-- Conflicts with main: `.aift/capabilities.json`, `cmd/aift/main.go`, `internal/ai/ai.go`, `var/events/events.jsonl`.
-- CI failures from log: duplicate `Verify` declarations in `internal/repair`, unresolved repair symbols such as `Context`, `Issue`, `Blocked`, and integration panic caused by build failure.
-- Mergeable: no.
-
-## Review Comments
-
-- CodeRabbit was inspected through PR metadata. Actionable comments were visible for PR #16 around portable shebangs, generated artifact cleanup, and ignore ordering.
-- PR #16 shebang portability was fixed. The generated cleanup behavior and ignore ordering still need focused review before merge because changing cleanup semantics can delete untracked local artifacts if implemented carelessly.
-- Other visible CodeRabbit comments were mostly rate-limit or summary comments in the inspected metadata; unresolved thread-level state should be checked again before final merge.
-
-## Checks Before
-
-- All seven PRs had failing GitHub `test` checks before this audit.
-- PR #20, #21, and #22 were already marked conflicting.
-- PR #16, #17, #18, and #19 were marked mergeable but failed tests.
+- `aift federation`, `aift repo`, and `aift workflow` remain planned until real internal implementations are wired and tested.
+- `doctor`, `monitor`, `repair`, and `report` are not active CLI commands on the cleaned dispatcher.
+- Many internal packages still have 0% coverage and are marked planned roots rather than active OS features.
+- PR #22 no longer breaks compilation, but the repair engine itself is not implemented. The broken draft code is preserved in legacy for later redesign.
 
 ## Checks After
 
-- PR #16-#19: local `go test ./...` passes after the pushed harness portability fix.
-- PR #16-#19: GitHub CI still fails because coverage is below `coverage-baseline.txt`.
-- PR #20-#22: not auto-fixed because conflicts and source-level compile/test defects require manual branch reconstruction.
+- PR #16-#19: GitHub CI PASS.
+- PR #20-#22: GitHub CI running at the time of this report; local Go, coverage, and architecture checks PASS.
 
-## Merge Recommendation
-
-- PR #16: hold. Add targeted tests or reduce untested surface until coverage meets the existing 33.3% baseline.
-- PR #17: hold. Add tests for discovery output and registry generation before merge.
-- PR #18: hold. Add tests for runtime graph generation and generated registry provenance before merge.
-- PR #19: hold. Add tests for runtime, services, state, and supervisor code before merge.
-- PR #20: close/rebuild unless the branch owner wants a manual conflict resolution pass.
-- PR #21: close/rebuild unless the branch owner wants a manual conflict resolution pass.
-- PR #22: close/rebuild unless the repair package API is redesigned against current main.
-
-No functionality was marked working unless proven by tests or command output.
+No functionality was marked working unless proven by local tests, local command output, or successful GitHub checks.
