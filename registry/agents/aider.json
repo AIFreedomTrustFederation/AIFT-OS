@@ -1,0 +1,11 @@
+{
+  "id": "aider",
+  "name": "Aider",
+  "kind": "fallback-cli-editor-agent",
+  "status": "planned",
+  "depends_on": ["ollama"],
+  "verify": {
+    "commands": ["aider --version"]
+  },
+  "notes": "Fallback CLI editing agent. Active only after local verification proves the command exists."
+}
