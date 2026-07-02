@@ -1,0 +1,11 @@
+{
+  "id": "openhands",
+  "name": "OpenHands",
+  "kind": "primary-agent",
+  "status": "planned",
+  "depends_on": ["ollama"],
+  "verify": {
+    "commands": ["openhands --version"]
+  },
+  "notes": "Primary local operator agent. Active only after local verification proves the command or configured service exists."
+}
