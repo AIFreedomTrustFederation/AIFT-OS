@@ -1,0 +1,38 @@
+{
+  "schema": "https://aifreedomtrust.org/schemas/aift.os.app-ref.schema.json",
+  "id": "booksmith-studio",
+  "name": "BookSmith Studio",
+  "repo": "AIFreedomTrustFederation/booksmith-ai",
+  "category": "publishing",
+  "status": "detected",
+  "description": "Author-first local publishing studio app for sovereign books, citations, provenance, LaTeX proofing, figure workflows, and publishing packets.",
+  "discovery": {
+    "manifestPath": ".aift/apps/booksmith-studio.json",
+    "repoManifestPath": "aift.repo.json",
+    "capabilitiesPath": ".aift/capabilities.json",
+    "evidence": "BookSmith AI repository declares AIFT metadata and a BookSmith Studio app manifest."
+  },
+  "launch": {
+    "mode": "local-web",
+    "status": "detected",
+    "command": "npm run studio",
+    "url": "http://localhost:3000/studio",
+    "workingDirectoryHint": "booksmith-ai"
+  },
+  "health": {
+    "status": "detected",
+    "command": "npm run system:health"
+  },
+  "verify": {
+    "status": "detected",
+    "command": "npm run validate:library && npm run lint && npm run build"
+  },
+  "principles": {
+    "localFirst": true,
+    "sovereignRepository": true,
+    "inspectable": true,
+    "aiBehindProviderInterfaces": true,
+    "truthfulStatus": true
+  },
+  "notes": "This is an OS app registry seed. AIFT-OS should mark launch/health/verify as active only after local verification proves the commands succeed in the discovered workspace."
+}
