@@ -1,0 +1,17 @@
+{
+  "id": "aift-runtime",
+  "status": "planned",
+  "host": "local-linux",
+  "primary_agent": "openhands",
+  "model_runtime": "ollama",
+  "fallback_cli_editor_agent": "aider",
+  "editors": ["vscode", "vscodium", "neovim"],
+  "package_managers": ["go", "npm", "pnpm"],
+  "container_runtimes": ["docker", "podman"],
+  "truth_policy": {
+    "registry_declares": true,
+    "verifier_proves": true,
+    "launcher_starts_only_verified": true,
+    "no_phone_termux_runtime_assumption": true
+  }
+}
