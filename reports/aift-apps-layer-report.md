@@ -18,6 +18,19 @@ It also adds the command group:
 
 `launch` does not start processes. It returns a structured planned JSON response with `active: false` until local verification is implemented.
 
+## Operator Runtime Context
+
+The intended operator environment is:
+
+- Primary: OpenHands
+- Model runtime: Ollama
+- Fallback CLI editor-agent: Aider
+- Editors: VS Code, VSCodium, Neovim
+- Host: local Linux machine
+- Explicitly not assumed: phone Termux
+
+This context is recorded in `registry/apps/booksmith-studio.json` metadata and should be used by later local verification work.
+
 ## Files Changed
 
 - `cmd/aift/main.go`
@@ -38,6 +51,7 @@ It also adds the command group:
 - `registry/apps/booksmith-studio.json`
   - Added BookSmith Studio as a planned AIFT app manifest.
   - Preserves the launch command as metadata only; AIFT-OS does not execute it yet.
+  - Records the local Linux/OpenHands/Ollama/Aider/editor context for future verification.
 
 ## Truthfulness Guarantees
 
@@ -69,6 +83,7 @@ Both requested commands passed in the reconstructed local module.
 ## Remaining Planned Work
 
 - Implement local app verification before enabling active launch.
-- Verify app working directories against discovered federation repositories.
+- Verify app working directories against discovered federation repositories on the local Linux host.
+- Detect and report OpenHands, Ollama, Aider, VS Code/VSCodium, and Neovim capabilities honestly.
 - Verify declared launch, health, and build commands before promoting an app from planned to active.
 - Add richer manifest schema validation once the registry schema is finalized.
