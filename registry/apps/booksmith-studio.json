@@ -11,8 +11,16 @@
     "repo": "AIFreedomTrustFederation/booksmith-ai",
     "category": "publishing",
     "url": "http://localhost:3000/studio",
+    "operator_runtime": {
+      "primary": "OpenHands",
+      "model_runtime": "Ollama",
+      "fallback_cli_editor_agent": "Aider",
+      "editors": ["VS Code", "VSCodium", "Neovim"],
+      "host": "local Linux machine",
+      "not_host": "phone Termux"
+    },
     "launch_policy": "planned_until_local_verification",
     "verification_required": true,
-    "notes": "Launch remains planned until AIFT-OS can verify the local workspace and command successfully."
+    "notes": "Launch remains planned until AIFT-OS can verify the local Linux workspace and command successfully."
   }
 }
