@@ -1,0 +1,10 @@
+{
+  "id": "neovim",
+  "name": "Neovim",
+  "kind": "editor",
+  "status": "planned",
+  "verify": {
+    "commands": ["nvim --version"]
+  },
+  "notes": "Editor option. Active only after local verification proves the command exists."
+}
