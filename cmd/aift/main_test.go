@@ -216,7 +216,7 @@ func TestAppsLaunchIsPlannedNotActive(t *testing.T) {
 
 	var payload struct {
 		Status string `json:"status"`
-		Active bool  `json:"active"`
+		Active bool   `json:"active"`
 		ID     string `json:"id"`
 	}
 	if err := json.Unmarshal([]byte(stdout), &payload); err != nil {
