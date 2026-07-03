@@ -62,14 +62,16 @@ func main() {
 	case "version":
 		fmt.Printf("%s %s — %s\n", version.Name, version.Version, version.Role)
 	case "doctor":
-		if len(args) > 0 && args[0] == "repair" {
+		if len(args) == 0 {
+			err = doctor.Run(cfg)
+		} else if len(args) == 1 && args[0] == "repair" {
 			err = doctor.Repair(cfg)
-		} else if len(args) > 0 && args[0] == "git" {
+		} else if len(args) == 1 && args[0] == "git" {
 			err = doctor.Git(cfg)
-		} else if len(args) > 0 && args[0] == "full" {
+		} else if len(args) == 1 && args[0] == "full" {
 			err = doctor.Full(cfg)
 		} else {
-			err = doctor.Run(cfg)
+			err = fmt.Errorf("usage: aift doctor [repair|git|full]")
 		}
 	case "status":
 		err = status(cfg)
@@ -319,7 +321,10 @@ func status(cfg config.Config) error {
 }
 
 func runExecution(cfg config.Config, args []string) error {
-	if len(args) == 0 || args[0] == "print" || args[0] == "plan" {
+	if len(args) != 1 {
+		return fmt.Errorf("usage: aift execution plan|print|write")
+	}
+	if args[0] == "print" || args[0] == "plan" {
 		return execution.Print(cfg)
 	}
 	if args[0] == "write" {
