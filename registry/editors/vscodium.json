@@ -1,0 +1,10 @@
+{
+  "id": "vscodium",
+  "name": "VSCodium",
+  "kind": "editor",
+  "status": "planned",
+  "verify": {
+    "commands": ["codium --version"]
+  },
+  "notes": "Editor option. Active only after local verification proves the command exists."
+}

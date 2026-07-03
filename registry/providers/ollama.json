@@ -1,0 +1,10 @@
+{
+  "id": "ollama",
+  "name": "Ollama",
+  "kind": "model-runtime",
+  "status": "planned",
+  "verify": {
+    "commands": ["ollama --version", "ollama list"]
+  },
+  "notes": "Declared as the local model runtime. Active only after local verification proves it is installed and reachable."
+}

@@ -1,0 +1,10 @@
+{
+  "id": "vscode",
+  "name": "VS Code",
+  "kind": "editor",
+  "status": "planned",
+  "verify": {
+    "commands": ["code --version"]
+  },
+  "notes": "Editor option. Active only after local verification proves the command exists."
+}
