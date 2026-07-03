@@ -16,32 +16,93 @@ cat > internal/doctor/housekeeping.go <<'GO'
 package doctor
 
 import (
-"fmt"
-"os/exec"
+	"fmt"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"sort"
 
-"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"
 )
 
+var generatedStatePaths = []string{
+	".aift/capabilities.json",
+	".aift/providers.json",
+	".aift/workflows.json",
+	".aift/repos.json",
+	"var/events/events.jsonl",
+}
+
 func Git(cfg config.Config) error {
-root := cfg.Root
-cmd := exec.Command("sh", "-c", `find "`+root+`" -mindepth 2 -maxdepth 2 -type d -name .git | sort | while read gitdir; do repo=$(dirname "$gitdir"); echo "== $repo =="; git -C "$repo" status --short; done`)
-cmd.Stdout = cfg.Stdout
-cmd.Stderr = cfg.Stderr
-return cmd.Run()
+	repos, err := gitRepos(cfg.Root)
+	if err != nil {
+		return err
+	}
+
+	for _, repo := range repos {
+		fmt.Fprintf(os.Stdout, "== %s ==\n", repo)
+		cmd := exec.Command("git", "-C", repo, "status", "--short")
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		if err := cmd.Run(); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func Repair(cfg config.Config) error {
-fmt.Fprintln(cfg.Stdout, "Repairing generated runtime state")
-cmd := exec.Command("sh", "-c", `find "`+cfg.Root+`" -mindepth 2 -maxdepth 2 -type d -name .git | sort | while read gitdir; do repo=$(dirname "$gitdir"); git -C "$repo" restore .aift/capabilities.json .aift/providers.json .aift/workflows.json .aift/repos.json var/events/events.jsonl 2>/dev/null || true; rm -f "$repo/.aift/module.json"; done`)
-cmd.Stdout = cfg.Stdout
-cmd.Stderr = cfg.Stderr
-return cmd.Run()
+	fmt.Fprintln(os.Stdout, "Repairing generated runtime state")
+
+	repos, err := gitRepos(cfg.Root)
+	if err != nil {
+		return err
+	}
+
+	for _, repo := range repos {
+		args := append([]string{"-C", repo, "restore"}, generatedStatePaths...)
+		cmd := exec.Command("git", args...)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		_ = cmd.Run()
+
+		modulePath := filepath.Join(repo, ".aift", "module.json")
+		if err := os.Remove(modulePath); err != nil && !os.IsNotExist(err) {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func Full(cfg config.Config) error {
-if err := Repair(cfg); err != nil {
-return err
+	if err := Repair(cfg); err != nil {
+		return err
+	}
+	return Run(cfg)
 }
-return Run(cfg)
+
+func gitRepos(root string) ([]string, error) {
+	entries, err := os.ReadDir(root)
+	if err != nil {
+		return nil, err
+	}
+
+	var repos []string
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			continue
+		}
+
+		repo := filepath.Join(root, entry.Name())
+		gitDir := filepath.Join(repo, ".git")
+		if info, err := os.Stat(gitDir); err == nil && info.IsDir() {
+			repos = append(repos, repo)
+		}
+	}
+
+	sort.Strings(repos)
+	return repos, nil
 }
 GO
