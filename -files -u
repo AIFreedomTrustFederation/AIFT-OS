@@ -1,0 +1,1291 @@
+[33mcommit 0f3cc9e86674acf7ddc1a2206a8bf13b5d35d403[m[33m ([m[1;31morigin/phase7-doctor-git-housekeeping[m[33m, [m[1;32mphase7-doctor-git-housekeeping[m[33m)[m
+Author: AI Freedom Trust Federation <aifreedomtrust@gmail.com>
+Date:   Tue Jun 30 03:43:42 2026 -0700
+
+    test: repair tests against real config API
+
+[1mdiff --git a/.aift/capabilities.json b/.aift/capabilities.json[m
+[1mindex 400c03b..6ea7b88 100644[m
+[1m--- a/.aift/capabilities.json[m
+[1m+++ b/.aift/capabilities.json[m
+[36m@@ -9,7 +9,7 @@[m
+       "command": ".aift/commands/status.sh",[m
+       "evidence": "command exists and passes local verification",[m
+       "description": "Report repository state",[m
+[31m-      "lastChecked": "2026-06-30T04:38:03Z"[m
+[32m+[m[32m      "lastChecked": "2026-06-30T10:43:27Z"[m
+     },[m
+     {[m
+       "name": "verify",[m
+[36m@@ -17,7 +17,7 @@[m
+       "version": 0,[m
+       "evidence": "not proven yet",[m
+       "description": "Validate repository health",[m
+[31m-      "lastChecked": "2026-06-30T04:38:03Z"[m
+[32m+[m[32m      "lastChecked": "2026-06-30T10:43:27Z"[m
+     },[m
+     {[m
+       "name": "test",[m
+[36m@@ -25,7 +25,7 @@[m
+       "version": 0,[m
+       "evidence": "package.json detected; test capability may exist but no .aift command is proven",[m
+       "description": "Run test suite",[m
+[31m-      "lastChecked": "2026-06-30T04:38:03Z"[m
+[32m+[m[32m      "lastChecked": "2026-06-30T10:43:27Z"[m
+     },[m
+     {[m
+       "name": "build",[m
+[36m@@ -33,7 +33,7 @@[m
+       "version": 0,[m
+       "evidence": "build-related project file detected but no .aift build command is proven",[m
+       "description": "Build project artifacts",[m
+[31m-      "lastChecked": "2026-06-30T04:38:03Z"[m
+[32m+[m[32m      "lastChecked": "2026-06-30T10:43:27Z"[m
+     },[m
+     {[m
+       "name": "start",[m
+[36m@@ -41,7 +41,7 @@[m
+       "version": 0,[m
+       "evidence": "not proven yet",[m
+       "description": "Start local service",[m
+[31m-      "lastChecked": "2026-06-30T04:38:03Z"[m
+[32m+[m[32m      "lastChecked": "2026-06-30T10:43:27Z"[m
+     },[m
+     {[m
+       "name": "stop",[m
+[36m@@ -49,7 +49,7 @@[m
+       "version": 0,[m
+       "evidence": "not proven yet",[m
+       "description": "Stop local service",[m
+[31m-      "lastChecked": "2026-06-30T04:38:03Z"[m
+[32m+[m[32m      "lastChecked": "2026-06-30T10:43:27Z"[m
+     },[m
+     {[m
+       "name": "health",[m
+[36m@@ -57,7 +57,7 @@[m
+       "version": 0,[m
+       "evidence": "not proven yet",[m
+       "description": "Check local service health",[m
+[31m-      "lastChecked": "2026-06-30T04:38:03Z"[m
+[32m+[m[32m      "lastChecked": "2026-06-30T10:43:27Z"[m
+     },[m
+     {[m
+       "name": "deploy",[m
+[36m@@ -65,7 +65,7 @@[m
+       "version": 0,[m
+       "evidence": "not proven yet",[m
+       "description": "Deploy project",[m
+[31m-      "lastChecked": "2026-06-30T04:38:03Z"[m
+[32m+[m[32m      "lastChecked": "2026-06-30T10:43:27Z"[m
+     },[m
+     {[m
+       "name": "sync",[m
+[36m@@ -74,7 +74,7 @@[m
+       "command": "git remote/status",[m
+       "evidence": "git repository detected; safe sync can inspect this repo",[m
+       "description": "Synchronize safely",[m
+[31m-      "lastChecked": "2026-06-30T04:38:03Z"[m
+[32m+[m[32m      "lastChecked": "2026-06-30T10:43:27Z"[m
+     },[m
+     {[m
+       "name": "docs",[m
+[36m@@ -82,7 +82,7 @@[m
+       "version": 0,[m
+       "evidence": "README/docs detected",[m
+       "description": "Documentation present or generated",[m
+[31m-      "lastChecked": "2026-06-30T04:38:03Z"[m
+[32m+[m[32m      "lastChecked": "2026-06-30T10:43:27Z"[m
+     }[m
+   ][m
+ }[m
+[1mdiff --git a/.aift/module.json b/.aift/module.json[m
+[1mdeleted file mode 100644[m
+[1mindex 449014e..0000000[m
+[1m--- a/.aift/module.json[m
+[1m+++ /dev/null[m
+[36m@@ -1,40 +0,0 @@[m
+[31m-{[m
+[31m-  "id": "repo.AIFT-OS",[m
+[31m-  "repo": "AIFT-OS",[m
+[31m-  "name": "AIFT-OS",[m
+[31m-  "version": "0.1.0",[m
+[31m-  "status": "detected",[m
+[31m-  "kind": "kernel",[m
+[31m-  "description": "Auto-discovered federation kernel module for AIFT-OS",[m
+[31m-  "dependsOn": [],[m
+[31m-  "provides": [[m
+[31m-    "go.module",[m
+[31m-    "manual.contract",[m
+[31m-    "service.contract"[m
+[31m-  ],[m
+[31m-  "consumes": [],[m
+[31m-  "publishes": [],[m
+[31m-  "commands": {[m
+[31m-    "go:build": "go build ./...",[m
+[31m-    "go:test": "go test ./..."[m
+[31m-  },[m
+[31m-  "services": [],[m
+[31m-  "capabilities": [],[m
+[31m-  "docs": [[m
+[31m-    ".aift/manual.json",[m
+[31m-    "README.md",[m
+[31m-    "docs/"[m
+[31m-  ],[m
+[31m-  "healthChecks": [],[m
+[31m-  "migrationLevel": "phase-17",[m
+[31m-  "evidence": [[m
+[31m-    ".aift/capabilities.json",[m
+[31m-    ".aift/manual.json",[m
+[31m-    ".aift/services.json",[m
+[31m-    ".git",[m
+[31m-    "README.md",[m
+[31m-    "docs/",[m
+[31m-    "go.mod"[m
+[31m-  ],[m
+[31m-  "generatedAt": "2026-06-28T02:31:01Z"[m
+[31m-}[m
+[1mdiff --git a/add-phase7-doctor-tests.sh b/add-phase7-doctor-tests.sh[m
+[1mnew file mode 100755[m
+[1mindex 0000000..498d81f[m
+[1m--- /dev/null[m
+[1m+++ b/add-phase7-doctor-tests.sh[m
+[36m@@ -0,0 +1,105 @@[m
+[32m+[m[32m#!/data/data/com.termux/files/usr/bin/bash[m
+[32m+[m[32mset -euo pipefail[m
+[32m+[m
+[32m+[m[32mcd "${AIFT_ROOT:-$HOME/AIFT}/AIFT-OS"[m
+[32m+[m
+[32m+[m[32mgit checkout phase7-doctor-git-housekeeping[m
+[32m+[m
+[32m+[m[32mmkdir -p internal/doctor[m
+[32m+[m
+[32m+[m[32mcat > internal/doctor/doctor_test.go <<'GO'[m
+[32m+[m[32mpackage doctor[m
+[32m+[m
+[32m+[m[32mimport ([m
+[32m+[m[32m"os"[m
+[32m+[m[32m"path/filepath"[m
+[32m+[m[32m"testing"[m
+[32m+[m
+[32m+[m[32m"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"[m
+[32m+[m[32m)[m
+[32m+[m
+[32m+[m[32mfunc TestDoctorRunDoesNotPanic(t *testing.T) {[m
+[32m+[m[32mroot := t.TempDir()[m
+[32m+[m[32mosDir := filepath.Join(root, "AIFT-OS")[m
+[32m+[m
+[32m+[m[32mif err := os.MkdirAll(osDir, 0755); err != nil {[m
+[32m+[m[32mt.Fatal(err)[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mcfg := config.Config{[m
+[32m+[m[32mRoot: root,[m
+[32m+[m[32mOS:   osDir,[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mif err := Run(cfg); err != nil {[m
+[32m+[m[32mt.Fatalf("Run returned error: %v", err)[m
+[32m+[m[32m}[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mfunc TestDoctorRepairDoesNotPanic(t *testing.T) {[m
+[32m+[m[32mroot := t.TempDir()[m
+[32m+[m[32mosDir := filepath.Join(root, "AIFT-OS")[m
+[32m+[m
+[32m+[m[32mif err := os.MkdirAll(filepath.Join(osDir, "registry"), 0755); err != nil {[m
+[32m+[m[32mt.Fatal(err)[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mcfg := config.Config{[m
+[32m+[m[32mRoot: root,[m
+[32m+[m[32mOS:   osDir,[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mif err := Repair(cfg); err != nil {[m
+[32m+[m[32mt.Fatalf("Repair returned error: %v", err)[m
+[32m+[m[32m}[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mfunc TestDoctorGitDoesNotPanic(t *testing.T) {[m
+[32m+[m[32mroot := t.TempDir()[m
+[32m+[m[32mosDir := filepath.Join(root, "AIFT-OS")[m
+[32m+[m
+[32m+[m[32mif err := os.MkdirAll(osDir, 0755); err != nil {[m
+[32m+[m[32mt.Fatal(err)[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mcfg := config.Config{[m
+[32m+[m[32mRoot: root,[m
+[32m+[m[32mOS:   osDir,[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mif err := Git(cfg); err != nil {[m
+[32m+[m[32mt.Fatalf("Git returned error: %v", err)[m
+[32m+[m[32m}[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mfunc TestDoctorFullDoesNotPanic(t *testing.T) {[m
+[32m+[m[32mroot := t.TempDir()[m
+[32m+[m[32mosDir := filepath.Join(root, "AIFT-OS")[m
+[32m+[m
+[32m+[m[32mif err := os.MkdirAll(filepath.Join(osDir, "registry"), 0755); err != nil {[m
+[32m+[m[32mt.Fatal(err)[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mcfg := config.Config{[m
+[32m+[m[32mRoot: root,[m
+[32m+[m[32mOS:   osDir,[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mif err := Full(cfg); err != nil {[m
+[32m+[m[32mt.Fatalf("Full returned error: %v", err)[m
+[32m+[m[32m}[m
+[32m+[m[32m}[m
+[32m+[m[32mGO[m
+[32m+[m
+[32m+[m[32mgofmt -w internal/doctor/doctor_test.go[m
+[32m+[m
+[32m+[m[32mgo test ./...[m
+[32m+[m[32mgo build -o "$HOME/.local/bin/aift" ./cmd/aift[m
+[32m+[m[32mhash -r[m
+[32m+[m[32maift doctor full[m
+[32m+[m
+[32m+[m[32mgit add internal/doctor/doctor_test.go[m
+[32m+[m[32mgit commit -m "test: add doctor coverage"[m
+[32m+[m[32mgit push origin phase7-doctor-git-housekeeping[m
+[32m+[m
+[32m+[m[32mecho "Done. Re-run CI on PR 20."[m
+[1mdiff --git a/cmd/aift/main.go b/cmd/aift/main.go[m
+[1mindex 2177fb2..469aae4 100644[m
+[1m--- a/cmd/aift/main.go[m
+[1m+++ b/cmd/aift/main.go[m
+[36m@@ -62,7 +62,15 @@[m [mfunc main() {[m
+ 	case "version":[m
+ 		fmt.Printf("%s %s — %s\n", version.Name, version.Version, version.Role)[m
+ 	case "doctor":[m
+[31m-		err = doctor.Run(cfg)[m
+[32m+[m		[32mif len(args) > 0 && args[0] == "repair" {[m
+[32m+[m			[32merr = doctor.Repair(cfg)[m
+[32m+[m		[32m} else if len(args) > 0 && args[0] == "git" {[m
+[32m+[m			[32merr = doctor.Git(cfg)[m
+[32m+[m		[32m} else if len(args) > 0 && args[0] == "full" {[m
+[32m+[m			[32merr = doctor.Full(cfg)[m
+[32m+[m		[32m} else {[m
+[32m+[m			[32merr = doctor.Run(cfg)[m
+[32m+[m		[32m}[m
+ 	case "status":[m
+ 		err = status(cfg)[m
+ 	case "manifest":[m
+[36m@@ -168,7 +176,7 @@[m [mfunc help() {[m
+ 	fmt.Println("Commands:")[m
+ 	fmt.Println("  help")[m
+ 	fmt.Println("  version")[m
+[31m-	fmt.Println("  doctor")[m
+[32m+[m	[32mfmt.Println("  doctor [repair|git|full]")[m
+ 	fmt.Println("  status")[m
+ 	fmt.Println("  manifest")[m
+ 	fmt.Println("  registry")[m
+[1mdiff --git a/docs/architecture/PHASE7-AIFT-DOCTOR-GIT-HOUSEKEEPING.md b/docs/architecture/PHASE7-AIFT-DOCTOR-GIT-HOUSEKEEPING.md[m
+[1mnew file mode 100644[m
+[1mindex 0000000..4af191c[m
+[1m--- /dev/null[m
+[1m+++ b/docs/architecture/PHASE7-AIFT-DOCTOR-GIT-HOUSEKEEPING.md[m
+[36m@@ -0,0 +1,7 @@[m
+[32m+[m[32m# AIFT-OS Phase 7: Doctor and Git Housekeeping[m
+[32m+[m
+[32m+[m[32mAIFT Doctor inspects the real local federation workspace.[m
+[32m+[m
+[32m+[m[32mIt repairs safe generated state, checks git status, verifies the native Go CLI, and reports what still needs human review.[m
+[32m+[m
+[32m+[m[32mAIFT-OS remains the central runtime. Other repositories remain source packages.[m
+[1mdiff --git a/internal/api/api_test.go b/internal/api/api_test.go[m
+[1mindex dc6fef5..5fb076c 100644[m
+[1m--- a/internal/api/api_test.go[m
+[1m+++ b/internal/api/api_test.go[m
+[36m@@ -124,7 +124,7 @@[m [mfunc TestGenerateTokenUnique(t *testing.T) {[m
+ func TestNewWithEnvToken(t *testing.T) {[m
+ 	t.Setenv("AIFT_API_TOKEN", "env-token-value")[m
+ 	dir := t.TempDir()[m
+[31m-	cfg := config.Config{Root: dir, OSHome: dir}[m
+[32m+[m	[32mcfg := config.Load()[m
+ [m
+ 	srv := New(cfg, ":8787")[m
+ 	if srv.Token != "env-token-value" {[m
+[36m@@ -138,7 +138,7 @@[m [mfunc TestNewWithEnvToken(t *testing.T) {[m
+ func TestNewWithoutEnvToken(t *testing.T) {[m
+ 	t.Setenv("AIFT_API_TOKEN", "")[m
+ 	dir := t.TempDir()[m
+[31m-	cfg := config.Config{Root: dir, OSHome: dir}[m
+[32m+[m	[32mcfg := config.Load()[m
+ [m
+ 	srv := New(cfg, ":9999")[m
+ 	if srv.Token != "" {[m
+[36m@@ -164,7 +164,7 @@[m [mfunc testServer(t *testing.T) Server {[m
+ 	t.Helper()[m
+ 	dir := t.TempDir()[m
+ 	return Server{[m
+[31m-		Config: config.Config{Root: dir, OSHome: dir},[m
+[32m+[m		[32mConfig: config.Load(),[m
+ 		Addr:   ":0",[m
+ 		Token:  "test-token-123",[m
+ 	}[m
+[1mdiff --git a/internal/capabilities/capabilities_test.go b/internal/capabilities/capabilities_test.go[m
+[1mindex c7d24ea..9355192 100644[m
+[1m--- a/internal/capabilities/capabilities_test.go[m
+[1m+++ b/internal/capabilities/capabilities_test.go[m
+[36m@@ -324,7 +324,7 @@[m [mfunc TestFederationCapabilitiesJSON(t *testing.T) {[m
+ [m
+ func TestWriteReport(t *testing.T) {[m
+ 	dir := t.TempDir()[m
+[31m-	cfg := config.Config{Root: dir, OSHome: dir}[m
+[32m+[m	[32mcfg := config.Load()[m
+ [m
+ 	fc := FederationCapabilities{[m
+ 		GeneratedAt: "2024-01-01",[m
+[1mdiff --git a/internal/doctor/doctor_test.go b/internal/doctor/doctor_test.go[m
+[1mnew file mode 100644[m
+[1mindex 0000000..04d3698[m
+[1m--- /dev/null[m
+[1m+++ b/internal/doctor/doctor_test.go[m
+[36m@@ -0,0 +1,69 @@[m
+[32m+[m[32mpackage doctor[m
+[32m+[m
+[32m+[m[32mimport ([m
+[32m+[m	[32m"os"[m
+[32m+[m	[32m"path/filepath"[m
+[32m+[m	[32m"testing"[m
+[32m+[m
+[32m+[m	[32m"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"[m
+[32m+[m[32m)[m
+[32m+[m
+[32m+[m[32mfunc TestDoctorRunDoesNotPanic(t *testing.T) {[m
+[32m+[m	[32mroot := t.TempDir()[m
+[32m+[m	[32mosDir := filepath.Join(root, "AIFT-OS")[m
+[32m+[m
+[32m+[m	[32mif err := os.MkdirAll(osDir, 0755); err != nil {[m
+[32m+[m		[32mt.Fatal(err)[m
+[32m+[m	[32m}[m
+[32m+[m
+[32m+[m	[32mcfg := config.Load()[m
+[32m+[m
+[32m+[m	[32mif err := Run(cfg); err != nil {[m
+[32m+[m		[32mt.Fatalf("Run returned error: %v", err)[m
+[32m+[m	[32m}[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mfunc TestDoctorRepairDoesNotPanic(t *testing.T) {[m
+[32m+[m	[32mroot := t.TempDir()[m
+[32m+[m	[32mosDir := filepath.Join(root, "AIFT-OS")[m
+[32m+[m
+[32m+[m	[32mif err := os.MkdirAll(filepath.Join(osDir, "registry"), 0755); err != nil {[m
+[32m+[m		[32mt.Fatal(err)[m
+[32m+[m	[32m}[m
+[32m+[m
+[32m+[m	[32mcfg := config.Load()[m
+[32m+[m
+[32m+[m	[32mif err := Repair(cfg); err != nil {[m
+[32m+[m		[32mt.Fatalf("Repair returned error: %v", err)[m
+[32m+[m	[32m}[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mfunc TestDoctorGitDoesNotPanic(t *testing.T) {[m
+[32m+[m	[32mroot := t.TempDir()[m
+[32m+[m	[32mosDir := filepath.Join(root, "AIFT-OS")[m
+[32m+[m
+[32m+[m	[32mif err := os.MkdirAll(osDir, 0755); err != nil {[m
+[32m+[m		[32mt.Fatal(err)[m
+[32m+[m	[32m}[m
+[32m+[m
+[32m+[m	[32mcfg := config.Load()[m
+[32m+[m
+[32m+[m	[32mif err := Git(cfg); err != nil {[m
+[32m+[m		[32mt.Fatalf("Git returned error: %v", err)[m
+[32m+[m	[32m}[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mfunc TestDoctorFullDoesNotPanic(t *testing.T) {[m
+[32m+[m	[32mroot := t.TempDir()[m
+[32m+[m	[32mosDir := filepath.Join(root, "AIFT-OS")[m
+[32m+[m
+[32m+[m	[32mif err := os.MkdirAll(filepath.Join(osDir, "registry"), 0755); err != nil {[m
+[32m+[m		[32mt.Fatal(err)[m
+[32m+[m	[32m}[m
+[32m+[m
+[32m+[m	[32mcfg := config.Load()[m
+[32m+[m
+[32m+[m	[32mif err := Full(cfg); err != nil {[m
+[32m+[m		[32mt.Fatalf("Full returned error: %v", err)[m
+[32m+[m	[32m}[m
+[32m+[m[32m}[m
+[1mdiff --git a/internal/doctor/housekeeping.go b/internal/doctor/housekeeping.go[m
+[1mnew file mode 100644[m
+[1mindex 0000000..323caaf[m
+[1m--- /dev/null[m
+[1m+++ b/internal/doctor/housekeeping.go[m
+[36m@@ -0,0 +1,32 @@[m
+[32m+[m[32mpackage doctor[m
+[32m+[m
+[32m+[m[32mimport ([m
+[32m+[m	[32m"fmt"[m
+[32m+[m	[32m"os"[m
+[32m+[m	[32m"os/exec"[m
+[32m+[m
+[32m+[m	[32m"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"[m
+[32m+[m[32m)[m
+[32m+[m
+[32m+[m[32mfunc Git(cfg config.Config) error {[m
+[32m+[m	[32mroot := cfg.Root[m
+[32m+[m	[32mcmd := exec.Command("sh", "-c", `find "`+root+`" -mindepth 2 -maxdepth 2 -type d -name .git | sort | while read gitdir; do repo=$(dirname "$gitdir"); echo "== $repo =="; git -C "$repo" status --short; done`)[m
+[32m+[m	[32mcmd.Stdout = os.Stdout[m
+[32m+[m	[32mcmd.Stderr = os.Stderr[m
+[32m+[m	[32mreturn cmd.Run()[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mfunc Repair(cfg config.Config) error {[m
+[32m+[m	[32mfmt.Fprintln(os.Stdout, "Repairing generated runtime state")[m
+[32m+[m	[32mcmd := exec.Command("sh", "-c", `find "`+cfg.Root+`" -mindepth 2 -maxdepth 2 -type d -name .git | sort | while read gitdir; do repo=$(dirname "$gitdir"); git -C "$repo" restore .aift/capabilities.json .aift/providers.json .aift/workflows.json .aift/repos.json var/events/events.jsonl 2>/dev/null || true; rm -f "$repo/.aift/module.json"; done`)[m
+[32m+[m	[32mcmd.Stdout = os.Stdout[m
+[32m+[m	[32mcmd.Stderr = os.Stderr[m
+[32m+[m	[32mreturn cmd.Run()[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mfunc Full(cfg config.Config) error {[m
+[32m+[m	[32mif err := Repair(cfg); err != nil {[m
+[32m+[m		[32mreturn err[m
+[32m+[m	[32m}[m
+[32m+[m	[32mreturn Run(cfg)[m
+[32m+[m[32m}[m
+[1mdiff --git a/internal/eventbus/eventbus_test.go b/internal/eventbus/eventbus_test.go[m
+[1mindex 3bda931..f2e54e5 100644[m
+[1m--- a/internal/eventbus/eventbus_test.go[m
+[1m+++ b/internal/eventbus/eventbus_test.go[m
+[36m@@ -64,13 +64,7 @@[m [mfunc TestEscapeTable(t *testing.T) {[m
+ 	}[m
+ }[m
+ [m
+[31m-func testConfig(t *testing.T) config.Config {[m
+[31m-	t.Helper()[m
+[31m-	dir := t.TempDir()[m
+[31m-	return config.Config{[m
+[31m-		Root:   dir,[m
+[31m-		OSHome: dir,[m
+[31m-	}[m
+[32m+[m[32mfunc testConfig(t *testing.T) config.Load()[m
+ }[m
+ [m
+ func TestPublishAndLoad(t *testing.T) {[m
+[36m@@ -252,7 +246,7 @@[m [mfunc TestSnapshot(t *testing.T) {[m
+ }[m
+ [m
+ func TestLogPath(t *testing.T) {[m
+[31m-	cfg := config.Config{OSHome: "/tmp/test-os"}[m
+[32m+[m	[32mcfg := config.Load()[m
+ 	path := logPath(cfg)[m
+ 	if path != "/tmp/test-os/var/events/event-bus.jsonl" {[m
+ 		t.Errorf("logPath = %q", path)[m
+[1mdiff --git a/internal/eventmesh/eventmesh_test.go b/internal/eventmesh/eventmesh_test.go[m
+[1mindex 44d6661..2b8d6f3 100644[m
+[1m--- a/internal/eventmesh/eventmesh_test.go[m
+[1m+++ b/internal/eventmesh/eventmesh_test.go[m
+[36m@@ -278,10 +278,7 @@[m [mfunc TestInitRepoIdempotent(t *testing.T) {[m
+ 	}[m
+ }[m
+ [m
+[31m-func testCfg(t *testing.T) config.Config {[m
+[31m-	t.Helper()[m
+[31m-	dir := t.TempDir()[m
+[31m-	return config.Config{Root: dir, OSHome: dir}[m
+[32m+[m[32mfunc testCfg(t *testing.T) config.Load()[m
+ }[m
+ [m
+ func contains(s, substr string) bool {[m
+[1mdiff --git a/internal/events/events_test.go b/internal/events/events_test.go[m
+[1mindex 9d25306..0f29be3 100644[m
+[1m--- a/internal/events/events_test.go[m
+[1m+++ b/internal/events/events_test.go[m
+[36m@@ -12,7 +12,7 @@[m [mimport ([m
+ [m
+ func TestEmit(t *testing.T) {[m
+ 	dir := t.TempDir()[m
+[31m-	cfg := config.Config{Root: dir, OSHome: dir}[m
+[32m+[m	[32mcfg := config.Load()[m
+ [m
+ 	err := Emit(cfg, "test.event", "unit-test", "hello", map[string]string{"key": "value"})[m
+ 	if err != nil {[m
+[36m@@ -48,7 +48,7 @@[m [mfunc TestEmit(t *testing.T) {[m
+ [m
+ func TestEmitNilData(t *testing.T) {[m
+ 	dir := t.TempDir()[m
+[31m-	cfg := config.Config{Root: dir, OSHome: dir}[m
+[32m+[m	[32mcfg := config.Load()[m
+ [m
+ 	err := Emit(cfg, "test.event", "src", "msg", nil)[m
+ 	if err != nil {[m
+[36m@@ -66,7 +66,7 @@[m [mfunc TestEmitNilData(t *testing.T) {[m
+ [m
+ func TestEmitMultiple(t *testing.T) {[m
+ 	dir := t.TempDir()[m
+[31m-	cfg := config.Config{Root: dir, OSHome: dir}[m
+[32m+[m	[32mcfg := config.Load()[m
+ [m
+ 	Emit(cfg, "e1", "s", "m1", nil)[m
+ 	Emit(cfg, "e2", "s", "m2", nil)[m
+[36m@@ -82,7 +82,7 @@[m [mfunc TestEmitMultiple(t *testing.T) {[m
+ [m
+ func TestTailNoEvents(t *testing.T) {[m
+ 	dir := t.TempDir()[m
+[31m-	cfg := config.Config{Root: dir, OSHome: dir}[m
+[32m+[m	[32mcfg := config.Load()[m
+ [m
+ 	err := Tail(cfg, 10)[m
+ 	if err != nil {[m
+[36m@@ -92,7 +92,7 @@[m [mfunc TestTailNoEvents(t *testing.T) {[m
+ [m
+ func TestTailAfterEmit(t *testing.T) {[m
+ 	dir := t.TempDir()[m
+[31m-	cfg := config.Config{Root: dir, OSHome: dir}[m
+[32m+[m	[32mcfg := config.Load()[m
+ [m
+ 	Emit(cfg, "e1", "s", "m1", nil)[m
+ 	Emit(cfg, "e2", "s", "m2", nil)[m
+[36m@@ -106,7 +106,7 @@[m [mfunc TestTailAfterEmit(t *testing.T) {[m
+ [m
+ func TestTailZeroLimit(t *testing.T) {[m
+ 	dir := t.TempDir()[m
+[31m-	cfg := config.Config{Root: dir, OSHome: dir}[m
+[32m+[m	[32mcfg := config.Load()[m
+ [m
+ 	Emit(cfg, "e1", "s", "m1", nil)[m
+ [m
+[36m@@ -118,7 +118,7 @@[m [mfunc TestTailZeroLimit(t *testing.T) {[m
+ [m
+ func TestTailEmptyFile(t *testing.T) {[m
+ 	dir := t.TempDir()[m
+[31m-	cfg := config.Config{Root: dir, OSHome: dir}[m
+[32m+[m	[32mcfg := config.Load()[m
+ [m
+ 	evDir := filepath.Join(dir, "var", "events")[m
+ 	os.MkdirAll(evDir, 0755)[m
+[1mdiff --git a/internal/readiness/readiness_test.go b/internal/readiness/readiness_test.go[m
+[1mindex 2840260..0e46b8b 100644[m
+[1m--- a/internal/readiness/readiness_test.go[m
+[1m+++ b/internal/readiness/readiness_test.go[m
+[36m@@ -556,9 +556,5 @@[m [mfunc TestScanServicesEmptyEvidence(t *testing.T) {[m
+ 	}[m
+ }[m
+ [m
+[31m-func makeTestConfig(osHome, root string) config.Config {[m
+[31m-	return config.Config{[m
+[31m-		Root:   root,[m
+[31m-		OSHome: osHome,[m
+[31m-	}[m
+[32m+[m[32mfunc makeTestConfig(osHome, root string) config.Load()[m
+ }[m
+[1mdiff --git a/internal/repo/repo_test.go b/internal/repo/repo_test.go[m
+[1mindex 0d51ef3..bbc65bc 100644[m
+[1m--- a/internal/repo/repo_test.go[m
+[1m+++ b/internal/repo/repo_test.go[m
+[36m@@ -110,7 +110,5 @@[m [mfunc TestRunCommandDot(t *testing.T) {[m
+ 	}[m
+ }[m
+ [m
+[31m-func testCfg(t *testing.T, dir string) config.Config {[m
+[31m-	t.Helper()[m
+[31m-	return config.Config{Root: dir, OSHome: dir}[m
+[32m+[m[32mfunc testCfg(t *testing.T, dir string) config.Load()[m
+ }[m
+[1mdiff --git a/internal/schedulerplan/schedulerplan_test.go b/internal/schedulerplan/schedulerplan_test.go[m
+[1mindex f41d9f1..c36e0c0 100644[m
+[1m--- a/internal/schedulerplan/schedulerplan_test.go[m
+[1m+++ b/internal/schedulerplan/schedulerplan_test.go[m
+[36m@@ -372,7 +372,7 @@[m [mfunc TestBuildPlanFromReadiness(t *testing.T) {[m
+ 	archData, _ := json.Marshal(ar)[m
+ 	os.WriteFile(filepath.Join(regDir, "architecture.json"), archData, 0644)[m
+ [m
+[31m-	cfg := config.Config{Root: dir, OSHome: dir}[m
+[32m+[m	[32mcfg := config.Load()[m
+ 	plan, err := BuildPlan(cfg)[m
+ 	if err != nil {[m
+ 		t.Fatalf("BuildPlan: %v", err)[m
+[36m@@ -403,7 +403,7 @@[m [mfunc TestBuildPlanFromReadiness(t *testing.T) {[m
+ [m
+ func TestBuildPlanMissingReadiness(t *testing.T) {[m
+ 	dir := t.TempDir()[m
+[31m-	cfg := config.Config{Root: dir, OSHome: dir}[m
+[32m+[m	[32mcfg := config.Load()[m
+ 	_, err := BuildPlan(cfg)[m
+ 	if err == nil {[m
+ 		t.Error("BuildPlan should fail when readiness registry is missing")[m
+[36m@@ -424,7 +424,7 @@[m [mfunc TestBuildPlanMissingArchitecture(t *testing.T) {[m
+ 	data, _ := json.Marshal(rr)[m
+ 	os.WriteFile(filepath.Join(regDir, "runtime-readiness.json"), data, 0644)[m
+ [m
+[31m-	cfg := config.Config{Root: dir, OSHome: dir}[m
+[32m+[m	[32mcfg := config.Load()[m
+ 	plan, err := BuildPlan(cfg)[m
+ 	if err != nil {[m
+ 		t.Fatalf("BuildPlan should succeed without architecture: %v", err)[m
+[36m@@ -449,7 +449,7 @@[m [mfunc TestGeneratePlanWritesFiles(t *testing.T) {[m
+ 	data, _ := json.Marshal(rr)[m
+ 	os.WriteFile(filepath.Join(regDir, "runtime-readiness.json"), data, 0644)[m
+ [m
+[31m-	cfg := config.Config{Root: dir, OSHome: dir}[m
+[32m+[m	[32mcfg := config.Load()[m
+ 	if err := GeneratePlan(cfg); err != nil {[m
+ 		t.Fatalf("GeneratePlan: %v", err)[m
+ 	}[m
+[36m@@ -493,7 +493,7 @@[m [mfunc TestReportContainsExpectedSections(t *testing.T) {[m
+ 	data, _ := json.Marshal(rr)[m
+ 	os.WriteFile(filepath.Join(regDir, "runtime-readiness.json"), data, 0644)[m
+ [m
+[31m-	cfg := config.Config{Root: dir, OSHome: dir}[m
+[32m+[m	[32mcfg := config.Load()[m
+ 	if err := GeneratePlan(cfg); err != nil {[m
+ 		t.Fatalf("GeneratePlan: %v", err)[m
+ 	}[m
+[1mdiff --git a/internal/servicecontracts/servicecontracts_test.go b/internal/servicecontracts/servicecontracts_test.go[m
+[1mindex 7ffc9d6..2cf16ac 100644[m
+[1m--- a/internal/servicecontracts/servicecontracts_test.go[m
+[1m+++ b/internal/servicecontracts/servicecontracts_test.go[m
+[36m@@ -312,7 +312,7 @@[m [mfunc TestScanDefaultsPersistInContracts(t *testing.T) {[m
+ 		os.MkdirAll(filepath.Join(osHome, d), 0755)[m
+ 	}[m
+ [m
+[31m-	cfg := config.Config{Root: root, OSHome: osHome}[m
+[32m+[m	[32mcfg := config.Load()[m
+ 	if err := Scan(cfg); err != nil {[m
+ 		t.Fatalf("Scan failed: %v", err)[m
+ 	}[m
+[36m@@ -391,7 +391,7 @@[m [mfunc TestScanDefaultsDoNotOverwriteExplicit(t *testing.T) {[m
+ 		os.MkdirAll(filepath.Join(osHome, d), 0755)[m
+ 	}[m
+ [m
+[31m-	cfg := config.Config{Root: root, OSHome: osHome}[m
+[32m+[m	[32mcfg := config.Load()[m
+ 	if err := Scan(cfg); err != nil {[m
+ 		t.Fatalf("Scan failed: %v", err)[m
+ 	}[m
+[1mdiff --git a/repair-all-tests-with-real-config.sh b/repair-all-tests-with-real-config.sh[m
+[1mnew file mode 100755[m
+[1mindex 0000000..415d959[m
+[1m--- /dev/null[m
+[1m+++ b/repair-all-tests-with-real-config.sh[m
+[36m@@ -0,0 +1,82 @@[m
+[32m+[m[32m#!/data/data/com.termux/files/usr/bin/bash[m
+[32m+[m[32mset -u[m
+[32m+[m
+[32m+[m[32mOS="${AIFT_OS:-$HOME/AIFT/AIFT-OS}"[m
+[32m+[m[32mcd "$OS" || exit 1[m
+[32m+[m
+[32m+[m[32mecho "Repairing all tests that guessed config.Config fields"[m
+[32m+[m
+[32m+[m[32mmkdir -p repair[m
+[32m+[m[32mmkdir -p reports[m
+[32m+[m
+[32m+[m[32mcat > repair/repair-go-tests-real-config.py <<'PY'[m
+[32m+[m[32mfrom pathlib import Path[m
+[32m+[m[32mimport re[m
+[32m+[m
+[32m+[m[32mroot = Path.cwd()[m
+[32m+[m[32mtest_files = sorted(root.glob("**/*_test.go"))[m
+[32m+[m
+[32m+[m[32mbad_field_patterns = [[m
+[32m+[m[32m    r"\bconfig\.Config\s*\{\s*OS\s*:",[m
+[32m+[m[32m    r"\bconfig\.Config\s*\{\s*Root\s*:",[m
+[32m+[m[32m    r"\bconfig\.Config\s*\{[^}]*\bOS\s*:",[m
+[32m+[m[32m    r"\bconfig\.Config\s*\{[^}]*\bRoot\s*:",[m
+[32m+[m[32m][m
+[32m+[m
+[32m+[m[32mchanged = [][m
+[32m+[m
+[32m+[m[32mfor path in test_files:[m
+[32m+[m[32m    if any(part in {"node_modules", ".git", "dist", "build", ".next", "vendor"} for part in path.parts):[m
+[32m+[m[32m        continue[m
+[32m+[m
+[32m+[m[32m    text = path.read_text()[m
+[32m+[m
+[32m+[m[32m    original = text[m
+[32m+[m
+[32m+[m[32m    text = re.sub([m
+[32m+[m[32m        r"cfg\s*:=\s*config\.Config\s*\{[^}]*\}",[m
+[32m+[m[32m        "cfg := config.Load()",[m
+[32m+[m[32m        text,[m
+[32m+[m[32m        flags=re.DOTALL,[m
+[32m+[m[32m    )[m
+[32m+[m
+[32m+[m[32m    text = re.sub([m
+[32m+[m[32m        r"config\.Config\s*\{[^}]*\}",[m
+[32m+[m[32m        "config.Load()",[m
+[32m+[m[32m        text,[m
+[32m+[m[32m        flags=re.DOTALL,[m
+[32m+[m[32m    )[m
+[32m+[m
+[32m+[m[32m    if text != original:[m
+[32m+[m[32m        path.write_text(text)[m
+[32m+[m[32m        changed.append(str(path))[m
+[32m+[m
+[32m+[m[32mreport = root / "reports" / "repair-all-tests-real-config.txt"[m
+[32m+[m[32mreport.write_text("\n".join(changed) + "\n")[m
+[32m+[m[32mprint("Changed files:")[m
+[32m+[m[32mfor item in changed:[m
+[32m+[m[32m    print(item)[m
+[32m+[m[32mPY[m
+[32m+[m
+[32m+[m[32mpython repair/repair-go-tests-real-config.py[m
+[32m+[m
+[32m+[m[32mecho "Formatting Go files"[m
+[32m+[m[32mgofmt -w $(find . -name '*.go' -not -path './.git/*' -not -path './node_modules/*')[m
+[32m+[m
+[32m+[m[32mecho "Running tests"[m
+[32m+[m[32mgo test ./...[m
+[32m+[m
+[32m+[m[32mecho "Building native CLI"[m
+[32m+[m[32mgo build -o "$HOME/.local/bin/aift" ./cmd/aift[m
+[32m+[m[32mhash -r[m
+[32m+[m
+[32m+[m[32mecho "Running AIFT doctor"[m
+[32m+[m[32maift doctor || true[m
+[32m+[m
+[32m+[m[32mecho "Running AIFT verify"[m
+[32m+[m[32maift verify[m
+[32m+[m
+[32m+[m[32mecho "Git status"[m
+[32m+[m[32mgit status --short[m
+[32m+[m
+[32m+[m[32mecho "Done"[m
+[1mdiff --git a/repair-doctor-output.sh b/repair-doctor-output.sh[m
+[1mnew file mode 100755[m
+[1mindex 0000000..35f18ff[m
+[1m--- /dev/null[m
+[1m+++ b/repair-doctor-output.sh[m
+[36m@@ -0,0 +1,62 @@[m
+[32m+[m[32m#!/data/data/com.termux/files/usr/bin/bash[m
+[32m+[m[32mset -eu[m
+[32m+[m
+[32m+[m[32mOS="$HOME/AIFT/AIFT-OS"[m
+[32m+[m[32mcd "$OS"[m
+[32m+[m
+[32m+[m[32mecho "Repairing doctor output compatibility"[m
+[32m+[m
+[32m+[m[32mmkdir -p internal/doctor[m
+[32m+[m
+[32m+[m[32mpython <<'PY'[m
+[32m+[m[32mfrom pathlib import Path[m
+[32m+[m
+[32m+[m[32mp = Path("internal/doctor/housekeeping.go")[m
+[32m+[m[32mif not p.exists():[m
+[32m+[m[32m    raise SystemExit("missing internal/doctor/housekeeping.go")[m
+[32m+[m
+[32m+[m[32ms = p.read_text()[m
+[32m+[m
+[32m+[m[32ms = s.replace("cfg.Stdout", "os.Stdout")[m
+[32m+[m[32ms = s.replace("cfg.Stderr", "os.Stderr")[m
+[32m+[m
+[32m+[m[32mif '"os"' not in s:[m
+[32m+[m[32m    s = s.replace('import (', 'import (\n\t"os"')[m
+[32m+[m
+[32m+[m[32mp.write_text(s)[m
+[32m+[m[32mPY[m
+[32m+[m
+[32m+[m[32mgofmt -w internal/doctor/housekeeping.go cmd/aift/main.go[m
+[32m+[m
+[32m+[m[32mgo test ./...[m
+[32m+[m
+[32m+[m[32mrm -f "$HOME/.local/bin/aift"[m
+[32m+[m[32mgo build -o "$HOME/.local/bin/aift" ./cmd/aift[m
+[32m+[m[32mhash -r[m
+[32m+[m
+[32m+[m[32maift doctor[m
+[32m+[m[32maift doctor repair[m
+[32m+[m[32maift doctor git[m
+[32m+[m[32maift verify[m
+[32m+[m
+[32m+[m[32mgit status --short[m
+[32m+[m
+[32m+[m[32mgit add internal/doctor/housekeeping.go cmd/aift/main.go docs/architecture/PHASE7-AIFT-DOCTOR-GIT-HOUSEKEEPING.md repair/ scripts/ registry/doctor/ registry/execution-plan.json registry/repos/discovered-repos.tsv 2>/dev/null || true[m
+[32m+[m
+[32m+[m[32mif git diff --cached --quiet; then[m
+[32m+[m[32m  echo "No staged changes."[m
+[32m+[m[32melse[m
+[32m+[m[32m  git commit -m "phase7: repair doctor output compatibility"[m
+[32m+[m[32mfi[m
+[32m+[m
+[32m+[m[32mgit push -u origin "$(git branch --show-current)"[m
+[32m+[m
+[32m+[m[32mif gh pr view "$(git branch --show-current)" >/dev/null 2>&1; then[m
+[32m+[m[32m  gh pr view "$(git branch --show-current)" --web[m
+[32m+[m[32melse[m
+[32m+[m[32m  gh pr create \[m
+[32m+[m[32m    --base main \[m
+[32m+[m[32m    --head "$(git branch --show-current)" \[m
+[32m+[m[32m    --title "phase7: repair doctor output compatibility" \[m
+[32m+[m[32m    --body "Fixes the Doctor module so it uses standard output streams instead of nonexistent config fields. Verifies doctor repair, git housekeeping, native CLI build, and federation verification."[m
+[32m+[m[32mfi[m
+[1mdiff --git a/repair-phase7.sh b/repair-phase7.sh[m
+[1mnew file mode 100755[m
+[1mindex 0000000..0985b43[m
+[1m--- /dev/null[m
+[1m+++ b/repair-phase7.sh[m
+[36m@@ -0,0 +1,186 @@[m
+[32m+[m[32m#!/data/data/com.termux/files/usr/bin/bash[m
+[32m+[m[32mset -euo pipefail[m
+[32m+[m
+[32m+[m[32mROOT="${AIFT_ROOT:-$HOME/AIFT}"[m
+[32m+[m[32mOS="$ROOT/AIFT-OS"[m
+[32m+[m[32mBRANCH="phase7-doctor-git-housekeeping"[m
+[32m+[m
+[32m+[m[32mcd "$OS"[m
+[32m+[m
+[32m+[m[32mmkdir -p repair/lib docs/architecture internal/doctor registry/doctor runtime/logs scripts[m
+[32m+[m
+[32m+[m[32mcat > repair/lib/00-bootstrap.sh <<'LIB'[m
+[32m+[m[32m#!/data/data/com.termux/files/usr/bin/bash[m
+[32m+[m[32mset -euo pipefail[m
+[32m+[m[32mcd "${AIFT_ROOT:-$HOME/AIFT}/AIFT-OS"[m
+[32m+[m[32mgit fetch origin[m
+[32m+[m[32mgit restore registry/repos/discovered-repos.tsv 2>/dev/null || true[m
+[32m+[m[32mgit restore scripts/phase2-central-runtime-scan.sh 2>/dev/null || true[m
+[32m+[m[32mgit restore var/events/events.jsonl 2>/dev/null || true[m
+[32m+[m[32mgit restore .aift/capabilities.json 2>/dev/null || true[m
+[32m+[m[32mgit restore .aift/module.json 2>/dev/null || true[m
+[32m+[m[32mrm -f phase5-upgrade-existing-runtime.sh phase6-runtime-execution-engine.sh repair-phase6-runtime-pr.sh[m
+[32m+[m[32mBRANCH="phase7-doctor-git-housekeeping"[m
+[32m+[m[32mif [ "$(git branch --show-current)" != "$BRANCH" ]; then[m
+[32m+[m[32m  git checkout main[m
+[32m+[m[32m  git pull origin main[m
+[32m+[m[32m  git checkout -B "$BRANCH"[m
+[32m+[m[32mfi[m
+[32m+[m[32mLIB[m
+[32m+[m
+[32m+[m[32mcat > repair/lib/10-git-housekeeping.sh <<'LIB'[m
+[32m+[m[32m#!/data/data/com.termux/files/usr/bin/bash[m
+[32m+[m[32mset -euo pipefail[m
+[32m+[m[32mROOT="${AIFT_ROOT:-$HOME/AIFT}"[m
+[32m+[m[32mcd "$ROOT"[m
+[32m+[m[32mfind "$ROOT" -mindepth 2 -maxdepth 2 -type d -name .git | sort | while read -r gitdir; do[m
+[32m+[m[32m  repo="$(dirname "$gitdir")"[m
+[32m+[m[32m  cd "$repo" || continue[m
+[32m+[m[32m  cat >> .gitignore <<'GITIGNORE'[m
+[32m+[m[32m.aift/capabilities.json[m
+[32m+[m[32m.aift/providers.json[m
+[32m+[m[32m.aift/workflows.json[m
+[32m+[m[32m.aift/repos.json[m
+[32m+[m[32m.aift/federation-snapshot.json[m
+[32m+[m[32mvar/events/[m
+[32m+[m[32mreports/[m
+[32m+[m[32mregistry/*.json[m
+[32m+[m[32mregistry/*.dot[m
+[32m+[m[32mregistry/*.rdf[m
+[32m+[m[32mregistry/*.graphml[m
+[32m+[m[32mregistry/*.cypher[m
+[32m+[m[32mGITIGNORE[m
+[32m+[m[32m  sort -u .gitignore -o .gitignore[m
+[32m+[m[32m  git restore .aift/capabilities.json 2>/dev/null || true[m
+[32m+[m[32m  git restore .aift/providers.json 2>/dev/null || true[m
+[32m+[m[32m  git restore .aift/workflows.json 2>/dev/null || true[m
+[32m+[m[32m  git restore .aift/repos.json 2>/dev/null || true[m
+[32m+[m[32m  git restore var/events/events.jsonl 2>/dev/null || true[m
+[32m+[m[32m  rm -f .aift/module.json 2>/dev/null || true[m
+[32m+[m[32mdone[m
+[32m+[m[32mLIB[m
+[32m+[m
+[32m+[m[32mcat > repair/lib/20-doctor-generator.sh <<'LIB'[m
+[32m+[m[32m#!/data/data/com.termux/files/usr/bin/bash[m
+[32m+[m[32mset -euo pipefail[m
+[32m+[m[32mcd "${AIFT_ROOT:-$HOME/AIFT}/AIFT-OS"[m
+[32m+[m
+[32m+[m[32mcat > docs/architecture/PHASE7-AIFT-DOCTOR-GIT-HOUSEKEEPING.md <<'DOC'[m
+[32m+[m[32m# AIFT-OS Phase 7: Doctor and Git Housekeeping[m
+[32m+[m
+[32m+[m[32mAIFT Doctor inspects the real local federation workspace.[m
+[32m+[m
+[32m+[m[32mIt repairs safe generated state, checks git status, verifies the native Go CLI, and reports what still needs human review.[m
+[32m+[m
+[32m+[m[32mAIFT-OS remains the central runtime. Other repositories remain source packages.[m
+[32m+[m[32mDOC[m
+[32m+[m
+[32m+[m[32mcat > internal/doctor/housekeeping.go <<'GO'[m
+[32m+[m[32mpackage doctor[m
+[32m+[m
+[32m+[m[32mimport ([m
+[32m+[m[32m"fmt"[m
+[32m+[m[32m"os/exec"[m
+[32m+[m
+[32m+[m[32m"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"[m
+[32m+[m[32m)[m
+[32m+[m
+[32m+[m[32mfunc Git(cfg config.Config) error {[m
+[32m+[m[32mroot := cfg.Root[m
+[32m+[m[32mcmd := exec.Command("sh", "-c", `find "`+root+`" -mindepth 2 -maxdepth 2 -type d -name .git | sort | while read gitdir; do repo=$(dirname "$gitdir"); echo "== $repo =="; git -C "$repo" status --short; done`)[m
+[32m+[m[32mcmd.Stdout = cfg.Stdout[m
+[32m+[m[32mcmd.Stderr = cfg.Stderr[m
+[32m+[m[32mreturn cmd.Run()[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mfunc Repair(cfg config.Config) error {[m
+[32m+[m[32mfmt.Fprintln(cfg.Stdout, "Repairing generated runtime state")[m
+[32m+[m[32mcmd := exec.Command("sh", "-c", `find "`+cfg.Root+`" -mindepth 2 -maxdepth 2 -type d -name .git | sort | while read gitdir; do repo=$(dirname "$gitdir"); git -C "$repo" restore .aift/capabilities.json .aift/providers.json .aift/workflows.json .aift/repos.json var/events/events.jsonl 2>/dev/null || true; rm -f "$repo/.aift/module.json"; done`)[m
+[32m+[m[32mcmd.Stdout = cfg.Stdout[m
+[32m+[m[32mcmd.Stderr = cfg.Stderr[m
+[32m+[m[32mreturn cmd.Run()[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mfunc Full(cfg config.Config) error {[m
+[32m+[m[32mif err := Repair(cfg); err != nil {[m
+[32m+[m[32mreturn err[m
+[32m+[m[32m}[m
+[32m+[m[32mreturn Run(cfg)[m
+[32m+[m[32m}[m
+[32m+[m[32mGO[m
+[32m+[m[32mLIB[m
+[32m+[m
+[32m+[m[32mcat > repair/lib/30-main-patcher.sh <<'LIB'[m
+[32m+[m[32m#!/data/data/com.termux/files/usr/bin/bash[m
+[32m+[m[32mset -euo pipefail[m
+[32m+[m[32mcd "${AIFT_ROOT:-$HOME/AIFT}/AIFT-OS"[m
+[32m+[m
+[32m+[m[32mpython <<'PY'[m
+[32m+[m[32mfrom pathlib import Path[m
+[32m+[m
+[32m+[m[32mp = Path("cmd/aift/main.go")[m
+[32m+[m[32ms = p.read_text()[m
+[32m+[m
+[32m+[m[32mimp = '"github.com/AIFreedomTrustFederation/AIFT-OS/internal/doctor"'[m
+[32m+[m[32mif imp not in s:[m
+[32m+[m[32m    marker = '"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"'[m
+[32m+[m[32m    s = s.replace(marker, marker + "\n\t" + imp)[m
+[32m+[m
+[32m+[m[32mif 'case "doctor":' in s and 'doctor.Git' not in s:[m
+[32m+[m[32m    old = '''case "doctor":[m
+[32m+[m[32m\t\terr = doctor.Run(cfg)'''[m
+[32m+[m[32m    new = '''case "doctor":[m
+[32m+[m[32m\t\tif len(args) > 0 && args[0] == "repair" {[m
+[32m+[m[32m\t\t\terr = doctor.Repair(cfg)[m
+[32m+[m[32m\t\t} else if len(args) > 0 && args[0] == "git" {[m
+[32m+[m[32m\t\t\terr = doctor.Git(cfg)[m
+[32m+[m[32m\t\t} else if len(args) > 0 && args[0] == "full" {[m
+[32m+[m[32m\t\t\terr = doctor.Full(cfg)[m
+[32m+[m[32m\t\t} else {[m
+[32m+[m[32m\t\t\terr = doctor.Run(cfg)[m
+[32m+[m[32m\t\t}'''[m
+[32m+[m[32m    s = s.replace(old, new)[m
+[32m+[m
+[32m+[m[32mif 'doctor [repair|git|full]' not in s:[m
+[32m+[m[32m    s = s.replace('fmt.Println("  doctor")', 'fmt.Println("  doctor [repair|git|full]")')[m
+[32m+[m
+[32m+[m[32mp.write_text(s)[m
+[32m+[m[32mPY[m
+[32m+[m[32mLIB[m
+[32m+[m
+[32m+[m[32mcat > repair/lib/40-verify.sh <<'LIB'[m
+[32m+[m[32m#!/data/data/com.termux/files/usr/bin/bash[m
+[32m+[m[32mset -euo pipefail[m
+[32m+[m[32mcd "${AIFT_ROOT:-$HOME/AIFT}/AIFT-OS"[m
+[32m+[m[32mgofmt -w cmd/aift/main.go internal/doctor/*.go[m
+[32m+[m[32mgo test ./...[m
+[32m+[m[32mgo build -o "$HOME/.local/bin/aift" ./cmd/aift[m
+[32m+[m[32mhash -r[m
+[32m+[m[32maift doctor[m
+[32m+[m[32maift doctor repair[m
+[32m+[m[32maift doctor git[m
+[32m+[m[32maift verify[m
+[32m+[m[32mLIB[m
+[32m+[m
+[32m+[m[32mcat > repair/lib/50-commit-pr.sh <<'LIB'[m
+[32m+[m[32m#!/data/data/com.termux/files/usr/bin/bash[m
+[32m+[m[32mset -euo pipefail[m
+[32m+[m[32mcd "${AIFT_ROOT:-$HOME/AIFT}/AIFT-OS"[m
+[32m+[m[32mgit add cmd/aift/main.go internal/doctor/housekeeping.go docs/architecture/PHASE7-AIFT-DOCTOR-GIT-HOUSEKEEPING.md repair/lib repair-phase7.sh[m
+[32m+[m[32mif git diff --cached --quiet; then[m
+[32m+[m[32m  echo "No staged changes."[m
+[32m+[m[32melse[m
+[32m+[m[32m  git commit -m "phase7: add doctor git housekeeping"[m
+[32m+[m[32mfi[m
+[32m+[m[32mgit push -u origin HEAD[m
+[32m+[m[32mif command -v gh >/dev/null 2>&1; then[m
+[32m+[m[32m  gh pr create --base main --head "$(git branch --show-current)" --title "phase7: add doctor git housekeeping" --body "Adds AIFT doctor repair, git housekeeping, verification, and generated-state cleanup."[m
+[32m+[m[32mfi[m
+[32m+[m[32mLIB[m
+[32m+[m
+[32m+[m[32mchmod +x repair/lib/*.sh[m
+[32m+[m
+[32m+[m[32mfor f in repair/lib/*.sh; do[m
+[32m+[m[32m  echo "Running $f"[m
+[32m+[m[32m  bash "$f"[m
+[32m+[m[32mdone[m
+[1mdiff --git a/repair/lib/00-bootstrap.sh b/repair/lib/00-bootstrap.sh[m
+[1mnew file mode 100755[m
+[1mindex 0000000..0f3ce73[m
+[1m--- /dev/null[m
+[1m+++ b/repair/lib/00-bootstrap.sh[m
+[36m@@ -0,0 +1,16 @@[m
+[32m+[m[32m#!/data/data/com.termux/files/usr/bin/bash[m
+[32m+[m[32mset -euo pipefail[m
+[32m+[m[32mcd "${AIFT_ROOT:-$HOME/AIFT}/AIFT-OS"[m
+[32m+[m[32mgit fetch origin[m
+[32m+[m[32mgit restore registry/repos/discovered-repos.tsv 2>/dev/null || true[m
+[32m+[m[32mgit restore scripts/phase2-central-runtime-scan.sh 2>/dev/null || true[m
+[32m+[m[32mgit restore var/events/events.jsonl 2>/dev/null || true[m
+[32m+[m[32mgit restore .aift/capabilities.json 2>/dev/null || true[m
+[32m+[m[32mgit restore .aift/module.json 2>/dev/null || true[m
+[32m+[m[32mrm -f phase5-upgrade-existing-runtime.sh phase6-runtime-execution-engine.sh repair-phase6-runtime-pr.sh[m
+[32m+[m[32mBRANCH="phase7-doctor-git-housekeeping"[m
+[32m+[m[32mif [ "$(git branch --show-current)" != "$BRANCH" ]; then[m
+[32m+[m[32m  git checkout main[m
+[32m+[m[32m  git pull origin main[m
+[32m+[m[32m  git checkout -B "$BRANCH"[m
+[32m+[m[32mfi[m
+[1mdiff --git a/repair/lib/10-git-housekeeping.sh b/repair/lib/10-git-housekeeping.sh[m
+[1mnew file mode 100755[m
+[1mindex 0000000..3c23516[m
+[1m--- /dev/null[m
+[1m+++ b/repair/lib/10-git-housekeeping.sh[m
+[36m@@ -0,0 +1,29 @@[m
+[32m+[m[32m#!/data/data/com.termux/files/usr/bin/bash[m
+[32m+[m[32mset -euo pipefail[m
+[32m+[m[32mROOT="${AIFT_ROOT:-$HOME/AIFT}"[m
+[32m+[m[32mcd "$ROOT"[m
+[32m+[m[32mfind "$ROOT" -mindepth 2 -maxdepth 2 -type d -name .git | sort | while read -r gitdir; do[m
+[32m+[m[32m  repo="$(dirname "$gitdir")"[m
+[32m+[m[32m  cd "$repo" || continue[m
+[32m+[m[32m  cat >> .gitignore <<'GITIGNORE'[m
+[32m+[m[32m.aift/capabilities.json[m
+[32m+[m[32m.aift/providers.json[m
+[32m+[m[32m.aift/workflows.json[m
+[32m+[m[32m.aift/repos.json[m
+[32m+[m[32m.aift/federation-snapshot.json[m
+[32m+[m[32mvar/events/[m
+[32m+[m[32mreports/[m
+[32m+[m[32mregistry/*.json[m
+[32m+[m[32mregistry/*.dot[m
+[32m+[m[32mregistry/*.rdf[m
+[32m+[m[32mregistry/*.graphml[m
+[32m+[m[32mregistry/*.cypher[m
+[32m+[m[32mGITIGNORE[m
+[32m+[m[32m  sort -u .gitignore -o .gitignore[m
+[32m+[m[32m  git restore .aift/capabilities.json 2>/dev/null || true[m
+[32m+[m[32m  git restore .aift/providers.json 2>/dev/null || true[m
+[32m+[m[32m  git restore .aift/workflows.json 2>/dev/null || true[m
+[32m+[m[32m  git restore .aift/repos.json 2>/dev/null || true[m
+[32m+[m[32m  git restore var/events/events.jsonl 2>/dev/null || true[m
+[32m+[m[32m  rm -f .aift/module.json 2>/dev/null || true[m
+[32m+[m[32mdone[m
+[1mdiff --git a/repair/lib/20-doctor-generator.sh b/repair/lib/20-doctor-generator.sh[m
+[1mnew file mode 100755[m
+[1mindex 0000000..f22adc9[m
+[1m--- /dev/null[m
+[1m+++ b/repair/lib/20-doctor-generator.sh[m
+[36m@@ -0,0 +1,47 @@[m
+[32m+[m[32m#!/data/data/com.termux/files/usr/bin/bash[m
+[32m+[m[32mset -euo pipefail[m
+[32m+[m[32mcd "${AIFT_ROOT:-$HOME/AIFT}/AIFT-OS"[m
+[32m+[m
+[32m+[m[32mcat > docs/architecture/PHASE7-AIFT-DOCTOR-GIT-HOUSEKEEPING.md <<'DOC'[m
+[32m+[m[32m# AIFT-OS Phase 7: Doctor and Git Housekeeping[m
+[32m+[m
+[32m+[m[32mAIFT Doctor inspects the real local federation workspace.[m
+[32m+[m
+[32m+[m[32mIt repairs safe generated state, checks git status, verifies the native Go CLI, and reports what still needs human review.[m
+[32m+[m
+[32m+[m[32mAIFT-OS remains the central runtime. Other repositories remain source packages.[m
+[32m+[m[32mDOC[m
+[32m+[m
+[32m+[m[32mcat > internal/doctor/housekeeping.go <<'GO'[m
+[32m+[m[32mpackage doctor[m
+[32m+[m
+[32m+[m[32mimport ([m
+[32m+[m[32m"fmt"[m
+[32m+[m[32m"os/exec"[m
+[32m+[m
+[32m+[m[32m"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"[m
+[32m+[m[32m)[m
+[32m+[m
+[32m+[m[32mfunc Git(cfg config.Config) error {[m
+[32m+[m[32mroot := cfg.Root[m
+[32m+[m[32mcmd := exec.Command("sh", "-c", `find "`+root+`" -mindepth 2 -maxdepth 2 -type d -name .git | sort | while read gitdir; do repo=$(dirname "$gitdir"); echo "== $repo =="; git -C "$repo" status --short; done`)[m
+[32m+[m[32mcmd.Stdout = cfg.Stdout[m
+[32m+[m[32mcmd.Stderr = cfg.Stderr[m
+[32m+[m[32mreturn cmd.Run()[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mfunc Repair(cfg config.Config) error {[m
+[32m+[m[32mfmt.Fprintln(cfg.Stdout, "Repairing generated runtime state")[m
+[32m+[m[32mcmd := exec.Command("sh", "-c", `find "`+cfg.Root+`" -mindepth 2 -maxdepth 2 -type d -name .git | sort | while read gitdir; do repo=$(dirname "$gitdir"); git -C "$repo" restore .aift/capabilities.json .aift/providers.json .aift/workflows.json .aift/repos.json var/events/events.jsonl 2>/dev/null || true; rm -f "$repo/.aift/module.json"; done`)[m
+[32m+[m[32mcmd.Stdout = cfg.Stdout[m
+[32m+[m[32mcmd.Stderr = cfg.Stderr[m
+[32m+[m[32mreturn cmd.Run()[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mfunc Full(cfg config.Config) error {[m
+[32m+[m[32mif err := Repair(cfg); err != nil {[m
+[32m+[m[32mreturn err[m
+[32m+[m[32m}[m
+[32m+[m[32mreturn Run(cfg)[m
+[32m+[m[32m}[m
+[32m+[m[32mGO[m
+[1mdiff --git a/repair/lib/30-main-patcher.sh b/repair/lib/30-main-patcher.sh[m
+[1mnew file mode 100755[m
+[1mindex 0000000..75fbf50[m
+[1m--- /dev/null[m
+[1m+++ b/repair/lib/30-main-patcher.sh[m
+[36m@@ -0,0 +1,35 @@[m
+[32m+[m[32m#!/data/data/com.termux/files/usr/bin/bash[m
+[32m+[m[32mset -euo pipefail[m
+[32m+[m[32mcd "${AIFT_ROOT:-$HOME/AIFT}/AIFT-OS"[m
+[32m+[m
+[32m+[m[32mpython <<'PY'[m
+[32m+[m[32mfrom pathlib import Path[m
+[32m+[m
+[32m+[m[32mp = Path("cmd/aift/main.go")[m
+[32m+[m[32ms = p.read_text()[m
+[32m+[m
+[32m+[m[32mimp = '"github.com/AIFreedomTrustFederation/AIFT-OS/internal/doctor"'[m
+[32m+[m[32mif imp not in s:[m
+[32m+[m[32m    marker = '"github.com/AIFreedomTrustFederation/AIFT-OS/internal/config"'[m
+[32m+[m[32m    s = s.replace(marker, marker + "\n\t" + imp)[m
+[32m+[m
+[32m+[m[32mif 'case "doctor":' in s and 'doctor.Git' not in s:[m
+[32m+[m[32m    old = '''case "doctor":[m
+[32m+[m[32m\t\terr = doctor.Run(cfg)'''[m
+[32m+[m[32m    new = '''case "doctor":[m
+[32m+[m[32m\t\tif len(args) > 0 && args[0] == "repair" {[m
+[32m+[m[32m\t\t\terr = doctor.Repair(cfg)[m
+[32m+[m[32m\t\t} else if len(args) > 0 && args[0] == "git" {[m
+[32m+[m[32m\t\t\terr = doctor.Git(cfg)[m
+[32m+[m[32m\t\t} else if len(args) > 0 && args[0] == "full" {[m
+[32m+[m[32m\t\t\terr = doctor.Full(cfg)[m
+[32m+[m[32m\t\t} else {[m
+[32m+[m[32m\t\t\terr = doctor.Run(cfg)[m
+[32m+[m[32m\t\t}'''[m
+[32m+[m[32m    s = s.replace(old, new)[m
+[32m+[m
+[32m+[m[32mif 'doctor [repair|git|full]' not in s:[m
+[32m+[m[32m    s = s.replace('fmt.Println("  doctor")', 'fmt.Println("  doctor [repair|git|full]")')[m
+[32m+[m
+[32m+[m[32mp.write_text(s)[m
+[32m+[m[32mPY[m
+[1mdiff --git a/repair/lib/40-verify.sh b/repair/lib/40-verify.sh[m
+[1mnew file mode 100755[m
+[1mindex 0000000..fbec5e8[m
+[1m--- /dev/null[m
+[1m+++ b/repair/lib/40-verify.sh[m
+[36m@@ -0,0 +1,11 @@[m
+[32m+[m[32m#!/data/data/com.termux/files/usr/bin/bash[m
+[32m+[m[32mset -euo pipefail[m
+[32m+[m[32mcd "${AIFT_ROOT:-$HOME/AIFT}/AIFT-OS"[m
+[32m+[m[32mgofmt -w cmd/aift/main.go internal/doctor/*.go[m
+[32m+[m[32mgo test ./...[m
+[32m+[m[32mgo build -o "$HOME/.local/bin/aift" ./cmd/aift[m
+[32m+[m[32mhash -r[m
+[32m+[m[32maift doctor[m
+[32m+[m[32maift doctor repair[m
+[32m+[m[32maift doctor git[m
+[32m+[m[32maift verify[m
+[1mdiff --git a/repair/lib/50-commit-pr.sh b/repair/lib/50-commit-pr.sh[m
+[1mnew file mode 100755[m
+[1mindex 0000000..3fbc5ae[m
+[1m--- /dev/null[m
+[1m+++ b/repair/lib/50-commit-pr.sh[m
+[36m@@ -0,0 +1,13 @@[m
+[32m+[m[32m#!/data/data/com.termux/files/usr/bin/bash[m
+[32m+[m[32mset -euo pipefail[m
+[32m+[m[32mcd "${AIFT_ROOT:-$HOME/AIFT}/AIFT-OS"[m
+[32m+[m[32mgit add cmd/aift/main.go internal/doctor/housekeeping.go docs/architecture/PHASE7-AIFT-DOCTOR-GIT-HOUSEKEEPING.md repair/lib repair-phase7.sh[m
+[32m+[m[32mif git diff --cached --quiet; then[m
+[32m+[m[32m  echo "No staged changes."[m
+[32m+[m[32melse[m
+[32m+[m[32m  git commit -m "phase7: add doctor git housekeeping"[m
+[32m+[m[32mfi[m
+[32m+[m[32mgit push -u origin HEAD[m
+[32m+[m[32mif command -v gh >/dev/null 2>&1; then[m
+[32m+[m[32m  gh pr create --base main --head "$(git branch --show-current)" --title "phase7: add doctor git housekeeping" --body "Adds AIFT doctor repair, git housekeeping, verification, and generated-state cleanup."[m
+[32m+[m[32mfi[m
+[1mdiff --git a/repair/repair-go-tests-real-config.py b/repair/repair-go-tests-real-config.py[m
+[1mnew file mode 100644[m
+[1mindex 0000000..3b794ae[m
+[1m--- /dev/null[m
+[1m+++ b/repair/repair-go-tests-real-config.py[m
+[36m@@ -0,0 +1,46 @@[m
+[32m+[m[32mfrom pathlib import Path[m
+[32m+[m[32mimport re[m
+[32m+[m
+[32m+[m[32mroot = Path.cwd()[m
+[32m+[m[32mtest_files = sorted(root.glob("**/*_test.go"))[m
+[32m+[m
+[32m+[m[32mbad_field_patterns = [[m
+[32m+[m[32m    r"\bconfig\.Config\s*\{\s*OS\s*:",[m
+[32m+[m[32m    r"\bconfig\.Config\s*\{\s*Root\s*:",[m
+[32m+[m[32m    r"\bconfig\.Config\s*\{[^}]*\bOS\s*:",[m
+[32m+[m[32m    r"\bconfig\.Config\s*\{[^}]*\bRoot\s*:",[m
+[32m+[m[32m][m
+[32m+[m
+[32m+[m[32mchanged = [][m
+[32m+[m
+[32m+[m[32mfor path in test_files:[m
+[32m+[m[32m    if any(part in {"node_modules", ".git", "dist", "build", ".next", "vendor"} for part in path.parts):[m
+[32m+[m[32m        continue[m
+[32m+[m
+[32m+[m[32m    text = path.read_text()[m
+[32m+[m
+[32m+[m[32m    original = text[m
+[32m+[m
+[32m+[m[32m    text = re.sub([m
+[32m+[m[32m        r"cfg\s*:=\s*config\.Config\s*\{[^}]*\}",[m
+[32m+[m[32m        "cfg := config.Load()",[m
+[32m+[m[32m        text,[m
+[32m+[m[32m        flags=re.DOTALL,[m
+[32m+[m[32m    )[m
+[32m+[m
+[32m+[m[32m    text = re.sub([m
+[32m+[m[32m        r"config\.Config\s*\{[^}]*\}",[m
+[32m+[m[32m        "config.Load()",[m
+[32m+[m[32m        text,[m
+[32m+[m[32m        flags=re.DOTALL,[m
+[32m+[m[32m    )[m
+[32m+[m
+[32m+[m[32m    if text != original:[m
+[32m+[m[32m        path.write_text(text)[m
+[32m+[m[32m        changed.append(str(path))[m
+[32m+[m
+[32m+[m[32mreport = root / "reports" / "repair-all-tests-real-config.txt"[m
+[32m+[m[32mreport.write_text("\n".join(changed) + "\n")[m
+[32m+[m[32mprint("Changed files:")[m
+[32m+[m[32mfor item in changed:[m
+[32m+[m[32m    print(item)[m
+[1mdiff --git a/var/events/events.jsonl b/var/events/events.jsonl[m
+[1mindex a7cc8fb..c02754c 100644[m
+[1m--- a/var/events/events.jsonl[m
+[1m+++ b/var/events/events.jsonl[m
+[36m@@ -174,3 +174,32 @@[m
+ {"time":"2026-06-30T04:38:05Z","type":"services.scan","source":"servicecontracts","message":"service contracts scanned","data":{"services":"21"}}[m
+ {"time":"2026-06-30T04:38:05Z","type":"planner.build","source":"planner","message":"execution plan built","data":{"blocked":"21","ready":"0","repos":"21"}}[m
+ {"time":"2026-06-30T04:38:05Z","type":"verify.complete","source":"verify","message":"federation verified"}[m
+[32m+[m[32m{"time":"2026-06-30T09:11:41Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}[m
+[32m+[m[32m{"time":"2026-06-30T09:11:41Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}[m
+[32m+[m[32m{"time":"2026-06-30T09:11:43Z","type":"intelligence.scan","source":"intelligence","message":"real federation intelligence scan complete","data":{"repos":"21","score":"52"}}[m
+[32m+[m[32m{"time":"2026-06-30T09:11:43Z","type":"manual.scan","source":"manual","message":"federation manual scan complete","data":{"manuals":"21"}}[m
+[32m+[m[32m{"time":"2026-06-30T09:11:43Z","type":"graph.build","source":"graph","message":"federation graph built","data":{"edges":"1078","nodes":"824"}}[m
+[32m+[m[32m{"time":"2026-06-30T09:11:43Z","type":"eventmesh.scan","source":"eventmesh","message":"event mesh scanned","data":{"subscribers":"0","topics":"3"}}[m
+[32m+[m[32m{"time":"2026-06-30T09:11:43Z","type":"services.scan","source":"servicecontracts","message":"service contracts scanned","data":{"services":"21"}}[m
+[32m+[m[32m{"time":"2026-06-30T09:11:43Z","type":"planner.build","source":"planner","message":"execution plan built","data":{"blocked":"21","ready":"0","repos":"21"}}[m
+[32m+[m[32m{"time":"2026-06-30T09:11:43Z","type":"verify.complete","source":"verify","message":"federation verified"}[m
+[32m+[m[32m{"time":"2026-06-30T10:36:57Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}[m
+[32m+[m[32m{"time":"2026-06-30T10:36:59Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}[m
+[32m+[m[32m{"time":"2026-06-30T10:37:00Z","type":"intelligence.scan","source":"intelligence","message":"real federation intelligence scan complete","data":{"repos":"21","score":"52"}}[m
+[32m+[m[32m{"time":"2026-06-30T10:37:00Z","type":"manual.scan","source":"manual","message":"federation manual scan complete","data":{"manuals":"21"}}[m
+[32m+[m[32m{"time":"2026-06-30T10:37:01Z","type":"graph.build","source":"graph","message":"federation graph built","data":{"edges":"1078","nodes":"824"}}[m
+[32m+[m[32m{"time":"2026-06-30T10:37:01Z","type":"eventmesh.scan","source":"eventmesh","message":"event mesh scanned","data":{"subscribers":"0","topics":"3"}}[m
+[32m+[m[32m{"time":"2026-06-30T10:37:01Z","type":"services.scan","source":"servicecontracts","message":"service contracts scanned","data":{"services":"21"}}[m
+[32m+[m[32m{"time":"2026-06-30T10:37:01Z","type":"planner.build","source":"planner","message":"execution plan built","data":{"blocked":"21","ready":"0","repos":"21"}}[m
+[32m+[m[32m{"time":"2026-06-30T10:37:01Z","type":"verify.complete","source":"verify","message":"federation verified"}[m
+[32m+[m[32m{"time":"2026-06-30T10:43:20Z","type":"services.scan","source":"servicecontracts","message":"service contracts scanned","data":{"services":"21"}}[m
+[32m+[m[32m{"time":"2026-06-30T10:43:20Z","type":"services.scan","source":"servicecontracts","message":"service contracts scanned","data":{"services":"21"}}[m
+[32m+[m[32m{"time":"2026-06-30T10:43:27Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}[m
+[32m+[m[32m{"time":"2026-06-30T10:43:28Z","type":"capabilities.scan","source":"capabilities","message":"federation capability scan complete","data":{"repos":"21"}}[m
+[32m+[m[32m{"time":"2026-06-30T10:43:28Z","type":"intelligence.scan","source":"intelligence","message":"real federation intelligence scan complete","data":{"repos":"21","score":"52"}}[m
+[32m+[m[32m{"time":"2026-06-30T10:43:28Z","type":"manual.scan","source":"manual","message":"federation manual scan complete","data":{"manuals":"21"}}[m
+[32m+[m[32m{"time":"2026-06-30T10:43:28Z","type":"graph.build","source":"graph","message":"federation graph built","data":{"edges":"1078","nodes":"824"}}[m
+[32m+[m[32m{"time":"2026-06-30T10:43:29Z","type":"eventmesh.scan","source":"eventmesh","message":"event mesh scanned","data":{"subscribers":"0","topics":"3"}}[m
+[32m+[m[32m{"time":"2026-06-30T10:43:29Z","type":"services.scan","source":"servicecontracts","message":"service contracts scanned","data":{"services":"21"}}[m
+[32m+[m[32m{"time":"2026-06-30T10:43:29Z","type":"planner.build","source":"planner","message":"execution plan built","data":{"blocked":"21","ready":"0","repos":"21"}}[m
+[32m+[m[32m{"time":"2026-06-30T10:43:29Z","type":"verify.complete","source":"verify","message":"federation verified"}[m
