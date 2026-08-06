@@ -63,6 +63,7 @@ func NewDefaultAdapterRegistry(aiftRoot string) (*AdapterRegistry, error) {
 	return NewAdapterRegistry(
 		RepositoryInspectAdapter{AIFTRoot: aiftRoot},
 		ForgeMissionInspectAdapter{AIFTRoot: aiftRoot},
+		SourceInspectAdapter{AIFTRoot: aiftRoot},
 	)
 }
 
@@ -125,4 +126,29 @@ func (a ForgeMissionInspectAdapter) Invoke(_ context.Context, request AdapterReq
 		Evidence: evidence,
 		Data:     map[string]any{"mission": mission, "requested_target": request.Target},
 	}, nil
+}
+
+type SourceInspectAdapter struct{ AIFTRoot string }
+
+func (a SourceInspectAdapter) Descriptor() AdapterDescriptor {
+	return AdapterDescriptor{Kind: "source.inspect", Version: "v1", Description: "Read one manifest-declared canonical JSON source.", Mutating: false, Risk: "low"}
+}
+
+func (a SourceInspectAdapter) Invoke(_ context.Context, request AdapterRequest) (AdapterResult, error) {
+	sources, discoveryEvidence, err := DiscoverIntegrationSources(a.AIFTRoot)
+	if err != nil {
+		return AdapterResult{}, err
+	}
+	for _, source := range sources {
+		if source.ID != request.Target {
+			continue
+		}
+		data, evidence, err := readIntegrationJSON(source)
+		if err != nil {
+			return AdapterResult{}, err
+		}
+		evidence = append(discoveryEvidence, evidence...)
+		return AdapterResult{Summary: fmt.Sprintf("Canonical source %s read from %s", source.ID, source.Repository), Evidence: evidence, Data: data}, nil
+	}
+	return AdapterResult{}, fmt.Errorf("integration source not found: %s", request.Target)
 }
