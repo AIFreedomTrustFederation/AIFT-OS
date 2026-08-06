@@ -113,6 +113,26 @@ verify_os_feature() {
   fi
   git -C "$OS_REPO" pull --ff-only
 
+  log "Formatting the world-protocol Go sources"
+  (
+    cd "$OS_REPO"
+    gofmt -w \
+      internal/uxi/mobox_runtime.go \
+      internal/uxi/world_protocol.go \
+      internal/uxi/world_protocol_test.go \
+      internal/uxihttp/server_test.go
+    git diff --check
+    git add -- \
+      internal/uxi/mobox_runtime.go \
+      internal/uxi/world_protocol.go \
+      internal/uxi/world_protocol_test.go \
+      internal/uxihttp/server_test.go
+    if ! git diff --cached --quiet; then
+      git commit -m "style: format world protocol sources"
+      git push origin "$OS_FEATURE_BRANCH"
+    fi
+  )
+
   log "Running the complete AIFT-OS verification gate"
   (cd "$OS_REPO" && make verify)
 
