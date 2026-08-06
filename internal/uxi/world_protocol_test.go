@@ -45,9 +45,14 @@ func TestWorldSnapshotIsDeterministicAndPrecise(t *testing.T) {
 func TestWorldSnapshotRevisionChangesWithEvidence(t *testing.T) {
 	repository := Repository{ID: "repo", Name: "Repo", Status: "detected"}
 	before := BuildWorldSnapshot([]Repository{repository})
-	repository.Evidence = []Evidence{{ID: "observed", Kind: "test"}}
-	after := BuildWorldSnapshot([]Repository{repository})
-	if before.Revision == after.Revision {
-		t.Fatal("revision did not change when evidence changed")
+	repository.Evidence = []Evidence{{ID: "observed", Kind: "test", Summary: "first observation"}}
+	withEvidence := BuildWorldSnapshot([]Repository{repository})
+	if before.Revision == withEvidence.Revision {
+		t.Fatal("revision did not change when evidence was added")
+	}
+	repository.Evidence[0].Summary = "updated observation with the same ID"
+	afterContentChange := BuildWorldSnapshot([]Repository{repository})
+	if withEvidence.Revision == afterContentChange.Revision {
+		t.Fatal("revision did not change when evidence content changed")
 	}
 }
