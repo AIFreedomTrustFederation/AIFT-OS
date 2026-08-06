@@ -247,3 +247,28 @@ func TestWorldSnapshotEndpoint(t *testing.T) {
 		t.Fatalf("governance=%#v", snapshot.Governance)
 	}
 }
+
+func TestWorldSnapshotAllowsOnlyLoopbackBrowserOrigins(t *testing.T) {
+	server, _ := newTestServer(t)
+	for _, test := range []struct {
+		origin string
+		allowed bool
+	}{
+		{origin: "http://127.0.0.1:5173", allowed: true},
+		{origin: "http://localhost:4173", allowed: true},
+		{origin: "https://example.com", allowed: false},
+		{origin: "http://127.0.0.1.example.com", allowed: false},
+	} {
+		req := httptest.NewRequest(http.MethodGet, "/v1/federation/world-snapshot", nil)
+		req.Header.Set("Origin", test.origin)
+		recorder := httptest.NewRecorder()
+		server.Handler().ServeHTTP(recorder, req)
+		got := recorder.Header().Get("Access-Control-Allow-Origin")
+		if test.allowed && got != test.origin {
+			t.Fatalf("origin %q was not allowed: %q", test.origin, got)
+		}
+		if !test.allowed && got != "" {
+			t.Fatalf("origin %q was unexpectedly allowed", test.origin)
+		}
+	}
+}
