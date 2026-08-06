@@ -228,7 +228,6 @@ func TestFederationGeometryEndpoint(t *testing.T) {
 	}
 }
 
-
 func TestGameCompositionRequiresBodyMarker(t *testing.T) {
 	defer func() {
 		if recover() == nil {
