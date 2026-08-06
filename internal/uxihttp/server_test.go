@@ -108,7 +108,7 @@ func TestFederationWorldEndpoint(t *testing.T) {
 	}
 }
 
-func TestIndexIncludesWorldWorkspace(t *testing.T) {
+func TestIndexLaunchesStandaloneGames(t *testing.T) {
 	server, _ := newTestServer(t)
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	rr := httptest.NewRecorder()
@@ -117,10 +117,45 @@ func TestIndexIncludesWorldWorkspace(t *testing.T) {
 		t.Fatalf("index code=%d", rr.Code)
 	}
 	body := rr.Body.String()
-	for _, expected := range []string{"id=\"worldTab\"", "id=\"worldView\"", "id=\"worldLocate\"", "/v1/federation/world"} {
+	for _, expected := range []string{
+		"id=\"treeTab\"", "Tree Game", "id=\"worldTab\"", "World Game",
+		"window.location.assign(route)", "treeTab:\"/tree\"", "worldTab:\"/world\"",
+	} {
 		if !strings.Contains(body, expected) {
 			t.Fatalf("index missing %q", expected)
 		}
+	}
+}
+
+func TestStandaloneGameRoutes(t *testing.T) {
+	server, _ := newTestServer(t)
+	games := []struct {
+		path     string
+		title    string
+		endpoint string
+		peer     string
+	}{
+		{path: "/tree", title: "Tree of Life", endpoint: "/v1/federation/tree", peer: "/world"},
+		{path: "/world", title: "World Game", endpoint: "/v1/federation/world", peer: "/tree"},
+	}
+	for _, game := range games {
+		t.Run(game.path, func(t *testing.T) {
+			req := httptest.NewRequest(http.MethodGet, game.path, nil)
+			rr := httptest.NewRecorder()
+			server.Handler().ServeHTTP(rr, req)
+			if rr.Code != http.StatusOK {
+				t.Fatalf("code=%d body=%s", rr.Code, rr.Body.String())
+			}
+			if contentType := rr.Header().Get("Content-Type"); !strings.Contains(contentType, "text/html") {
+				t.Fatalf("content type=%q", contentType)
+			}
+			body := rr.Body.String()
+			for _, expected := range []string{game.title, game.endpoint, game.peer, "requestFullscreen", "pointerdown"} {
+				if !strings.Contains(body, expected) {
+					t.Fatalf("game %s missing %q", game.path, expected)
+				}
+			}
+		})
 	}
 }
 
