@@ -50,8 +50,8 @@ func NewStore(root string) (*Store, error) {
 		}
 	}
 	store := &Store{
-		root: root,
-		recovered: map[string]struct{}{},
+		root:            root,
+		recovered:       map[string]struct{}{},
 		appliedEventIDs: map[string]struct{}{},
 	}
 	store.mu.Lock()

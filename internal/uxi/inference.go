@@ -14,9 +14,9 @@ import (
 
 const (
 	maxInferenceResponseBytes = 4 << 20
-	defaultInferenceEndpoint = "http://127.0.0.1:8080/v1"
-	defaultInferenceModel    = "local"
-	defaultInferenceTimeout  = 90 * time.Second
+	defaultInferenceEndpoint  = "http://127.0.0.1:8080/v1"
+	defaultInferenceModel     = "local"
+	defaultInferenceTimeout   = 90 * time.Second
 )
 
 // ChatMessage is one OpenAI-compatible chat message.
