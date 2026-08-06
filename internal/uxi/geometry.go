@@ -6,7 +6,6 @@ import (
 	"encoding/hex"
 	"math"
 	"sort"
-	"time"
 )
 
 const (
@@ -20,7 +19,6 @@ var goldenAngle = math.Pi * (3 - math.Sqrt(5))
 // shared by every Living Federation renderer.
 type FederationGeometry struct {
 	Schema      string         `json:"schema"`
-	GeneratedAt time.Time      `json:"generated_at"`
 	Law         GeometryLaw    `json:"law"`
 	Nodes       []GeometryNode `json:"nodes"`
 }
@@ -98,7 +96,6 @@ func BuildFederationGeometry(repositories []Repository) FederationGeometry {
 
 	world := FederationGeometry{
 		Schema:      geometrySchemaV1,
-		GeneratedAt: time.Now().UTC(),
 		Law: GeometryLaw{
 			Recurrence:       "z(n+1)=z(n)^2+c",
 			Dimensions:       3,
@@ -112,9 +109,9 @@ func BuildFederationGeometry(repositories []Repository) FederationGeometry {
 	for i, repo := range repos {
 		ready := readyCapabilities(repo.Capabilities)
 		growth := repositoryGrowth(repo, ready)
-		digest := sha256.Sum256([]byte(repo.ID + "|" + repo.Role))
+		digest := sha256.Sum256([]byte(repo.ID))
 		c := complexCoordinate(digest)
-		iterations := mandelbrotIterations(c.Real, c.Imaginary, mandelbrotLimit)
+		iterations, bounded := mandelbrotIterations(c.Real, c.Imaginary, mandelbrotLimit)
 		node := GeometryNode{
 			ID:           "geometry-" + repo.ID,
 			RepositoryID: repo.ID,
@@ -126,7 +123,7 @@ func BuildFederationGeometry(repositories []Repository) FederationGeometry {
 				Real:       c.Real,
 				Imaginary:  c.Imaginary,
 				Iterations: iterations,
-				Bounded:    iterations == mandelbrotLimit,
+				Bounded:    bounded,
 				Complexity: round6(float64(iterations) / mandelbrotLimit),
 			},
 			Position:     fibonacciSphere(i, len(repos)),
@@ -152,15 +149,15 @@ func complexCoordinate(digest [32]byte) ComplexSeed {
 	}
 }
 
-func mandelbrotIterations(realPart, imaginaryPart float64, limit int) int {
+func mandelbrotIterations(realPart, imaginaryPart float64, limit int) (int, bool) {
 	zr, zi := 0.0, 0.0
-	for iteration := 0; iteration < limit; iteration++ {
-		if zr*zr+zi*zi > 4 {
-			return iteration
-		}
+	for iteration := 1; iteration <= limit; iteration++ {
 		zr, zi = zr*zr-zi*zi+realPart, 2*zr*zi+imaginaryPart
+		if zr*zr+zi*zi > 4 {
+			return iteration, false
+		}
 	}
-	return limit
+	return limit, true
 }
 
 func fibonacciSphere(index, total int) Vector3 {
