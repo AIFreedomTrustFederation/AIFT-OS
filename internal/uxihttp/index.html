@@ -48,7 +48,8 @@
       <form class="governance-form" id="actionForm">
         <strong>Propose action</strong>
         <label>Kind<select id="actionKind" required></select></label>
-        <label>Target<input id="actionTarget" placeholder="AIFT-Forge" required></label>
+        <label>Target<input id="actionTarget" list="actionTargets" placeholder="AIFT-Forge or booksmith.library" required></label>
+        <datalist id="actionTargets"></datalist>
         <label>Risk<select id="actionRisk"><option>low</option><option>moderate</option><option>high</option><option>critical</option></select></label>
         <label class="checkbox-row"><input type="checkbox" id="actionApproval" checked> Require approval</label>
         <button type="submit">Record action proposal</button>
