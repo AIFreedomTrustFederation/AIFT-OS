@@ -76,3 +76,26 @@ func TestBuildFederationTreeIsDeterministicByRepositoryName(t *testing.T) {
 		t.Fatalf("order=%q,%q", tree.Nodes[8].Name, tree.Nodes[9].Name)
 	}
 }
+
+func TestBuildFederationTreeUsesRepositoryIDAsNameTieBreaker(t *testing.T) {
+	tree := BuildFederationTree([]Repository{
+		{ID: "repo-z", Name: "Shared", Role: "federated-application", Status: "detected"},
+		{ID: "repo-a", Name: "Shared", Role: "federated-application", Status: "detected"},
+	})
+	if tree.Nodes[8].ID != "repo-repo-a" || tree.Nodes[9].ID != "repo-repo-z" {
+		t.Fatalf("order=%q,%q", tree.Nodes[8].ID, tree.Nodes[9].ID)
+	}
+}
+
+func TestBuildFederationTreeDoesNotInventGitEvidence(t *testing.T) {
+	tree := BuildFederationTree([]Repository{{
+		ID: "not-git", Name: "NotGit", Role: "federated-application", Status: "detected", Git: false,
+	}})
+	node := tree.Nodes[8]
+	if node.Growth != 0 {
+		t.Fatalf("growth=%d", node.Growth)
+	}
+	if tree.Quests[0].Status != "open" || tree.Quests[0].Evidence != "" {
+		t.Fatalf("quest=%#v", tree.Quests[0])
+	}
+}
