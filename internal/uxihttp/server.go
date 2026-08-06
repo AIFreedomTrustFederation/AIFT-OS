@@ -34,6 +34,7 @@ func (s *Server) routes() {
 	s.mux.HandleFunc("GET /health", s.handleHealth)
 	s.mux.HandleFunc("GET /v1/system", s.handleSystem)
 	s.mux.HandleFunc("GET /v1/repositories", s.handleRepositories)
+	s.mux.HandleFunc("GET /v1/adapters/forge/mission", s.handleForgeMission)
 	s.mux.HandleFunc("GET /v1/sessions", s.handleListSessions)
 	s.mux.HandleFunc("POST /v1/sessions", s.handleCreateSession)
 	s.mux.HandleFunc("GET /v1/sessions/{id}", s.handleGetSession)
@@ -73,6 +74,15 @@ func (s *Server) handleRepositories(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"repositories": repos})
+}
+
+func (s *Server) handleForgeMission(w http.ResponseWriter, r *http.Request) {
+	mission, evidence, err := uxi.InspectForgeMission(s.Engine.AIFTRoot)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"mission": mission, "evidence": evidence})
 }
 
 func (s *Server) handleListSessions(w http.ResponseWriter, r *http.Request) {
