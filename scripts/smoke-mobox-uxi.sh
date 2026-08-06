@@ -68,13 +68,11 @@ PY
 }
 
 cd "$REPO_ROOT"
-AIFT_UXI_HOME="$SMOKE_ROOT/data" AIFT_UXI_ADDR="127.0.0.1:$PORT" go run ./cmd/aiftd >"$LOG_FILE" 2>&1 &
+go build -o "$SMOKE_ROOT/aiftd" ./cmd/aiftd
+AIFT_UXI_HOME="$SMOKE_ROOT/data" AIFT_UXI_ADDR="127.0.0.1:$PORT" "$SMOKE_ROOT/aiftd" >"$LOG_FILE" 2>&1 &
 SERVER_PID="$!"
 
 for _ in $(seq 1 60); do
-  if curl --silent --fail "$BASE_URL/health" >/dev/null 2>&1; then
-    break
-  fi
   if ! kill -0 "$SERVER_PID" 2>/dev/null; then
     printf 'aiftd exited during startup\n' >&2
     sed -n '1,120p' "$LOG_FILE" >&2
