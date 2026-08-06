@@ -20,6 +20,14 @@
       "forge.mission.inspect",
       "source.inspect"
     ],
-    "artifact_contract": "read-only adapter results are private JSON artifacts with SHA-256 digests"
+    "artifact_contract": "read-only adapter results are private JSON artifacts with SHA-256 digests",
+    "federation_geometry": {
+      "schema": "aift.federation.geometry.v1",
+      "endpoint": "/v1/federation/geometry",
+      "recurrence": "z(n+1)=z(n)^2+c",
+      "dimensions": 3,
+      "identity": "deterministic repository seed",
+      "growth": "observed evidence only"
+    }
   }
 }
