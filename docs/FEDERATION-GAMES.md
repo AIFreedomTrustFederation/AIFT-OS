@@ -75,3 +75,20 @@ Tree and World embed one progressive Canvas renderer over their existing interac
 The animated presentation clock changes only visual rotation. It never changes canonical identity, evidence, coherence, quest state, or authority. Reduced-motion preferences freeze presentation rotation while preserving the complete information surface.
 
 Selecting an existing repository node synchronizes the geometry details without replacing the game's native touch, pointer, keyboard, pan, pinch, zoom, GPS, or fullscreen behavior. The restoration doorway returns to MoBox inspection; it does not execute an action from the game.
+
+## Chromatic Coherence palette
+
+The shared visual substrate follows an interwoven neon spectrum over near-black:
+
+| Token | Color | Meaning |
+|---|---|---|
+| Ink | `#050609` | Unmanifest field and maximum contrast |
+| Cyan | `#00E5E5` | Connection, communication, and living pathways |
+| Teal | `#00AEB5` | Stable relational structure |
+| Electric blue | `#147DF5` | Knowledge, depth, and spatial recursion |
+| Living green | `#00E676` | Evidence-backed readiness and regeneration |
+| Coral | `#FF4F46` | Embodied action and transformational crossings |
+| Hot pink | `#FF256E` | Blockage, urgency, and boundary visibility |
+| Orange | `#FF7A35` | Detected potential and incomplete emergence |
+
+Repository identity selects harmonic colors from the complete spectrum, while operational status retains an accessible invariant: green is ready, orange is detected, and pink is blocked. Color never serves as the only status signal; labels and evidence remain present.
