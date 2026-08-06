@@ -46,6 +46,8 @@ func (s *Server) routes() {
 	s.mux.HandleFunc("POST /v1/sessions/{id}/actions/{actionID}/decision", s.handleActionDecision)
 	s.mux.HandleFunc("POST /v1/sessions/{id}/actions/{actionID}/invoke", s.handleActionInvoke)
 	s.mux.HandleFunc("GET /v1/events", s.handleEvents)
+	s.mux.HandleFunc("GET /styles.css", s.handleStyles)
+	s.mux.HandleFunc("GET /app.js", s.handleAppJS)
 	s.mux.HandleFunc("GET /", s.handleIndex)
 }
 
@@ -263,6 +265,16 @@ func (s *Server) handleEvents(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]any{"events": events})
 }
 
+func (s *Server) handleStyles(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/css; charset=utf-8")
+	_, _ = w.Write([]byte(stylesCSS))
+}
+
+func (s *Server) handleAppJS(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/javascript; charset=utf-8")
+	_, _ = w.Write([]byte(appJS))
+}
+
 func (s *Server) handleIndex(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		http.NotFound(w, r)
@@ -306,7 +318,7 @@ func securityHeaders(next http.Handler) http.Handler {
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		w.Header().Set("X-Frame-Options", "DENY")
 		w.Header().Set("Referrer-Policy", "no-referrer")
-		w.Header().Set("Content-Security-Policy", "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'")
+		w.Header().Set("Content-Security-Policy", "default-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'")
 		next.ServeHTTP(w, r)
 	})
 }
