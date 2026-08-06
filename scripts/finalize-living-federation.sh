@@ -65,7 +65,7 @@ verify_client_changes() {
       const fs = require("fs");
       const report = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
       const v = report.metadata?.vulnerabilities ?? {};
-      process.stdout.write(String(v.high ?? 0) + " " + String(v.critical ?? 0));
+      console.log(String(v.high ?? 0) + " " + String(v.critical ?? 0));
     ' "$audit_json"
   )
   [[ "$high" == 0 && "$critical" == 0 ]] ||
