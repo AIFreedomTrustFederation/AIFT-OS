@@ -87,13 +87,13 @@ func (s *Store) startJob(sessionID, actionID, adapterKind string) (Session, Job,
 	now := time.Now().UTC()
 	session.Actions[index].Status = StatusRunning
 	session.Actions[index].UpdatedAt = now
-	job := Job{ID: newID("job"), ActionID: actionID, AdapterKind: adapterKind, Status: StatusRunning, StartedAt: now}
+	job := Job{ID: newID("job"), ActionID: actionID, AdapterKind: adapterKind, Status: StatusRunning, StartedAt: &now}
 	session.Jobs = append(session.Jobs, job)
 	session.UpdatedAt = now
-	if err := s.writeSessionLocked(session); err != nil {
+	event := Event{ID: newID("evt"), SessionID: sessionID, Kind: "job.started", Status: StatusRunning, Message: "Read-only adapter job started", Data: map[string]any{"job_id": job.ID, "action_id": actionID, "adapter": adapterKind}, CreatedAt: now}
+	if err := s.commitSessionEventLocked(session, event, "job.started:"+job.ID); err != nil {
 		return Session{}, Job{}, err
 	}
-	_ = s.appendEventLocked(Event{ID: newID("evt"), SessionID: sessionID, Kind: "job.started", Status: StatusRunning, Message: "Read-only adapter job started", Data: map[string]any{"job_id": job.ID, "action_id": actionID, "adapter": adapterKind}, CreatedAt: now})
 	return session, job, nil
 }
 
@@ -128,15 +128,12 @@ func (s *Store) finishJob(sessionID, actionID, jobID, artifactID string, jobErr 
 	session.Actions[actionIndex].Status = status
 	session.Actions[actionIndex].UpdatedAt = now
 	session.Jobs[jobIndex].Status = status
-	session.Jobs[jobIndex].EndedAt = now
+	session.Jobs[jobIndex].EndedAt = &now
 	session.Jobs[jobIndex].ResultArtifactID = artifactID
 	if jobErr != nil {
 		session.Jobs[jobIndex].Error = jobErr.Error()
 	}
 	session.UpdatedAt = now
-	if err := s.writeSessionLocked(session); err != nil {
-		return Session{}, err
-	}
 	data := map[string]any{"job_id": jobID, "action_id": actionID}
 	if artifactID != "" {
 		data["artifact_id"] = artifactID
@@ -144,7 +141,10 @@ func (s *Store) finishJob(sessionID, actionID, jobID, artifactID string, jobErr 
 	if jobErr != nil {
 		data["error"] = jobErr.Error()
 	}
-	_ = s.appendEventLocked(Event{ID: newID("evt"), SessionID: sessionID, Kind: "job.finished", Status: status, Message: "Read-only adapter job finished", Data: data, CreatedAt: now})
+	event := Event{ID: newID("evt"), SessionID: sessionID, Kind: "job.finished", Status: status, Message: "Read-only adapter job finished", Data: data, CreatedAt: now}
+	if err := s.commitSessionEventLocked(session, event, "job.finished:"+jobID); err != nil {
+		return Session{}, errors.Join(jobErr, err)
+	}
 	return session, jobErr
 }
 
