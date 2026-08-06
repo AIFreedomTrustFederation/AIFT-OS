@@ -150,7 +150,7 @@ func TestStandaloneGameRoutes(t *testing.T) {
 				t.Fatalf("content type=%q", contentType)
 			}
 			body := rr.Body.String()
-			for _, expected := range []string{game.title, game.endpoint, game.peer, "requestFullscreen", "pointerdown", "/v1/federation/geometry", "livingGeometry", "drawGlobalManifold", "coherence horizon", "torus", "restoration quest"} {
+			for _, expected := range []string{game.title, game.endpoint, game.peer, "requestFullscreen", "pointerdown", "/v1/federation/geometry", "livingGeometry", "drawGlobalManifold", "coherence horizon", "zoomLevel", "applySemanticZoom", "torus", "restoration quest"} {
 				if !strings.Contains(body, expected) {
 					t.Fatalf("game %s missing %q", game.path, expected)
 				}
