@@ -72,3 +72,9 @@ yarn-error.log
 *.orig
 *.rej
 .aift-backups/
+
+# Canonical developer artifacts
+/aift
+/aiftd
+/coverage.out
+/bin/
