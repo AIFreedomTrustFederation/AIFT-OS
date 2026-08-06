@@ -29,9 +29,9 @@ type FederationWorld struct {
 // WorldPrivacy documents the map's location-handling contract.
 type WorldPrivacy struct {
 	DeviceLocationStorage string `json:"device_location_storage"`
-	RepositoryLocations    string `json:"repository_locations"`
-	ExternalRequests       bool   `json:"external_requests"`
-	DefaultPrecision       string `json:"default_precision"`
+	RepositoryLocations   string `json:"repository_locations"`
+	ExternalRequests      bool   `json:"external_requests"`
+	DefaultPrecision      string `json:"default_precision"`
 }
 
 // WorldNode is one repository with a valid, shareable location declaration.
@@ -104,9 +104,9 @@ func BuildFederationWorld(repositories []Repository) FederationWorld {
 		Schema: "aift.federation.world.v1", GeneratedAt: time.Now().UTC(), Projection: "equirectangular",
 		Privacy: WorldPrivacy{
 			DeviceLocationStorage: "browser-memory-only",
-			RepositoryLocations:    ".aift/location.json with explicit federation or public visibility",
-			ExternalRequests:       false,
-			DefaultPrecision:       "city",
+			RepositoryLocations:   ".aift/location.json with explicit federation or public visibility",
+			ExternalRequests:      false,
+			DefaultPrecision:      "city",
 		},
 		Nodes: []WorldNode{}, Unmapped: []WorldUnmapped{}, Quests: []WorldQuest{},
 	}
