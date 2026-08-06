@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aift.local/schemas/location-v1.schema.json",
+  "title": "AIFT Repository Location Declaration",
+  "description": "An explicit, privacy-scoped geographic declaration for one federation repository.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "label",
+    "latitude",
+    "longitude",
+    "precision",
+    "visibility"
+  ],
+  "properties": {
+    "schema": {
+      "const": "aift.location.v1"
+    },
+    "label": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "latitude": {
+      "type": "number",
+      "minimum": -90,
+      "maximum": 90
+    },
+    "longitude": {
+      "type": "number",
+      "minimum": -180,
+      "maximum": 180
+    },
+    "precision": {
+      "enum": ["country", "region", "city", "exact"],
+      "description": "Coordinates are rounded by the UXI API before being returned. Exact precision must be an explicit operator choice and does not earn extra XP."
+    },
+    "visibility": {
+      "enum": ["private", "federation", "public"],
+      "description": "Private declarations are never returned as geographic nodes."
+    },
+    "source": {
+      "type": "string",
+      "maxLength": 120,
+      "default": "operator-declared"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}
