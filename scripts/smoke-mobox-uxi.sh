@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # End-to-end smoke test for the local MoBox UXI service.
+# no-harness: uses only an isolated temporary directory and always removes it.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
