@@ -42,6 +42,7 @@ func (s *Server) routes() {
 	s.mux.HandleFunc("GET /v1/federation/tree", s.handleFederationTree)
 	s.mux.HandleFunc("GET /v1/federation/world", s.handleFederationWorld)
 	s.mux.HandleFunc("GET /v1/federation/geometry", s.handleFederationGeometry)
+	s.mux.HandleFunc("GET /v1/federation/world-snapshot", s.handleWorldSnapshot)
 	s.mux.HandleFunc("GET /v1/adapters/forge/mission", s.handleForgeMission)
 	s.mux.HandleFunc("GET /v1/sessions", s.handleListSessions)
 	s.mux.HandleFunc("POST /v1/sessions", s.handleCreateSession)
@@ -149,6 +150,15 @@ func (s *Server) handleFederationGeometry(w http.ResponseWriter, r *http.Request
 		return
 	}
 	writeJSON(w, http.StatusOK, uxi.BuildFederationGeometry(repos))
+}
+
+func (s *Server) handleWorldSnapshot(w http.ResponseWriter, r *http.Request) {
+	repos, err := s.Engine.Repositories()
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, uxi.BuildWorldSnapshot(repos))
 }
 
 func (s *Server) handleForgeMission(w http.ResponseWriter, r *http.Request) {
