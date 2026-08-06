@@ -117,7 +117,12 @@ func BuildFederationTree(repositories []Repository) FederationTree {
 	}
 
 	repos := append([]Repository(nil), repositories...)
-	sort.Slice(repos, func(i, j int) bool { return repos[i].Name < repos[j].Name })
+	sort.Slice(repos, func(i, j int) bool {
+		if repos[i].Name != repos[j].Name {
+			return repos[i].Name < repos[j].Name
+		}
+		return repos[i].ID < repos[j].ID
+	})
 	coherenceTotal := 0
 	for _, repo := range repos {
 		layer := repositoryLayer(repo.Role)
@@ -225,7 +230,10 @@ func readyCapabilities(capabilities []Capability) int {
 }
 
 func repositoryGrowth(repo Repository, readyCount int) int {
-	growth := 20 // Git repository evidence.
+	growth := 0
+	if repo.Git {
+		growth += 20
+	}
 	if len(repo.Languages) > 0 {
 		growth += 15
 	}
@@ -243,7 +251,10 @@ func repositoryGrowth(repo Repository, readyCount int) int {
 }
 
 func repositoryXP(repo Repository, readyCount, growth int) int {
-	xp := 25 + len(repo.Evidence)*10 + len(repo.Languages)*15 + readyCount*75 + growth
+	xp := len(repo.Evidence)*10 + len(repo.Languages)*15 + readyCount*75 + growth
+	if repo.Git {
+		xp += 25
+	}
 	switch strings.ToLower(repo.Status) {
 	case "ready":
 		xp += 100
@@ -257,9 +268,15 @@ func repositoryXP(repo Repository, readyCount, growth int) int {
 
 func repositoryQuests(repo Repository, readyCount int) []TreeQuest {
 	base := "quest-" + repo.ID + "-"
-	quests := []TreeQuest{
-		{ID: base + "awaken", RepositoryID: repo.ID, Repository: repo.Name, Title: "Awaken the repository", Description: "Be discovered as a local Git repository.", Status: "complete", RewardXP: 25, Evidence: filepathEvidence(repo)},
+	awaken := TreeQuest{
+		ID: base + "awaken", RepositoryID: repo.ID, Repository: repo.Name,
+		Title: "Awaken the repository", Description: "Be discovered as a local Git repository.", Status: "open", RewardXP: 25,
 	}
+	if repo.Git {
+		awaken.Status = "complete"
+		awaken.Evidence = filepathEvidence(repo)
+	}
+	quests := []TreeQuest{awaken}
 	manifest := TreeQuest{ID: base + "capabilities", RepositoryID: repo.ID, Repository: repo.Name, Title: "Name its living capabilities", Description: "Publish .aift/capabilities.json with evidence-backed capability records.", Status: "open", RewardXP: 100}
 	if len(repo.Capabilities) > 0 {
 		manifest.Status = "complete"
