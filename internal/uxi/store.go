@@ -36,6 +36,7 @@ type Store struct {
 	beforeSessionWrite func() error
 	beforeEventAppend  func() error
 	recovered          map[string]struct{}
+	appliedEventIDs    map[string]struct{}
 }
 
 // NewStore creates a private local store and recovers unfinished commits.
@@ -48,9 +49,20 @@ func NewStore(root string) (*Store, error) {
 			return nil, fmt.Errorf("create store directory %s: %w", dir, err)
 		}
 	}
-	store := &Store{root: root, recovered: map[string]struct{}{}}
+	store := &Store{
+		root: root,
+		recovered: map[string]struct{}{},
+		appliedEventIDs: map[string]struct{}{},
+	}
 	store.mu.Lock()
 	defer store.mu.Unlock()
+	events, err := store.listEventsLocked(0)
+	if err != nil {
+		return nil, fmt.Errorf("load UXI event index: %w", err)
+	}
+	for _, event := range events {
+		store.appliedEventIDs[event.ID] = struct{}{}
+	}
 	if _, err := store.recoverPendingLocked(); err != nil {
 		return nil, fmt.Errorf("recover UXI commits: %w", err)
 	}
@@ -104,7 +116,7 @@ func (s *Store) ListSessions() ([]Session, error) {
 				ID: stableID("evt_corrupt", path+":"+readErr.Error()), Kind: "store.session_corrupt", Status: StatusBlocked,
 				Message: "Unreadable session file skipped", Data: map[string]any{"path": path, "error": readErr.Error()}, CreatedAt: time.Now().UTC(),
 			}
-			if exists, _ := s.eventExistsLocked(event.ID); !exists {
+			if _, exists := s.appliedEventIDs[event.ID]; !exists {
 				_ = s.appendEventLocked(event)
 			}
 			continue
@@ -286,6 +298,10 @@ func (s *Store) commitSessionEventLocked(session Session, event Event, operation
 		if retryErr := s.applyPendingLocked(pending); retryErr == nil {
 			return nil
 		} else {
+			pendingPath := filepath.Join(s.root, "transactions", pending.ID+".json")
+			if removeErr := os.Remove(pendingPath); removeErr != nil && !errors.Is(removeErr, os.ErrNotExist) {
+				return errors.Join(err, retryErr, removeErr)
+			}
 			return errors.Join(err, retryErr)
 		}
 	}
@@ -300,11 +316,7 @@ func (s *Store) applyPendingLocked(pending pendingCommit) error {
 	if err := s.writeSessionLocked(pending.Session); err != nil {
 		return err
 	}
-	exists, err := s.eventExistsLocked(pending.Event.ID)
-	if err != nil {
-		return err
-	}
-	if !exists {
+	if _, exists := s.appliedEventIDs[pending.Event.ID]; !exists {
 		if err := s.appendEventLocked(pending.Event); err != nil {
 			return err
 		}
@@ -325,11 +337,13 @@ func (s *Store) recoverPendingLocked() ([]string, error) {
 	for _, path := range matches {
 		data, readErr := os.ReadFile(path)
 		if readErr != nil {
-			return recovered, readErr
+			s.auditCorruptTransactionLocked(path, readErr)
+			continue
 		}
 		var pending pendingCommit
 		if err := json.Unmarshal(data, &pending); err != nil {
-			return recovered, fmt.Errorf("decode pending commit %s: %w", path, err)
+			s.auditCorruptTransactionLocked(path, err)
+			continue
 		}
 		if err := s.applyPendingLocked(pending); err != nil {
 			return recovered, err
@@ -340,6 +354,16 @@ func (s *Store) recoverPendingLocked() ([]string, error) {
 		}
 	}
 	return recovered, nil
+}
+
+func (s *Store) auditCorruptTransactionLocked(path string, cause error) {
+	event := Event{
+		ID: stableID("evt_corrupt_tx", path+":"+cause.Error()), Kind: "store.transaction_corrupt", Status: StatusBlocked,
+		Message: "Unreadable transaction file skipped", Data: map[string]any{"path": path, "error": cause.Error()}, CreatedAt: time.Now().UTC(),
+	}
+	if _, exists := s.appliedEventIDs[event.ID]; !exists {
+		_ = s.appendEventLocked(event)
+	}
 }
 
 func (s *Store) consumeRecoveredLocked(operationKey string) bool {
@@ -369,7 +393,22 @@ func writeAtomicJSON(path string, value any, mode os.FileMode) error {
 		return err
 	}
 	tmp := path + ".tmp"
-	if err := os.WriteFile(tmp, append(data, '\n'), mode); err != nil {
+	file, err := os.OpenFile(tmp, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, mode)
+	if err != nil {
+		return err
+	}
+	if _, err := file.Write(append(data, '\n')); err != nil {
+		_ = file.Close()
+		_ = os.Remove(tmp)
+		return err
+	}
+	if err := file.Sync(); err != nil {
+		_ = file.Close()
+		_ = os.Remove(tmp)
+		return err
+	}
+	if err := file.Close(); err != nil {
+		_ = os.Remove(tmp)
 		return err
 	}
 	if err := os.Rename(tmp, path); err != nil {
@@ -394,20 +433,16 @@ func (s *Store) appendEventLocked(event Event) error {
 	if err := json.NewEncoder(file).Encode(event); err != nil {
 		return err
 	}
-	return file.Sync()
+	if err := file.Sync(); err != nil {
+		return err
+	}
+	s.appliedEventIDs[event.ID] = struct{}{}
+	return nil
 }
 
 func (s *Store) eventExistsLocked(id string) (bool, error) {
-	events, err := s.listEventsLocked(0)
-	if err != nil {
-		return false, err
-	}
-	for _, event := range events {
-		if event.ID == id {
-			return true, nil
-		}
-	}
-	return false, nil
+	_, exists := s.appliedEventIDs[id]
+	return exists, nil
 }
 
 func newID(prefix string) string {
