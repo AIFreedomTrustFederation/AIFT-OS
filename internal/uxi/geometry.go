@@ -12,8 +12,9 @@ import (
 const (
 	geometrySchemaV1 = "aift.federation.geometry.v1"
 	mandelbrotLimit  = 64
-	goldenAngle      = math.Pi * (3 - math.Sqrt(5))
 )
+
+var goldenAngle = math.Pi * (3 - math.Sqrt(5))
 
 // FederationGeometry is the deterministic, evidence-derived spatial contract
 // shared by every Living Federation renderer.
