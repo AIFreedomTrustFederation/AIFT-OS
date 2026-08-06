@@ -4,106 +4,57 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
   <title>MoBox UXI</title>
-  <style>
-    :root { color-scheme: dark; --background:#04070d; --panel:rgba(10,15,24,.94); --surface:#101724; --surface-strong:#172033; --line:#29354a; --gold:#e7b95a; --cyan:#5de4d7; --muted:#91a0b7; --good:#bce994; --danger:#ffc0c0; }
-    * { box-sizing:border-box; }
-    body { margin:0; height:100vh; overflow:hidden; background:radial-gradient(circle at 50% -20%,#1a294b 0,#080c14 42%,var(--background) 100%); color:#eef3ff; font:14px/1.5 Inter,system-ui,sans-serif; }
-    button,input,select,textarea { font:inherit; } button { cursor:pointer; }
-    .shell { display:grid; grid-template-columns:270px minmax(0,1fr) 340px; grid-template-rows:58px 1fr; height:100vh; }
-    .topbar { grid-column:1/-1; display:flex; align-items:center; gap:12px; padding:0 18px; border-bottom:1px solid var(--line); background:rgba(7,11,18,.92); backdrop-filter:blur(18px); z-index:20; }
-    .brand { color:var(--gold); font-weight:850; letter-spacing:.09em; }
-    .badge { display:inline-block; padding:2px 8px; border:1px solid #40516d; border-radius:999px; color:var(--muted); font-size:11px; }
-    .pulse { margin-left:auto; color:var(--cyan); font-size:12px; }
-    .mobile-toggle { display:none; border:1px solid var(--line); background:var(--surface); color:white; border-radius:8px; padding:6px 9px; }
-    .panel { min-width:0; overflow:auto; background:var(--panel); border-right:1px solid var(--line); }
-    .panel.right { border-right:0; border-left:1px solid var(--line); }
-    .panel h2 { margin:0; padding:18px 16px 8px; color:var(--muted); font-size:12px; letter-spacing:.12em; text-transform:uppercase; }
-    .panel-section { padding:0 12px 16px; }
-    .nav-button { display:block; width:100%; margin:5px 0; padding:10px 12px; border:1px solid transparent; border-radius:10px; background:transparent; color:#e8edfa; text-align:left; }
-    .nav-button:hover,.nav-button.active { background:#141c2a; border-color:#2b3a54; }
-    .nav-button small { display:block; color:var(--muted); overflow-wrap:anywhere; }
-    .primary-button { width:100%; padding:10px; border:1px solid #4e623d; border-radius:10px; background:#1b2618; color:#dff7b8; font-weight:700; }
-    .main { display:grid; grid-template-rows:1fr auto; min-width:0; }
-    .stream { overflow:auto; padding:24px max(20px,7vw); }
-    .empty { max-width:720px; margin:12vh auto; color:var(--muted); text-align:center; }
-    .empty h1 { margin-bottom:8px; color:#f7e8bd; font-size:38px; }
-    .turn { max-width:850px; margin:0 auto 18px; padding:16px 18px; border:1px solid var(--line); border-radius:16px; background:#0e151f; white-space:pre-wrap; overflow-wrap:anywhere; }
-    .turn.user { margin-left:auto; background:var(--surface-strong); border-color:#3b4f72; }
-    .turn-role { margin-bottom:8px; color:var(--cyan); font-size:11px; letter-spacing:.12em; text-transform:uppercase; }
-    .evidence-card,.governance-card { margin-top:10px; padding:10px; border:1px solid var(--line); border-radius:10px; background:#111824; overflow-wrap:anywhere; }
-    .evidence-card { border-left:3px solid var(--gold); font-size:12px; }
-    .governance-card strong { color:#f1ddb0; } .governance-card small { color:var(--muted); }
-    .decision-button { margin:9px 6px 0 0; padding:6px 10px; border:1px solid #465570; border-radius:8px; background:#182235; color:#eef3ff; }
-    .decision-button.approve { border-color:#4e753e; color:var(--good); } .decision-button.reject { border-color:#7b4242; color:var(--danger); }
-    .detail { padding:0 16px 16px; color:var(--muted); overflow-wrap:anywhere; }
-    .composer { padding:14px max(20px,7vw) 20px; background:linear-gradient(transparent,var(--background) 24%); }
-    .composer form { display:flex; max-width:850px; margin:auto; gap:10px; padding:9px; border:1px solid #34405a; border-radius:16px; background:#0e141f; }
-    .composer input { flex:1; min-width:0; padding:10px; border:0; outline:0; background:transparent; color:white; }
-    .composer button { padding:0 18px; border:0; border-radius:11px; background:var(--gold); color:#161004; font-weight:850; }
-    .governance-form { display:grid; gap:8px; margin:0 12px 16px; padding:12px; border:1px solid var(--line); border-radius:12px; background:#0f1621; }
-    .governance-form label { color:var(--muted); font-size:12px; }
-    .governance-form input,.governance-form textarea,.governance-form select { width:100%; padding:8px; border:1px solid #36435b; border-radius:8px; background:#080d15; color:white; }
-    .governance-form textarea { min-height:64px; resize:vertical; }
-    .governance-form button { padding:8px; border:1px solid #465570; border-radius:8px; background:#182235; color:white; }
-    .checkbox-row { display:flex; align-items:center; gap:8px; } .checkbox-row input { width:auto; }
-    .overlay { display:none; }
-    @media(max-width:960px) {
-      .shell { grid-template-columns:1fr; grid-template-rows:52px 1fr; }
-      .topbar { grid-column:1; padding:0 10px; } .topbar .badge { display:none; } .mobile-toggle { display:inline-block; }
-      .panel { position:fixed; top:52px; bottom:0; width:min(88vw,340px); z-index:30; transition:transform .2s ease; }
-      .panel.left { left:0; transform:translateX(-105%); } .panel.right { right:0; transform:translateX(105%); }
-      body.left-open .panel.left,body.right-open .panel.right { transform:translateX(0); }
-      body.left-open .overlay,body.right-open .overlay { display:block; position:fixed; inset:52px 0 0; z-index:25; background:rgba(0,0,0,.55); }
-      .stream { padding:16px; } .composer { padding:10px; } .empty h1 { font-size:30px; }
-    }
-  </style>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
 </head>
 <body>
   <div class="shell">
     <header class="topbar">
       <button class="mobile-toggle" id="leftToggle" aria-label="Open workspaces">☰</button>
-      <div class="brand">MOBOX UXI</div><span class="badge">truthful local-first operator</span><div class="pulse" id="pulse">connecting…</div>
+      <div class="brand">MOBOX UXI</div>
+      <span class="badge">truthful local-first operator</span>
+      <div class="pulse" id="pulse">connecting…</div>
       <button class="mobile-toggle" id="rightToggle" aria-label="Open context">Context</button>
     </header>
+
     <aside class="panel left" aria-label="Workspaces">
-      <div class="panel-section" style="padding-top:12px"><button class="primary-button" id="newSession">+ New workspace</button></div>
+      <div class="panel-section"><button class="primary-button" id="newSession">+ New workspace</button></div>
       <h2>Sessions</h2><div class="panel-section" id="sessions"></div>
       <h2>Repositories</h2><div class="panel-section" id="repos"></div>
     </aside>
+
     <main class="main">
       <div class="stream" id="stream"></div>
-      <div class="composer"><form id="composer"><input id="message" autocomplete="off" placeholder="Ask Aetherion, /inspect AIFT-OS, or /forge"><button type="submit">Send</button></form></div>
+      <div class="composer">
+        <form id="composer">
+          <input id="message" autocomplete="off" placeholder="Ask Aetherion, /inspect AIFT-OS, or /forge">
+          <button type="submit">Send</button>
+        </form>
+      </div>
     </main>
+
     <aside class="panel right" aria-label="Context and governance">
       <h2>System context</h2><div class="detail" id="system">Loading…</div>
       <h2>Evidence</h2><div class="detail" id="evidence">Select a repository or inspect it in conversation.</div>
-      <h2>Governance</h2><div class="detail" id="governance">Approval records a decision but does not execute.</div>
-      <form class="governance-form" id="planForm"><strong>Propose plan</strong><label>Objective<input id="planObjective" required></label><label>Steps, one per line<textarea id="planSteps" required></textarea></label><button type="submit">Record proposed plan</button></form>
-      <form class="governance-form" id="actionForm"><strong>Propose action</strong><label>Kind<input id="actionKind" placeholder="forge.patch.apply" required></label><label>Target<input id="actionTarget" placeholder="AIFT-Forge" required></label><label>Risk<select id="actionRisk"><option>low</option><option>moderate</option><option>high</option><option>critical</option></select></label><label class="checkbox-row"><input type="checkbox" id="actionApproval" checked> Require approval</label><button type="submit">Record action proposal</button></form>
+      <h2>Governance</h2><div class="detail" id="governance">Read-only adapters create supervised jobs and evidence artifacts.</div>
+
+      <form class="governance-form" id="planForm">
+        <strong>Propose plan</strong>
+        <label>Objective<input id="planObjective" required></label>
+        <label>Steps, one per line<textarea id="planSteps" required></textarea></label>
+        <button type="submit">Record proposed plan</button>
+      </form>
+
+      <form class="governance-form" id="actionForm">
+        <strong>Propose action</strong>
+        <label>Kind<select id="actionKind" required></select></label>
+        <label>Target<input id="actionTarget" placeholder="AIFT-Forge" required></label>
+        <label>Risk<select id="actionRisk"><option>low</option><option>moderate</option><option>high</option><option>critical</option></select></label>
+        <label class="checkbox-row"><input type="checkbox" id="actionApproval" checked> Require approval</label>
+        <button type="submit">Record action proposal</button>
+      </form>
     </aside>
   </div>
   <div class="overlay" id="overlay"></div>
-  <script>
-    const state={session:null,sessions:[],repos:[]}; const $=selector=>document.querySelector(selector);
-    function element(tag,className,text){const node=document.createElement(tag);if(className)node.className=className;if(text!==undefined)node.textContent=text;return node}
-    function clear(node){while(node.firstChild)node.removeChild(node.firstChild)}
-    async function api(path,options={}){const response=await fetch(path,{headers:{"Content-Type":"application/json"},...options});const data=await response.json();if(!response.ok)throw new Error(data.error||response.statusText);return data}
-    async function load(){const [system,sessions,repos]=await Promise.all([api("/v1/system"),api("/v1/sessions"),api("/v1/repositories")]);state.sessions=sessions.sessions||[];state.repos=repos.repositories||[];$("#pulse").textContent=`active · ${system.repository_count} repos · ${system.mode}`;const systemNode=$("#system");clear(systemNode);systemNode.append(element("strong","",system.status),document.createElement("br"),document.createTextNode(system.truth_contract),document.createElement("br"),document.createElement("br"),element("span","badge",system.aift_root));renderSessions();renderRepos();if(state.sessions[0])await openSession(state.sessions[0].id);else renderTurns()}
-    function renderSessions(){const root=$("#sessions");clear(root);for(const session of state.sessions){const button=element("button",`nav-button ${state.session&&state.session.id===session.id?"active":""}`,session.title);button.append(element("small","",new Date(session.updated_at).toLocaleString()));button.addEventListener("click",()=>openSession(session.id));root.append(button)}}
-    function renderRepos(){const root=$("#repos");clear(root);for(const repo of state.repos){const button=element("button","nav-button",repo.name);button.append(element("small","",`${repo.role} · ${repo.status}`));button.addEventListener("click",()=>{$("#message").value=`/inspect ${repo.name}`;showRepo(repo.name);closeDrawers();$("#message").focus()});root.append(button)}}
-    function showRepo(name){const repo=state.repos.find(item=>item.name===name);const root=$("#evidence");clear(root);if(!repo||!(repo.evidence||[]).length){root.textContent="No evidence records.";return}for(const evidence of repo.evidence)root.append(evidenceCard(evidence))}
-    function evidenceCard(evidence){const card=element("div","evidence-card");card.append(element("strong","",evidence.summary),document.createElement("br"),document.createTextNode(evidence.source));if(evidence.detail)card.append(document.createElement("br"),document.createTextNode(evidence.detail));return card}
-    async function createSession(){const session=await api("/v1/sessions",{method:"POST",body:JSON.stringify({title:"MoBox workspace"})});state.sessions.unshift(session);await openSession(session.id)}
-    async function openSession(id){state.session=await api(`/v1/sessions/${encodeURIComponent(id)}`);const index=state.sessions.findIndex(item=>item.id===state.session.id);if(index>=0)state.sessions[index]=state.session;renderSessions();renderTurns();renderGovernance();closeDrawers()}
-    function renderTurns(){const root=$("#stream");clear(root);if(!state.session||!(state.session.turns||[]).length){const empty=element("div","empty");empty.append(element("h1","","Begin with evidence."),element("p","","Try /inspect AIFT-OS, /forge, or ask the local model about the federation."));root.append(empty);return}for(const turn of state.session.turns){const card=element("article",`turn ${turn.role==="user"?"user":"assistant"}`);const mode=turn.metadata&&turn.metadata.mode?` · ${turn.metadata.mode}`:"";card.append(element("div","turn-role",`${turn.role}${mode}`),document.createTextNode(turn.content));for(const evidence of turn.evidence||[])card.append(evidenceCard(evidence));root.append(card)}root.scrollTop=root.scrollHeight}
-    function renderGovernance(){const root=$("#governance");clear(root);if(!state.session){root.textContent="Approval records a decision but does not execute.";return}for(const plan of state.session.plans||[]){const card=element("div","governance-card");card.append(element("strong","",`Plan · ${plan.status}`),document.createElement("br"),document.createTextNode(plan.objective));for(const step of plan.steps||[])card.append(document.createElement("br"),element("small","",`${step.title} · ${step.status}`));root.append(card)}for(const action of state.session.actions||[]){const card=element("div","governance-card");card.append(element("strong","",`Action · ${action.status}`),document.createElement("br"),document.createTextNode(`${action.kind} → ${action.target}`),document.createElement("br"),element("small","",`risk ${action.risk} · no execution endpoint`));if(action.status==="proposed"||action.status==="awaiting_approval"){const approve=element("button","decision-button approve","Approve record");approve.addEventListener("click",()=>decideAction(action.id,"approved"));const reject=element("button","decision-button reject","Reject");reject.addEventListener("click",()=>decideAction(action.id,"rejected"));card.append(document.createElement("br"),approve,reject)}root.append(card)}if(!root.firstChild)root.textContent="Approval records a decision but does not execute."}
-    async function decideAction(actionID,decision){state.session=await api(`/v1/sessions/${encodeURIComponent(state.session.id)}/actions/${encodeURIComponent(actionID)}/decision`,{method:"POST",body:JSON.stringify({decision,actor:"human-local-operator"})});renderSessions();renderGovernance()}
-    $("#newSession").addEventListener("click",createSession);
-    $("#composer").addEventListener("submit",async event=>{event.preventDefault();const input=$("#message");const content=input.value.trim();if(!content)return;if(!state.session)await createSession();input.value="";input.disabled=true;try{state.session=await api(`/v1/sessions/${encodeURIComponent(state.session.id)}/messages`,{method:"POST",body:JSON.stringify({content})});const index=state.sessions.findIndex(item=>item.id===state.session.id);if(index>=0)state.sessions[index]=state.session;renderSessions();renderTurns();renderGovernance()}catch(error){window.alert(error.message)}finally{input.disabled=false;input.focus()}});
-    $("#planForm").addEventListener("submit",async event=>{event.preventDefault();if(!state.session)await createSession();const objective=$("#planObjective").value.trim();const steps=$("#planSteps").value.split("\n").map(value=>value.trim()).filter(Boolean).map(title=>({title}));state.session=await api(`/v1/sessions/${encodeURIComponent(state.session.id)}/plans`,{method:"POST",body:JSON.stringify({objective,steps})});event.target.reset();renderGovernance()});
-    $("#actionForm").addEventListener("submit",async event=>{event.preventDefault();if(!state.session)await createSession();const payload={kind:$("#actionKind").value.trim(),target:$("#actionTarget").value.trim(),risk:$("#actionRisk").value,approval_required:$("#actionApproval").checked};state.session=await api(`/v1/sessions/${encodeURIComponent(state.session.id)}/actions`,{method:"POST",body:JSON.stringify(payload)});event.target.reset();$("#actionApproval").checked=true;renderGovernance()});
-    function closeDrawers(){document.body.classList.remove("left-open","right-open")} $("#leftToggle").addEventListener("click",()=>document.body.classList.toggle("left-open"));$("#rightToggle").addEventListener("click",()=>document.body.classList.toggle("right-open"));$("#overlay").addEventListener("click",closeDrawers);
-    load().catch(error=>{$("#pulse").textContent="blocked";$("#system").textContent=error.message});
-  </script>
 </body>
 </html>
