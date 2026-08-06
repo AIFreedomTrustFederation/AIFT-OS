@@ -1,11 +1,32 @@
 .RECIPEPREFIX := >
-.PHONY: help build doctor status verify test registry dashboard deps plugins safe-sync inspect
+.PHONY: help build doctor status verify verify-fast format smoke coverage architecture install-hooks test registry dashboard deps plugins safe-sync inspect
 
 help:
->./aift-os.sh help
+>bash scripts/dev.sh help
 
 build:
->sh install/01-build.sh
+>bash scripts/dev.sh build
+
+verify:
+>bash scripts/dev.sh verify
+
+verify-fast:
+>bash scripts/dev.sh verify-fast
+
+format:
+>bash scripts/dev.sh format
+
+smoke:
+>bash scripts/dev.sh smoke
+
+coverage:
+>bash scripts/dev.sh coverage
+
+architecture:
+>bash scripts/dev.sh architecture
+
+install-hooks:
+>bash scripts/dev.sh install-hooks
 
 doctor:
 >./aift-os.sh doctor
@@ -13,11 +34,8 @@ doctor:
 status:
 >./aift-os.sh status
 
-verify:
->./aift-os.sh verify
-
 test:
->sh tests/go-smoke.sh
+>bash scripts/dev.sh test
 
 registry:
 >./aift-os.sh registry
