@@ -26,7 +26,7 @@ func TestFederationGeometryIsDeterministic(t *testing.T) {
 		if node.Seed == "" || node.Mandelbrot.Iterations < 0 || node.Mandelbrot.Iterations > mandelbrotLimit {
 			t.Fatalf("node=%#v", node)
 		}
-		if node.Torus.IdentityPhase < 0 || node.Torus.IdentityPhase > 2*math.Pi || node.Torus.CoherencePhase < 0 || node.Torus.CoherencePhase > 2*math.Pi {
+		if node.Torus.Cycle == "" || node.Torus.IdentityPhase <= 0 || node.Torus.IdentityPhase > 2*math.Pi || node.Torus.CoherencePhase < 0 || node.Torus.CoherencePhase > 2*math.Pi {
 			t.Fatalf("torus=%#v", node.Torus)
 		}
 		if node.Position.X < -1 || node.Position.X > 1 || node.Position.Y < -1 || node.Position.Y > 1 || node.Position.Z < -1 || node.Position.Z > 1 {
