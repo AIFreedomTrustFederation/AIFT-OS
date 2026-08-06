@@ -155,6 +155,103 @@
     };
   }
 
+  function harmonicColor(node, offset, alpha) {
+    const seed = Math.abs(Math.round((node.torus.identity_phase || 0) * 1000));
+    const value = chroma[(seed + offset) % chroma.length];
+    const red = parseInt(value.slice(1, 3), 16);
+    const green = parseInt(value.slice(3, 5), 16);
+    const blue = parseInt(value.slice(5, 7), 16);
+    return `rgba(${red},${green},${blue},${alpha})`;
+  }
+
+  function energyColor(node, alpha) {
+    const coherence = Math.max(0, Math.min(1, node.coherence / 100));
+    const index = Math.min(fire.length - 1, Math.floor(coherence * fire.length));
+    const value = fire[index];
+    const red = parseInt(value.slice(1, 3), 16);
+    const green = parseInt(value.slice(3, 5), 16);
+    const blue = parseInt(value.slice(5, 7), 16);
+    return `rgba(${red},${green},${blue},${alpha})`;
+  }
+
+  function drawGlobalManifold(elapsed) {
+    const cx = state.width / 2;
+    const cy = state.height / 2;
+    const rx = Math.min(state.width * .46, state.height * .72);
+    const ry = Math.min(state.height * .43, state.width * .58);
+    const pulse = reducedMotion.matches ? 0 : Math.sin(elapsed * .45) * .012;
+    const flowCount = state.width < 700 ? 12 : 24;
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.globalCompositeOperation = "screen";
+
+    // The white outer seam is the coherence horizon: a shared boundary, not a rank.
+    ctx.shadowColor = "rgba(244,251,255,.38)";
+    ctx.shadowBlur = 16;
+    ctx.strokeStyle = "rgba(244,251,255,.20)";
+    ctx.lineWidth = 1.1;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, rx * (1 + pulse), ry, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // The green equator represents the evidence-derived Eternal Now projection.
+    ctx.strokeStyle = "rgba(0,230,118,.32)";
+    ctx.lineWidth = 1.25;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, rx * .98, ry * .18, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(0,230,118,.15)";
+    ctx.beginPath();
+    ctx.moveTo(-rx, 0);
+    ctx.lineTo(rx, 0);
+    ctx.stroke();
+
+    // Warm expansion and cool convergence fold through one present-time center.
+    for (let i = 0; i < flowCount; i++) {
+      const phase = (i / flowCount) * Math.PI * 2 + elapsed * .018;
+      const side = Math.cos(phase);
+      const depth = Math.sin(phase);
+      const edgeX = side * rx;
+      const waistX = side * rx * .08;
+      const upper = i % 2 === 0;
+      const edgeY = (upper ? -1 : 1) * ry * (.76 + .18 * depth);
+      const controlY = (upper ? -1 : 1) * ry * .42;
+      ctx.strokeStyle = upper
+        ? `rgba(20,125,245,${.055 + .045 * (depth + 1)})`
+        : `rgba(255,79,70,${.055 + .045 * (depth + 1)})`;
+      ctx.lineWidth = .65;
+      ctx.beginPath();
+      ctx.moveTo(waistX, 0);
+      ctx.bezierCurveTo(side * rx * .12, controlY, edgeX * .82, edgeY * .86, edgeX, edgeY);
+      ctx.stroke();
+    }
+
+    const axis = ctx.createLinearGradient(0, ry, 0, -ry);
+    axis.addColorStop(0, "rgba(255,79,70,.45)");
+    axis.addColorStop(.2, "rgba(255,122,53,.42)");
+    axis.addColorStop(.4, "rgba(255,210,31,.38)");
+    axis.addColorStop(.5, "rgba(0,230,118,.62)");
+    axis.addColorStop(.67, "rgba(0,229,229,.44)");
+    axis.addColorStop(.84, "rgba(20,125,245,.44)");
+    axis.addColorStop(1, "rgba(155,92,255,.42)");
+    ctx.strokeStyle = axis;
+    ctx.lineWidth = 1.35;
+    ctx.beginPath();
+    ctx.moveTo(0, ry);
+    ctx.lineTo(0, -ry);
+    ctx.stroke();
+
+    ctx.shadowColor = "rgba(244,251,255,.9)";
+    ctx.shadowBlur = 18;
+    ctx.fillStyle = "rgba(244,251,255,.82)";
+    ctx.beginPath();
+    ctx.arc(0, 0, 2.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
   function color(node, alpha) {
     if (node.status === "blocked") return `rgba(255,120,126,${alpha})`;
     if (node.status === "ready") return `rgba(136,242,172,${alpha})`;
@@ -213,6 +310,7 @@
     if (!state.geometry || !state.visible) return;
     ctx.clearRect(0, 0, state.width, state.height);
     const elapsed = reducedMotion.matches ? 0 : (now - state.start) / 1000;
+    drawGlobalManifold(elapsed);
     const rotation = elapsed * .035;
     const points = state.geometry.nodes.map(node => ({
       node,
