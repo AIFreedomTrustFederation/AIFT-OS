@@ -16,6 +16,7 @@ type Engine struct {
 	Store     *Store
 	AIFTRoot  string
 	Completer Completer
+	Adapters  *AdapterRegistry
 
 	locksMu      sync.Mutex
 	sessionLocks map[string]*sync.Mutex
@@ -29,7 +30,11 @@ func NewEngine(store *Store, root string, completer Completer) (*Engine, error) 
 	if strings.TrimSpace(root) == "" {
 		return nil, errors.New("AIFT root is required")
 	}
-	return &Engine{Store: store, AIFTRoot: root, Completer: completer, sessionLocks: map[string]*sync.Mutex{}}, nil
+	adapters, err := NewDefaultAdapterRegistry(root)
+	if err != nil {
+		return nil, err
+	}
+	return &Engine{Store: store, AIFTRoot: root, Completer: completer, Adapters: adapters, sessionLocks: map[string]*sync.Mutex{}}, nil
 }
 
 // Repositories discovers current repositories from local filesystem evidence.
