@@ -3,6 +3,7 @@ package uxi
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -75,6 +76,36 @@ func TestBuildFederationWorldRejectsInvalidCoordinates(t *testing.T) {
 	}
 	if world.Unmapped[0].State != "invalid" {
 		t.Fatalf("unmapped=%#v", world.Unmapped)
+	}
+}
+
+func TestBuildFederationWorldRejectsMissingCoordinate(t *testing.T) {
+	repoPath := filepath.Join(t.TempDir(), "MissingCoordinate")
+	if err := os.MkdirAll(filepath.Join(repoPath, ".aift"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	manifest := `{"schema":"aift.location.v1","label":"Incomplete","longitude":0,"precision":"city","visibility":"federation"}`
+	if err := os.WriteFile(filepath.Join(repoPath, ".aift", "location.json"), []byte(manifest), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	world := BuildFederationWorld([]Repository{{ID: "missing-coordinate", Name: "MissingCoordinate", Path: repoPath}})
+	if world.Progress.Invalid != 1 || !strings.Contains(world.Unmapped[0].Reason, "latitude is required") {
+		t.Fatalf("world=%#v", world)
+	}
+}
+
+func TestBuildFederationWorldRejectsUnknownFields(t *testing.T) {
+	repoPath := filepath.Join(t.TempDir(), "Unknown")
+	if err := os.MkdirAll(filepath.Join(repoPath, ".aift"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	manifest := `{"schema":"aift.location.v1","label":"Unknown","latitude":0,"longitude":0,"precision":"city","visibility":"federation","secret":"unexpected"}`
+	if err := os.WriteFile(filepath.Join(repoPath, ".aift", "location.json"), []byte(manifest), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	world := BuildFederationWorld([]Repository{{ID: "unknown", Name: "Unknown", Path: repoPath}})
+	if world.Progress.Invalid != 1 || !strings.Contains(world.Unmapped[0].Reason, "unknown field") {
+		t.Fatalf("world=%#v", world)
 	}
 }
 
