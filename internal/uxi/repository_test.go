@@ -3,6 +3,7 @@ package uxi
 import (
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 )
 
@@ -67,5 +68,55 @@ func TestDiscoverRepositoryWithGitFile(t *testing.T) {
 	}
 	if len(repos) != 1 {
 		t.Fatalf("repos = %d", len(repos))
+	}
+}
+
+func TestDiscoverSymlinkedRepository(t *testing.T) {
+	root := t.TempDir()
+	outside := t.TempDir()
+	repo := filepath.Join(outside, "linked")
+	if err := os.MkdirAll(filepath.Join(repo, ".git"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Symlink(repo, filepath.Join(root, "linked")); err != nil {
+		t.Skipf("symlink unavailable: %v", err)
+	}
+	repos, err := DiscoverRepositories(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(repos) != 1 {
+		t.Fatalf("repos=%#v", repos)
+	}
+}
+
+func TestRepositoryEvidenceOrderIsStable(t *testing.T) {
+	root := t.TempDir()
+	repo := filepath.Join(root, "mixed")
+	if err := os.MkdirAll(filepath.Join(repo, ".git"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	for _, name := range []string{"go.mod", "package.json", "Cargo.toml", "pyproject.toml"} {
+		if err := os.WriteFile(filepath.Join(repo, name), []byte("{}"), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	first, err := DiscoverRepositories(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	second, err := DiscoverRepositories(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var a, b []string
+	for _, evidence := range first[0].Evidence {
+		a = append(a, evidence.Kind+":"+filepath.Base(evidence.Source))
+	}
+	for _, evidence := range second[0].Evidence {
+		b = append(b, evidence.Kind+":"+filepath.Base(evidence.Source))
+	}
+	if !reflect.DeepEqual(a, b) {
+		t.Fatalf("first=%v second=%v", a, b)
 	}
 }
