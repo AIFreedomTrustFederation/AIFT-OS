@@ -7,15 +7,21 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"sync"
 	"time"
 )
 
+// Engine coordinates truthful conversation, repository inspection, and local inference.
 type Engine struct {
 	Store     *Store
 	AIFTRoot  string
 	Completer Completer
+
+	locksMu      sync.Mutex
+	sessionLocks map[string]*sync.Mutex
 }
 
+// NewEngine constructs a UXI engine over one local AIFT workspace.
 func NewEngine(store *Store, root string, completer Completer) (*Engine, error) {
 	if store == nil {
 		return nil, errors.New("store is required")
@@ -23,27 +29,30 @@ func NewEngine(store *Store, root string, completer Completer) (*Engine, error) 
 	if strings.TrimSpace(root) == "" {
 		return nil, errors.New("AIFT root is required")
 	}
-	return &Engine{Store: store, AIFTRoot: root, Completer: completer}, nil
+	return &Engine{Store: store, AIFTRoot: root, Completer: completer, sessionLocks: map[string]*sync.Mutex{}}, nil
 }
 
+// Repositories discovers current repositories from local filesystem evidence.
 func (e *Engine) Repositories() ([]Repository, error) {
 	return DiscoverRepositories(e.AIFTRoot)
 }
 
+// HandleMessage serializes one full exchange per session and persists both turns atomically.
 func (e *Engine) HandleMessage(ctx context.Context, sessionID, content string) (Session, error) {
 	content = strings.TrimSpace(content)
 	if content == "" {
 		return Session{}, errors.New("message content is required")
 	}
+	lock := e.sessionLock(sessionID)
+	lock.Lock()
+	defer lock.Unlock()
+
 	session, err := e.Store.GetSession(sessionID)
 	if err != nil {
 		return Session{}, err
 	}
 	repos, err := e.Repositories()
 	if err != nil {
-		return Session{}, err
-	}
-	if _, err := e.Store.AppendTurn(sessionID, Turn{Role: "user", Content: content}); err != nil {
 		return Session{}, err
 	}
 
@@ -69,21 +78,33 @@ func (e *Engine) HandleMessage(ctx context.Context, sessionID, content string) (
 			answer, err = e.Completer.Complete(ctx, system, messages)
 		}
 		if e.Completer == nil || err != nil {
-			answer = degradedAnswer(repos, err)
+			answer = degradedAnswer(repos, e.Completer == nil, err)
 			metadata["mode"] = "degraded"
+			if e.Completer == nil {
+				metadata["inference_state"] = "not_configured"
+			}
 			if err != nil {
 				metadata["inference_error"] = err.Error()
 			}
 		}
 	}
 
-	return e.Store.AppendTurn(sessionID, Turn{
-		Role:      "assistant",
-		Content:   answer,
-		Evidence:  evidence,
-		Metadata:  metadata,
-		CreatedAt: time.Now().UTC(),
-	})
+	now := time.Now().UTC()
+	return e.Store.AppendExchange(sessionID,
+		Turn{Role: "user", Content: content, CreatedAt: now},
+		Turn{Role: "assistant", Content: answer, Evidence: evidence, Metadata: metadata, CreatedAt: now},
+	)
+}
+
+func (e *Engine) sessionLock(sessionID string) *sync.Mutex {
+	e.locksMu.Lock()
+	defer e.locksMu.Unlock()
+	lock := e.sessionLocks[sessionID]
+	if lock == nil {
+		lock = &sync.Mutex{}
+		e.sessionLocks[sessionID] = lock
+	}
+	return lock
 }
 
 func forgeCommand(content string) bool {
@@ -167,9 +188,12 @@ func systemPrompt(repos []Repository) string {
 		"This first release is read-only. Recommend plans, but do not imply that files, deployments, money, identity, or external systems were changed."
 }
 
-func degradedAnswer(repos []Repository, inferenceErr error) string {
+func degradedAnswer(repos []Repository, notConfigured bool, inferenceErr error) string {
 	message := fmt.Sprintf("MoBox UXI is operating in truthful read-only mode. I discovered %d repositories: %s.", len(repos), repositoryNames(repos))
-	if inferenceErr != nil {
+	switch {
+	case notConfigured:
+		message += " No local model endpoint is configured, so I did not fabricate an AI response. Use `/inspect <repository>` and `/forge` for evidence-backed answers."
+	case inferenceErr != nil:
 		message += " The local model endpoint is not available, so I did not fabricate an AI response. Use `/inspect <repository>` while the model runtime is offline."
 	}
 	return message
