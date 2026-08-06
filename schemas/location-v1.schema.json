@@ -9,9 +9,7 @@
     "schema",
     "label",
     "latitude",
-    "longitude",
-    "precision",
-    "visibility"
+    "longitude"
   ],
   "properties": {
     "schema": {
@@ -34,10 +32,12 @@
     },
     "precision": {
       "enum": ["country", "region", "city", "exact"],
+      "default": "city",
       "description": "Coordinates are rounded by the UXI API before being returned. Exact precision must be an explicit operator choice and does not earn extra XP."
     },
     "visibility": {
       "enum": ["private", "federation", "public"],
+      "default": "private",
       "description": "Private declarations are never returned as geographic nodes."
     },
     "source": {
