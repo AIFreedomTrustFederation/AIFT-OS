@@ -20,6 +20,16 @@
 
   const style = document.createElement("style");
   style.textContent = `
+    :root{--aift-ink:#050609;--aift-charcoal:#101116;--aift-cyan:#00e5e5;--aift-teal:#00aeb5;--aift-blue:#147df5;--aift-green:#00e676;--aift-coral:#ff4f46;--aift-pink:#ff256e;--aift-orange:#ff7a35}
+    html,body{background:var(--aift-ink)!important}
+    .edge.life,.tree-edge.life{stroke:var(--aift-cyan)!important}
+    .edge.knowledge,.tree-edge.knowledge{stroke:var(--aift-blue)!important}
+    .edge.root,.edge.living-layer,.tree-edge.root,.tree-edge.living-layer{stroke:var(--aift-coral)!important}
+    .node.ready circle,.tree-node.ready circle,.world-node.ready circle{stroke:var(--aift-green)!important}
+    .node.detected circle,.tree-node.detected circle,.world-node.detected circle{stroke:var(--aift-orange)!important}
+    .node.blocked circle,.tree-node.blocked circle,.world-node.blocked circle{stroke:var(--aift-pink)!important}
+    .filter.active,.tree-filter.active{color:#fff!important;background:linear-gradient(90deg,rgba(0,174,181,.32),rgba(20,125,245,.3),rgba(255,37,110,.25))!important}
+    .quest-rune{color:var(--aift-coral)!important}
     #livingGeometry{position:fixed;inset:0;z-index:0;width:100%;height:100%;pointer-events:none;opacity:.72}
     #geometryTruth{position:fixed;z-index:12;right:max(14px,env(safe-area-inset-right));top:50%;transform:translateY(-50%);width:min(278px,calc(100vw - 28px));padding:13px 14px;border:1px solid rgba(0,229,229,.22);border-radius:18px;background:rgba(5,6,9,.76);backdrop-filter:blur(16px);box-shadow:0 18px 45px rgba(0,0,0,.28);color:#eaf6ff;font:11px/1.45 Inter,system-ui,sans-serif;transition:opacity .2s,transform .2s}
     #geometryTruth[hidden]{display:none}
