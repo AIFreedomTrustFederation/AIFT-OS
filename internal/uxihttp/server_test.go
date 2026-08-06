@@ -150,7 +150,7 @@ func TestStandaloneGameRoutes(t *testing.T) {
 				t.Fatalf("content type=%q", contentType)
 			}
 			body := rr.Body.String()
-			for _, expected := range []string{game.title, game.endpoint, game.peer, "requestFullscreen", "pointerdown"} {
+			for _, expected := range []string{game.title, game.endpoint, game.peer, "requestFullscreen", "pointerdown", "/v1/federation/geometry", "livingGeometry", "torus", "restoration quest"} {
 				if !strings.Contains(body, expected) {
 					t.Fatalf("game %s missing %q", game.path, expected)
 				}
@@ -226,4 +226,14 @@ func TestFederationGeometryEndpoint(t *testing.T) {
 	if geometry.Schema != "aift.federation.geometry.v1" || geometry.Law.Dimensions != 3 || len(geometry.Nodes) != 1 {
 		t.Fatalf("geometry=%#v", geometry)
 	}
+}
+
+
+func TestGameCompositionRequiresBodyMarker(t *testing.T) {
+	defer func() {
+		if recover() == nil {
+			t.Fatal("expected missing composition marker to panic")
+		}
+	}()
+	composeGameHTML("<html></html>")
 }
