@@ -42,7 +42,7 @@ func DiscoverRepositories(root string) ([]Repository, error) {
 			continue
 		}
 		path := filepath.Join(root, entry.Name())
-		if !isDir(filepath.Join(path, ".git")) {
+		if !exists(filepath.Join(path, ".git")) {
 			continue
 		}
 		repo, err := inspectRepository(path)
@@ -102,10 +102,10 @@ func inspectRepository(path string) (Repository, error) {
 	}
 	if len(capabilities) > 0 {
 		repo.Capabilities = capabilities
-		repo.Status = "ready"
+		repo.Status = aggregateCapabilityStatus(capabilities)
 		repo.Evidence = append(repo.Evidence, Evidence{
 			ID: newID("evd"), Kind: "capability_manifest", Source: filepath.Join(path, ".aift", "capabilities.json"),
-			Summary: fmt.Sprintf("%d declared capabilities discovered", len(capabilities)), Status: "observed", ObservedAt: now,
+			Summary: fmt.Sprintf("%d declared capabilities discovered; aggregate status %s", len(capabilities), repo.Status), Status: "observed", ObservedAt: now,
 		})
 	}
 	return repo, nil
@@ -123,6 +123,22 @@ func readCapabilities(path string) ([]Capability, error) {
 		return nil, err
 	}
 	return envelope.Capabilities, nil
+}
+
+func aggregateCapabilityStatus(capabilities []Capability) string {
+	ready := false
+	for _, capability := range capabilities {
+		switch strings.ToLower(strings.TrimSpace(capability.Status)) {
+		case "blocked", "broken", "fail", "failed":
+			return "blocked"
+		case "ready", "active", "v1":
+			ready = true
+		}
+	}
+	if ready {
+		return "ready"
+	}
+	return "detected"
 }
 
 func classifyRepositoryRole(name string) string {
@@ -144,6 +160,11 @@ func classifyRepositoryRole(name string) string {
 		return role
 	}
 	return "federated-application"
+}
+
+func exists(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil
 }
 
 func isDir(path string) bool {
