@@ -26,7 +26,7 @@ The browser's own address and system bars are controlled by the browser and oper
 
 ## Tree of Life game
 
-The Tree game consumes `GET /v1/federation/tree` and renders:
+The Tree game consumes `GET /v1/federation/tree` and `GET /v1/federation/geometry` and renders:
 
 - one federation root;
 - seven living layers;
@@ -39,7 +39,7 @@ Selecting a repository opens an evidence panel and can return to MoBox for `/ins
 
 ## World game
 
-The World game consumes `GET /v1/federation/world` and renders:
+The World game consumes `GET /v1/federation/world` and `GET /v1/federation/geometry` and renders:
 
 - visible repository location declarations;
 - private, unmapped, and invalid counts without exposing hidden coordinates;
@@ -58,3 +58,20 @@ The games visualize evidence. They do not change what is true.
 - A geographic marker is a declared location scope, not territorial ownership.
 - Temporary phone anchoring is visual context, not a permanent repository declaration.
 - Approvals and writes remain in the MoBox governance surface.
+
+
+## Shared Living Geometry renderer
+
+Tree and World embed one progressive Canvas renderer over their existing interaction surfaces. It consumes the canonical geometry contract and displays:
+
+- deterministic Mandelbrot repository identity;
+- three-dimensional Fibonacci-sphere position;
+- sacred-form rotational symmetry;
+- toroidal identity and coherence phases;
+- evidence-derived brightness and status color;
+- the Eternal Now intention-to-reflection cycle;
+- a selected repository's evidence-derived restoration quest.
+
+The animated presentation clock changes only visual rotation. It never changes canonical identity, evidence, coherence, quest state, or authority. Reduced-motion preferences freeze presentation rotation while preserving the complete information surface.
+
+Selecting an existing repository node synchronizes the geometry details without replacing the game's native touch, pointer, keyboard, pan, pinch, zoom, GPS, or fullscreen behavior. The restoration doorway returns to MoBox inspection; it does not execute an action from the game.
