@@ -12,7 +12,6 @@ func TestFederationGeometryIsDeterministic(t *testing.T) {
 	}
 	first := BuildFederationGeometry(repositories)
 	second := BuildFederationGeometry(repositories)
-	first.GeneratedAt = second.GeneratedAt
 	if !reflect.DeepEqual(first, second) {
 		t.Fatalf("geometry is not deterministic:\nfirst=%#v\nsecond=%#v", first, second)
 	}
@@ -49,10 +48,21 @@ func TestGeometryBindsQuestsAndCapabilities(t *testing.T) {
 }
 
 func TestMandelbrotIterationBounds(t *testing.T) {
-	if got := mandelbrotIterations(0, 0, mandelbrotLimit); got != mandelbrotLimit {
-		t.Fatalf("origin iterations=%d", got)
+	if iterations, bounded := mandelbrotIterations(0, 0, mandelbrotLimit); iterations != mandelbrotLimit || !bounded {
+		t.Fatalf("origin iterations=%d bounded=%v", iterations, bounded)
 	}
-	if got := mandelbrotIterations(2, 2, mandelbrotLimit); got >= mandelbrotLimit {
-		t.Fatalf("escaping point iterations=%d", got)
+	if iterations, bounded := mandelbrotIterations(2, 2, mandelbrotLimit); iterations >= mandelbrotLimit || bounded {
+		t.Fatalf("escaping point iterations=%d bounded=%v", iterations, bounded)
+	}
+	if iterations, bounded := mandelbrotIterations(3, 0, 1); iterations != 1 || bounded {
+		t.Fatalf("final-iteration escape iterations=%d bounded=%v", iterations, bounded)
+	}
+}
+
+func TestGeometrySeedSurvivesRoleChange(t *testing.T) {
+	first := BuildFederationGeometry([]Repository{{ID: "stable", Name: "Stable", Role: "federation-kernel"}})
+	second := BuildFederationGeometry([]Repository{{ID: "stable", Name: "Stable", Role: "knowledge-application"}})
+	if first.Nodes[0].Seed != second.Nodes[0].Seed || first.Nodes[0].Mandelbrot != second.Nodes[0].Mandelbrot {
+		t.Fatalf("identity changed with role: first=%#v second=%#v", first.Nodes[0], second.Nodes[0])
 	}
 }
