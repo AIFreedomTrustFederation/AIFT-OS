@@ -265,7 +265,7 @@ func worldRevision(snapshot WorldSnapshot) uint64 {
 	snapshot.Revision = 0
 	payload, _ := json.Marshal(snapshot)
 	digest := sha256.Sum256(payload)
-	return binary.BigEndian.Uint64(digest[:8]) & math.MaxInt64
+	return binary.BigEndian.Uint64(digest[:8]) & uint64(0x7fffffffffffffff)
 }
 
 func defaultWorldVisualGrammar() WorldVisualGrammar {
