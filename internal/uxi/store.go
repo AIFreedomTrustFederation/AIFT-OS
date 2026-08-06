@@ -51,6 +51,11 @@ func (s *Store) CreateSession(title string) (Session, error) {
 		UpdatedAt: now,
 		Context:   SessionContext{Mode: "inspect"},
 		Turns:     []Turn{},
+		Plans:     []Plan{},
+		Actions:   []Action{},
+		Approvals: []Approval{},
+		Jobs:      []Job{},
+		Artifacts: []Artifact{},
 	}
 	if err := s.writeSessionLocked(session); err != nil {
 		return Session{}, err
