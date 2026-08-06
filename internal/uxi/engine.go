@@ -14,6 +14,7 @@ type Engine struct {
 	Store     *Store
 	AIFTRoot  string
 	Completer Completer
+	Adapters  *AdapterRegistry
 }
 
 func NewEngine(store *Store, root string, completer Completer) (*Engine, error) {
@@ -23,7 +24,11 @@ func NewEngine(store *Store, root string, completer Completer) (*Engine, error) 
 	if strings.TrimSpace(root) == "" {
 		return nil, errors.New("AIFT root is required")
 	}
-	return &Engine{Store: store, AIFTRoot: root, Completer: completer}, nil
+	adapters, err := NewDefaultAdapterRegistry(root)
+	if err != nil {
+		return nil, err
+	}
+	return &Engine{Store: store, AIFTRoot: root, Completer: completer, Adapters: adapters}, nil
 }
 
 func (e *Engine) Repositories() ([]Repository, error) {
@@ -164,13 +169,13 @@ func systemPrompt(repos []Repository) string {
 	return "You are Aetherion inside MoBox UXI. Be truthful, local-first, concise, and evidence-aware. " +
 		"Do not claim that an action ran unless an execution result proves it. Distinguish observed, inferred, planned, and blocked states. " +
 		"The currently discovered repositories are: " + repositoryNames(repos) + ". " +
-		"This first release is read-only. Recommend plans, but do not imply that files, deployments, money, identity, or external systems were changed."
+		"Only registered read-only adapters may execute. Do not imply that files, deployments, money, identity, or external systems were changed."
 }
 
 func degradedAnswer(repos []Repository, inferenceErr error) string {
-	message := fmt.Sprintf("MoBox UXI is operating in truthful read-only mode. I discovered %d repositories: %s.", len(repos), repositoryNames(repos))
+	message := fmt.Sprintf("MoBox UXI is operating in truthful local mode. I discovered %d repositories: %s.", len(repos), repositoryNames(repos))
 	if inferenceErr != nil {
-		message += " The local model endpoint is not available, so I did not fabricate an AI response. Use `/inspect <repository>` while the model runtime is offline."
+		message += " The local model endpoint is not available, so I did not fabricate an AI response. Use `/inspect <repository>` or a registered read-only adapter while the model runtime is offline."
 	}
 	return message
 }
