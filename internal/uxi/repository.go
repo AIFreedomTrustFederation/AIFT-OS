@@ -11,13 +11,14 @@ import (
 	"time"
 )
 
+// ResolveAIFTRoot finds the local federation workspace without assuming repository names.
 func ResolveAIFTRoot() (string, error) {
 	if root := strings.TrimSpace(os.Getenv("AIFT_ROOT")); root != "" {
 		return filepath.Abs(root)
 	}
 	if home, err := os.UserHomeDir(); err == nil {
 		candidate := filepath.Join(home, "AIFT")
-		if info, statErr := os.Stat(candidate); statErr == nil && info.IsDir() {
+		if isDir(candidate) {
 			return candidate, nil
 		}
 	}
@@ -31,6 +32,7 @@ func ResolveAIFTRoot() (string, error) {
 	return cwd, nil
 }
 
+// DiscoverRepositories inspects direct child directories and symlinked directories for Git evidence.
 func DiscoverRepositories(root string) ([]Repository, error) {
 	entries, err := os.ReadDir(root)
 	if err != nil {
@@ -38,11 +40,11 @@ func DiscoverRepositories(root string) ([]Repository, error) {
 	}
 	var repos []Repository
 	for _, entry := range entries {
-		if !entry.IsDir() || strings.HasPrefix(entry.Name(), ".") {
+		if strings.HasPrefix(entry.Name(), ".") {
 			continue
 		}
 		path := filepath.Join(root, entry.Name())
-		if !exists(filepath.Join(path, ".git")) {
+		if !isDir(path) || !exists(filepath.Join(path, ".git")) {
 			continue
 		}
 		repo, err := inspectRepository(path)
@@ -59,56 +61,43 @@ func inspectRepository(path string) (Repository, error) {
 	name := filepath.Base(path)
 	now := time.Now().UTC()
 	repo := Repository{
-		ID:     strings.ToLower(strings.ReplaceAll(name, "_", "-")),
-		Name:   name,
-		Path:   path,
-		Role:   classifyRepositoryRole(name),
-		Status: "detected",
-		Git:    true,
-		Evidence: []Evidence{{
-			ID:         newID("evd"),
-			Kind:       "filesystem",
-			Source:     filepath.Join(path, ".git"),
-			Summary:    "Git repository detected",
-			Status:     "observed",
-			ObservedAt: now,
-		}},
+		ID: strings.ToLower(strings.ReplaceAll(name, "_", "-")), Name: name, Path: path,
+		Role: classifyRepositoryRole(name), Status: "detected", Git: true,
+		Evidence: []Evidence{newEvidence("filesystem", filepath.Join(path, ".git"), "Git repository detected", "", "observed", now)},
 	}
 
-	for file, language := range map[string]string{
-		"go.mod":         "Go",
-		"package.json":   "JavaScript/TypeScript",
-		"pyproject.toml": "Python",
-		"Cargo.toml":     "Rust",
-	} {
-		if isFile(filepath.Join(path, file)) {
-			repo.Languages = append(repo.Languages, language)
-			repo.Evidence = append(repo.Evidence, Evidence{
-				ID: newID("evd"), Kind: "manifest", Source: filepath.Join(path, file),
-				Summary: language + " project manifest detected", Status: "observed", ObservedAt: now,
-			})
+	manifests := []struct{ file, language string }{
+		{"Cargo.toml", "Rust"},
+		{"go.mod", "Go"},
+		{"package.json", "JavaScript/TypeScript"},
+		{"pyproject.toml", "Python"},
+	}
+	for _, manifest := range manifests {
+		manifestPath := filepath.Join(path, manifest.file)
+		if isFile(manifestPath) {
+			repo.Languages = append(repo.Languages, manifest.language)
+			repo.Evidence = append(repo.Evidence, newEvidence("manifest", manifestPath, manifest.language+" project manifest detected", "", "observed", now))
 		}
 	}
 	sort.Strings(repo.Languages)
 
-	capabilities, err := readCapabilities(filepath.Join(path, ".aift", "capabilities.json"))
+	capabilityPath := filepath.Join(path, ".aift", "capabilities.json")
+	capabilities, err := readCapabilities(capabilityPath)
 	if err != nil && !errors.Is(err, os.ErrNotExist) {
 		repo.Status = "blocked"
-		repo.Evidence = append(repo.Evidence, Evidence{
-			ID: newID("evd"), Kind: "error", Source: filepath.Join(path, ".aift", "capabilities.json"),
-			Summary: "Capability manifest could not be decoded", Detail: err.Error(), Status: "failed", ObservedAt: now,
-		})
+		repo.Evidence = append(repo.Evidence, newEvidence("error", capabilityPath, "Capability manifest could not be decoded", err.Error(), "failed", now))
 		return repo, nil
 	}
 	if len(capabilities) > 0 {
 		repo.Capabilities = capabilities
 		repo.Status = aggregateCapabilityStatus(capabilities)
-		repo.Evidence = append(repo.Evidence, Evidence{
-			ID: newID("evd"), Kind: "capability_manifest", Source: filepath.Join(path, ".aift", "capabilities.json"),
-			Summary: fmt.Sprintf("%d declared capabilities discovered; aggregate status %s", len(capabilities), repo.Status), Status: "observed", ObservedAt: now,
-		})
+		repo.Evidence = append(repo.Evidence, newEvidence("capability_manifest", capabilityPath, fmt.Sprintf("%d declared capabilities discovered; aggregate status %s", len(capabilities), repo.Status), "", "observed", now))
 	}
 	return repo, nil
+}
+
+func newEvidence(kind, source, summary, detail, status string, observedAt time.Time) Evidence {
+	return Evidence{ID: stableID("evd", kind+":"+source+":"+summary+":"+detail+":"+status), Kind: kind, Source: source, Summary: summary, Detail: detail, Status: status, ObservedAt: observedAt}
 }
 
 func readCapabilities(path string) ([]Capability, error) {
@@ -143,18 +132,10 @@ func aggregateCapabilityStatus(capabilities []Capability) string {
 
 func classifyRepositoryRole(name string) string {
 	roles := map[string]string{
-		"AIFT-OS":                     "federation-kernel",
-		"AIFT-Runtime":                "runtime-prototype",
-		"AIFT-Forge":                  "software-mission-engine",
-		"AIFT-Genesis":                "federation-genome",
-		"AI-Freedom-Trust":            "doctrine-and-research",
-		"VPS":                         "infrastructure-and-nodes",
-		"mobox":                       "compatibility-runtime",
-		"booksmith-ai":                "knowledge-application",
-		"BookSmith-Federation-OS":     "knowledge-product-specification",
-		"OpenMontage":                 "video-application",
-		"Aether_Coin_biozonecurrency": "stewardship-application",
-		"TheMindofAll":                "model-registry",
+		"AIFT-OS": "federation-kernel", "AIFT-Runtime": "runtime-prototype", "AIFT-Forge": "software-mission-engine",
+		"AIFT-Genesis": "federation-genome", "AI-Freedom-Trust": "doctrine-and-research", "VPS": "infrastructure-and-nodes",
+		"mobox": "compatibility-runtime", "booksmith-ai": "knowledge-application", "BookSmith-Federation-OS": "knowledge-product-specification",
+		"OpenMontage": "video-application", "Aether_Coin_biozonecurrency": "stewardship-application", "TheMindofAll": "model-registry",
 	}
 	if role, ok := roles[name]; ok {
 		return role
@@ -162,17 +143,6 @@ func classifyRepositoryRole(name string) string {
 	return "federated-application"
 }
 
-func exists(path string) bool {
-	_, err := os.Stat(path)
-	return err == nil
-}
-
-func isDir(path string) bool {
-	info, err := os.Stat(path)
-	return err == nil && info.IsDir()
-}
-
-func isFile(path string) bool {
-	info, err := os.Stat(path)
-	return err == nil && !info.IsDir()
-}
+func exists(path string) bool { _, err := os.Stat(path); return err == nil }
+func isDir(path string) bool  { info, err := os.Stat(path); return err == nil && info.IsDir() }
+func isFile(path string) bool { info, err := os.Stat(path); return err == nil && !info.IsDir() }
