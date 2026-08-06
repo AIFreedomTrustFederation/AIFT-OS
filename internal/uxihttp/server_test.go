@@ -227,3 +227,23 @@ func TestFederationGeometryEndpoint(t *testing.T) {
 		t.Fatalf("geometry=%#v", geometry)
 	}
 }
+
+func TestWorldSnapshotEndpoint(t *testing.T) {
+	server, _ := newTestServer(t)
+	req := httptest.NewRequest(http.MethodGet, "/v1/federation/world-snapshot", nil)
+	recorder := httptest.NewRecorder()
+	server.Handler().ServeHTTP(recorder, req)
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("world snapshot code=%d body=%s", recorder.Code, recorder.Body.String())
+	}
+	var snapshot uxi.WorldSnapshot
+	if err := json.Unmarshal(recorder.Body.Bytes(), &snapshot); err != nil {
+		t.Fatal(err)
+	}
+	if snapshot.Schema != "aift.world.v1" || snapshot.Revision == 0 || len(snapshot.Entities) == 0 {
+		t.Fatalf("snapshot=%#v", snapshot)
+	}
+	if snapshot.Governance.MutationMode != "proposal-only" || !snapshot.Governance.HumanConsentRequired {
+		t.Fatalf("governance=%#v", snapshot.Governance)
+	}
+}
