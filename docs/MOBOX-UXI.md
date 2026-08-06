@@ -32,12 +32,52 @@ Configuration:
 
 ## Registered adapters
 
-The default registry contains exactly two adapters:
+The default registry contains exactly three adapters:
 
 - `repository.inspect` — reads one discovered repository and produces an evidence artifact.
 - `forge.mission.inspect` — reads the persisted Forge mission and produces an evidence artifact.
+- `source.inspect` — reads one canonical JSON source declared by a repository integration manifest.
 
-Both descriptors declare `mutating: false`. The execution supervisor refuses every adapter that declares `mutating: true` before a job is created.
+Every descriptor declares `mutating: false`. The execution supervisor refuses every adapter that declares `mutating: true` before a job is created.
+
+## Repository integration manifest
+
+A participating repository may add `.aift/uxi.json`:
+
+```json
+{
+  "schema": "aift.uxi.integration.v1",
+  "repository": "booksmith-ai",
+  "role": "knowledge-application",
+  "sources": [
+    {
+      "id": "booksmith.library",
+      "kind": "json",
+      "path": "library/book-registry.json",
+      "description": "Canonical federated BookSmith library registry.",
+      "status": "ready"
+    }
+  ]
+}
+```
+
+The repository name must exactly match its directory. Source IDs must be globally unique across the local federation workspace. Version 1 supports JSON sources only.
+
+Before reading a declared source, AIFT-OS verifies:
+
+- strict manifest fields and exact schema identifier;
+- repository identity;
+- globally unique source ID;
+- repository-relative path without parent traversal;
+- resolved path remains inside the repository after symlink evaluation;
+- regular-file type;
+- manifest and source size limits;
+- source status is `ready`;
+- valid JSON content.
+
+Invalid manifests become failed evidence records and are never registered as executable sources.
+
+The canonical schema and reusable template live in AIFT-Genesis under `schemas/uxi-integration.schema.json` and `templates/uxi-integration/`.
 
 ## Truth and governance contract
 
@@ -77,6 +117,8 @@ Governance records:
 Supervised read-only invocation:
 
 - `POST /v1/sessions/{id}/actions/{actionID}/invoke`
+
+For `source.inspect`, the action target is the manifest source ID, such as `booksmith.library` or `models.local`.
 
 The invocation endpoint accepts only an action whose kind resolves to a registered non-mutating adapter. Approval-required actions must be approved first.
 
