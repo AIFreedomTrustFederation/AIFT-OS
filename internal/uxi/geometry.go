@@ -43,7 +43,6 @@ type Vector3 struct {
 	Z float64 `json:"z"`
 }
 
-// ComplexSeed is the repository's stable coordinate in the Mandelbrot plane.
 // TorusFlow is a timeless phase coordinate. It is derived from identity and
 // observed coherence, never from wall-clock time.
 type TorusFlow struct {
@@ -52,6 +51,7 @@ type TorusFlow struct {
 	Cycle           string  `json:"cycle"`
 }
 
+// ComplexSeed is the repository's stable coordinate in the Mandelbrot plane.
 type ComplexSeed struct {
 	Real       float64 `json:"real"`
 	Imaginary  float64 `json:"imaginary"`
@@ -140,6 +140,11 @@ func BuildFederationGeometry(repositories []Repository) FederationGeometry {
 				Iterations: iterations,
 				Bounded:    bounded,
 				Complexity: round6(float64(iterations) / mandelbrotLimit),
+			},
+			Torus: TorusFlow{
+				IdentityPhase:  torusIdentityPhase(digest),
+				CoherencePhase: round6(2 * math.Pi * float64(growth) / 100),
+				Cycle:          "intention-proposal-consent-action-evidence-reflection",
 			},
 			Position:     fibonacciSphere(i, len(repos)),
 			SacredForm:   sacredForm(repo.Role),
