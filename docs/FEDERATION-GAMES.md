@@ -102,3 +102,16 @@ The renderer separates three signals:
 3. **Coherence core** — a fire-inspired intensity progression from red and orange through yellow, white, cyan, and blue.
 
 The coherence core is an interface metaphor for verified informational intensity. It is not a measurement of physical temperature, chemistry, consciousness, spiritual rank, or human worth. High visual intensity remains subordinate to evidence and governance.
+
+
+## Semantic zoom and label legibility
+
+Tree and World support wheel, trackpad, pinch, and explicit zoom controls. The camera ranges from a whole-federation overview to deep repository detail. Zoom is semantic rather than merely geometric:
+
+- **Overview** keeps structural anchors visible and suppresses dense repository labels.
+- **System view** restores repository names while suppressing secondary metadata.
+- **Detail view** reveals names and evidence-derived metadata.
+- Visible text is counter-scaled against the camera so it retains a readable screen size.
+- The fit control restores the canonical whole-scene composition, and the live percentage is exposed to assistive technology.
+
+Geometry may change scale and level of detail, but zoom never changes repository state, evidence, coherence, or authority.
