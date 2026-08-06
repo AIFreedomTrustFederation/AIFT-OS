@@ -12,7 +12,7 @@ func TestWorldSnapshotIsDeterministicAndPrecise(t *testing.T) {
 		ID: "aift-os", Name: "AIFT-OS", Role: "federation-kernel",
 		Status: "ready", Git: true,
 		Capabilities: []Capability{{Name: "inspect", Status: "ready"}},
-		Evidence: []Evidence{{ID: "evidence-1", Kind: "filesystem"}},
+		Evidence:     []Evidence{{ID: "evidence-1", Kind: "filesystem"}},
 	}}
 	first := BuildWorldSnapshot(repositories)
 	second := BuildWorldSnapshot(repositories)

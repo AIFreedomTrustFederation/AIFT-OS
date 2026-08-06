@@ -251,7 +251,7 @@ func TestWorldSnapshotEndpoint(t *testing.T) {
 func TestWorldSnapshotAllowsOnlyLoopbackBrowserOrigins(t *testing.T) {
 	server, _ := newTestServer(t)
 	for _, test := range []struct {
-		origin string
+		origin  string
 		allowed bool
 	}{
 		{origin: "http://127.0.0.1:5173", allowed: true},

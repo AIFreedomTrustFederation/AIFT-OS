@@ -16,15 +16,15 @@ const logicalScale = 1_000_000_000
 
 // WorldSnapshot is the engine-independent, evidence-derived spatial state.
 type WorldSnapshot struct {
-	Schema           string            `json:"schema"`
-	WorldID          string            `json:"world_id"`
-	Revision         uint64            `json:"revision"`
-	CoordinateSystem CoordinateSystem  `json:"coordinate_system"`
-	Entities         []WorldEntity     `json:"entities"`
-	Relations        []WorldRelation   `json:"relations"`
-	Chunks           []WorldChunk      `json:"chunks"`
+	Schema           string             `json:"schema"`
+	WorldID          string             `json:"world_id"`
+	Revision         uint64             `json:"revision"`
+	CoordinateSystem CoordinateSystem   `json:"coordinate_system"`
+	Entities         []WorldEntity      `json:"entities"`
+	Relations        []WorldRelation    `json:"relations"`
+	Chunks           []WorldChunk       `json:"chunks"`
 	VisualGrammar    WorldVisualGrammar `json:"visual_grammar"`
-	Governance       WorldGovernance   `json:"governance"`
+	Governance       WorldGovernance    `json:"governance"`
 }
 
 // CoordinateSystem keeps canonical coordinates outside renderer precision limits.
@@ -45,17 +45,17 @@ type LogicalVector64 struct {
 
 // WorldEntity is one streamable object in the Living Federation.
 type WorldEntity struct {
-	ID           string         `json:"id"`
-	Kind         string         `json:"kind"`
-	ParentID     *string        `json:"parent_id,omitempty"`
-	Revision     uint64         `json:"revision"`
+	ID           string          `json:"id"`
+	Kind         string          `json:"kind"`
+	ParentID     *string         `json:"parent_id,omitempty"`
+	Revision     uint64          `json:"revision"`
 	Position     LogicalVector64 `json:"position"`
-	Status       string         `json:"status"`
-	Name         string         `json:"name"`
-	Role         string         `json:"role"`
-	Properties   map[string]any `json:"properties,omitempty"`
-	EvidenceRefs []string       `json:"evidence_refs"`
-	Visual       WorldVisual    `json:"visual"`
+	Status       string          `json:"status"`
+	Name         string          `json:"name"`
+	Role         string          `json:"role"`
+	Properties   map[string]any  `json:"properties,omitempty"`
+	EvidenceRefs []string        `json:"evidence_refs"`
+	Visual       WorldVisual     `json:"visual"`
 }
 
 // WorldVisual separates symbolic presentation hints from factual state.
@@ -119,17 +119,17 @@ func BuildWorldSnapshot(repositories []Repository) WorldSnapshot {
 		entities = append(entities, WorldEntity{
 			ID: repositoryID, Kind: "repository", Revision: 1,
 			Position: logicalVector(node.Position, logicalScale),
-			Status: node.Status, Name: node.Name, Role: node.Role,
+			Status:   node.Status, Name: node.Name, Role: node.Role,
 			Properties: map[string]any{
-				"mandelbrot_seed": node.Seed,
+				"mandelbrot_seed":    node.Seed,
 				"mandelbrot_bounded": node.Mandelbrot.Bounded,
-				"growth": node.Growth,
-				"quest_ids": node.QuestIDs,
+				"growth":             node.Growth,
+				"quest_ids":          node.QuestIDs,
 			},
 			EvidenceRefs: evidenceRefs,
 			Visual: WorldVisual{
 				Form: node.SacredForm, IdentityPhase: node.Torus.IdentityPhase,
-				Coherence: round6(float64(node.Coherence) / 100),
+				Coherence:    round6(float64(node.Coherence) / 100),
 				PaletteToken: repositoryPalette(node.Status), LODPriority: 100,
 			},
 		})
@@ -143,13 +143,13 @@ func BuildWorldSnapshot(repositories []Repository) WorldSnapshot {
 				Role: "repository-capability", EvidenceRefs: []string{},
 				Visual: WorldVisual{
 					Form: "sphere", IdentityPhase: round6(capability.Angle),
-					Coherence: capabilityCoherence(capability.Status),
+					Coherence:    capabilityCoherence(capability.Status),
 					PaletteToken: repositoryPalette(capability.Status),
-					LODPriority: 50 - index,
+					LODPriority:  50 - index,
 				},
 			})
 			relations = append(relations, WorldRelation{
-				ID: repositoryID + "->" + capabilityID,
+				ID:     repositoryID + "->" + capabilityID,
 				Source: repositoryID, Target: capabilityID,
 				Kind: "contains", Directed: true, Weight: 1,
 			})
@@ -166,17 +166,17 @@ func BuildWorldSnapshot(repositories []Repository) WorldSnapshot {
 		Relations []WorldRelation
 	}{entities, relations})
 	snapshot := WorldSnapshot{
-		Schema: worldProtocolSchemaV1,
+		Schema:  worldProtocolSchemaV1,
 		WorldID: "aift-federation",
 		CoordinateSystem: CoordinateSystem{
 			Name: "aift.logical.cartesian.v1", Dimensions: 3,
 			Unit: "logical-nanounit", Origin: zeroLogicalVector(),
 		},
-		Entities: entities,
+		Entities:  entities,
 		Relations: relations,
 		Chunks: []WorldChunk{{
 			ID: "federation-root", Level: 0, Center: zeroLogicalVector(),
-			Radius: strconv.FormatInt(logicalScale, 10),
+			Radius:    strconv.FormatInt(logicalScale, 10),
 			EntityIDs: entityIDs, ContentHash: chunkHash,
 		}},
 		VisualGrammar: defaultWorldVisualGrammar(),

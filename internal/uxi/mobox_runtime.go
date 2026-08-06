@@ -18,7 +18,7 @@ func (a MoboxRuntimeInspectAdapter) Descriptor() AdapterDescriptor {
 	return AdapterDescriptor{
 		Kind: "mobox.runtime.inspect", Version: "v1",
 		Description: "Inspect the Android Windows compatibility runtime without launching it.",
-		Mutating: false, Risk: "low",
+		Mutating:    false, Risk: "low",
 	}
 }
 
@@ -62,16 +62,16 @@ func (a MoboxRuntimeInspectAdapter) Invoke(_ context.Context, request AdapterReq
 		})
 	}
 	return AdapterResult{
-		Summary: "MoBox Windows compatibility runtime inspected without execution",
+		Summary:  "MoBox Windows compatibility runtime inspected without execution",
 		Evidence: evidence,
 		Data: map[string]any{
-			"runtime": "windows-compatibility",
-			"repository": "AIFreedomTrustFederation/mobox",
-			"path": repositoryPath,
-			"target": request.Target,
-			"observed": observed,
+			"runtime":             "windows-compatibility",
+			"repository":          "AIFreedomTrustFederation/mobox",
+			"path":                repositoryPath,
+			"target":              request.Target,
+			"observed":            observed,
 			"execution_performed": false,
-			"boundary": "Wine and Box64 runtime; not the Federation Console or world truth authority",
+			"boundary":            "Wine and Box64 runtime; not the Federation Console or world truth authority",
 		},
 	}, nil
 }
