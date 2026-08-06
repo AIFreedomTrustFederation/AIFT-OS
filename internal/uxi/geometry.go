@@ -18,9 +18,9 @@ var goldenAngle = math.Pi * (3 - math.Sqrt(5))
 // FederationGeometry is the deterministic, evidence-derived spatial contract
 // shared by every Living Federation renderer.
 type FederationGeometry struct {
-	Schema      string         `json:"schema"`
-	Law         GeometryLaw    `json:"law"`
-	Nodes       []GeometryNode `json:"nodes"`
+	Schema string         `json:"schema"`
+	Law    GeometryLaw    `json:"law"`
+	Nodes  []GeometryNode `json:"nodes"`
 }
 
 // GeometryLaw identifies the mathematical rules used by compatible renderers.
@@ -48,7 +48,7 @@ type Vector3 struct {
 type TorusFlow struct {
 	IdentityPhase  float64 `json:"identity_phase"`
 	CoherencePhase float64 `json:"coherence_phase"`
-	Cycle           string  `json:"cycle"`
+	Cycle          string  `json:"cycle"`
 }
 
 // ComplexSeed is the repository's stable coordinate in the Mandelbrot plane.
@@ -107,7 +107,7 @@ func BuildFederationGeometry(repositories []Repository) FederationGeometry {
 	}
 
 	world := FederationGeometry{
-		Schema:      geometrySchemaV1,
+		Schema: geometrySchemaV1,
 		Law: GeometryLaw{
 			Recurrence:       "z(n+1)=z(n)^2+c",
 			Dimensions:       3,
