@@ -104,7 +104,7 @@
       if(!nodeList.firstChild)nodeList.append(element("div","world-empty","No geographic repository evidence has been declared."));
 
       const questList=$("#worldQuestList");clear(questList);const quests=[...(federationWorld.data.quests||[])].sort((a,b)=>(a.status==="open"?0:1)-(b.status==="open"?0:1)||a.repository.localeCompare(b.repository));
-      for(const quest of quests.slice(0,20)){const button=element("button",`world-quest ${quest.status}`);button.type="button";button.append(element("strong","",quest.title),element("span","",quest.repository),element("span","",quest.status==="complete"?`✓ ${quest.evidence||"evidence observed"}`:`${quest.description} · ${quest.reward_xp} XP`));button.addEventListener("click",()=>{const item=(federationWorld.data.unmapped||[]).find(entry=>entry.repository_id===quest.repository_id);const node=(federationWorld.data.nodes||[]).find(entry=>entry.repository_id===quest.repository_id);if(node)selectWorldCluster([node]);else if(item)selectUnmappedWorldNode(item)});questList.append(button)}
+      for(const quest of quests){const button=element("button",`world-quest ${quest.status}`);button.type="button";button.append(element("strong","",quest.title),element("span","",quest.repository),element("span","",quest.status==="complete"?`✓ ${quest.evidence||"evidence observed"}`:`${quest.description} · ${quest.reward_xp} XP`));button.addEventListener("click",()=>{const item=(federationWorld.data.unmapped||[]).find(entry=>entry.repository_id===quest.repository_id);const node=(federationWorld.data.nodes||[]).find(entry=>entry.repository_id===quest.repository_id);if(node)selectWorldCluster([node]);else if(item)selectUnmappedWorldNode(item)});questList.append(button)}
     }
 
     function worldDetailCard(title,rows){const card=element("div","node-detail-card");card.append(element("strong","",title));const grid=element("div","node-kv");for(const [label,value] of rows)grid.append(element("span","",label),element("span","",String(value)));card.append(grid);return card}
@@ -131,7 +131,7 @@
     }
 
     function applyDevicePrecision(){if(!federationWorld.deviceRaw)return;federationWorld.device={latitude:worldRound(federationWorld.deviceRaw.latitude,federationWorld.precision),longitude:worldRound(federationWorld.deviceRaw.longitude,federationWorld.precision),accuracy:federationWorld.deviceRaw.accuracy}}
-    function forgetDeviceLocation(){federationWorld.deviceRaw=null;federationWorld.device=null;$("#worldStatus").textContent="GPS forgotten. No device coordinates remain in this page.";renderFederationWorld()}
+    function forgetDeviceLocation(){federationWorld.deviceRaw=null;federationWorld.device=null;renderFederationWorld();$("#worldStatus").textContent="GPS forgotten. No device coordinates remain in this page."}
 
     $("#worldTab").addEventListener("click",()=>setView("world"));
     $("#worldLocate").addEventListener("click",requestDeviceLocation);
