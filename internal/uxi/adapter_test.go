@@ -14,7 +14,7 @@ func TestDefaultAdaptersAreReadOnly(t *testing.T) {
 		t.Fatal(err)
 	}
 	descriptors := registry.List()
-	if len(descriptors) != 2 {
+	if len(descriptors) != 3 {
 		t.Fatalf("descriptors = %#v", descriptors)
 	}
 	for _, descriptor := range descriptors {
