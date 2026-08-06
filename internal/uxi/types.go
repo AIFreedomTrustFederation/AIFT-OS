@@ -22,6 +22,11 @@ type Session struct {
 	UpdatedAt time.Time      `json:"updated_at"`
 	Context   SessionContext `json:"context"`
 	Turns     []Turn         `json:"turns"`
+	Plans     []Plan         `json:"plans"`
+	Actions   []Action       `json:"actions"`
+	Approvals []Approval     `json:"approvals"`
+	Jobs      []Job          `json:"jobs"`
+	Artifacts []Artifact     `json:"artifacts"`
 }
 
 type SessionContext struct {
@@ -57,6 +62,8 @@ type Plan struct {
 	Objective string     `json:"objective"`
 	Status    string     `json:"status"`
 	Steps     []PlanStep `json:"steps"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
 }
 
 type PlanStep struct {
@@ -74,6 +81,8 @@ type Action struct {
 	Risk             string         `json:"risk"`
 	ApprovalRequired bool           `json:"approval_required"`
 	Parameters       map[string]any `json:"parameters,omitempty"`
+	CreatedAt        time.Time      `json:"created_at"`
+	UpdatedAt        time.Time      `json:"updated_at"`
 }
 
 type Approval struct {
