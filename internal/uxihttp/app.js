@@ -1,4 +1,4 @@
-const state = { session: null, sessions: [], repos: [], adapters: [] };
+const state = { session: null, sessions: [], repos: [], adapters: [], sources: [] };
 const $ = selector => document.querySelector(selector);
 
 function element(tag, className, text) {
@@ -18,10 +18,17 @@ async function api(path, options = {}) {
 }
 
 async function load() {
-  const [system, sessions, repos, adapters] = await Promise.all([api("/v1/system"), api("/v1/sessions"), api("/v1/repositories"), api("/v1/adapters")]);
+  const [system, sessions, repos, adapters, sources] = await Promise.all([
+    api("/v1/system"),
+    api("/v1/sessions"),
+    api("/v1/repositories"),
+    api("/v1/adapters"),
+    api("/v1/sources")
+  ]);
   state.sessions = sessions.sessions || [];
   state.repos = repos.repositories || [];
   state.adapters = adapters.adapters || [];
+  state.sources = sources.sources || [];
   $("#pulse").textContent = `active · ${system.repository_count} repos · ${state.adapters.length} read-only adapters`;
   const systemNode = $("#system");
   clear(systemNode);
@@ -29,6 +36,7 @@ async function load() {
   renderSessions();
   renderRepos();
   renderAdapterOptions();
+  renderTargetOptions();
   if (state.sessions[0]) await openSession(state.sessions[0].id);
   else renderTurns();
 }
@@ -52,6 +60,23 @@ function renderAdapterOptions() {
     option.value = adapter.kind;
     option.title = adapter.description;
     select.append(option);
+  }
+}
+
+function renderTargetOptions() {
+  const list = $("#actionTargets");
+  clear(list);
+  for (const repo of state.repos) {
+    const option = element("option");
+    option.value = repo.name;
+    option.label = `${repo.role} · repository`;
+    list.append(option);
+  }
+  for (const source of state.sources) {
+    const option = element("option");
+    option.value = source.id;
+    option.label = `${source.repository} · ${source.description || source.kind} · ${source.status}`;
+    list.append(option);
   }
 }
 
