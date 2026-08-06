@@ -150,7 +150,7 @@ func TestAdaptersEndpointListsOnlyReadOnlyDefaults(t *testing.T) {
 	if err := json.Unmarshal(rr.Body.Bytes(), &response); err != nil {
 		t.Fatal(err)
 	}
-	if len(response.Adapters) != 2 {
+	if len(response.Adapters) != 3 {
 		t.Fatalf("adapters=%#v", response.Adapters)
 	}
 	for _, adapter := range response.Adapters {
