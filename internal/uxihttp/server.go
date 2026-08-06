@@ -32,6 +32,8 @@ func (s *Server) Handler() http.Handler {
 
 func (s *Server) routes() {
 	s.mux.HandleFunc("GET /health", s.handleHealth)
+	s.mux.HandleFunc("GET /tree", s.handleTreeGame)
+	s.mux.HandleFunc("GET /world", s.handleWorldGame)
 	s.mux.HandleFunc("GET /v1/system", s.handleSystem)
 	s.mux.HandleFunc("GET /v1/repositories", s.handleRepositories)
 	s.mux.HandleFunc("GET /v1/federation/tree", s.handleFederationTree)
@@ -54,6 +56,14 @@ func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
 		"service": "aiftd",
 		"time":    time.Now().UTC(),
 	})
+}
+
+func (s *Server) handleTreeGame(w http.ResponseWriter, r *http.Request) {
+	writeHTML(w, treeGameHTML)
+}
+
+func (s *Server) handleWorldGame(w http.ResponseWriter, r *http.Request) {
+	writeHTML(w, worldGameHTML)
 }
 
 func (s *Server) handleSystem(w http.ResponseWriter, r *http.Request) {
@@ -249,8 +259,7 @@ func (s *Server) handleIndex(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	_, _ = w.Write([]byte(indexHTML))
+	writeHTML(w, indexHTML)
 }
 
 func decodeJSON(r *http.Request, target any) error {
@@ -267,6 +276,11 @@ func decodeJSON(r *http.Request, target any) error {
 		return errors.New("invalid JSON: request must contain exactly one object")
 	}
 	return nil
+}
+
+func writeHTML(w http.ResponseWriter, content string) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	_, _ = w.Write([]byte(content))
 }
 
 func writeJSON(w http.ResponseWriter, status int, value any) {
