@@ -68,6 +68,10 @@ Sessions are atomically replaced as private JSON files. Every session mutation a
 
 User and assistant turns are committed as one exchange, so a failed Forge inspection or concurrent request cannot leave a dangling user turn. Corrupt session files are skipped rather than hiding healthy sessions, and the failure is recorded in the audit log. Events are decoded as streamed JSON values, avoiding line-length limits.
 
+## Validation
+
+The GitHub Actions CI gate runs the full Go tests, binary build, formatting check, shell syntax validation, coverage threshold, and architecture invariant checks. The hardened persistence and concurrency tests also pass in an isolated module reconstruction before publication.
+
 ## Next safe extraction
 
 The next execution phase must add a capability adapter registry, immutable approval scope, snapshots, validation, rollback, and job supervision before any approved action can be invoked. AIFT-Forge must remain behind an adapter rather than being called directly by browser code.
