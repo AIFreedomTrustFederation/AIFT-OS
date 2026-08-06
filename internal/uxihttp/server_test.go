@@ -58,6 +58,26 @@ func TestHealthAndConversation(t *testing.T) {
 	}
 }
 
+func TestFederationTreeEndpoint(t *testing.T) {
+	server, _ := newTestServer(t)
+	req := httptest.NewRequest(http.MethodGet, "/v1/federation/tree", nil)
+	rr := httptest.NewRecorder()
+	server.Handler().ServeHTTP(rr, req)
+	if rr.Code != http.StatusOK {
+		t.Fatalf("tree code=%d body=%s", rr.Code, rr.Body.String())
+	}
+	var tree uxi.FederationTree
+	if err := json.Unmarshal(rr.Body.Bytes(), &tree); err != nil {
+		t.Fatal(err)
+	}
+	if tree.Schema != "aift.federation.tree.v1" || tree.Progress.Repositories != 1 {
+		t.Fatalf("tree=%#v", tree)
+	}
+	if len(tree.Nodes) != 9 || len(tree.Layers) != 7 {
+		t.Fatalf("nodes=%d layers=%d", len(tree.Nodes), len(tree.Layers))
+	}
+}
+
 func TestGovernanceEndpointsRecordButDoNotExecute(t *testing.T) {
 	server, store := newTestServer(t)
 	session, err := store.CreateSession("governance")

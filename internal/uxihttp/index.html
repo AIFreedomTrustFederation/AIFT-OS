@@ -5,16 +5,19 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>MoBox UXI</title>
   <style>
-    :root { color-scheme: dark; --background:#04070d; --panel:rgba(10,15,24,.94); --surface:#101724; --surface-strong:#172033; --line:#29354a; --gold:#e7b95a; --cyan:#5de4d7; --muted:#91a0b7; --good:#bce994; --danger:#ffc0c0; }
+    :root { color-scheme: dark; --background:#04070d; --panel:rgba(10,15,24,.94); --surface:#101724; --surface-strong:#172033; --line:#29354a; --gold:#e7b95a; --cyan:#5de4d7; --violet:#b88cff; --muted:#91a0b7; --good:#bce994; --danger:#ffc0c0; }
     * { box-sizing:border-box; }
     body { margin:0; height:100vh; overflow:hidden; background:radial-gradient(circle at 50% -20%,#1a294b 0,#080c14 42%,var(--background) 100%); color:#eef3ff; font:14px/1.5 Inter,system-ui,sans-serif; }
     button,input,select,textarea { font:inherit; } button { cursor:pointer; }
     .shell { display:grid; grid-template-columns:270px minmax(0,1fr) 340px; grid-template-rows:58px 1fr; height:100vh; }
     .topbar { grid-column:1/-1; display:flex; align-items:center; gap:12px; padding:0 18px; border-bottom:1px solid var(--line); background:rgba(7,11,18,.92); backdrop-filter:blur(18px); z-index:20; }
-    .brand { color:var(--gold); font-weight:850; letter-spacing:.09em; }
+    .brand { color:var(--gold); font-weight:850; letter-spacing:.09em; white-space:nowrap; }
     .badge { display:inline-block; padding:2px 8px; border:1px solid #40516d; border-radius:999px; color:var(--muted); font-size:11px; }
-    .pulse { margin-left:auto; color:var(--cyan); font-size:12px; }
+    .pulse { margin-left:auto; color:var(--cyan); font-size:12px; white-space:nowrap; }
     .mobile-toggle { display:none; border:1px solid var(--line); background:var(--surface); color:white; border-radius:8px; padding:6px 9px; }
+    .view-switch { display:flex; gap:4px; padding:3px; border:1px solid var(--line); border-radius:999px; background:#080d15; }
+    .view-switch button { padding:5px 10px; border:0; border-radius:999px; background:transparent; color:var(--muted); font-size:11px; }
+    .view-switch button.active { background:#1a2435; color:#fff0c3; box-shadow:inset 0 0 0 1px #3b4a63; }
     .panel { min-width:0; overflow:auto; background:var(--panel); border-right:1px solid var(--line); }
     .panel.right { border-right:0; border-left:1px solid var(--line); }
     .panel h2 { margin:0; padding:18px 16px 8px; color:var(--muted); font-size:12px; letter-spacing:.12em; text-transform:uppercase; }
@@ -23,20 +26,24 @@
     .nav-button:hover,.nav-button.active { background:#141c2a; border-color:#2b3a54; }
     .nav-button small { display:block; color:var(--muted); overflow-wrap:anywhere; }
     .primary-button { width:100%; padding:10px; border:1px solid #4e623d; border-radius:10px; background:#1b2618; color:#dff7b8; font-weight:700; }
-    .main { display:grid; grid-template-rows:1fr auto; min-width:0; }
+    .main { display:grid; grid-template-rows:1fr auto; min-width:0; min-height:0; }
+    .main.tree-mode { grid-template-rows:1fr; }
+    .view { display:none; min-height:0; }
+    .view.active { display:block; }
     .stream { overflow:auto; padding:24px max(20px,7vw); }
     .empty { max-width:720px; margin:12vh auto; color:var(--muted); text-align:center; }
     .empty h1 { margin-bottom:8px; color:#f7e8bd; font-size:38px; }
     .turn { max-width:850px; margin:0 auto 18px; padding:16px 18px; border:1px solid var(--line); border-radius:16px; background:#0e151f; white-space:pre-wrap; overflow-wrap:anywhere; }
     .turn.user { margin-left:auto; background:var(--surface-strong); border-color:#3b4f72; }
     .turn-role { margin-bottom:8px; color:var(--cyan); font-size:11px; letter-spacing:.12em; text-transform:uppercase; }
-    .evidence-card,.governance-card { margin-top:10px; padding:10px; border:1px solid var(--line); border-radius:10px; background:#111824; overflow-wrap:anywhere; }
+    .evidence-card,.governance-card,.node-detail-card { margin-top:10px; padding:10px; border:1px solid var(--line); border-radius:10px; background:#111824; overflow-wrap:anywhere; }
     .evidence-card { border-left:3px solid var(--gold); font-size:12px; }
     .governance-card strong { color:#f1ddb0; } .governance-card small { color:var(--muted); }
     .decision-button { margin:9px 6px 0 0; padding:6px 10px; border:1px solid #465570; border-radius:8px; background:#182235; color:#eef3ff; }
     .decision-button.approve { border-color:#4e753e; color:var(--good); } .decision-button.reject { border-color:#7b4242; color:var(--danger); }
     .detail { padding:0 16px 16px; color:var(--muted); overflow-wrap:anywhere; }
     .composer { padding:14px max(20px,7vw) 20px; background:linear-gradient(transparent,var(--background) 24%); }
+    .composer.hidden { display:none; }
     .composer form { display:flex; max-width:850px; margin:auto; gap:10px; padding:9px; border:1px solid #34405a; border-radius:16px; background:#0e141f; }
     .composer input { flex:1; min-width:0; padding:10px; border:0; outline:0; background:transparent; color:white; }
     .composer button { padding:0 18px; border:0; border-radius:11px; background:var(--gold); color:#161004; font-weight:850; }
@@ -47,14 +54,77 @@
     .governance-form button { padding:8px; border:1px solid #465570; border-radius:8px; background:#182235; color:white; }
     .checkbox-row { display:flex; align-items:center; gap:8px; } .checkbox-row input { width:auto; }
     .overlay { display:none; }
+
+    .tree-view { overflow:auto; height:100%; padding:18px; background:radial-gradient(circle at 50% 88%,rgba(0,205,160,.08),transparent 34%),radial-gradient(circle at 50% 5%,rgba(158,89,255,.08),transparent 35%); }
+    .tree-hero { max-width:1100px; margin:0 auto 14px; display:flex; align-items:flex-end; justify-content:space-between; gap:16px; }
+    .tree-eyebrow { color:var(--muted); font-size:10px; letter-spacing:.22em; text-transform:uppercase; }
+    .tree-title { margin:3px 0 0; color:#f4dfa7; font-size:clamp(25px,4vw,42px); line-height:1.05; }
+    .tree-subtitle { max-width:620px; margin:8px 0 0; color:var(--muted); font-size:12px; }
+    .tree-truth { max-width:320px; padding:9px 12px; border:1px solid #365069; border-radius:10px; background:rgba(9,17,29,.8); color:#9fc8de; font-size:11px; }
+    .tree-stats { max-width:1100px; margin:0 auto 12px; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; }
+    .stat-card { padding:10px 12px; border:1px solid var(--line); border-radius:12px; background:rgba(10,16,26,.86); }
+    .stat-card small { display:block; color:var(--muted); font-size:9px; letter-spacing:.12em; text-transform:uppercase; }
+    .stat-card strong { display:block; margin-top:2px; color:#fff2c9; font-size:18px; }
+    .xp-track,.growth-track { height:5px; margin-top:7px; overflow:hidden; border-radius:999px; background:#202b3e; }
+    .xp-fill,.growth-fill { height:100%; border-radius:999px; background:linear-gradient(90deg,var(--gold),var(--cyan),var(--violet)); }
+    .tree-toolbar { max-width:1100px; margin:0 auto 10px; display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+    .tree-filter,.tree-control { padding:6px 10px; border:1px solid #34445f; border-radius:999px; background:#101827; color:#aebbd0; font-size:10px; }
+    .tree-filter.active { color:#fff1bf; border-color:#786331; background:#211c11; }
+    .tree-control { border-radius:8px; }
+    .tree-legend { margin-left:auto; display:flex; gap:8px; color:var(--muted); font-size:10px; }
+    .tree-legend span { display:flex; align-items:center; gap:4px; }
+    .legend-dot { width:7px; height:7px; border-radius:50%; }
+    .tree-stage { position:relative; max-width:1100px; min-width:700px; margin:0 auto; overflow:hidden; border:1px solid #293a57; border-radius:18px; background:linear-gradient(180deg,rgba(4,8,15,.92),rgba(5,12,16,.96)); box-shadow:inset 0 0 80px rgba(0,0,0,.55),0 16px 60px rgba(0,0,0,.22); }
+    .tree-stage::before { content:"TREE OF LIFE"; position:absolute; left:20px; top:18px; color:rgba(93,228,215,.28); font-size:10px; letter-spacing:.24em; }
+    .tree-stage::after { content:"TREE OF KNOWLEDGE"; position:absolute; right:20px; top:18px; color:rgba(184,140,255,.28); font-size:10px; letter-spacing:.24em; }
+    #treeSvg { display:block; width:100%; height:auto; min-height:570px; transform-origin:center center; transition:transform .2s ease; }
+    .tree-edge { fill:none; stroke-width:1.6; opacity:.52; }
+    .tree-edge.life { stroke:#3ccfc0; } .tree-edge.knowledge { stroke:#a47cff; } .tree-edge.root,.tree-edge.living-layer { stroke:#d9b45a; }
+    .tree-node { cursor:pointer; outline:none; }
+    .tree-node circle { transition:filter .2s ease,stroke-width .2s ease,transform .2s ease; transform-box:fill-box; transform-origin:center; }
+    .tree-node:hover circle,.tree-node:focus circle,.tree-node.selected circle { filter:drop-shadow(0 0 9px currentColor); stroke-width:4; transform:scale(1.08); }
+    .tree-node text { pointer-events:none; fill:#dce6f7; font-size:11px; text-anchor:middle; paint-order:stroke; stroke:#050912; stroke-width:3px; stroke-linejoin:round; }
+    .tree-node .node-meta { fill:#8ea0ba; font-size:8px; }
+    .tree-node.ready { color:#9ee675; } .tree-node.detected { color:#e7b95a; } .tree-node.blocked { color:#ff8f8f; } .tree-node.layer { color:#8da1bd; } .tree-node.root { color:#f4cc72; }
+    .tree-node.ready circle { animation:treePulse 2.8s ease-in-out infinite; }
+    @keyframes treePulse { 0%,100% { filter:drop-shadow(0 0 2px currentColor); } 50% { filter:drop-shadow(0 0 11px currentColor); } }
+    .layer-band { opacity:.055; }
+    .layer-label { fill:#8b99ae; font-size:8px; letter-spacing:.08em; }
+    .quest-board { max-width:1100px; margin:12px auto 30px; }
+    .quest-heading { display:flex; justify-content:space-between; align-items:center; margin:0 0 7px; color:#e8d6a1; }
+    .quest-heading small { color:var(--muted); }
+    .quest-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+    .quest-card { appearance:none; width:100%; padding:11px; border:1px solid var(--line); border-radius:12px; background:#0d1521; color:inherit; text-align:left; }
+    .quest-card.open { border-left:3px solid var(--gold); }
+    .quest-card.complete { opacity:.65; border-left:3px solid var(--good); }
+    .quest-card:focus { outline:2px solid var(--cyan); outline-offset:2px; }
+    .quest-card strong { display:block; color:#eef2fb; font-size:12px; }
+    .quest-card span { display:block; color:var(--muted); font-size:10px; }
+    .quest-reward { margin-top:6px; color:#e7b95a!important; }
+    .node-detail-card strong { color:#f4dfa7; }
+    .node-kv { display:grid; grid-template-columns:auto 1fr; gap:4px 8px; margin-top:8px; font-size:11px; }
+    .node-kv span:nth-child(odd) { color:#7889a3; }
+    .cap-chip { display:inline-block; margin:5px 4px 0 0; padding:3px 6px; border:1px solid #34445f; border-radius:999px; color:#aebbd0; font-size:9px; }
+    .inspect-node { width:100%; margin-top:10px; padding:7px; border:1px solid #46665a; border-radius:8px; background:#12231f; color:#bce9d8; }
+
     @media(max-width:960px) {
       .shell { grid-template-columns:1fr; grid-template-rows:52px 1fr; }
-      .topbar { grid-column:1; padding:0 10px; } .topbar .badge { display:none; } .mobile-toggle { display:inline-block; }
+      .topbar { grid-column:1; padding:0 10px; gap:7px; } .topbar .badge { display:none; } .mobile-toggle { display:inline-block; }
+      .brand { font-size:12px; } .pulse { display:none; }
+      .view-switch button { padding:4px 8px; font-size:10px; }
       .panel { position:fixed; top:52px; bottom:0; width:min(88vw,340px); z-index:30; transition:transform .2s ease; }
       .panel.left { left:0; transform:translateX(-105%); } .panel.right { right:0; transform:translateX(105%); }
       body.left-open .panel.left,body.right-open .panel.right { transform:translateX(0); }
       body.left-open .overlay,body.right-open .overlay { display:block; position:fixed; inset:52px 0 0; z-index:25; background:rgba(0,0,0,.55); }
       .stream { padding:16px; } .composer { padding:10px; } .empty h1 { font-size:30px; }
+      .tree-view { padding:12px; }
+      .tree-hero { align-items:flex-start; flex-direction:column; }
+      .tree-truth { max-width:none; width:100%; }
+      .tree-stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .tree-stats .stat-card:last-child { grid-column:1/-1; }
+      .tree-legend { width:100%; margin-left:0; }
+      .tree-stage-wrap { overflow-x:auto; border-radius:18px; }
+      .quest-grid { grid-template-columns:1fr; }
     }
   </style>
 </head>
@@ -62,7 +132,9 @@
   <div class="shell">
     <header class="topbar">
       <button class="mobile-toggle" id="leftToggle" aria-label="Open workspaces">☰</button>
-      <div class="brand">MOBOX UXI</div><span class="badge">truthful local-first operator</span><div class="pulse" id="pulse">connecting…</div>
+      <div class="brand">MOBOX UXI</div><span class="badge">truthful local-first operator</span>
+      <nav class="view-switch" id="workspaceTabs" role="tablist" aria-label="Workspace view"><button id="conversationTab" class="active" role="tab" aria-selected="true">Conversation</button><button id="treeTab" role="tab" aria-selected="false">Tree of Life</button></nav>
+      <div class="pulse" id="pulse">connecting…</div>
       <button class="mobile-toggle" id="rightToggle" aria-label="Open context">Context</button>
     </header>
     <aside class="panel left" aria-label="Workspaces">
@@ -70,12 +142,24 @@
       <h2>Sessions</h2><div class="panel-section" id="sessions"></div>
       <h2>Repositories</h2><div class="panel-section" id="repos"></div>
     </aside>
-    <main class="main">
-      <div class="stream" id="stream"></div>
-      <div class="composer"><form id="composer"><input id="message" autocomplete="off" placeholder="Ask Aetherion, /inspect AIFT-OS, or /forge"><button type="submit">Send</button></form></div>
+    <main class="main" id="main">
+      <div class="stream view active" id="conversationView"></div>
+      <section class="tree-view view" id="treeView" aria-label="Federation Tree of Life">
+        <div class="tree-hero"><div><div class="tree-eyebrow">Fibonacci circulation · Seven living layers</div><h1 class="tree-title">Two Trees, One Root</h1><p class="tree-subtitle">The Tree of Life reveals observed runtime, infrastructure, application, and service repositories with their evidence-derived readiness classifications. The Tree of Knowledge reveals what has been remembered and understood. Every level, glow, and quest below is derived from observed repository evidence.</p></div><div class="tree-truth">Gamification never outranks truth. XP represents discovered evidence and verified capability—not imagined execution, wealth, authority, or completion.</div></div>
+        <div class="tree-stats" id="treeStats"></div>
+        <div class="tree-toolbar" id="treeToolbar">
+          <button class="tree-filter active" data-filter="all">All</button><button class="tree-filter" data-filter="life">Life</button><button class="tree-filter" data-filter="knowledge">Knowledge</button><button class="tree-filter" data-filter="ready">Ready</button><button class="tree-filter" data-filter="detected">Growing</button><button class="tree-filter" data-filter="blocked">Blocked</button>
+          <button class="tree-control" id="zoomOut" aria-label="Zoom out">−</button><button class="tree-control" id="zoomReset">Reset</button><button class="tree-control" id="zoomIn" aria-label="Zoom in">+</button>
+          <div class="tree-legend"><span><i class="legend-dot" style="background:#5de4d7"></i>Life</span><span><i class="legend-dot" style="background:#b88cff"></i>Knowledge</span><span><i class="legend-dot" style="background:#bce994"></i>Ready</span></div>
+        </div>
+        <div class="tree-stage-wrap"><div class="tree-stage"><svg id="treeSvg" viewBox="0 0 900 650" role="img" aria-label="Interactive federation tree"></svg></div></div>
+        <div class="quest-board"><div class="quest-heading"><strong>Federation Quests</strong><small id="questSummary"></small></div><div class="quest-grid" id="questGrid"></div></div>
+      </section>
+      <div class="composer" id="composerWrap"><form id="composer"><input id="message" autocomplete="off" placeholder="Ask Aetherion, /inspect AIFT-OS, or /forge"><button type="submit">Send</button></form></div>
     </main>
     <aside class="panel right" aria-label="Context and governance">
       <h2>System context</h2><div class="detail" id="system">Loading…</div>
+      <h2>Selected node</h2><div class="detail" id="selectedNode">Open the Tree of Life and select a repository.</div>
       <h2>Evidence</h2><div class="detail" id="evidence">Select a repository or inspect it in conversation.</div>
       <h2>Governance</h2><div class="detail" id="governance">Approval records a decision but does not execute.</div>
       <form class="governance-form" id="planForm"><strong>Propose plan</strong><label>Objective<input id="planObjective" required></label><label>Steps, one per line<textarea id="planSteps" required></textarea></label><button type="submit">Record proposed plan</button></form>
@@ -84,21 +168,36 @@
   </div>
   <div class="overlay" id="overlay"></div>
   <script>
-    const state={session:null,sessions:[],repos:[]}; const $=selector=>document.querySelector(selector);
+    const state={session:null,sessions:[],repos:[],tree:null,treeFilter:"all",selectedNode:null,treeZoom:1}; const $=selector=>document.querySelector(selector); const svgNS="http://www.w3.org/2000/svg";
     function element(tag,className,text){const node=document.createElement(tag);if(className)node.className=className;if(text!==undefined)node.textContent=text;return node}
+    function svgElement(tag,attrs={}){const node=document.createElementNS(svgNS,tag);for(const [key,value] of Object.entries(attrs))node.setAttribute(key,String(value));return node}
     function clear(node){while(node.firstChild)node.removeChild(node.firstChild)}
     function reportError(error){const message=error&&error.message?error.message:String(error);window.alert(message);$("#pulse").textContent="blocked · "+message}
     async function api(path,options={}){const response=await fetch(path,{headers:{"Content-Type":"application/json"},...options});const data=await response.json();if(!response.ok)throw new Error(data.error||response.statusText);return data}
-    async function load(){const [system,sessions,repos]=await Promise.all([api("/v1/system"),api("/v1/sessions"),api("/v1/repositories")]);state.sessions=sessions.sessions||[];state.repos=repos.repositories||[];$("#pulse").textContent=`active · ${system.repository_count} repos · ${system.mode}`;const systemNode=$("#system");clear(systemNode);systemNode.append(element("strong","",system.status),document.createElement("br"),document.createTextNode(system.truth_contract),document.createElement("br"),document.createElement("br"),element("span","badge",system.aift_root));renderSessions();renderRepos();if(state.sessions[0])await openSession(state.sessions[0].id);else renderTurns()}
-    function renderSessions(){const root=$("#sessions");clear(root);for(const session of state.sessions){const button=element("button",`nav-button ${state.session&&state.session.id===session.id?"active":""}`,session.title);button.append(element("small","",new Date(session.updated_at).toLocaleString()));button.addEventListener("click",()=>openSession(session.id).catch(reportError));root.append(button)}}
-    function renderRepos(){const root=$("#repos");clear(root);for(const repo of state.repos){const button=element("button","nav-button",repo.name);button.append(element("small","",`${repo.role} · ${repo.status}`));button.addEventListener("click",()=>{$("#message").value=`/inspect ${repo.name}`;showRepo(repo.name);closeDrawers();$("#message").focus()});root.append(button)}}
+    async function load(){const [system,sessions,repos,tree]=await Promise.all([api("/v1/system"),api("/v1/sessions"),api("/v1/repositories"),api("/v1/federation/tree")]);state.sessions=sessions.sessions||[];state.repos=repos.repositories||[];state.tree=tree;$("#pulse").textContent=`active · ${system.repository_count} repos · ${system.mode}`;const systemNode=$("#system");clear(systemNode);systemNode.append(element("strong","",system.status),document.createElement("br"),document.createTextNode(system.truth_contract),document.createElement("br"),document.createElement("br"),element("span","badge",system.aift_root));renderSessions();renderRepos();renderTree();if(state.sessions[0])await openSession(state.sessions[0].id);else renderTurns()}
+    function setView(view){const tree=view==="tree";$("#conversationView").classList.toggle("active",!tree);$("#treeView").classList.toggle("active",tree);$("#conversationTab").classList.toggle("active",!tree);$("#treeTab").classList.toggle("active",tree);$("#conversationTab").setAttribute("aria-selected",String(!tree));$("#treeTab").setAttribute("aria-selected",String(tree));$("#composerWrap").classList.toggle("hidden",tree);$("#main").classList.toggle("tree-mode",tree);if(tree)renderTree();closeDrawers()}
+    function renderSessions(){const root=$("#sessions");clear(root);for(const session of state.sessions){const button=element("button",`nav-button ${state.session&&state.session.id===session.id?"active":""}`,session.title);button.append(element("small","",new Date(session.updated_at).toLocaleString()));button.addEventListener("click",()=>{setView("conversation");openSession(session.id).catch(reportError)});root.append(button)}}
+    function renderRepos(){const root=$("#repos");clear(root);for(const repo of state.repos){const button=element("button","nav-button",repo.name);button.append(element("small","",`${repo.role} · ${repo.status}`));button.addEventListener("click",()=>{setView("conversation");$("#message").value=`/inspect ${repo.name}`;showRepo(repo.name);closeDrawers();$("#message").focus()});root.append(button)}}
     function showRepo(name){const repo=state.repos.find(item=>item.name===name);const root=$("#evidence");clear(root);if(!repo||!(repo.evidence||[]).length){root.textContent="No evidence records.";return}for(const evidence of repo.evidence)root.append(evidenceCard(evidence))}
-    function evidenceCard(evidence){const card=element("div","evidence-card");card.append(element("strong","",evidence.summary),document.createElement("br"),document.createTextNode(evidence.source));if(evidence.detail)card.append(document.createElement("br"),document.createTextNode(evidence.detail));return card}
+    function evidenceCard(evidence){const card=element("div","evidence-card");card.append(element("strong","",evidence.summary||evidence.kind),document.createElement("br"),document.createTextNode(evidence.source||"local observation"));if(evidence.detail)card.append(document.createElement("br"),document.createTextNode(evidence.detail));return card}
     async function createSession(){const session=await api("/v1/sessions",{method:"POST",body:JSON.stringify({title:"MoBox workspace"})});state.sessions.unshift(session);await openSession(session.id)}
     async function openSession(id){state.session=await api(`/v1/sessions/${encodeURIComponent(id)}`);const index=state.sessions.findIndex(item=>item.id===state.session.id);if(index>=0)state.sessions[index]=state.session;renderSessions();renderTurns();renderGovernance();closeDrawers()}
-    function renderTurns(){const root=$("#stream");clear(root);if(!state.session||!(state.session.turns||[]).length){const empty=element("div","empty");empty.append(element("h1","","Begin with evidence."),element("p","","Try /inspect AIFT-OS, /forge, or ask the local model about the federation."));root.append(empty);return}for(const turn of state.session.turns){const card=element("article",`turn ${turn.role==="user"?"user":"assistant"}`);const mode=turn.metadata&&turn.metadata.mode?` · ${turn.metadata.mode}`:"";card.append(element("div","turn-role",`${turn.role}${mode}`),document.createTextNode(turn.content));for(const evidence of turn.evidence||[])card.append(evidenceCard(evidence));root.append(card)}root.scrollTop=root.scrollHeight}
+    function renderTurns(){const root=$("#conversationView");clear(root);if(!state.session||!(state.session.turns||[]).length){const empty=element("div","empty");empty.append(element("h1","","Begin with evidence."),element("p","","Try /inspect AIFT-OS, /forge, or enter the Tree of Life."));root.append(empty);return}for(const turn of state.session.turns){const card=element("article",`turn ${turn.role==="user"?"user":"assistant"}`);const mode=turn.metadata&&turn.metadata.mode?` · ${turn.metadata.mode}`:"";card.append(element("div","turn-role",`${turn.role}${mode}`),document.createTextNode(turn.content));for(const evidence of turn.evidence||[])card.append(evidenceCard(evidence));root.append(card)}root.scrollTop=root.scrollHeight}
     function renderGovernance(){const root=$("#governance");clear(root);if(!state.session){root.textContent="Approval records a decision but does not execute.";return}for(const plan of state.session.plans||[]){const card=element("div","governance-card");card.append(element("strong","",`Plan · ${plan.status}`),document.createElement("br"),document.createTextNode(plan.objective));for(const step of plan.steps||[])card.append(document.createElement("br"),element("small","",`${step.title} · ${step.status}`));root.append(card)}for(const action of state.session.actions||[]){const card=element("div","governance-card");card.append(element("strong","",`Action · ${action.status}`),document.createElement("br"),document.createTextNode(`${action.kind} → ${action.target}`),document.createElement("br"),element("small","",`risk ${action.risk} · no execution endpoint`));if(action.status==="proposed"||action.status==="awaiting_approval"){const approve=element("button","decision-button approve","Approve record");approve.addEventListener("click",()=>decideAction(action.id,"approved"));const reject=element("button","decision-button reject","Reject");reject.addEventListener("click",()=>decideAction(action.id,"rejected"));card.append(document.createElement("br"),approve,reject)}root.append(card)}if(!root.firstChild)root.textContent="Approval records a decision but does not execute."}
     async function decideAction(actionID,decision){try{state.session=await api(`/v1/sessions/${encodeURIComponent(state.session.id)}/actions/${encodeURIComponent(actionID)}/decision`,{method:"POST",body:JSON.stringify({decision,actor:"human-local-operator"})});renderSessions();renderGovernance()}catch(error){reportError(error)}}
+
+    function renderTree(){if(!state.tree)return;renderTreeStats();renderTreeMap();renderQuests()}
+    function renderTreeStats(){const progress=state.tree.progress;const root=$("#treeStats");clear(root);const stats=[["Federation level",progress.level],["Evidence XP",progress.xp],["Coherence",`${progress.coherence}%`],["Ready branches",`${progress.ready}/${progress.repositories}`],["Open quests",progress.open_quests]];for(const [label,value] of stats){const card=element("div","stat-card");card.append(element("small","",label),element("strong","",String(value)));if(label==="Evidence XP"){const track=element("div","xp-track");const fill=element("div","xp-fill");fill.style.width=`${Math.min(100,(progress.current_level_xp/progress.next_level_xp)*100)}%`;track.append(fill);card.append(track)}root.append(card)}}
+    function treePositions(){const positions={"federation-root":{x:450,y:615}};for(const layer of state.tree.layers)positions[`layer-${layer.number}`]={x:450,y:565-(layer.number-1)*70};const repositories=state.tree.nodes.filter(node=>node.kind==="repository");for(const layer of state.tree.layers){for(const branch of ["life","knowledge","root"]){const group=repositories.filter(node=>node.layer===layer.number&&node.branch===branch);group.forEach((node,index)=>{const centered=index-(group.length-1)/2;const y=565-(layer.number-1)*70+centered*42;if(branch==="life")positions[node.id]={x:325-(index%3)*95,y};else if(branch==="knowledge")positions[node.id]={x:575+(index%3)*95,y};else positions[node.id]={x:450,y:y-34}})}}return positions}
+    function visibleTreeNode(node){const filter=state.treeFilter;if(node.kind!=="repository")return true;if(filter==="all")return true;if(filter==="life"||filter==="knowledge")return node.branch===filter;if(filter==="detected")return node.status!=="ready"&&node.status!=="blocked";return node.status===filter}
+    function renderTreeMap(){const svg=$("#treeSvg");clear(svg);svg.style.transform=`scale(${state.treeZoom})`;const positions=treePositions();for(const layer of state.tree.layers){const y=565-(layer.number-1)*70;const band=svgElement("rect",{x:0,y:y-28,width:900,height:56,fill:layer.color,class:"layer-band"});svg.append(band);const label=svgElement("text",{x:12,y:y+3,class:"layer-label"});label.textContent=`${layer.roman} · ${layer.name}`;svg.append(label)}for(const edge of state.tree.edges){const source=positions[edge.source],target=positions[edge.target];const sourceNode=state.tree.nodes.find(node=>node.id===edge.source),targetNode=state.tree.nodes.find(node=>node.id===edge.target);if(!source||!target||!sourceNode||!targetNode||!visibleTreeNode(sourceNode)||!visibleTreeNode(targetNode))continue;const mid=(source.x+target.x)/2;const path=svgElement("path",{d:`M ${source.x} ${source.y} C ${mid} ${source.y}, ${mid} ${target.y}, ${target.x} ${target.y}`,class:`tree-edge ${edge.kind}`});svg.append(path)}for(const node of state.tree.nodes){if(!visibleTreeNode(node))continue;const position=positions[node.id];if(!position)continue;svg.append(treeNodeElement(node,position))}}
+    function treeNodeElement(node,position){const status=node.kind==="repository"?(node.status||"detected"):node.kind;const group=svgElement("g",{class:`tree-node ${status} ${state.selectedNode&&state.selectedNode.id===node.id?"selected":""}`,transform:`translate(${position.x} ${position.y})`,tabindex:"0",role:"button","aria-label":`${node.name}, ${node.status}`});const radius=node.kind==="federation"?34:node.kind==="layer"?16:25;const layer=state.tree.layers.find(item=>item.number===node.layer);const fill=node.kind==="layer"?(layer?layer.color:"#8090aa"):node.branch==="knowledge"?"#291c45":node.branch==="life"?"#0c3938":"#3b2c12";const stroke=node.kind==="repository"?(node.status==="ready"?"#9ee675":node.status==="blocked"?"#ff8f8f":"#e7b95a"):(layer?layer.color:"#e7b95a");group.append(svgElement("circle",{r:radius,fill,stroke,"stroke-width":node.kind==="repository"?3:2}));const title=svgElement("text",{y:node.kind==="repository"?radius+15:4});title.textContent=node.kind==="layer"?(layer?layer.roman:node.name):node.name;group.append(title);if(node.kind==="repository"){const meta=svgElement("text",{y:radius+27,class:"node-meta"});meta.textContent=`Lv ${node.level} · ${node.growth}%`;group.append(meta)}group.addEventListener("click",()=>selectTreeNode(node));group.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();selectTreeNode(node)}});return group}
+    function selectTreeNode(node){state.selectedNode=node;renderTreeMap();const root=$("#selectedNode");clear(root);const card=element("div","node-detail-card");card.append(element("strong","",node.name));if(node.kind==="repository"){const grid=element("div","node-kv");for(const [label,value] of [["Layer",`${node.layer}. ${node.layer_name}`],["Branch",node.branch],["Role",node.role],["Status",node.status],["Level",node.level],["Evidence XP",node.xp],["Growth",`${node.growth}%`]]){grid.append(element("span","",label),element("span","",String(value)))}card.append(grid);const track=element("div","growth-track");const fill=element("div","growth-fill");fill.style.width=`${node.growth}%`;track.append(fill);card.append(track);for(const capability of node.capabilities||[])card.append(element("span","cap-chip",`${capability.name} · ${capability.status}`));const inspect=element("button","inspect-node","Inspect in conversation");inspect.addEventListener("click",()=>{setView("conversation");$("#message").value=`/inspect ${node.name}`;$("#message").focus()});card.append(inspect);const evidenceRoot=$("#evidence");clear(evidenceRoot);for(const evidence of node.evidence||[])evidenceRoot.append(evidenceCard(evidence))}else{card.append(document.createElement("br"),document.createTextNode(node.kind==="federation"?`Federation level ${node.level} · coherence ${node.growth}%`:`Living Layer ${node.layer}: ${node.layer_name}`))}root.append(card);document.body.classList.add("right-open")}
+    function renderQuests(){const quests=[...state.tree.quests].sort((a,b)=>(a.status==="open"?0:1)-(b.status==="open"?0:1)||a.repository.localeCompare(b.repository));$("#questSummary").textContent=`${state.tree.progress.open_quests} open · ${state.tree.progress.completed_quests} completed`;const root=$("#questGrid");clear(root);for(const quest of quests.slice(0,12)){const card=element("button",`quest-card ${quest.status}`);card.type="button";card.append(element("strong","",quest.title),element("span","",quest.repository),element("span","",quest.description),element("span","quest-reward",quest.status==="complete"?`✓ Evidence observed · ${quest.reward_xp} XP`:`Reward ${quest.reward_xp} XP`));card.addEventListener("click",()=>{const node=state.tree.nodes.find(item=>item.kind==="repository"&&item.name===quest.repository);if(node)selectTreeNode(node)});root.append(card)}}
+
+    $("#conversationTab").addEventListener("click",()=>setView("conversation"));$("#treeTab").addEventListener("click",()=>setView("tree"));
+    $("#treeToolbar").addEventListener("click",event=>{const button=event.target.closest("[data-filter]");if(!button)return;state.treeFilter=button.dataset.filter;for(const item of document.querySelectorAll(".tree-filter"))item.classList.toggle("active",item===button);renderTreeMap()});
+    $("#zoomIn").addEventListener("click",()=>{state.treeZoom=Math.min(1.5,state.treeZoom+.1);renderTreeMap()});$("#zoomOut").addEventListener("click",()=>{state.treeZoom=Math.max(.7,state.treeZoom-.1);renderTreeMap()});$("#zoomReset").addEventListener("click",()=>{state.treeZoom=1;renderTreeMap()});
     $("#newSession").addEventListener("click",()=>createSession().catch(reportError));
     $("#composer").addEventListener("submit",async event=>{event.preventDefault();const input=$("#message");const content=input.value.trim();if(!content)return;if(!state.session)await createSession();input.value="";input.disabled=true;try{state.session=await api(`/v1/sessions/${encodeURIComponent(state.session.id)}/messages`,{method:"POST",body:JSON.stringify({content})});const index=state.sessions.findIndex(item=>item.id===state.session.id);if(index>=0)state.sessions[index]=state.session;renderSessions();renderTurns();renderGovernance()}catch(error){reportError(error)}finally{input.disabled=false;input.focus()}});
     $("#planForm").addEventListener("submit",async event=>{event.preventDefault();try{if(!state.session)await createSession();const objective=$("#planObjective").value.trim();const steps=$("#planSteps").value.split("\n").map(value=>value.trim()).filter(Boolean).map(title=>({title}));state.session=await api(`/v1/sessions/${encodeURIComponent(state.session.id)}/plans`,{method:"POST",body:JSON.stringify({objective,steps})});event.target.reset();renderGovernance()}catch(error){reportError(error)}});
