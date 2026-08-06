@@ -25,43 +25,10 @@ jobs:
           go-version-file: go.mod
           cache: true
 
-      - name: Check formatting
-        run: |
-          unformatted=$(gofmt -l cmd internal tools)
-          if [ -n "$unformatted" ]; then
-            echo "The following files are not formatted:"
-            echo "$unformatted"
-            exit 1
-          fi
-
-      - name: Check shell syntax
-        run: |
-          status=0
-          while IFS= read -r -d '' file; do
-            if ! bash -n "$file"; then
-              echo "FAIL: $file"
-              status=1
-            fi
-          done < <(find . -type f -name '*.sh' -not -path './.git/*' -print0)
-          exit "$status"
-
-      - name: Run tests
-        run: go test ./...
-
-      - name: Build commands
-        run: |
-          mkdir -p bin
-          go build -o bin/aift ./cmd/aift
-          go build -o bin/aiftd ./cmd/aiftd
-
-      - name: Run MoBox UXI smoke test
-        run: bash scripts/smoke-mobox-uxi.sh
-
-      - name: Check coverage threshold
-        run: bash scripts/check-coverage.sh
-
-      - name: Check architecture invariants
-        run: go run ./tools/architecture --ci
+      - name: Run canonical verification
+        env:
+          AIFT_KEEP_ARTIFACTS: "1"
+        run: make verify
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
