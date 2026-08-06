@@ -1,7 +1,7 @@
 {
   "id": "mobox-uxi",
   "name": "MoBox UXI",
-  "description": "Conversation-first, truthful, local AIFT operator interface with supervised read-only adapters.",
+  "description": "Conversation-first, truthful, local AIFT operator interface with supervised read-only adapters and repository-declared canonical sources.",
   "status": "ready",
   "runtime": "go-http",
   "command": ["go", "run", "./cmd/aiftd"],
@@ -10,7 +10,8 @@
     "mode": "governed-read-only-execution",
     "bind": "127.0.0.1:8787",
     "model_endpoint": "http://127.0.0.1:8080/v1",
-    "registered_adapters": ["repository.inspect", "forge.mission.inspect"],
+    "registered_adapters": ["repository.inspect", "forge.mission.inspect", "source.inspect"],
+    "integration_schema": "aift.uxi.integration.v1",
     "approval_contract": "approval authorizes only the exact recorded action; mutating adapters remain disabled",
     "artifact_contract": "read-only adapter results are private JSON artifacts with SHA-256 digests"
   }
