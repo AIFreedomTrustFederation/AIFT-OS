@@ -125,7 +125,7 @@ func BuildWorldSnapshot(repositories []Repository) WorldSnapshot {
 				"mandelbrot_bounded": node.Mandelbrot.Bounded,
 				"growth":             node.Growth,
 				"quest_ids":          node.QuestIDs,
-				"evidence_digest":     evidenceDigest,
+				"evidence_digest":    evidenceDigest,
 			},
 			EvidenceRefs: evidenceRefs,
 			Visual: WorldVisual{
