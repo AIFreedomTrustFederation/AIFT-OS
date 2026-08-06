@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"strings"
 	"time"
@@ -154,10 +155,14 @@ func decodeJSON(r *http.Request, target any) error {
 	if !strings.Contains(r.Header.Get("Content-Type"), "application/json") {
 		return errors.New("Content-Type must be application/json")
 	}
-	decoder := json.NewDecoder(http.MaxBytesReader(nil, r.Body, 1<<20))
+	decoder := json.NewDecoder(io.LimitReader(r.Body, 1<<20))
 	decoder.DisallowUnknownFields()
 	if err := decoder.Decode(target); err != nil {
 		return fmt.Errorf("invalid JSON: %w", err)
+	}
+	var extra any
+	if err := decoder.Decode(&extra); !errors.Is(err, io.EOF) {
+		return errors.New("invalid JSON: request must contain exactly one object")
 	}
 	return nil
 }
