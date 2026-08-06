@@ -15,6 +15,7 @@ const (
 	StatusRolledBack       = "rolled_back"
 )
 
+// Session is the persisted operator workspace and its governed history.
 type Session struct {
 	ID        string         `json:"id"`
 	Title     string         `json:"title"`
@@ -29,12 +30,14 @@ type Session struct {
 	Artifacts []Artifact     `json:"artifacts"`
 }
 
+// SessionContext identifies the active repositories, application, and mode.
 type SessionContext struct {
 	RepositoryIDs []string `json:"repository_ids,omitempty"`
 	ApplicationID string   `json:"application_id,omitempty"`
 	Mode          string   `json:"mode,omitempty"`
 }
 
+// Turn is one persisted user or assistant message.
 type Turn struct {
 	ID        string         `json:"id"`
 	Role      string         `json:"role"`
@@ -47,6 +50,7 @@ type Turn struct {
 	Metadata  map[string]any `json:"metadata,omitempty"`
 }
 
+// Evidence records an observation supporting a status or answer.
 type Evidence struct {
 	ID         string    `json:"id"`
 	Kind       string    `json:"kind"`
@@ -57,6 +61,7 @@ type Evidence struct {
 	ObservedAt time.Time `json:"observed_at"`
 }
 
+// Plan is a proposed sequence of work and never implies execution.
 type Plan struct {
 	ID        string     `json:"id"`
 	Objective string     `json:"objective"`
@@ -66,6 +71,7 @@ type Plan struct {
 	UpdatedAt time.Time  `json:"updated_at"`
 }
 
+// PlanStep is one proposed step in a plan.
 type PlanStep struct {
 	ID       string `json:"id"`
 	Title    string `json:"title"`
@@ -73,6 +79,7 @@ type PlanStep struct {
 	Evidence string `json:"evidence,omitempty"`
 }
 
+// Action is a typed proposed operation subject to policy and approval.
 type Action struct {
 	ID               string         `json:"id"`
 	Kind             string         `json:"kind"`
@@ -85,24 +92,27 @@ type Action struct {
 	UpdatedAt        time.Time      `json:"updated_at"`
 }
 
+// Approval records a human decision about an action.
 type Approval struct {
-	ID        string    `json:"id"`
-	ActionID  string    `json:"action_id"`
-	Decision  string    `json:"decision"`
-	Actor     string    `json:"actor"`
-	CreatedAt time.Time `json:"created_at"`
-	ExpiresAt time.Time `json:"expires_at,omitempty"`
+	ID        string     `json:"id"`
+	ActionID  string     `json:"action_id"`
+	Decision  string     `json:"decision"`
+	Actor     string     `json:"actor"`
+	CreatedAt time.Time  `json:"created_at"`
+	ExpiresAt *time.Time `json:"expires_at,omitempty"`
 }
 
+// Job records an execution lifecycle when an executor is introduced.
 type Job struct {
-	ID        string    `json:"id"`
-	ActionID  string    `json:"action_id"`
-	Status    string    `json:"status"`
-	StartedAt time.Time `json:"started_at,omitempty"`
-	EndedAt   time.Time `json:"ended_at,omitempty"`
-	LogPath   string    `json:"log_path,omitempty"`
+	ID        string     `json:"id"`
+	ActionID  string     `json:"action_id"`
+	Status    string     `json:"status"`
+	StartedAt *time.Time `json:"started_at,omitempty"`
+	EndedAt   *time.Time `json:"ended_at,omitempty"`
+	LogPath   string     `json:"log_path,omitempty"`
 }
 
+// Artifact identifies a produced file or other durable output.
 type Artifact struct {
 	ID        string    `json:"id"`
 	Kind      string    `json:"kind"`
@@ -112,6 +122,7 @@ type Artifact struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
+// Event is an append-only audit observation.
 type Event struct {
 	ID        string         `json:"id"`
 	SessionID string         `json:"session_id,omitempty"`
@@ -122,6 +133,7 @@ type Event struct {
 	CreatedAt time.Time      `json:"created_at"`
 }
 
+// Capability is one evidence-backed operation declared by a repository.
 type Capability struct {
 	Name        string `json:"name"`
 	Status      string `json:"status"`
@@ -130,6 +142,7 @@ type Capability struct {
 	Evidence    string `json:"evidence,omitempty"`
 }
 
+// Repository is the UXI view of one discovered Git repository.
 type Repository struct {
 	ID           string       `json:"id"`
 	Name         string       `json:"name"`
