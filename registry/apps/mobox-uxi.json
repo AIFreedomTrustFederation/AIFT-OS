@@ -18,7 +18,8 @@
     "registered_adapters": [
       "repository.inspect",
       "forge.mission.inspect",
-      "source.inspect"
+      "source.inspect",
+      "mobox.runtime.inspect"
     ],
     "artifact_contract": "read-only adapter results are private JSON artifacts with SHA-256 digests",
     "federation_geometry": {
