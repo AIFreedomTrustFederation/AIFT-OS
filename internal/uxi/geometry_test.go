@@ -1,0 +1,75 @@
+package uxi
+
+import (
+	"math"
+	"reflect"
+	"testing"
+)
+
+func TestFederationGeometryIsDeterministic(t *testing.T) {
+	repositories := []Repository{
+		{ID: "aift-os", Name: "AIFT-OS", Role: "federation-kernel", Status: "ready", Git: true, Languages: []string{"Go"}, Capabilities: []Capability{{Name: "uxi", Status: "ready"}}, Evidence: []Evidence{{Kind: "test"}}},
+		{ID: "mobox", Name: "mobox", Role: "compatibility-runtime", Status: "detected", Git: true},
+	}
+	first := BuildFederationGeometry(repositories)
+	second := BuildFederationGeometry(repositories)
+	if !reflect.DeepEqual(first, second) {
+		t.Fatalf("geometry is not deterministic:\nfirst=%#v\nsecond=%#v", first, second)
+	}
+	if first.Schema != geometrySchemaV1 || first.Law.Dimensions != 3 || len(first.Nodes) != 2 {
+		t.Fatalf("geometry=%#v", first)
+	}
+	if first.Law.TemporalModel == "" || first.Law.Flow == "" || first.Law.Equivalency == "" {
+		t.Fatalf("temporal law=%#v", first.Law)
+	}
+	for _, node := range first.Nodes {
+		if node.Seed == "" || node.Mandelbrot.Iterations < 0 || node.Mandelbrot.Iterations > mandelbrotLimit {
+			t.Fatalf("node=%#v", node)
+		}
+		if node.Torus.Cycle == "" || node.Torus.IdentityPhase <= 0 || node.Torus.IdentityPhase > 2*math.Pi || node.Torus.CoherencePhase < 0 || node.Torus.CoherencePhase > 2*math.Pi {
+			t.Fatalf("torus=%#v", node.Torus)
+		}
+		if node.Position.X < -1 || node.Position.X > 1 || node.Position.Y < -1 || node.Position.Y > 1 || node.Position.Z < -1 || node.Position.Z > 1 {
+			t.Fatalf("position=%#v", node.Position)
+		}
+	}
+}
+
+func TestGeometryBindsQuestsAndCapabilities(t *testing.T) {
+	repository := Repository{
+		ID: "aift-os", Name: "AIFT-OS", Role: "federation-kernel", Status: "ready", Git: true,
+		Capabilities: []Capability{{Name: "inspect", Status: "ready"}, {Name: "repair", Status: "planned"}},
+		Evidence:     []Evidence{{Kind: "filesystem"}},
+	}
+	world := BuildFederationGeometry([]Repository{repository})
+	node := world.Nodes[0]
+	if node.SacredForm != "star-tetrahedron" || node.Symmetry != 8 {
+		t.Fatalf("form=%s symmetry=%d", node.SacredForm, node.Symmetry)
+	}
+	if len(node.QuestIDs) != 3 || len(node.Capabilities) != 2 {
+		t.Fatalf("node=%#v", node)
+	}
+	if node.Capabilities[0].Angle == node.Capabilities[1].Angle {
+		t.Fatalf("capabilities do not use phyllotaxis: %#v", node.Capabilities)
+	}
+}
+
+func TestMandelbrotIterationBounds(t *testing.T) {
+	if iterations, bounded := mandelbrotIterations(0, 0, mandelbrotLimit); iterations != mandelbrotLimit || !bounded {
+		t.Fatalf("origin iterations=%d bounded=%v", iterations, bounded)
+	}
+	if iterations, bounded := mandelbrotIterations(2, 2, mandelbrotLimit); iterations >= mandelbrotLimit || bounded {
+		t.Fatalf("escaping point iterations=%d bounded=%v", iterations, bounded)
+	}
+	if iterations, bounded := mandelbrotIterations(3, 0, 1); iterations != 1 || bounded {
+		t.Fatalf("final-iteration escape iterations=%d bounded=%v", iterations, bounded)
+	}
+}
+
+func TestGeometrySeedSurvivesRoleChange(t *testing.T) {
+	first := BuildFederationGeometry([]Repository{{ID: "stable", Name: "Stable", Role: "federation-kernel"}})
+	second := BuildFederationGeometry([]Repository{{ID: "stable", Name: "Stable", Role: "knowledge-application"}})
+	if first.Nodes[0].Seed != second.Nodes[0].Seed || first.Nodes[0].Mandelbrot != second.Nodes[0].Mandelbrot {
+		t.Fatalf("identity changed with role: first=%#v second=%#v", first.Nodes[0], second.Nodes[0])
+	}
+}

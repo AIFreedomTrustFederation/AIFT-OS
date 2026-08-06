@@ -203,3 +203,27 @@ func TestGovernanceEndpointsRecordButDoNotExecute(t *testing.T) {
 		t.Fatalf("updated=%#v", updated)
 	}
 }
+
+func TestFederationGeometryEndpoint(t *testing.T) {
+	server, _ := newTestServer(t)
+	req := httptest.NewRequest(http.MethodGet, "/v1/federation/geometry", nil)
+	rr := httptest.NewRecorder()
+	server.Handler().ServeHTTP(rr, req)
+	if rr.Code != http.StatusOK {
+		t.Fatalf("geometry code=%d body=%s", rr.Code, rr.Body.String())
+	}
+	firstBody := rr.Body.String()
+	req = httptest.NewRequest(http.MethodGet, "/v1/federation/geometry", nil)
+	second := httptest.NewRecorder()
+	server.Handler().ServeHTTP(second, req)
+	if second.Code != http.StatusOK || second.Body.String() != firstBody {
+		t.Fatalf("geometry response is not deterministic: first=%s second=%s", firstBody, second.Body.String())
+	}
+	var geometry uxi.FederationGeometry
+	if err := json.Unmarshal([]byte(firstBody), &geometry); err != nil {
+		t.Fatal(err)
+	}
+	if geometry.Schema != "aift.federation.geometry.v1" || geometry.Law.Dimensions != 3 || len(geometry.Nodes) != 1 {
+		t.Fatalf("geometry=%#v", geometry)
+	}
+}
