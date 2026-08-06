@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/uxi"
@@ -75,6 +76,51 @@ func TestFederationTreeEndpoint(t *testing.T) {
 	}
 	if len(tree.Nodes) != 9 || len(tree.Layers) != 7 {
 		t.Fatalf("nodes=%d layers=%d", len(tree.Nodes), len(tree.Layers))
+	}
+}
+
+func TestFederationWorldEndpoint(t *testing.T) {
+	server, _ := newTestServer(t)
+	locationDir := filepath.Join(server.Engine.AIFTRoot, "AIFT-OS", ".aift")
+	if err := os.MkdirAll(locationDir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	manifest := `{"schema":"aift.location.v1","label":"Sacramento, California","latitude":38.58157,"longitude":-121.4944,"precision":"city","visibility":"federation"}`
+	if err := os.WriteFile(filepath.Join(locationDir, "location.json"), []byte(manifest), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/v1/federation/world", nil)
+	rr := httptest.NewRecorder()
+	server.Handler().ServeHTTP(rr, req)
+	if rr.Code != http.StatusOK {
+		t.Fatalf("world code=%d body=%s", rr.Code, rr.Body.String())
+	}
+	var world uxi.FederationWorld
+	if err := json.Unmarshal(rr.Body.Bytes(), &world); err != nil {
+		t.Fatal(err)
+	}
+	if world.Schema != "aift.federation.world.v1" || world.Progress.Mapped != 1 || len(world.Nodes) != 1 {
+		t.Fatalf("world=%#v", world)
+	}
+	if world.Nodes[0].Latitude != 38.58 || world.Privacy.ExternalRequests {
+		t.Fatalf("world=%#v", world)
+	}
+}
+
+func TestIndexIncludesWorldWorkspace(t *testing.T) {
+	server, _ := newTestServer(t)
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	rr := httptest.NewRecorder()
+	server.Handler().ServeHTTP(rr, req)
+	if rr.Code != http.StatusOK {
+		t.Fatalf("index code=%d", rr.Code)
+	}
+	body := rr.Body.String()
+	for _, expected := range []string{"id=\"worldTab\"", "id=\"worldView\"", "id=\"worldLocate\"", "/v1/federation/world"} {
+		if !strings.Contains(body, expected) {
+			t.Fatalf("index missing %q", expected)
+		}
 	}
 }
 
