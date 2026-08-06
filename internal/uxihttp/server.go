@@ -36,6 +36,9 @@ func (s *Server) routes() {
 	s.mux.HandleFunc("GET /world", s.handleWorldGame)
 	s.mux.HandleFunc("GET /v1/system", s.handleSystem)
 	s.mux.HandleFunc("GET /v1/repositories", s.handleRepositories)
+	s.mux.HandleFunc("GET /v1/adapters", s.handleAdapters)
+	s.mux.HandleFunc("GET /v1/sources", s.handleSources)
+	s.mux.HandleFunc("GET /v1/artifacts/{id}", s.handleArtifact)
 	s.mux.HandleFunc("GET /v1/federation/tree", s.handleFederationTree)
 	s.mux.HandleFunc("GET /v1/federation/world", s.handleFederationWorld)
 	s.mux.HandleFunc("GET /v1/adapters/forge/mission", s.handleForgeMission)
@@ -46,6 +49,7 @@ func (s *Server) routes() {
 	s.mux.HandleFunc("POST /v1/sessions/{id}/plans", s.handlePlan)
 	s.mux.HandleFunc("POST /v1/sessions/{id}/actions", s.handleAction)
 	s.mux.HandleFunc("POST /v1/sessions/{id}/actions/{actionID}/decision", s.handleActionDecision)
+	s.mux.HandleFunc("POST /v1/sessions/{id}/actions/{actionID}/invoke", s.handleActionInvoke)
 	s.mux.HandleFunc("GET /v1/events", s.handleEvents)
 	s.mux.HandleFunc("GET /", s.handleIndex)
 }
@@ -74,7 +78,7 @@ func (s *Server) handleSystem(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, http.StatusOK, map[string]any{
 		"status":           "active",
-		"mode":             "read-only",
+		"mode":             "governed-read-only-execution",
 		"aift_root":        s.Engine.AIFTRoot,
 		"data_root":        s.Engine.Store.Root(),
 		"repository_count": len(repos),
@@ -89,6 +93,34 @@ func (s *Server) handleRepositories(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"repositories": repos})
+}
+
+func (s *Server) handleAdapters(w http.ResponseWriter, r *http.Request) {
+	writeJSON(w, http.StatusOK, map[string]any{"adapters": s.Engine.Adapters.List()})
+}
+
+func (s *Server) handleSources(w http.ResponseWriter, r *http.Request) {
+	sources, evidence, err := uxi.DiscoverIntegrationSources(s.Engine.AIFTRoot)
+	if err != nil {
+		writeError(w, http.StatusConflict, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"sources": sources, "evidence": evidence})
+}
+
+func (s *Server) handleArtifact(w http.ResponseWriter, r *http.Request) {
+	artifact, err := s.Engine.Store.ReadArtifact(r.PathValue("id"))
+	if errors.Is(err, uxi.ErrNotFound) {
+		writeError(w, http.StatusNotFound, err)
+		return
+	}
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write(artifact)
 }
 
 func (s *Server) handleFederationTree(w http.ResponseWriter, r *http.Request) {
@@ -240,6 +272,23 @@ func (s *Server) handleActionDecision(w http.ResponseWriter, r *http.Request) {
 	}
 	if err != nil {
 		writeError(w, http.StatusConflict, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, session)
+}
+
+func (s *Server) handleActionInvoke(w http.ResponseWriter, r *http.Request) {
+	session, err := s.Engine.InvokeAction(r.Context(), r.PathValue("id"), r.PathValue("actionID"))
+	if errors.Is(err, uxi.ErrNotFound) {
+		writeError(w, http.StatusNotFound, err)
+		return
+	}
+	if errors.Is(err, uxi.ErrMutationDisabled) {
+		writeError(w, http.StatusForbidden, err)
+		return
+	}
+	if err != nil {
+		writeJSON(w, http.StatusConflict, map[string]any{"status": "fail", "error": err.Error(), "session": session})
 		return
 	}
 	writeJSON(w, http.StatusOK, session)

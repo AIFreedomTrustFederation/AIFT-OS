@@ -44,7 +44,7 @@ func NewStore(root string) (*Store, error) {
 	if strings.TrimSpace(root) == "" {
 		return nil, errors.New("store root is required")
 	}
-	for _, dir := range []string{root, filepath.Join(root, "sessions"), filepath.Join(root, "events"), filepath.Join(root, "transactions")} {
+	for _, dir := range []string{root, filepath.Join(root, "sessions"), filepath.Join(root, "events"), filepath.Join(root, "transactions"), filepath.Join(root, "artifacts")} {
 		if err := os.MkdirAll(dir, 0o700); err != nil {
 			return nil, fmt.Errorf("create store directory %s: %w", dir, err)
 		}
