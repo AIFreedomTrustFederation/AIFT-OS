@@ -91,6 +91,7 @@ coverage() {
   trap 'rm -rf "$copy_root"' RETURN
   tar -cf - --exclude='./.git' --exclude='./bin' --exclude='./coverage.out' . |
     tar -xf - -C "$copy_root"
+  git init -q "$copy_root"
   (
     cd "$copy_root"
     bash scripts/check-coverage.sh
