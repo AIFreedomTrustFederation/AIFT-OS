@@ -32,3 +32,40 @@ func TestDiscoverRepositories(t *testing.T) {
 		t.Fatalf("repo = %#v", repos[0])
 	}
 }
+
+func TestCapabilityStatusIsEvidenceBased(t *testing.T) {
+	cases := []struct {
+		name string
+		caps []Capability
+		want string
+	}{
+		{"planned only", []Capability{{Name: "deploy", Status: "planned"}}, "detected"},
+		{"ready", []Capability{{Name: "status", Status: "ready"}}, "ready"},
+		{"blocked wins", []Capability{{Name: "status", Status: "ready"}, {Name: "build", Status: "broken"}}, "blocked"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := aggregateCapabilityStatus(tc.caps); got != tc.want {
+				t.Fatalf("got %q want %q", got, tc.want)
+			}
+		})
+	}
+}
+
+func TestDiscoverRepositoryWithGitFile(t *testing.T) {
+	root := t.TempDir()
+	repo := filepath.Join(root, "worktree")
+	if err := os.MkdirAll(repo, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(repo, ".git"), []byte("gitdir: ../.git/worktrees/worktree\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	repos, err := DiscoverRepositories(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(repos) != 1 {
+		t.Fatalf("repos = %d", len(repos))
+	}
+}
