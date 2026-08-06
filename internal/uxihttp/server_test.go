@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/uxi"
@@ -155,6 +156,21 @@ func TestAdaptersEndpointListsOnlyReadOnlyDefaults(t *testing.T) {
 	for _, adapter := range response.Adapters {
 		if adapter.Mutating {
 			t.Fatalf("adapter=%#v", adapter)
+		}
+	}
+}
+
+func TestEmbeddedAssetsAndStrictCSP(t *testing.T) {
+	server, _ := newTestServer(t)
+	for _, path := range []string{"/", "/styles.css", "/app.js"} {
+		req := httptest.NewRequest(http.MethodGet, path, nil)
+		rr := httptest.NewRecorder()
+		server.Handler().ServeHTTP(rr, req)
+		if rr.Code != http.StatusOK || rr.Body.Len() == 0 {
+			t.Fatalf("path=%s code=%d", path, rr.Code)
+		}
+		if csp := rr.Header().Get("Content-Security-Policy"); strings.Contains(csp, "unsafe-inline") {
+			t.Fatalf("unsafe CSP: %s", csp)
 		}
 	}
 }
