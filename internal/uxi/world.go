@@ -136,6 +136,9 @@ func BuildFederationWorld(repositories []Repository) FederationWorld {
 			}
 		}
 		world.Quests = append(world.Quests, quests...)
+		if err == nil {
+			world.Progress.XP += 100
+		}
 
 		switch {
 		case errors.Is(err, os.ErrNotExist):
@@ -149,12 +152,11 @@ func BuildFederationWorld(repositories []Repository) FederationWorld {
 			world.Unmapped = append(world.Unmapped, worldUnmapped(repo, "location declaration is private", "hidden"))
 		default:
 			world.Progress.Mapped++
-			world.Progress.XP += 150
 			world.Nodes = append(world.Nodes, WorldNode{
 				ID: "world-" + repo.ID, RepositoryID: repo.ID, Repository: repo.Name, Role: repo.Role, Status: repo.Status,
 				Label: manifest.Label, Latitude: *manifest.Latitude, Longitude: *manifest.Longitude,
 				Precision: manifest.Precision, Visibility: manifest.Visibility, Source: manifest.Source,
-				Evidence: ".aift/location.json", XP: 150, QuestIDs: questIDs,
+				Evidence: ".aift/location.json", XP: 100, QuestIDs: questIDs,
 			})
 		}
 	}
@@ -263,25 +265,16 @@ func roundCoordinate(value float64, decimals int) float64 {
 	return math.Round(value*factor) / factor
 }
 
-func locationQuests(repo Repository, manifest locationManifest, err error) []WorldQuest {
-	base := "world-quest-" + repo.ID + "-"
+func locationQuests(repo Repository, _ locationManifest, err error) []WorldQuest {
 	declare := WorldQuest{
-		ID: base + "declare", RepositoryID: repo.ID, Repository: repo.Name,
-		Title: "Anchor the repository on Earth", Description: "Add a valid .aift/location.json declaration.", Status: "open", RewardXP: 100,
-	}
-	share := WorldQuest{
-		ID: base + "share", RepositoryID: repo.ID, Repository: repo.Name,
-		Title: "Choose federation visibility", Description: "Explicitly choose federation or public visibility to place the repository on the shared map.", Status: "open", RewardXP: 50,
+		ID: "world-quest-" + repo.ID + "-declare", RepositoryID: repo.ID, Repository: repo.Name,
+		Title: "Anchor the repository on Earth", Description: "Add a valid privacy-scoped .aift/location.json declaration.", Status: "open", RewardXP: 100,
 	}
 	if err == nil {
 		declare.Status = "complete"
 		declare.Evidence = ".aift/location.json"
-		if manifest.Visibility == "federation" || manifest.Visibility == "public" {
-			share.Status = "complete"
-			share.Evidence = manifest.Visibility + " visibility at " + manifest.Precision + " precision"
-		}
 	}
-	return []WorldQuest{declare, share}
+	return []WorldQuest{declare}
 }
 
 func worldUnmapped(repo Repository, reason, state string) WorldUnmapped {
