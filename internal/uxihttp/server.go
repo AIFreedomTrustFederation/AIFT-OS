@@ -39,6 +39,9 @@ func (s *Server) routes() {
 	s.mux.HandleFunc("POST /v1/sessions", s.handleCreateSession)
 	s.mux.HandleFunc("GET /v1/sessions/{id}", s.handleGetSession)
 	s.mux.HandleFunc("POST /v1/sessions/{id}/messages", s.handleMessage)
+	s.mux.HandleFunc("POST /v1/sessions/{id}/plans", s.handlePlan)
+	s.mux.HandleFunc("POST /v1/sessions/{id}/actions", s.handleAction)
+	s.mux.HandleFunc("POST /v1/sessions/{id}/actions/{actionID}/decision", s.handleActionDecision)
 	s.mux.HandleFunc("GET /v1/events", s.handleEvents)
 	s.mux.HandleFunc("GET /", s.handleIndex)
 }
@@ -138,6 +141,75 @@ func (s *Server) handleMessage(w http.ResponseWriter, r *http.Request) {
 	}
 	if err != nil {
 		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, session)
+}
+
+func (s *Server) handlePlan(w http.ResponseWriter, r *http.Request) {
+	var input struct {
+		Objective string         `json:"objective"`
+		Steps     []uxi.PlanStep `json:"steps"`
+	}
+	if err := decodeJSON(r, &input); err != nil {
+		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+	session, err := s.Engine.Store.AddPlan(r.PathValue("id"), uxi.Plan{Objective: input.Objective, Steps: input.Steps})
+	if errors.Is(err, uxi.ErrNotFound) {
+		writeError(w, http.StatusNotFound, err)
+		return
+	}
+	if err != nil {
+		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+	writeJSON(w, http.StatusCreated, session)
+}
+
+func (s *Server) handleAction(w http.ResponseWriter, r *http.Request) {
+	var input struct {
+		Kind             string         `json:"kind"`
+		Target           string         `json:"target"`
+		Risk             string         `json:"risk"`
+		ApprovalRequired bool           `json:"approval_required"`
+		Parameters       map[string]any `json:"parameters"`
+	}
+	if err := decodeJSON(r, &input); err != nil {
+		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+	session, err := s.Engine.Store.ProposeAction(r.PathValue("id"), uxi.Action{
+		Kind: input.Kind, Target: input.Target, Risk: input.Risk,
+		ApprovalRequired: input.ApprovalRequired, Parameters: input.Parameters,
+	})
+	if errors.Is(err, uxi.ErrNotFound) {
+		writeError(w, http.StatusNotFound, err)
+		return
+	}
+	if err != nil {
+		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+	writeJSON(w, http.StatusCreated, session)
+}
+
+func (s *Server) handleActionDecision(w http.ResponseWriter, r *http.Request) {
+	var input struct {
+		Decision string `json:"decision"`
+		Actor    string `json:"actor"`
+	}
+	if err := decodeJSON(r, &input); err != nil {
+		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+	session, err := s.Engine.Store.DecideAction(r.PathValue("id"), r.PathValue("actionID"), input.Decision, input.Actor)
+	if errors.Is(err, uxi.ErrNotFound) {
+		writeError(w, http.StatusNotFound, err)
+		return
+	}
+	if err != nil {
+		writeError(w, http.StatusConflict, err)
 		return
 	}
 	writeJSON(w, http.StatusOK, session)
