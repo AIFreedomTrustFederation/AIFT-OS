@@ -42,3 +42,14 @@ Every repository node binds:
 - restoration quest identifiers.
 
 Renderers may increase visual detail during zoom, but must preserve the canonical identity, state, evidence, and governance boundary supplied by this contract.
+
+## Eternal Now Christic Equivalency Principle
+
+AIFT-OS uses this phrase as a governance and interaction principle:
+
+- **Eternal now** means the visible federation is a deterministic projection of the evidence presently available. Wall-clock passage alone does not change identity, truth, health, or authority.
+- **Christic equivalency** means every sovereign participant retains equal protocol dignity. Human beings remain the source of consent; an AI, repository, device, geometric rank, economic balance, or visual brightness cannot acquire moral supremacy.
+- **Torus flow** is the recurring operational cycle: intention, proposal, consent, action, evidence, reflection, and renewed intention.
+- **Causal history** remains append-only. The current projection does not erase the past; it coherently derives the present from recorded events.
+
+Every repository receives a stable toroidal identity phase derived from its canonical ID. Its coherence phase derives from observed growth. Neither coordinate depends on wall-clock time.
