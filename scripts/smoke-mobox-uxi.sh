@@ -94,7 +94,7 @@ fi
 request GET /health 200
 [[ "$(json_value status)" == "pass" ]] || { printf 'FAIL health status\n' >&2; exit 1; }
 
-for path in /v1/system /v1/repositories /v1/adapters /v1/sources   /v1/federation/tree /v1/federation/world /v1/federation/geometry /v1/adapters/forge/mission /v1/sessions /v1/events; do
+for path in /v1/system /v1/repositories /v1/adapters /v1/sources   /v1/federation/tree /v1/federation/world /v1/federation/geometry /v1/federation/world-snapshot /v1/adapters/forge/mission /v1/sessions /v1/events; do
   request GET "$path" 200
 done
 

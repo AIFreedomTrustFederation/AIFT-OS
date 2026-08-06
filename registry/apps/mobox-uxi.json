@@ -1,7 +1,7 @@
 {
   "id": "mobox-uxi",
-  "name": "MoBox UXI",
-  "description": "Conversation-first, truthful local AIFT operator with supervised read-only adapters.",
+  "name": "Federation Console",
+  "description": "Conversation-first AIFT operator console with governed adapters and Living Federation APIs.",
   "status": "ready",
   "runtime": "go-http",
   "command": [
@@ -18,7 +18,8 @@
     "registered_adapters": [
       "repository.inspect",
       "forge.mission.inspect",
-      "source.inspect"
+      "source.inspect",
+      "mobox.runtime.inspect"
     ],
     "artifact_contract": "read-only adapter results are private JSON artifacts with SHA-256 digests",
     "federation_geometry": {
@@ -28,6 +29,18 @@
       "dimensions": 3,
       "identity": "deterministic repository seed",
       "growth": "observed evidence only"
+    },
+    "naming": {
+      "product": "Federation Console",
+      "legacy_id": "mobox-uxi",
+      "compatibility_runtime": "AIFreedomTrustFederation/mobox",
+      "boundary": "The compatibility runtime executes Windows applications; this console owns neither Wine nor Box64."
+    },
+    "world_protocol": {
+      "schema": "aift.world.v1",
+      "endpoint": "/v1/federation/world-snapshot",
+      "coordinates": "signed 64-bit decimal logical nanounits",
+      "mutation_mode": "proposal-only"
     }
   }
 }

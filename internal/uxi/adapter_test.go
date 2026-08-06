@@ -14,7 +14,7 @@ func TestDefaultAdaptersAreReadOnly(t *testing.T) {
 		t.Fatal(err)
 	}
 	descriptors := registry.List()
-	if len(descriptors) != 3 {
+	if len(descriptors) != 4 {
 		t.Fatalf("descriptors = %#v", descriptors)
 	}
 	for _, descriptor := range descriptors {
@@ -129,5 +129,28 @@ func TestAdapterFailureIsPersisted(t *testing.T) {
 	}
 	if updated.Actions[0].Status != StatusFailed || updated.Jobs[0].Status != StatusFailed {
 		t.Fatalf("updated = %#v", updated)
+	}
+}
+
+func TestMoboxRuntimeInspectDoesNotExecute(t *testing.T) {
+	root := t.TempDir()
+	mobox := filepath.Join(root, "mobox")
+	for _, path := range []string{".git", "components"} {
+		if err := os.MkdirAll(filepath.Join(mobox, path), 0o755); err != nil {
+			t.Fatal(err)
+		}
+	}
+	for _, path := range []string{"install", "menu"} {
+		if err := os.WriteFile(filepath.Join(mobox, path), []byte("#!/bin/sh\n"), 0o755); err != nil {
+			t.Fatal(err)
+		}
+	}
+	adapter := MoboxRuntimeInspectAdapter{AIFTRoot: root}
+	result, err := adapter.Invoke(context.Background(), AdapterRequest{Target: "mobox"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.Data["execution_performed"] != false || len(result.Evidence) != 4 {
+		t.Fatalf("result=%#v", result)
 	}
 }

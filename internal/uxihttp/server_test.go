@@ -227,3 +227,48 @@ func TestFederationGeometryEndpoint(t *testing.T) {
 		t.Fatalf("geometry=%#v", geometry)
 	}
 }
+
+func TestWorldSnapshotEndpoint(t *testing.T) {
+	server, _ := newTestServer(t)
+	req := httptest.NewRequest(http.MethodGet, "/v1/federation/world-snapshot", nil)
+	recorder := httptest.NewRecorder()
+	server.Handler().ServeHTTP(recorder, req)
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("world snapshot code=%d body=%s", recorder.Code, recorder.Body.String())
+	}
+	var snapshot uxi.WorldSnapshot
+	if err := json.Unmarshal(recorder.Body.Bytes(), &snapshot); err != nil {
+		t.Fatal(err)
+	}
+	if snapshot.Schema != "aift.world.v1" || snapshot.Revision == 0 || len(snapshot.Entities) == 0 {
+		t.Fatalf("snapshot=%#v", snapshot)
+	}
+	if snapshot.Governance.MutationMode != "proposal-only" || !snapshot.Governance.HumanConsentRequired {
+		t.Fatalf("governance=%#v", snapshot.Governance)
+	}
+}
+
+func TestWorldSnapshotAllowsOnlyLoopbackBrowserOrigins(t *testing.T) {
+	server, _ := newTestServer(t)
+	for _, test := range []struct {
+		origin  string
+		allowed bool
+	}{
+		{origin: "http://127.0.0.1:5173", allowed: true},
+		{origin: "http://localhost:4173", allowed: true},
+		{origin: "https://example.com", allowed: false},
+		{origin: "http://127.0.0.1.example.com", allowed: false},
+	} {
+		req := httptest.NewRequest(http.MethodGet, "/v1/federation/world-snapshot", nil)
+		req.Header.Set("Origin", test.origin)
+		recorder := httptest.NewRecorder()
+		server.Handler().ServeHTTP(recorder, req)
+		got := recorder.Header().Get("Access-Control-Allow-Origin")
+		if test.allowed && got != test.origin {
+			t.Fatalf("origin %q was not allowed: %q", test.origin, got)
+		}
+		if !test.allowed && got != "" {
+			t.Fatalf("origin %q was unexpectedly allowed", test.origin)
+		}
+	}
+}
