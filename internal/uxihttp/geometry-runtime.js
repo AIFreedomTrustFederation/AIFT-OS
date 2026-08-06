@@ -5,7 +5,8 @@
   if (path !== "/tree" && path !== "/world") return;
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const chroma = ["#00e5e5", "#00aeb5", "#147df5", "#00e676", "#ff4f46", "#ff256e", "#ff7a35", "#ffd21f", "#9b5cff"];\n  const fire = ["#d93628", "#ff7a35", "#ffd21f", "#f4fbff", "#00e5e5", "#147df5"];
+  const chroma = ["#00e5e5", "#00aeb5", "#147df5", "#00e676", "#ff4f46", "#ff256e", "#ff7a35", "#ffd21f", "#9b5cff"];
+  const fire = ["#d93628", "#ff7a35", "#ffd21f", "#f4fbff", "#00e5e5", "#147df5"];
   const state = {
     geometry: null,
     quests: new Map(),
