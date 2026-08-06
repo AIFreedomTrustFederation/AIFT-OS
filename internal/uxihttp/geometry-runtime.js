@@ -5,7 +5,7 @@
   if (path !== "/tree" && path !== "/world") return;
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const chroma = ["#00e5e5", "#00aeb5", "#147df5", "#00e676", "#ff4f46", "#ff256e", "#ff7a35"];
+  const chroma = ["#00e5e5", "#00aeb5", "#147df5", "#00e676", "#ff4f46", "#ff256e", "#ff7a35", "#ffd21f", "#9b5cff"];\n  const fire = ["#d93628", "#ff7a35", "#ffd21f", "#f4fbff", "#00e5e5", "#147df5"];
   const state = {
     geometry: null,
     quests: new Map(),
@@ -20,7 +20,7 @@
 
   const style = document.createElement("style");
   style.textContent = `
-    :root{--aift-ink:#050609;--aift-charcoal:#101116;--aift-cyan:#00e5e5;--aift-teal:#00aeb5;--aift-blue:#147df5;--aift-green:#00e676;--aift-coral:#ff4f46;--aift-pink:#ff256e;--aift-orange:#ff7a35}
+    :root{--aift-ink:#050609;--aift-charcoal:#101116;--aift-cyan:#00e5e5;--aift-teal:#00aeb5;--aift-blue:#147df5;--aift-green:#00e676;--aift-coral:#ff4f46;--aift-pink:#ff256e;--aift-orange:#ff7a35;--aift-yellow:#ffd21f;--aift-violet:#9b5cff;--aift-white:#f4fbff}
     html,body{background:var(--aift-ink)!important}
     .edge.life,.tree-edge.life{stroke:var(--aift-cyan)!important}
     .edge.knowledge,.tree-edge.knowledge{stroke:var(--aift-blue)!important}
@@ -193,10 +193,17 @@
     ctx.beginPath();
     ctx.ellipse(0, 0, base * 1.18, base * .38, -node.torus.identity_phase, 0, Math.PI * 2);
     ctx.stroke();
-    ctx.globalAlpha = .55;
+    ctx.globalAlpha = .72;
+    ctx.shadowColor = energyColor(node, .95);
+    ctx.shadowBlur = 12 + 18 * coherence;
     ctx.beginPath();
-    ctx.arc(0, 0, Math.max(1.8, base * .14), 0, Math.PI * 2);
-    ctx.fillStyle = color(node, .9);
+    ctx.arc(0, 0, Math.max(2.1, base * .16), 0, Math.PI * 2);
+    ctx.fillStyle = energyColor(node, .98);
+    ctx.fill();
+    ctx.globalAlpha = .9;
+    ctx.beginPath();
+    ctx.arc(-base * .035, -base * .035, Math.max(.7, base * .045), 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(255,255,255,.96)";
     ctx.fill();
     ctx.restore();
   }
