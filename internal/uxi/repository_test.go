@@ -109,6 +109,9 @@ func TestRepositoryEvidenceOrderIsStable(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	if len(first) != 1 || len(second) != 1 {
+		t.Fatalf("first=%d second=%d", len(first), len(second))
+	}
 	var a, b []string
 	for _, evidence := range first[0].Evidence {
 		a = append(a, evidence.Kind+":"+filepath.Base(evidence.Source))
