@@ -1,0 +1,48 @@
+
+      <section class="world-view view" id="worldView" aria-label="Federation World Map">
+        <div class="world-shell">
+          <div class="world-hero">
+            <div>
+              <div class="world-eyebrow">Local GPS · Declared federation geography</div>
+              <h1 class="world-title">Federation World Map</h1>
+              <p class="world-subtitle">Place this phone and its local repositories on Earth with explicit GPS permission. Declared repository locations come only from privacy-scoped <code>.aift/location.json</code> evidence. Unmapped repositories may be temporarily anchored to this device in browser memory.</p>
+            </div>
+            <div class="world-privacy">No external map tiles, reverse-geocoding services, analytics, or location uploads are used. GPS begins only after you tap <strong>Use my location</strong>. The default view rounds coordinates to city precision.</div>
+          </div>
+          <div class="world-stats" id="worldStats"></div>
+          <div class="world-controls">
+            <button class="world-button primary" id="worldLocate" type="button">◎ Use my location</button>
+            <label class="world-eyebrow" for="worldPrecision">Device precision</label>
+            <select class="world-select" id="worldPrecision">
+              <option value="city" selected>City · about 1 km</option>
+              <option value="region">Region · about 11 km</option>
+              <option value="country">Country · about 111 km</option>
+              <option value="exact">Exact · explicit choice</option>
+            </select>
+            <button class="world-button" id="worldRefresh" type="button">Refresh declarations</button>
+            <button class="world-button danger" id="worldForget" type="button">Forget GPS</button>
+            <span class="world-status" id="worldStatus">GPS has not been requested.</span>
+          </div>
+          <div class="world-map-wrap">
+            <svg id="worldSvg" viewBox="0 0 1000 500" role="img" aria-label="Interactive equirectangular world map">
+              <g id="worldGrid"></g>
+              <g aria-hidden="true">
+                <path class="world-land" d="M47 91 L81 62 L134 51 L185 65 L221 95 L246 125 L232 151 L202 158 L186 183 L151 182 L132 204 L102 188 L82 157 L55 139 Z"/>
+                <path class="world-land" d="M219 177 L249 190 L271 229 L278 272 L262 313 L247 351 L226 385 L207 360 L198 319 L188 275 L190 230 Z"/>
+                <path class="world-land" d="M454 82 L490 65 L532 69 L563 84 L602 75 L649 77 L692 94 L742 91 L788 105 L835 130 L864 154 L847 177 L808 176 L780 198 L735 190 L702 207 L658 195 L620 204 L585 186 L545 178 L512 155 L476 151 L449 125 Z"/>
+                <path class="world-land" d="M474 166 L515 158 L550 181 L563 221 L554 265 L534 305 L502 324 L477 293 L459 249 L451 204 Z"/>
+                <path class="world-land" d="M787 308 L824 292 L866 304 L886 331 L876 359 L842 371 L807 357 L786 333 Z"/>
+                <path class="world-land" d="M303 38 L334 26 L365 38 L370 58 L348 72 L316 66 Z"/>
+                <path class="world-land" d="M80 438 L160 425 L250 432 L340 423 L430 436 L520 426 L610 434 L700 425 L790 435 L900 426 L955 447 L915 468 L800 462 L700 470 L590 461 L480 471 L360 461 L240 470 L130 460 Z"/>
+              </g>
+              <g id="worldConnections"></g>
+              <g id="worldMarkers"></g>
+            </svg>
+          </div>
+          <div class="world-location-note" id="worldLocationNote">Device coordinates remain only in this page's memory. Refreshing or closing the page forgets them.</div>
+          <div class="world-panel-grid">
+            <div class="world-card"><h3>Geographic Nodes</h3><div class="world-list" id="worldNodeList"></div></div>
+            <div class="world-card"><h3>Mapping Quests</h3><div class="world-list" id="worldQuestList"></div></div>
+          </div>
+        </div>
+      </section>
