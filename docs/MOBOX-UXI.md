@@ -62,9 +62,11 @@ Governance records:
 
 There is intentionally no action-invocation endpoint.
 
-## Persistence
+## Persistence and recovery
 
-Sessions are atomically replaced as private JSON files. Events are appended to a private JSONL log. New session records contain explicit collections for turns, plans, actions, approvals, jobs, and artifacts.
+Sessions are atomically replaced as private JSON files. Every session mutation and its required audit event are staged through a private transaction journal before being applied. Interrupted or transiently failed commits are recovered before later reads or writes, and event IDs prevent duplicate audit records during recovery.
+
+User and assistant turns are committed as one exchange, so a failed Forge inspection or concurrent request cannot leave a dangling user turn. Corrupt session files are skipped rather than hiding healthy sessions, and the failure is recorded in the audit log. Events are decoded as streamed JSON values, avoiding line-length limits.
 
 ## Next safe extraction
 
