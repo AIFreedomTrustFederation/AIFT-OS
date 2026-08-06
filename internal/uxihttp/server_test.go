@@ -204,7 +204,6 @@ func TestGovernanceEndpointsRecordButDoNotExecute(t *testing.T) {
 	}
 }
 
-
 func TestFederationGeometryEndpoint(t *testing.T) {
 	server, _ := newTestServer(t)
 	req := httptest.NewRequest(http.MethodGet, "/v1/federation/geometry", nil)

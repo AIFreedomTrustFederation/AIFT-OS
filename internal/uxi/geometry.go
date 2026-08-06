@@ -73,10 +73,10 @@ type GeometryNode struct {
 // CapabilityGeometry places a capability around its repository using
 // golden-angle phyllotaxis while retaining its evidence-backed status.
 type CapabilityGeometry struct {
-	Name     string  `json:"name"`
-	Status   string  `json:"status"`
-	Angle    float64 `json:"angle"`
-	Radius   float64 `json:"radius"`
+	Name      string  `json:"name"`
+	Status    string  `json:"status"`
+	Angle     float64 `json:"angle"`
+	Radius    float64 `json:"radius"`
 	Elevation float64 `json:"elevation"`
 }
 
@@ -97,15 +97,15 @@ func BuildFederationGeometry(repositories []Repository) FederationGeometry {
 	}
 
 	world := FederationGeometry{
-		Schema: geometrySchemaV1,
+		Schema:      geometrySchemaV1,
 		GeneratedAt: time.Now().UTC(),
 		Law: GeometryLaw{
-			Recurrence: "z(n+1)=z(n)^2+c",
-			Dimensions: 3,
-			IterationLimit: mandelbrotLimit,
-			Distribution: "fibonacci-sphere",
+			Recurrence:       "z(n+1)=z(n)^2+c",
+			Dimensions:       3,
+			IterationLimit:   mandelbrotLimit,
+			Distribution:     "fibonacci-sphere",
 			PhyllotaxisAngle: goldenAngle,
-			TruthBoundary: "geometry expresses observed evidence and never proves unobserved health",
+			TruthBoundary:    "geometry expresses observed evidence and never proves unobserved health",
 		},
 		Nodes: make([]GeometryNode, 0, len(repos)),
 	}
@@ -116,26 +116,26 @@ func BuildFederationGeometry(repositories []Repository) FederationGeometry {
 		c := complexCoordinate(digest)
 		iterations := mandelbrotIterations(c.Real, c.Imaginary, mandelbrotLimit)
 		node := GeometryNode{
-			ID: "geometry-" + repo.ID,
+			ID:           "geometry-" + repo.ID,
 			RepositoryID: repo.ID,
-			Name: repo.Name,
-			Role: repo.Role,
-			Status: repo.Status,
-			Seed: hex.EncodeToString(digest[:]),
+			Name:         repo.Name,
+			Role:         repo.Role,
+			Status:       repo.Status,
+			Seed:         hex.EncodeToString(digest[:]),
 			Mandelbrot: ComplexSeed{
-				Real: c.Real,
-				Imaginary: c.Imaginary,
+				Real:       c.Real,
+				Imaginary:  c.Imaginary,
 				Iterations: iterations,
-				Bounded: iterations == mandelbrotLimit,
+				Bounded:    iterations == mandelbrotLimit,
 				Complexity: round6(float64(iterations) / mandelbrotLimit),
 			},
-			Position: fibonacciSphere(i, len(repos)),
-			SacredForm: sacredForm(repo.Role),
-			Symmetry: sacredSymmetry(repo.Role),
-			Growth: growth,
-			Coherence: growth,
-			Evidence: len(repo.Evidence),
-			QuestIDs: append([]string(nil), questIDs[repo.ID]...),
+			Position:     fibonacciSphere(i, len(repos)),
+			SacredForm:   sacredForm(repo.Role),
+			Symmetry:     sacredSymmetry(repo.Role),
+			Growth:       growth,
+			Coherence:    growth,
+			Evidence:     len(repo.Evidence),
+			QuestIDs:     append([]string(nil), questIDs[repo.ID]...),
 			Capabilities: capabilityGeometry(repo.Capabilities),
 		}
 		world.Nodes = append(world.Nodes, node)
@@ -147,7 +147,7 @@ func complexCoordinate(digest [32]byte) ComplexSeed {
 	realUnit := float64(binary.BigEndian.Uint64(digest[0:8])) / float64(^uint64(0))
 	imaginaryUnit := float64(binary.BigEndian.Uint64(digest[8:16])) / float64(^uint64(0))
 	return ComplexSeed{
-		Real: round6(-2 + 3*realUnit),
+		Real:      round6(-2 + 3*realUnit),
 		Imaginary: round6(-1.5 + 3*imaginaryUnit),
 	}
 }
@@ -179,10 +179,10 @@ func capabilityGeometry(capabilities []Capability) []CapabilityGeometry {
 	for index, capability := range capabilities {
 		n := float64(index + 1)
 		result = append(result, CapabilityGeometry{
-			Name: capability.Name,
-			Status: capability.Status,
-			Angle: round6(float64(index) * goldenAngle),
-			Radius: round6(math.Sqrt(n / total)),
+			Name:      capability.Name,
+			Status:    capability.Status,
+			Angle:     round6(float64(index) * goldenAngle),
+			Radius:    round6(math.Sqrt(n / total)),
 			Elevation: round6((n-0.5)/total*2 - 1),
 		})
 	}

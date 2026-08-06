@@ -33,7 +33,7 @@ func TestGeometryBindsQuestsAndCapabilities(t *testing.T) {
 	repository := Repository{
 		ID: "aift-os", Name: "AIFT-OS", Role: "federation-kernel", Status: "ready", Git: true,
 		Capabilities: []Capability{{Name: "inspect", Status: "ready"}, {Name: "repair", Status: "planned"}},
-		Evidence: []Evidence{{Kind: "filesystem"}},
+		Evidence:     []Evidence{{Kind: "filesystem"}},
 	}
 	world := BuildFederationGeometry([]Repository{repository})
 	node := world.Nodes[0]
