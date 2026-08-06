@@ -35,12 +35,15 @@ func (e *Engine) HandleMessage(ctx context.Context, sessionID, content string) (
 	if content == "" {
 		return Session{}, errors.New("message content is required")
 	}
-	if _, err := e.Store.AppendTurn(sessionID, Turn{Role: "user", Content: content}); err != nil {
+	session, err := e.Store.GetSession(sessionID)
+	if err != nil {
 		return Session{}, err
 	}
-
 	repos, err := e.Repositories()
 	if err != nil {
+		return Session{}, err
+	}
+	if _, err := e.Store.AppendTurn(sessionID, Turn{Role: "user", Content: content}); err != nil {
 		return Session{}, err
 	}
 
@@ -53,7 +56,7 @@ func (e *Engine) HandleMessage(ctx context.Context, sessionID, content string) (
 		metadata["mode"] = "deterministic-inspection"
 	} else {
 		system := systemPrompt(repos)
-		messages := []ChatMessage{{Role: "user", Content: content}}
+		messages := conversationMessages(session.Turns, content, 24)
 		if e.Completer != nil {
 			answer, err = e.Completer.Complete(ctx, system, messages)
 		}
@@ -73,6 +76,24 @@ func (e *Engine) HandleMessage(ctx context.Context, sessionID, content string) (
 		Metadata:  metadata,
 		CreatedAt: time.Now().UTC(),
 	})
+}
+
+func conversationMessages(turns []Turn, current string, limit int) []ChatMessage {
+	start := 0
+	if limit > 1 && len(turns) > limit-1 {
+		start = len(turns) - (limit - 1)
+	}
+	messages := make([]ChatMessage, 0, len(turns)-start+1)
+	for _, turn := range turns[start:] {
+		if turn.Role != "user" && turn.Role != "assistant" {
+			continue
+		}
+		if strings.TrimSpace(turn.Content) == "" {
+			continue
+		}
+		messages = append(messages, ChatMessage{Role: turn.Role, Content: turn.Content})
+	}
+	return append(messages, ChatMessage{Role: "user", Content: current})
 }
 
 func inspectCommand(content string) (string, bool) {
