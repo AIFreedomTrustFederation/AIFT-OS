@@ -1,6 +1,7 @@
 package uxi
 
 import (
+	"math"
 	"reflect"
 	"testing"
 )
@@ -18,9 +19,15 @@ func TestFederationGeometryIsDeterministic(t *testing.T) {
 	if first.Schema != geometrySchemaV1 || first.Law.Dimensions != 3 || len(first.Nodes) != 2 {
 		t.Fatalf("geometry=%#v", first)
 	}
+	if first.Law.TemporalModel == "" || first.Law.Flow == "" || first.Law.Equivalency == "" {
+		t.Fatalf("temporal law=%#v", first.Law)
+	}
 	for _, node := range first.Nodes {
 		if node.Seed == "" || node.Mandelbrot.Iterations < 0 || node.Mandelbrot.Iterations > mandelbrotLimit {
 			t.Fatalf("node=%#v", node)
+		}
+		if node.Torus.IdentityPhase < 0 || node.Torus.IdentityPhase > 2*math.Pi || node.Torus.CoherencePhase < 0 || node.Torus.CoherencePhase > 2*math.Pi {
+			t.Fatalf("torus=%#v", node.Torus)
 		}
 		if node.Position.X < -1 || node.Position.X > 1 || node.Position.Y < -1 || node.Position.Y > 1 || node.Position.Z < -1 || node.Position.Z > 1 {
 			t.Fatalf("position=%#v", node.Position)
