@@ -14,7 +14,7 @@ log() { printf '\n==> %s\n' "$*"; }
 die() { printf '\nERROR: %s\n' "$*" >&2; exit 1; }
 need() { command -v "$1" >/dev/null 2>&1 || die "Required command not found: $1"; }
 
-for command in git npm go make bash; do need "$command"; done
+for command in git npm node go make bash; do need "$command"; done
 [[ -d "$OS_REPO/.git" ]] || die "AIFT-OS repository not found at $OS_REPO"
 [[ -d "$CLIENT_REPO/.git" ]] || die "Mysterion repository not found at $CLIENT_REPO"
 
@@ -58,7 +58,6 @@ verify_client_changes() {
 
   log "Auditing production dependencies"
   audit_json="$(mktemp "${TMPDIR:-/tmp}/aift-npm-audit.XXXXXX.json")"
-  trap 'rm -f -- "$audit_json"' RETURN
   (cd "$CLIENT_REPO" && npm audit --omit=dev --json >"$audit_json") || true
 
   read -r high critical < <(
@@ -78,6 +77,7 @@ verify_client_changes() {
     const v = report.metadata?.vulnerabilities ?? {};
     console.log("Production audit:", JSON.stringify(v));
   ' "$audit_json"
+  rm -f -- "$audit_json"
 
   git -C "$CLIENT_REPO" diff --check
   git -C "$CLIENT_REPO" add -- package.json package-lock.json
