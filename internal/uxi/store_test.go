@@ -60,12 +60,33 @@ func TestAppendExchangeIsAtomic(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	failed := false
+	store.beforeEventAppend = func() error {
+		if !failed {
+			failed = true
+			return errors.New("injected")
+		}
+		return nil
+	}
 	updated, err := store.AppendExchange(session.ID, Turn{Role: "user", Content: "hello"}, Turn{Role: "assistant", Content: "hi"})
 	if err != nil {
 		t.Fatal(err)
 	}
 	if len(updated.Turns) != 2 || updated.Turns[0].Role != "user" || updated.Turns[1].Role != "assistant" {
 		t.Fatalf("turns=%#v", updated.Turns)
+	}
+	events, err := store.ListEvents(0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	count := 0
+	for _, event := range events {
+		if event.Kind == "conversation.exchange" {
+			count++
+		}
+	}
+	if count != 1 {
+		t.Fatalf("exchange events=%d", count)
 	}
 }
 

@@ -8,15 +8,6 @@ import (
 //go:embed index.html
 var baseIndexHTML string
 
-//go:embed world.css
-var worldCSS string
-
-//go:embed world.html
-var worldHTML string
-
-//go:embed world.js
-var worldJS string
-
 const gameLauncherJS = `
 (function(){
   const routes={treeTab:"/tree",worldTab:"/world"};
@@ -42,14 +33,11 @@ const gameLauncherJS = `
 var indexHTML = composeIndexHTML()
 
 func composeIndexHTML() string {
-	html := injectIndexFragment(baseIndexHTML, "</style>", worldCSS+"\n</style>")
-	html = injectIndexFragment(html,
+	html := injectIndexFragment(baseIndexHTML,
 		`<button id="treeTab" role="tab" aria-selected="false">Tree of Life</button></nav>`,
 		`<button id="treeTab" role="tab" aria-selected="false">Tree Game</button><button id="worldTab" role="tab" aria-selected="false">World Game</button></nav>`,
 	)
-	html = injectIndexFragment(html, `<div class="composer" id="composerWrap">`, worldHTML+`\n      <div class="composer" id="composerWrap">`)
-	html = injectIndexFragment(html, "</body>", "  <script>\n"+worldJS+"\n"+gameLauncherJS+"\n  </script>\n</body>")
-	return html
+	return injectIndexFragment(html, "</body>", "  <script>\n"+gameLauncherJS+"\n  </script>\n</body>")
 }
 
 func injectIndexFragment(source, marker, replacement string) string {

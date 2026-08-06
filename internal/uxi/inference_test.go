@@ -30,7 +30,8 @@ func TestInferenceRejectsOversizedResponse(t *testing.T) {
 	}))
 	defer server.Close()
 	client := &OpenAICompatibleClient{Endpoint: server.URL, Model: "local"}
-	if _, err := client.Complete(context.Background(), "system", nil); err == nil {
-		t.Fatal("expected size error")
+	_, err := client.Complete(context.Background(), "system", nil)
+	if err == nil || !strings.Contains(err.Error(), "exceeded 4 MiB limit") {
+		t.Fatalf("err=%v", err)
 	}
 }

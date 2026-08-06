@@ -12,7 +12,12 @@ import (
 	"time"
 )
 
-const maxInferenceResponseBytes = 4 << 20
+const (
+	maxInferenceResponseBytes = 4 << 20
+	defaultInferenceEndpoint = "http://127.0.0.1:8080/v1"
+	defaultInferenceModel    = "local"
+	defaultInferenceTimeout  = 90 * time.Second
+)
 
 // ChatMessage is one OpenAI-compatible chat message.
 type ChatMessage struct {
@@ -34,14 +39,20 @@ type OpenAICompatibleClient struct {
 
 // NewLocalInferenceClient constructs a bounded local inference client.
 func NewLocalInferenceClient(endpoint, model string) *OpenAICompatibleClient {
+	endpoint, model = normalizeInferenceConfig(endpoint, model)
+	return &OpenAICompatibleClient{Endpoint: endpoint, Model: model, Client: &http.Client{Timeout: defaultInferenceTimeout}}
+}
+
+func normalizeInferenceConfig(endpoint, model string) (string, string) {
 	endpoint = strings.TrimRight(strings.TrimSpace(endpoint), "/")
 	if endpoint == "" {
-		endpoint = "http://127.0.0.1:8080/v1"
+		endpoint = defaultInferenceEndpoint
 	}
+	model = strings.TrimSpace(model)
 	if model == "" {
-		model = "local"
+		model = defaultInferenceModel
 	}
-	return &OpenAICompatibleClient{Endpoint: endpoint, Model: model, Client: &http.Client{Timeout: 90 * time.Second}}
+	return endpoint, model
 }
 
 // Complete requests a non-streaming local completion with a bounded response body.
@@ -51,16 +62,9 @@ func (c *OpenAICompatibleClient) Complete(ctx context.Context, system string, me
 	}
 	client := c.Client
 	if client == nil {
-		client = &http.Client{Timeout: 90 * time.Second}
+		client = &http.Client{Timeout: defaultInferenceTimeout}
 	}
-	endpoint := strings.TrimRight(strings.TrimSpace(c.Endpoint), "/")
-	if endpoint == "" {
-		endpoint = "http://127.0.0.1:8080/v1"
-	}
-	model := strings.TrimSpace(c.Model)
-	if model == "" {
-		model = "local"
-	}
+	endpoint, model := normalizeInferenceConfig(c.Endpoint, c.Model)
 	all := make([]ChatMessage, 0, len(messages)+1)
 	all = append(all, ChatMessage{Role: "system", Content: system})
 	all = append(all, messages...)
