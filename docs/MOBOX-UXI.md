@@ -49,7 +49,7 @@ The World Map tab adds a local-first geographic layer without using external map
 
 ### Device GPS
 
-GPS is requested only after the operator taps **Use my location**. The coordinates remain in browser memory and are forgotten when the page is refreshed, closed, or the operator taps **Forget GPS**. The default display precision is `city`, which rounds latitude and longitude to two decimal places. `region`, `country`, and explicitly selected `exact` precision are also available. Exact precision never earns additional XP.
+GPS is requested only after the operator taps **Use my location**. Coordinates remain in browser memory and are forgotten when the page is refreshed, closed, or the operator taps **Forget GPS**. The default display precision is `city`, which rounds latitude and longitude to two decimal places. `region`, `country`, and explicitly selected `exact` precision are also available. Exact precision never earns additional XP.
 
 After GPS permission is granted, repositories that are missing a location declaration may be temporarily grouped at the current device position. This means “the repository is hosted on this phone at the phone's current location,” not that the repository has permanently declared or published that location. Hidden and invalid declarations are never overridden by the temporary device anchor.
 
@@ -70,7 +70,7 @@ A repository may declare its own location in `.aift/location.json`:
 }
 ```
 
-The canonical JSON Schema is `schemas/location-v1.schema.json`.
+The canonical JSON Schema is `schemas/location-v1.schema.json`. Declarations are limited to 64 KiB, reject unknown fields, require latitude and longitude, validate coordinate ranges, and validate an optional `updated_at` as RFC3339.
 
 Supported precision values:
 
@@ -85,16 +85,15 @@ Supported visibility values:
 - `federation`: visible to the local federation map API.
 - `public`: available to the local map API for future explicitly published federation views.
 
-If visibility is omitted, it defaults to `private`. The map API never returns private coordinates, filesystem paths, or the device GPS coordinates.
+If visibility is omitted, it defaults to `private`. If precision is omitted, it defaults to `city`. The map API never returns private coordinates, filesystem paths, or device GPS coordinates.
 
-### Geographic progression
+### Privacy-neutral geographic progression
 
-Mapping quests are evidence-derived:
+Each repository receives one evidence-derived mapping quest: **Anchor the repository on Earth**. It is completed by a valid privacy-scoped `.aift/location.json` declaration.
 
-- **Anchor the repository on Earth** requires a valid `.aift/location.json`.
-- **Choose federation visibility** requires an explicit `federation` or `public` visibility setting.
+A valid private declaration earns exactly the same mapping XP as a federation-visible or public declaration. Country, region, city, and exact precision also earn the same XP. Visibility controls only whether a marker is displayed; it never changes level, XP, or quest completion. This prevents the game layer from pressuring operators to reveal a location or choose greater precision.
 
-All supported precision levels earn the same mapping XP so the interface does not pressure operators to reveal more precise locations. Missing, invalid, hidden, and mapped repositories remain distinct states.
+Missing, invalid, hidden, and mapped repositories remain distinct states. Temporary device anchoring is visual context only and does not earn declaration XP or permanently complete a quest.
 
 ## Truth, privacy, and governance contract
 
@@ -103,11 +102,12 @@ All supported precision levels earn the same mapping XP so the interface does no
 3. Tree levels, XP, growth, map levels, and quests are derived from observed evidence and are never proof of execution, wealth, authority, location ownership, or moral value.
 4. Device GPS is opt-in, memory-only, and never uploaded by MoBox UXI.
 5. Private repository location declarations are never returned by the federation world API.
-6. Plans, action proposals, and approval decisions may be recorded locally.
-7. Approval changes authorization state but does not start a job.
-8. No execution, shell, deployment, wallet, transaction, repository-location write, or external-write endpoint exists in this foundation.
-9. Model failure is shown as degraded mode rather than hidden.
-10. The daemon refuses non-loopback binding.
+6. Private, federation-visible, and public declarations earn equal mapping progression.
+7. Plans, action proposals, and approval decisions may be recorded locally.
+8. Approval changes authorization state but does not start a job.
+9. No execution, shell, deployment, wallet, transaction, repository-location write, or external-write endpoint exists in this foundation.
+10. Model failure is shown as degraded mode rather than hidden.
+11. The daemon refuses non-loopback binding.
 
 ## API
 
@@ -143,7 +143,7 @@ The Tree of Life and World Map are reconstructed from current repository evidenc
 
 ## Validation
 
-The GitHub Actions CI gate runs the full Go tests, binary build, formatting check, shell syntax validation, coverage threshold, and architecture invariant checks. Tree-model tests verify deterministic ordering, layer and branch classification, evidence-derived progress, open readiness quests, and the HTTP endpoint contract. World-model tests verify coordinate validation and rounding, private-location non-disclosure, invalid and missing declarations, deterministic ordering, UI composition, and the world endpoint contract.
+The GitHub Actions CI gate runs the full Go tests, binary build, formatting check, shell syntax validation, coverage threshold, and architecture invariant checks. Tree-model tests verify deterministic ordering, layer and branch classification, evidence-derived progress, open readiness quests, and the HTTP endpoint contract. World-model tests verify coordinate validation and rounding, private-location non-disclosure, privacy-neutral rewards, declaration-size limits, strict fields, invalid and missing declarations, deterministic ordering, UI composition, and the world endpoint contract.
 
 ## Next safe extraction
 
