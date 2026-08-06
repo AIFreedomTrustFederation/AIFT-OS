@@ -174,3 +174,22 @@ func TestEmbeddedAssetsAndStrictCSP(t *testing.T) {
 		}
 	}
 }
+
+func TestSourcesEndpoint(t *testing.T) {
+	server, _ := newTestServer(t)
+	req := httptest.NewRequest(http.MethodGet, "/v1/sources", nil)
+	rr := httptest.NewRecorder()
+	server.Handler().ServeHTTP(rr, req)
+	if rr.Code != http.StatusOK {
+		t.Fatalf("code=%d body=%s", rr.Code, rr.Body.String())
+	}
+	var response struct {
+		Sources []uxi.IntegrationSource `json:"sources"`
+	}
+	if err := json.Unmarshal(rr.Body.Bytes(), &response); err != nil {
+		t.Fatal(err)
+	}
+	if len(response.Sources) != 0 {
+		t.Fatalf("sources=%#v", response.Sources)
+	}
+}
