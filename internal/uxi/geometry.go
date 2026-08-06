@@ -31,6 +31,9 @@ type GeometryLaw struct {
 	Distribution     string  `json:"distribution"`
 	PhyllotaxisAngle float64 `json:"phyllotaxis_angle"`
 	TruthBoundary    string  `json:"truth_boundary"`
+	TemporalModel    string  `json:"temporal_model"`
+	Flow             string  `json:"flow"`
+	Equivalency      string  `json:"equivalency"`
 }
 
 // Vector3 is a normalized three-dimensional coordinate.
@@ -41,6 +44,14 @@ type Vector3 struct {
 }
 
 // ComplexSeed is the repository's stable coordinate in the Mandelbrot plane.
+// TorusFlow is a timeless phase coordinate. It is derived from identity and
+// observed coherence, never from wall-clock time.
+type TorusFlow struct {
+	IdentityPhase  float64 `json:"identity_phase"`
+	CoherencePhase float64 `json:"coherence_phase"`
+	Cycle           string  `json:"cycle"`
+}
+
 type ComplexSeed struct {
 	Real       float64 `json:"real"`
 	Imaginary  float64 `json:"imaginary"`
@@ -58,6 +69,7 @@ type GeometryNode struct {
 	Status       string               `json:"status"`
 	Seed         string               `json:"seed"`
 	Mandelbrot   ComplexSeed          `json:"mandelbrot"`
+	Torus        TorusFlow            `json:"torus"`
 	Position     Vector3              `json:"position"`
 	SacredForm   string               `json:"sacred_form"`
 	Symmetry     int                  `json:"symmetry"`
@@ -103,6 +115,9 @@ func BuildFederationGeometry(repositories []Repository) FederationGeometry {
 			Distribution:     "fibonacci-sphere",
 			PhyllotaxisAngle: goldenAngle,
 			TruthBoundary:    "geometry expresses observed evidence and never proves unobserved health",
+			TemporalModel:    "eternal-now deterministic projection over append-only causal events",
+			Flow:             "intention->proposal->consent->action->evidence->reflection->intention",
+			Equivalency:      "every sovereign participant follows equal consent evidence and governance rules",
 		},
 		Nodes: make([]GeometryNode, 0, len(repos)),
 	}
@@ -158,6 +173,11 @@ func mandelbrotIterations(realPart, imaginaryPart float64, limit int) (int, bool
 		}
 	}
 	return limit, true
+}
+
+func torusIdentityPhase(digest [32]byte) float64 {
+	unit := float64(binary.BigEndian.Uint64(digest[16:24])) / float64(^uint64(0))
+	return round6(2 * math.Pi * unit)
 }
 
 func fibonacciSphere(index, total int) Vector3 {
