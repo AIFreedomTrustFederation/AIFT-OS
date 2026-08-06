@@ -2,6 +2,7 @@ package uxihttp
 
 import (
 	_ "embed"
+	"strings"
 )
 
 //go:embed index.html
