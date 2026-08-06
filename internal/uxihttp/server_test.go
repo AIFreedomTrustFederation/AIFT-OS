@@ -102,3 +102,59 @@ func TestGovernanceEndpointsRecordButDoNotExecute(t *testing.T) {
 		t.Fatalf("updated=%#v", updated)
 	}
 }
+
+func TestReadOnlyInvocationEndpoint(t *testing.T) {
+	server, store := newTestServer(t)
+	session, err := store.CreateSession("invoke")
+	if err != nil {
+		t.Fatal(err)
+	}
+	session, err = store.ProposeAction(session.ID, uxi.Action{Kind: "repository.inspect", Target: "AIFT-OS", Risk: "low"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	req := httptest.NewRequest(http.MethodPost, "/v1/sessions/"+session.ID+"/actions/"+session.Actions[0].ID+"/invoke", nil)
+	rr := httptest.NewRecorder()
+	server.Handler().ServeHTTP(rr, req)
+	if rr.Code != http.StatusOK {
+		t.Fatalf("invoke code=%d body=%s", rr.Code, rr.Body.String())
+	}
+	var updated uxi.Session
+	if err := json.Unmarshal(rr.Body.Bytes(), &updated); err != nil {
+		t.Fatal(err)
+	}
+	if updated.Jobs[0].Status != uxi.StatusSucceeded || updated.Jobs[0].ResultArtifactID == "" {
+		t.Fatalf("updated=%#v", updated)
+	}
+
+	req = httptest.NewRequest(http.MethodGet, "/v1/artifacts/"+updated.Jobs[0].ResultArtifactID, nil)
+	rr = httptest.NewRecorder()
+	server.Handler().ServeHTTP(rr, req)
+	if rr.Code != http.StatusOK || !json.Valid(rr.Body.Bytes()) {
+		t.Fatalf("artifact code=%d body=%s", rr.Code, rr.Body.String())
+	}
+}
+
+func TestAdaptersEndpointListsOnlyReadOnlyDefaults(t *testing.T) {
+	server, _ := newTestServer(t)
+	req := httptest.NewRequest(http.MethodGet, "/v1/adapters", nil)
+	rr := httptest.NewRecorder()
+	server.Handler().ServeHTTP(rr, req)
+	if rr.Code != http.StatusOK {
+		t.Fatalf("code=%d", rr.Code)
+	}
+	var response struct {
+		Adapters []uxi.AdapterDescriptor `json:"adapters"`
+	}
+	if err := json.Unmarshal(rr.Body.Bytes(), &response); err != nil {
+		t.Fatal(err)
+	}
+	if len(response.Adapters) != 2 {
+		t.Fatalf("adapters=%#v", response.Adapters)
+	}
+	for _, adapter := range response.Adapters {
+		if adapter.Mutating {
+			t.Fatalf("adapter=%#v", adapter)
+		}
+	}
+}
