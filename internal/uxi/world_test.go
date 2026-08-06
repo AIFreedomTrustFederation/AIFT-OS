@@ -109,6 +109,35 @@ func TestBuildFederationWorldRejectsUnknownFields(t *testing.T) {
 	}
 }
 
+func TestBuildFederationWorldRejectsOversizedDeclaration(t *testing.T) {
+	repoPath := filepath.Join(t.TempDir(), "Oversized")
+	if err := os.MkdirAll(filepath.Join(repoPath, ".aift"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(repoPath, ".aift", "location.json"), []byte(strings.Repeat("x", maxLocationManifestBytes+1)), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	world := BuildFederationWorld([]Repository{{ID: "oversized", Name: "Oversized", Path: repoPath}})
+	if world.Progress.Invalid != 1 || !strings.Contains(world.Unmapped[0].Reason, "64 KiB") {
+		t.Fatalf("world=%#v", world)
+	}
+}
+
+func TestBuildFederationWorldRejectsInvalidUpdatedAt(t *testing.T) {
+	repoPath := filepath.Join(t.TempDir(), "InvalidTimestamp")
+	if err := os.MkdirAll(filepath.Join(repoPath, ".aift"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	manifest := `{"schema":"aift.location.v1","label":"Invalid timestamp","latitude":0,"longitude":0,"visibility":"federation","updated_at":"yesterday"}`
+	if err := os.WriteFile(filepath.Join(repoPath, ".aift", "location.json"), []byte(manifest), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	world := BuildFederationWorld([]Repository{{ID: "invalid-timestamp", Name: "InvalidTimestamp", Path: repoPath}})
+	if world.Progress.Invalid != 1 || !strings.Contains(world.Unmapped[0].Reason, "RFC3339") {
+		t.Fatalf("world=%#v", world)
+	}
+}
+
 func TestBuildFederationWorldCreatesMissingLocationQuests(t *testing.T) {
 	world := BuildFederationWorld([]Repository{{ID: "missing", Name: "Missing", Path: t.TempDir()}})
 	if world.Progress.Unmapped != 1 || world.Progress.OpenQuests != 2 {
