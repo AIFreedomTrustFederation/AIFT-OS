@@ -20,18 +20,9 @@ func TestEngineDeterministicInspect(t *testing.T) {
 	if err := os.MkdirAll(filepath.Join(repo, ".git"), 0o755); err != nil {
 		t.Fatal(err)
 	}
-	store, err := NewStore(t.TempDir())
-	if err != nil {
-		t.Fatal(err)
-	}
-	session, err := store.CreateSession("inspect")
-	if err != nil {
-		t.Fatal(err)
-	}
-	engine, err := NewEngine(store, root, fakeCompleter{text: "unused"})
-	if err != nil {
-		t.Fatal(err)
-	}
+	store, _ := NewStore(t.TempDir())
+	session, _ := store.CreateSession("inspect")
+	engine, _ := NewEngine(store, root, fakeCompleter{text: "unused"})
 	updated, err := engine.HandleMessage(context.Background(), session.ID, "/inspect AIFT-OS")
 	if err != nil {
 		t.Fatal(err)
@@ -83,5 +74,31 @@ func TestEngineIncludesConversationHistory(t *testing.T) {
 	}
 	if completer.messages[0].Content != "first" || completer.messages[2].Content != "next" {
 		t.Fatalf("messages = %#v", completer.messages)
+	}
+}
+
+func TestEngineForgeInspection(t *testing.T) {
+	root := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(root, "AIFT-OS", ".git"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	store, err := NewStore(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	session, err := store.CreateSession("forge")
+	if err != nil {
+		t.Fatal(err)
+	}
+	engine, err := NewEngine(store, root, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	updated, err := engine.HandleMessage(context.Background(), session.ID, "/forge")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(updated.Turns[len(updated.Turns)-1].Content, "No persisted Forge mission") {
+		t.Fatalf("turn = %#v", updated.Turns)
 	}
 }
