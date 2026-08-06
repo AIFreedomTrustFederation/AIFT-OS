@@ -92,3 +92,13 @@ The shared visual substrate follows an interwoven neon spectrum over near-black:
 | Orange | `#FF7A35` | Detected potential and incomplete emergence |
 
 Repository identity selects harmonic colors from the complete spectrum, while operational status retains an accessible invariant: green is ready, orange is detected, and pink is blocked. Color never serves as the only status signal; labels and evidence remain present.
+
+### Chromatic fire and intensity
+
+The renderer separates three signals:
+
+1. **Status ring** — green ready, orange detected, pink blocked.
+2. **Identity harmonics** — a stable spectrum chosen from repository identity.
+3. **Coherence core** — a fire-inspired intensity progression from red and orange through yellow, white, cyan, and blue.
+
+The coherence core is an interface metaphor for verified informational intensity. It is not a measurement of physical temperature, chemistry, consciousness, spiritual rank, or human worth. High visual intensity remains subordinate to evidence and governance.
