@@ -6,9 +6,9 @@ func TestBuildFederationTreeDerivesProgressFromEvidence(t *testing.T) {
 	repositories := []Repository{
 		{
 			ID: "aift-runtime", Name: "AIFT-Runtime", Role: "runtime-prototype", Status: "ready", Git: true,
-			Languages: []string{"Shell"},
+			Languages:    []string{"Shell"},
 			Capabilities: []Capability{{Name: "runtime.health", Status: "ready"}, {Name: "governed.execution", Status: "planned"}},
-			Evidence: []Evidence{{Kind: "filesystem", Source: "/tmp/AIFT-Runtime/.git", Status: "observed"}, {Kind: "capability_manifest", Source: "/tmp/AIFT-Runtime/.aift/capabilities.json", Status: "observed"}},
+			Evidence:     []Evidence{{Kind: "filesystem", Source: "/tmp/AIFT-Runtime/.git", Status: "observed"}, {Kind: "capability_manifest", Source: "/tmp/AIFT-Runtime/.aift/capabilities.json", Status: "observed"}},
 		},
 		{
 			ID: "booksmith-ai", Name: "booksmith-ai", Role: "knowledge-application", Status: "detected", Git: true,
