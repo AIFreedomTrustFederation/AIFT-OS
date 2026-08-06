@@ -18,20 +18,11 @@ for command in git npm node go make bash; do need "$command"; done
 [[ -d "$OS_REPO/.git" ]] || die "AIFT-OS repository not found at $OS_REPO"
 [[ -d "$CLIENT_REPO/.git" ]] || die "Mysterion repository not found at $CLIENT_REPO"
 
-clean_known_os_whitespace() {
-  local status
-  status="$(git -C "$OS_REPO" status --porcelain)"
-  [[ -z "$status" ]] && return 0
-
-  if [[ "$status" == " M internal/uxihttp/server_test.go" ]] &&
-     git -C "$OS_REPO" diff -w --quiet -- internal/uxihttp/server_test.go; then
-    log "Restoring the known whitespace-only AIFT-OS test change"
-    git -C "$OS_REPO" restore -- internal/uxihttp/server_test.go
-    return 0
+require_clean_os_worktree() {
+  if [[ -n "$(git -C "$OS_REPO" status --porcelain)" ]]; then
+    git -C "$OS_REPO" status --short >&2
+    die "AIFT-OS worktree must be cleaned explicitly by its owner"
   fi
-
-  git -C "$OS_REPO" status --short >&2
-  die "AIFT-OS contains work not recognized as disposable; nothing was changed"
 }
 
 verify_client_changes() {
@@ -52,6 +43,12 @@ verify_client_changes() {
 
   log "Linting Mysterion"
   (cd "$CLIENT_REPO" && npm run lint)
+
+  log "Typechecking Mysterion when declared"
+  (cd "$CLIENT_REPO" && npm run typecheck --if-present)
+
+  log "Testing Mysterion when declared"
+  (cd "$CLIENT_REPO" && npm test --if-present)
 
   log "Building Mysterion"
   (cd "$CLIENT_REPO" && npm run build)
@@ -84,11 +81,11 @@ verify_client_changes() {
   if ! git -C "$CLIENT_REPO" diff --cached --quiet; then
     git -C "$CLIENT_REPO" commit -m "chore: remediate production dependencies"
   fi
-  git -C "$CLIENT_REPO" push -u origin "$CLIENT_FIX_BRANCH"
+  log "Mysterion is verified locally; publication is deferred"
 }
 
 verify_os_feature() {
-  clean_known_os_whitespace
+  require_clean_os_worktree
 
   log "Updating AIFT-OS main"
   git -C "$OS_REPO" fetch origin
@@ -98,12 +95,6 @@ verify_os_feature() {
   if git -C "$OS_REPO" show-ref --verify --quiet "refs/heads/$OBSOLETE_BRANCH"; then
     log "Deleting obsolete local renderer branch"
     git -C "$OS_REPO" branch -D "$OBSOLETE_BRANCH"
-  fi
-
-  if git -C "$OS_REPO" show-ref --verify --quiet "refs/remotes/origin/$OBSOLETE_BRANCH"; then
-    log "Deleting obsolete remote renderer branch"
-    git -C "$OS_REPO" push origin --delete "$OBSOLETE_BRANCH"
-    git -C "$OS_REPO" fetch --prune origin
   fi
 
   if git -C "$OS_REPO" show-ref --verify --quiet "refs/heads/$OS_FEATURE_BRANCH"; then
@@ -129,7 +120,7 @@ verify_os_feature() {
       internal/uxihttp/server_test.go
     if ! git diff --cached --quiet; then
       git commit -m "style: format world protocol sources"
-      git push origin "$OS_FEATURE_BRANCH"
+      log "Formatting commit is verified locally; publication is deferred"
     fi
   )
 
@@ -140,11 +131,27 @@ verify_os_feature() {
     die "AIFT-OS verification left the worktree dirty"
 }
 
+publish_verified_changes() {
+  log "Publishing verified Mysterion changes"
+  git -C "$CLIENT_REPO" push -u origin "$CLIENT_FIX_BRANCH"
+
+  log "Publishing verified AIFT-OS changes"
+  git -C "$OS_REPO" push origin "$OS_FEATURE_BRANCH"
+
+  if git -C "$OS_REPO" show-ref --verify --quiet "refs/remotes/origin/$OBSOLETE_BRANCH"; then
+    log "Deleting obsolete remote renderer branch after verification"
+    git -C "$OS_REPO" push origin --delete "$OBSOLETE_BRANCH"
+    git -C "$OS_REPO" fetch --prune origin
+  fi
+}
+
 log "Finalizing Mysterion dependency remediation"
 verify_client_changes
 
 log "Finalizing the AIFT-OS world protocol"
 verify_os_feature
+
+publish_verified_changes
 
 log "Federation finalization passed"
 printf '%s\n'   "Mysterion dependency branch pushed: $CLIENT_FIX_BRANCH"   "AIFT-OS feature verified: $OS_FEATURE_BRANCH"   "No forced dependency upgrades or automatic merges were performed."
