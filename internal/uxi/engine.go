@@ -54,6 +54,14 @@ func (e *Engine) HandleMessage(ctx context.Context, sessionID, content string) (
 	if target, ok := inspectCommand(content); ok {
 		answer, evidence = inspectAnswer(target, repos)
 		metadata["mode"] = "deterministic-inspection"
+	} else if forgeCommand(content) {
+		mission, forgeEvidence, forgeErr := InspectForgeMission(e.AIFTRoot)
+		if forgeErr != nil {
+			return Session{}, forgeErr
+		}
+		answer = forgeMissionAnswer(mission)
+		evidence = forgeEvidence
+		metadata["mode"] = "forge-inspection"
 	} else {
 		system := systemPrompt(repos)
 		messages := conversationMessages(session.Turns, content, 24)
@@ -76,6 +84,22 @@ func (e *Engine) HandleMessage(ctx context.Context, sessionID, content string) (
 		Metadata:  metadata,
 		CreatedAt: time.Now().UTC(),
 	})
+}
+
+func forgeCommand(content string) bool {
+	value := strings.ToLower(strings.TrimSpace(content))
+	return value == "/forge" || value == "/forge mission" || value == "forge mission"
+}
+
+func forgeMissionAnswer(mission ForgeMission) string {
+	switch mission.ObservationStatus {
+	case "missing":
+		return "No persisted Forge mission was observed. Forge may generate a default mission in memory, but MoBox UXI will not report that default as repository state."
+	case "blocked":
+		return "The persisted Forge mission is malformed and cannot be trusted until it is repaired."
+	default:
+		return fmt.Sprintf("Forge mission `%s` targets `%s`, is `%s`, carries `%s` risk, and has %d%% task-evidenced progress. Authority level: %d.", mission.Title, mission.TargetRepository, mission.State, mission.Risk, mission.ComputedProgress, mission.AuthorityLevel)
+	}
 }
 
 func conversationMessages(turns []Turn, current string, limit int) []ChatMessage {
