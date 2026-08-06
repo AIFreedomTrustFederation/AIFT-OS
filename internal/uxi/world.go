@@ -1,9 +1,11 @@
 package uxi
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"math"
 	"os"
 	"path/filepath"
@@ -86,14 +88,14 @@ type WorldProgress struct {
 }
 
 type locationManifest struct {
-	Schema     string  `json:"schema"`
-	Label      string  `json:"label"`
-	Latitude   float64 `json:"latitude"`
-	Longitude  float64 `json:"longitude"`
-	Precision  string  `json:"precision"`
-	Visibility string  `json:"visibility"`
-	Source     string  `json:"source"`
-	UpdatedAt  string  `json:"updated_at"`
+	Schema     string   `json:"schema"`
+	Label      string   `json:"label"`
+	Latitude   *float64 `json:"latitude"`
+	Longitude  *float64 `json:"longitude"`
+	Precision  string   `json:"precision"`
+	Visibility string   `json:"visibility"`
+	Source     string   `json:"source"`
+	UpdatedAt  string   `json:"updated_at"`
 }
 
 // BuildFederationWorld reads optional .aift/location.json declarations from observed repositories.
@@ -148,7 +150,7 @@ func BuildFederationWorld(repositories []Repository) FederationWorld {
 			world.Progress.XP += 150
 			world.Nodes = append(world.Nodes, WorldNode{
 				ID: "world-" + repo.ID, RepositoryID: repo.ID, Repository: repo.Name, Role: repo.Role, Status: repo.Status,
-				Label: manifest.Label, Latitude: manifest.Latitude, Longitude: manifest.Longitude,
+				Label: manifest.Label, Latitude: *manifest.Latitude, Longitude: *manifest.Longitude,
 				Precision: manifest.Precision, Visibility: manifest.Visibility, Source: manifest.Source,
 				Evidence: ".aift/location.json", XP: 150, QuestIDs: questIDs,
 			})
@@ -165,11 +167,16 @@ func readLocationManifest(path string) (locationManifest, error) {
 		return locationManifest{}, err
 	}
 	var manifest locationManifest
-	decoderErr := json.Unmarshal(data, &manifest)
-	if decoderErr != nil {
-		return locationManifest{}, fmt.Errorf("invalid location JSON: %w", decoderErr)
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	if err := decoder.Decode(&manifest); err != nil {
+		return locationManifest{}, fmt.Errorf("invalid location JSON: %w", err)
 	}
-	if manifest.Schema != "" && manifest.Schema != "aift.location.v1" {
+	var extra any
+	if err := decoder.Decode(&extra); !errors.Is(err, io.EOF) {
+		return locationManifest{}, errors.New("invalid location JSON: expected exactly one object")
+	}
+	if manifest.Schema != "aift.location.v1" {
 		return locationManifest{}, fmt.Errorf("unsupported location schema %q", manifest.Schema)
 	}
 	manifest.Label = strings.TrimSpace(manifest.Label)
@@ -179,10 +186,16 @@ func readLocationManifest(path string) (locationManifest, error) {
 	if len(manifest.Label) > 120 {
 		return locationManifest{}, errors.New("location label exceeds 120 characters")
 	}
-	if manifest.Latitude < -90 || manifest.Latitude > 90 || math.IsNaN(manifest.Latitude) || math.IsInf(manifest.Latitude, 0) {
+	if manifest.Latitude == nil {
+		return locationManifest{}, errors.New("latitude is required")
+	}
+	if manifest.Longitude == nil {
+		return locationManifest{}, errors.New("longitude is required")
+	}
+	if *manifest.Latitude < -90 || *manifest.Latitude > 90 || math.IsNaN(*manifest.Latitude) || math.IsInf(*manifest.Latitude, 0) {
 		return locationManifest{}, errors.New("latitude must be between -90 and 90")
 	}
-	if manifest.Longitude < -180 || manifest.Longitude > 180 || math.IsNaN(manifest.Longitude) || math.IsInf(manifest.Longitude, 0) {
+	if *manifest.Longitude < -180 || *manifest.Longitude > 180 || math.IsNaN(*manifest.Longitude) || math.IsInf(*manifest.Longitude, 0) {
 		return locationManifest{}, errors.New("longitude must be between -180 and 180")
 	}
 	manifest.Precision = strings.ToLower(strings.TrimSpace(manifest.Precision))
@@ -204,8 +217,10 @@ func readLocationManifest(path string) (locationManifest, error) {
 	if manifest.Source == "" {
 		manifest.Source = "operator-declared"
 	}
-	manifest.Latitude = roundCoordinate(manifest.Latitude, decimals)
-	manifest.Longitude = roundCoordinate(manifest.Longitude, decimals)
+	latitude := roundCoordinate(*manifest.Latitude, decimals)
+	longitude := roundCoordinate(*manifest.Longitude, decimals)
+	manifest.Latitude = &latitude
+	manifest.Longitude = &longitude
 	return manifest, nil
 }
 
