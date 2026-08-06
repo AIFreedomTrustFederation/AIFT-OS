@@ -64,6 +64,7 @@ func NewDefaultAdapterRegistry(aiftRoot string) (*AdapterRegistry, error) {
 		RepositoryInspectAdapter{AIFTRoot: aiftRoot},
 		ForgeMissionInspectAdapter{AIFTRoot: aiftRoot},
 		SourceInspectAdapter{AIFTRoot: aiftRoot},
+		MoboxRuntimeInspectAdapter{AIFTRoot: aiftRoot},
 	)
 }
 
