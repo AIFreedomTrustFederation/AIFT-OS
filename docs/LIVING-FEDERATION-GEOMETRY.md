@@ -53,3 +53,16 @@ AIFT-OS uses this phrase as a governance and interaction principle:
 - **Causal history** remains append-only. The current projection does not erase the past; it coherently derives the present from recorded events.
 
 Every repository receives a stable toroidal identity phase derived from its canonical ID. Its coherence phase derives from observed growth. Neither coordinate depends on wall-clock time.
+
+## Global manifold composition
+
+The shared Tree and World renderer uses a symbolic, self-folding toroidal field:
+
+- a white outer coherence horizon expresses the common protocol boundary;
+- a green equatorial plane expresses the evidence-derived Eternal Now projection;
+- warm lower flow expresses expansion from intention toward action;
+- cool upper flow expresses convergence from reflection toward renewed intention;
+- the central spectral axis binds the seven living layers through one present-time center;
+- repository nodes remain recursive sub-tori whose light comes from observed coherence.
+
+These mappings are an artistic interaction grammar, not claims about spacetime, particle physics, human biology, spiritual attainment, or personal worth. Repository facts continue to come only from the API contract and recorded evidence.
