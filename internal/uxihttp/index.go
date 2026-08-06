@@ -29,6 +29,14 @@ const gameLauncherJS = `
       window.location.assign(route);
     },true);
   }
+
+  const inspect=new URLSearchParams(window.location.search).get("inspect");
+  const input=document.getElementById("message");
+  if(inspect&&input){
+    input.value="/inspect "+inspect;
+    input.focus();
+    window.history.replaceState({},"",window.location.pathname);
+  }
 })();`
 
 var indexHTML = composeIndexHTML()
