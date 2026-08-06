@@ -17,8 +17,14 @@ fi
 BASELINE=$(cat "$BASELINE_FILE" | tr -d '[:space:]')
 
 echo "Running tests with coverage..."
-# Exclude tools/ from coverage calculation (standalone generators, not library code)
-PKGS=$(go list ./... | grep -v '/tools/')
+# Run coverage through packages that contain tests. Termux cannot execute the
+# synthetic covdata binary emitted for packages with no Go test files.
+# Normal CI still runs `go test ./...` separately, so every package is built.
+PKGS=$(go list -f '{{if or .TestGoFiles .XTestGoFiles}}{{.ImportPath}}{{end}}' ./... | grep -v '/tools/' | sed '/^$/d')
+if [ -z "$PKGS" ]; then
+  echo "ERROR: no Go packages with tests found"
+  exit 1
+fi
 go test -coverprofile=coverage.out $PKGS
 
 mkdir -p reports
