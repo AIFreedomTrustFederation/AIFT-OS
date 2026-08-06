@@ -104,12 +104,14 @@ type Approval struct {
 
 // Job records an execution lifecycle when an executor is introduced.
 type Job struct {
-	ID        string     `json:"id"`
-	ActionID  string     `json:"action_id"`
-	Status    string     `json:"status"`
-	StartedAt *time.Time `json:"started_at,omitempty"`
-	EndedAt   *time.Time `json:"ended_at,omitempty"`
-	LogPath   string     `json:"log_path,omitempty"`
+	ID               string     `json:"id"`
+	ActionID         string     `json:"action_id"`
+	AdapterKind      string     `json:"adapter_kind"`
+	Status           string     `json:"status"`
+	StartedAt        *time.Time `json:"started_at,omitempty"`
+	EndedAt          *time.Time `json:"ended_at,omitempty"`
+	ResultArtifactID string     `json:"result_artifact_id,omitempty"`
+	Error            string     `json:"error,omitempty"`
 }
 
 // Artifact identifies a produced file or other durable output.
