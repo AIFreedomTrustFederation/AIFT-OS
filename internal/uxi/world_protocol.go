@@ -114,7 +114,7 @@ func BuildWorldSnapshot(repositories []Repository) WorldSnapshot {
 	entities := make([]WorldEntity, 0, len(geometry.Nodes)*2)
 	relations := make([]WorldRelation, 0)
 	for _, node := range geometry.Nodes {
-		evidenceRefs := repositoryEvidenceRefs(repositories, node.RepositoryID)
+		evidenceRefs, evidenceDigest := repositoryEvidenceProjection(repositories, node.RepositoryID)
 		repositoryID := "repository:" + node.RepositoryID
 		entities = append(entities, WorldEntity{
 			ID: repositoryID, Kind: "repository", Revision: 1,
@@ -125,6 +125,7 @@ func BuildWorldSnapshot(repositories []Repository) WorldSnapshot {
 				"mandelbrot_bounded": node.Mandelbrot.Bounded,
 				"growth":             node.Growth,
 				"quest_ids":          node.QuestIDs,
+				"evidence_digest":     evidenceDigest,
 			},
 			EvidenceRefs: evidenceRefs,
 			Visual: WorldVisual{
@@ -233,21 +234,27 @@ func repositoryPalette(status string) string {
 	}
 }
 
-func repositoryEvidenceRefs(repositories []Repository, repositoryID string) []string {
+func repositoryEvidenceProjection(repositories []Repository, repositoryID string) ([]string, string) {
 	for _, repository := range repositories {
 		if repository.ID != repositoryID {
 			continue
 		}
-		refs := make([]string, 0, len(repository.Evidence))
-		for _, evidence := range repository.Evidence {
-			if evidence.ID != "" {
-				refs = append(refs, evidence.ID)
+		evidence := append([]Evidence(nil), repository.Evidence...)
+		sort.Slice(evidence, func(i, j int) bool {
+			left, _ := json.Marshal(evidence[i])
+			right, _ := json.Marshal(evidence[j])
+			return string(left) < string(right)
+		})
+		refs := make([]string, 0, len(evidence))
+		for _, record := range evidence {
+			if record.ID != "" {
+				refs = append(refs, record.ID)
 			}
 		}
 		sort.Strings(refs)
-		return refs
+		return refs, worldContentHash(evidence)
 	}
-	return []string{}
+	return []string{}, worldContentHash([]Evidence{})
 }
 
 func stableWorldID(value string) string {
