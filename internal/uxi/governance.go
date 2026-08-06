@@ -1,20 +1,18 @@
 package uxi
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"
 	"time"
 )
 
+// AddPlan validates and records a proposed plan without executing it.
 func (s *Store) AddPlan(sessionID string, plan Plan) (Session, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	session, err := s.getSessionLocked(sessionID)
-	if err != nil {
-		return Session{}, err
-	}
 	plan.Objective = strings.TrimSpace(plan.Objective)
 	if plan.Objective == "" {
 		return Session{}, errors.New("plan objective is required")
@@ -27,6 +25,20 @@ func (s *Store) AddPlan(sessionID string, plan Plan) (Session, error) {
 		if plan.Steps[i].Title == "" {
 			return Session{}, fmt.Errorf("plan step %d title is required", i+1)
 		}
+	}
+	opKey := governanceOperationKey("plan.proposed", sessionID, plan)
+	if _, err := s.recoverPendingLocked(); err != nil {
+		return Session{}, err
+	}
+	if s.consumeRecoveredLocked(opKey) {
+		return s.getSessionLocked(sessionID)
+	}
+
+	session, err := s.getSessionLocked(sessionID)
+	if err != nil {
+		return Session{}, err
+	}
+	for i := range plan.Steps {
 		if plan.Steps[i].ID == "" {
 			plan.Steps[i].ID = newID("step")
 		}
@@ -41,24 +53,21 @@ func (s *Store) AddPlan(sessionID string, plan Plan) (Session, error) {
 	plan.UpdatedAt = now
 	session.Plans = append(session.Plans, plan)
 	session.UpdatedAt = now
-	if err := s.writeSessionLocked(session); err != nil {
+	event := Event{
+		ID: newID("evt"), SessionID: session.ID, Kind: "plan.proposed", Status: StatusProposed,
+		Message: "Plan proposed", Data: map[string]any{"plan_id": plan.ID, "objective": plan.Objective, "operation_key": opKey}, CreatedAt: now,
+	}
+	if err := s.commitSessionEventLocked(session, event, opKey); err != nil {
 		return Session{}, err
 	}
-	_ = s.appendEventLocked(Event{
-		ID: newID("evt"), SessionID: session.ID, Kind: "plan.proposed", Status: StatusProposed,
-		Message: "Plan proposed", Data: map[string]any{"plan_id": plan.ID, "objective": plan.Objective}, CreatedAt: now,
-	})
 	return session, nil
 }
 
+// ProposeAction validates and records an action proposal without invoking it.
 func (s *Store) ProposeAction(sessionID string, action Action) (Session, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	session, err := s.getSessionLocked(sessionID)
-	if err != nil {
-		return Session{}, err
-	}
 	action.Kind = strings.TrimSpace(action.Kind)
 	action.Target = strings.TrimSpace(action.Target)
 	if action.Kind == "" || action.Target == "" {
@@ -67,8 +76,21 @@ func (s *Store) ProposeAction(sessionID string, action Action) (Session, error) 
 	if action.Risk == "" {
 		action.Risk = "low"
 	}
+	action.Risk = strings.ToLower(strings.TrimSpace(action.Risk))
 	if !validRisk(action.Risk) {
 		return Session{}, fmt.Errorf("invalid action risk %q", action.Risk)
+	}
+	opKey := governanceOperationKey("action.proposed", sessionID, action)
+	if _, err := s.recoverPendingLocked(); err != nil {
+		return Session{}, err
+	}
+	if s.consumeRecoveredLocked(opKey) {
+		return s.getSessionLocked(sessionID)
+	}
+
+	session, err := s.getSessionLocked(sessionID)
+	if err != nil {
+		return Session{}, err
 	}
 	now := time.Now().UTC()
 	action.ID = newID("act")
@@ -81,24 +103,21 @@ func (s *Store) ProposeAction(sessionID string, action Action) (Session, error) 
 	action.UpdatedAt = now
 	session.Actions = append(session.Actions, action)
 	session.UpdatedAt = now
-	if err := s.writeSessionLocked(session); err != nil {
+	event := Event{
+		ID: newID("evt"), SessionID: session.ID, Kind: "action.proposed", Status: action.Status,
+		Message: "Action proposed", Data: map[string]any{"action_id": action.ID, "kind": action.Kind, "target": action.Target, "operation_key": opKey}, CreatedAt: now,
+	}
+	if err := s.commitSessionEventLocked(session, event, opKey); err != nil {
 		return Session{}, err
 	}
-	_ = s.appendEventLocked(Event{
-		ID: newID("evt"), SessionID: session.ID, Kind: "action.proposed", Status: action.Status,
-		Message: "Action proposed", Data: map[string]any{"action_id": action.ID, "kind": action.Kind, "target": action.Target}, CreatedAt: now,
-	})
 	return session, nil
 }
 
+// DecideAction records a human approval or rejection and never creates a job.
 func (s *Store) DecideAction(sessionID, actionID, decision, actor string) (Session, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	session, err := s.getSessionLocked(sessionID)
-	if err != nil {
-		return Session{}, err
-	}
 	decision = strings.ToLower(strings.TrimSpace(decision))
 	actor = strings.TrimSpace(actor)
 	if decision != "approved" && decision != "rejected" {
@@ -106,6 +125,18 @@ func (s *Store) DecideAction(sessionID, actionID, decision, actor string) (Sessi
 	}
 	if actor == "" {
 		return Session{}, errors.New("approval actor is required")
+	}
+	opKey := governanceOperationKey("action.decision", sessionID, map[string]string{"action_id": actionID, "decision": decision, "actor": actor})
+	if _, err := s.recoverPendingLocked(); err != nil {
+		return Session{}, err
+	}
+	if s.consumeRecoveredLocked(opKey) {
+		return s.getSessionLocked(sessionID)
+	}
+
+	session, err := s.getSessionLocked(sessionID)
+	if err != nil {
+		return Session{}, err
 	}
 	index := -1
 	for i := range session.Actions {
@@ -131,14 +162,19 @@ func (s *Store) DecideAction(sessionID, actionID, decision, actor string) (Sessi
 	approval := Approval{ID: newID("apr"), ActionID: action.ID, Decision: decision, Actor: actor, CreatedAt: now}
 	session.Approvals = append(session.Approvals, approval)
 	session.UpdatedAt = now
-	if err := s.writeSessionLocked(session); err != nil {
+	event := Event{
+		ID: newID("evt"), SessionID: session.ID, Kind: "action.decision", Status: action.Status,
+		Message: "Action decision recorded", Data: map[string]any{"action_id": action.ID, "decision": decision, "actor": actor, "operation_key": opKey}, CreatedAt: now,
+	}
+	if err := s.commitSessionEventLocked(session, event, opKey); err != nil {
 		return Session{}, err
 	}
-	_ = s.appendEventLocked(Event{
-		ID: newID("evt"), SessionID: session.ID, Kind: "action.decision", Status: action.Status,
-		Message: "Action decision recorded", Data: map[string]any{"action_id": action.ID, "decision": decision, "actor": actor}, CreatedAt: now,
-	})
 	return session, nil
+}
+
+func governanceOperationKey(kind, sessionID string, value any) string {
+	data, _ := json.Marshal(value)
+	return stableID("op", kind+":"+sessionID+":"+string(data))
 }
 
 func validRisk(risk string) bool {
