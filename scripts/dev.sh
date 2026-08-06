@@ -81,10 +81,22 @@ smoke() {
 
 coverage() {
   say "Checking coverage threshold"
-  bash scripts/check-coverage.sh
-  if [[ "$KEEP_ARTIFACTS" != "1" ]]; then
-    rm -f coverage.out
+  if [[ "$KEEP_ARTIFACTS" == "1" ]]; then
+    bash scripts/check-coverage.sh
+    return
   fi
+
+  local copy_root
+  copy_root="$(mktemp -d "${TMPDIR:-/tmp}/aift-coverage.XXXXXX")"
+  trap 'rm -rf "$copy_root"' RETURN
+  tar -cf - --exclude='./.git' --exclude='./bin' --exclude='./coverage.out' . |
+    tar -xf - -C "$copy_root"
+  (
+    cd "$copy_root"
+    bash scripts/check-coverage.sh
+  )
+  rm -rf "$copy_root"
+  trap - RETURN
 }
 
 architecture() {
