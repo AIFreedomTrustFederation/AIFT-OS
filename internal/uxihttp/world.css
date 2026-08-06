@@ -52,3 +52,8 @@
       .world-status { width:100%; margin-left:0; }
       .world-panel-grid { grid-template-columns:1fr; }
     }
+    @media(max-width:600px) {
+      .topbar .brand { display:none; }
+      .view-switch { flex:1; justify-content:center; min-width:0; }
+      .view-switch button { padding:4px 6px; font-size:9px; white-space:nowrap; }
+    }
