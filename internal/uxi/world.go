@@ -14,6 +14,8 @@ import (
 	"time"
 )
 
+const maxLocationManifestBytes = 64 << 10
+
 // FederationWorld is a privacy-safe, evidence-derived geographic view of the federation.
 type FederationWorld struct {
 	Schema      string          `json:"schema"`
@@ -162,9 +164,17 @@ func BuildFederationWorld(repositories []Repository) FederationWorld {
 }
 
 func readLocationManifest(path string) (locationManifest, error) {
-	data, err := os.ReadFile(path)
+	file, err := os.Open(path)
 	if err != nil {
 		return locationManifest{}, err
+	}
+	defer file.Close()
+	data, err := io.ReadAll(io.LimitReader(file, maxLocationManifestBytes+1))
+	if err != nil {
+		return locationManifest{}, fmt.Errorf("read location declaration: %w", err)
+	}
+	if len(data) > maxLocationManifestBytes {
+		return locationManifest{}, errors.New("location declaration exceeds 64 KiB")
 	}
 	var manifest locationManifest
 	decoder := json.NewDecoder(bytes.NewReader(data))
@@ -216,6 +226,15 @@ func readLocationManifest(path string) (locationManifest, error) {
 	manifest.Source = strings.TrimSpace(manifest.Source)
 	if manifest.Source == "" {
 		manifest.Source = "operator-declared"
+	}
+	if len(manifest.Source) > 120 {
+		return locationManifest{}, errors.New("location source exceeds 120 characters")
+	}
+	manifest.UpdatedAt = strings.TrimSpace(manifest.UpdatedAt)
+	if manifest.UpdatedAt != "" {
+		if _, err := time.Parse(time.RFC3339, manifest.UpdatedAt); err != nil {
+			return locationManifest{}, fmt.Errorf("updated_at must be RFC3339: %w", err)
+		}
 	}
 	latitude := roundCoordinate(*manifest.Latitude, decimals)
 	longitude := roundCoordinate(*manifest.Longitude, decimals)
