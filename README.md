@@ -1,254 +1,125 @@
-<div align="center">🌌 AIFT-OS
+# AIFT-OS — The Truthful Federation Control Plane
 
-The Truthful Federated Operating System
+**The operating-system layer of the AI Freedom Trust Federation: federation control plane, discovery, runtime registry, intelligence, dashboards, scheduling, evidence, and orchestration.**
 
-Inspect • Discover • Verify • Plan • Orchestrate
+| Federation metadata | Value |
+| --- | --- |
+| Layer | `operating-system` |
+| Role | federation control plane, runtime, registry, intelligence, dashboards, and orchestration |
+| Primary implementation | Go with supporting shell/runtime tooling |
+| Core principle | truth before automation |
+| Relationship to repositories | discovers and coordinates sovereign repositories; does not assume or absorb them |
 
----
+AIFT-OS exists because federation-wide automation becomes dangerous when the control plane begins with assumptions. Before it schedules, patches, reports, or coordinates anything, it must discover what actually exists: which repositories are present, what metadata they declare, which runtimes and commands are available, what state is verified, what is blocked, and what evidence supports the decision.
 
-🛰️ Federation Control Plane for the AI Freedom Trust Federation
-
-AIFT-OS is a local-first operating system that discovers reality before making decisions.
-
-It doesn't guess.
-
-It doesn't fake functionality.
-
-It doesn't assume repositories.
-
-Everything it knows is discovered from evidence.
+The constitutional reason for that design comes from the [One Eternal Scroll of ALO'ha](https://aifreedomtrustfederation.github.io/AI-Freedom-Trust/docs/pdf/one-eternal-scroll-of-aloha.pdf). Its operational discipline is [SOP-ALOHA-001](https://github.com/AIFreedomTrustFederation/AI-Freedom-Trust/blob/main/SOP-ALOHA-001.md).
 
 ---
 
-"Status" (https://img.shields.io/badge/Status-Active-success)
-"Go" (https://img.shields.io/badge/Go-1.22-00ADD8)
-"CI" (https://img.shields.io/badge/CI-Passing-brightgreen)
-"Architecture" (https://img.shields.io/badge/Architecture-Verified-blue)
-"Truthfulness" (https://img.shields.io/badge/Truthfulness-100%25-important)
+## Book I — Truth Before Automation
 
-</div>---
+AIFT-OS treats truthfulness as an operating-system feature. A capability that is planned is not reported as ready. A repository that cannot be found is not invented. A failed command does not become a green status because the desired state was obvious. The operating system begins with evidence and builds its runtime model from that evidence.
 
-🚀 Why AIFT-OS Exists
+This is the technical expression of ALO'ha inside the control plane: relationship begins by seeing what is actually present. A sovereign repository is not merely a row in a central database. It has its own Git history, metadata, commands, dependencies, maintainers, risks, and purpose. The OS may coordinate that repository because it can inspect and name those facts, not because it has erased the repository into a generic federation object.
 
-Traditional automation relies on assumptions.
+### Illuminated passage — the circuit of discovery and return
 
-AIFT-OS refuses to.
+![Harmonic Krystal Torus](https://raw.githubusercontent.com/AIFreedomTrustFederation/AI-Freedom-Trust/main/docs/images/aetherion/harmonic-krystal-torus.png)
 
-Before a single command is executed, the operating system inspects the repository, discovers what actually exists, validates the evidence, builds a runtime model, and only then decides what can safely happen.
-
-The operating system is designed around one simple rule:
-
-«Truth before automation.»
+For AIFT-OS the torus is an execution diagram: observation moves inward to a runtime model; planning moves outward toward action; verification closes the circuit; reporting returns the result to human authority. The control plane is incomplete if the loop does not return.
 
 ---
 
-🧠 What Makes It Different?
+## Book II — What the Operating System Owns
 
-Instead of asking...
+The operating system owns **federation awareness and orchestration**, not the domain logic of every project. Its architecture is built around discovery, registry, intelligence, readiness, scheduling, execution, evidence, graphing, and reports.
 
-❌ "What should this repository look like?"
+A typical path is:
 
-AIFT-OS asks...
+```text
+Federation
+  ↓
+Discovery
+  ↓
+Repository and capability registries
+  ↓
+Runtime intelligence
+  ↓
+Readiness model
+  ↓
+Scheduler / plan
+  ↓
+Approved execution
+  ↓
+Verification and evidence
+  ↓
+Report and return
+```
 
-✅ "What does this repository actually contain?"
+Its integration boundaries follow the current repository metadata:
 
-Every decision comes from inspection.
+- **AIFT-Genesis → OS:** Genesis defines trust identity, constitutional genome, schemas, and inheritance patterns. The OS discovers instantiated systems; it does not invent their identity.
+- **AIFT-Forge → OS:** Forge provides reusable coordination, package, build, and agent patterns. The OS determines which patterns are actually present and executable in a repository.
+- **AIFT-Runtime ↔ OS:** Runtime supplies local execution, intelligence, registry, graph, status, pull/push, doctor, and verification behavior. AIFT-OS is the higher control plane that can reason across repositories.
+- **VPS ↔ OS:** VPS owns nodes, deployment, relay, and server infrastructure. AIFT-OS can discover infrastructure state and schedule governed work without becoming the infrastructure provider itself.
+- **Aetherion ↔ OS:** the economy layer may expose governed capabilities to the OS, but wallet, custody, transaction, and value authority remain in Aetherion and the human consent model.
+- **BookSmith / TheMindofAll / portals ↔ OS:** each declares its own federation role and commands. The OS coordinates only what metadata and evidence make available.
 
-Every report contains evidence.
-
-Every capability must prove it exists.
-
----
-
-🏗️ Architecture
-
-                🌍 Federation
-                      │
-                      ▼
-             🔍 Discovery Engine
-                      │
-                      ▼
-          📚 Knowledge & Registries
-                      │
-                      ▼
-          🧠 Intelligence Engine
-                      │
-                      ▼
-           📊 Runtime Readiness
-                      │
-                      ▼
-           🗺️ Scheduler Planner
-                      │
-                      ▼
-           ⚙️ Execution Engine
-                      │
-                      ▼
-            📈 Reports & Evidence
+`aift.repo.json` is therefore not decoration. It is part of the discovery grammar through which a repository tells the control plane what it is before the control plane decides what may be done with it.
 
 ---
 
-⚡ Core Engines
+## Book III — SOP-ALOHA-001 in AIFT-OS
 
-Engine| Purpose
-🔍 Discovery| Finds repositories, runtimes, frameworks, manifests, modules, services and commands.
-📚 Registry| Stores everything the OS discovers.
-🧠 Intelligence| Understands relationships between repositories.
-📊 Runtime| Determines what is actually ready to execute.
-🗺️ Scheduler| Builds truthful execution plans.
-🛠️ Patch Engine| Applies validated changes with evidence.
-🌐 Graph Engine| Maps the federation visually.
-📡 Event Bus| Tracks federation activity.
-✅ Verify| Validates every subsystem before execution.
+The shared loop becomes a concrete operating-system lifecycle:
 
----
+```text
+Receive → Inspect → Name → Propose → Consent → Act → Verify → Record → Return
+```
 
-🧭 Typical Workflow
+**Receive** accepts a repository, command, mission, event, or desired state. **Inspect** runs discovery rather than assumption. **Name** classifies repositories, capabilities, runtimes, dependencies, status, risk, and readiness. **Propose** builds a plan and assigns an explicit next action. **Consent** gates work that exceeds delegated authority or touches high-risk domains. **Act** invokes the real repository or runtime command rather than a simulated success. **Verify** checks the resulting state and architectural invariants. **Record** preserves evidence, reports, registry state, and learning. **Return** reports what happened, what remains blocked, and who owns the next step.
 
-Inspect
-   ↓
-Discover
-   ↓
-Verify
-   ↓
-Analyze
-   ↓
-Plan
-   ↓
-Execute
-   ↓
-Report
+Core commands reflect that lifecycle:
 
-Nothing skips steps.
-
-Nothing becomes "Ready" without evidence.
-
----
-
-💻 Installation
-
-git clone https://github.com/AIFreedomTrustFederation/AIFT-OS
-cd AIFT-OS
-
-go mod download
-
-go build ./cmd/aift
-
----
-
-⚡ Common Commands
-
-🩺 System Health
-
+```bash
+# environment and system health
 aift doctor
 
-Checks that the operating environment is healthy.
-
----
-
-🔍 Inspect the Federation
-
+# inspect repository/federation reality
 aift introspect scan
 
-Discovers the repository without changing anything.
-
----
-
-📦 Discover Capabilities
-
+# discover available capabilities
 aift capabilities scan
 
-Builds the capability registry from evidence.
-
----
-
-📊 Runtime Readiness
-
+# evaluate runtime readiness
 aift runtime scan
 
-Evaluates every discovered object and determines whether it is Planned, Detected, Ready, Active, Blocked, Deprecated, or Removed.
-
----
-
-✅ Verify
-
+# verify the operating system
 aift verify
 
-Runs validation across the operating system.
-
----
-
-🧠 Architecture
-
+# validate architecture
 go run ./tools/architecture --ci
+```
 
-Validates architectural invariants and detects regressions.
+Installation follows the Go implementation:
 
----
+```bash
+git clone https://github.com/AIFreedomTrustFederation/AIFT-OS
+cd AIFT-OS
+go mod download
+go build ./cmd/aift
+```
 
-📂 Repository Philosophy
-
-Every repository is sovereign.
-
-Every repository is inspectable.
-
-Every repository can participate in the federation without being hard-coded into the operating system.
-
-AIFT-OS discovers repositories—it never assumes them.
+The truthfulness contract remains strict: no invented commands, fabricated repositories, silent failures, fake readiness, or capability claims unsupported by evidence. A planned object may be reported as planned. A missing object must remain missing. A blocked object remains blocked until the evidence changes.
 
 ---
 
-📖 Development Philosophy
+## Book IV — A Federation That Can See Itself
 
-✅ Local-first
+AIFT-OS becomes useful when the Federation grows beyond what any person can reliably hold in working memory. The operating system maps repositories without making them dependent on hard-coded names. It gives the human operator a graph of what exists, a readiness model of what can act, and an evidence trail for why an action was proposed or performed.
 
-✅ Federated
+That makes the OS a constitutional mechanism as much as a technical one. Sovereignty without discovery becomes isolation. Coordination without sovereignty becomes centralization. AIFT-OS is designed for the middle condition: repositories remain themselves, while the Federation becomes capable of knowing how they relate.
 
-✅ Truthful
+### The Return of the Word
 
-✅ Replaceable
-
-✅ Modular
-
-✅ Evidence-driven
-
-✅ Testable
-
-✅ Inspectable
-
----
-
-🛡️ Truthfulness Contract
-
-AIFT-OS will never:
-
-- invent commands
-- invent repositories
-- fabricate capabilities
-- silently ignore failures
-- pretend a feature exists
-
-If something is planned, it is reported as Planned.
-
-If something is missing, it is reported as Missing.
-
-If something fails, it is reported as Failed.
-
-Truth is considered a feature.
-
----
-
-🌍 Vision
-
-AIFT-OS is being built as the operating system for a federation of sovereign AI systems.
-
-The long-term goal is to coordinate thousands of repositories through discovery, evidence, planning, and truthful orchestration—while remaining completely transparent and locally owned.
-
----
-
-<div align="center">🚀 AI Freedom Trust Federation
-
-Building the operating system for truthful, sovereign, federated AI.
-
-"Inspect Reality. Build Trust."
-
-</div>
+In AIFT-OS, the Word returns as verified state. A request becomes inspection, inspection becomes a named model, the model becomes an approved plan, the plan becomes action, and action returns as evidence rather than assertion. The operating system speaks truthfully because it has learned to return what it can prove.
