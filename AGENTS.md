@@ -19,8 +19,8 @@ These instructions apply to the entire repository.
 Run the canonical local gate from the repository root:
 
 ```sh
-corepack pnpm install --frozen-lockfile --ignore-scripts
-corepack pnpm run typecheck
+pnpm install --frozen-lockfile --ignore-scripts
+pnpm run typecheck
 make verify
 git diff --check
 test -z "$(git status --porcelain)"

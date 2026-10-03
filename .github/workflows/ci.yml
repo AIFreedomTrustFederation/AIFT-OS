@@ -33,8 +33,11 @@ jobs:
 
       - name: Typecheck workspace
         run: |
-          corepack pnpm install --frozen-lockfile --ignore-scripts
-          corepack pnpm run typecheck
+          mkdir -p "$RUNNER_TEMP/corepack"
+          corepack enable --install-directory "$RUNNER_TEMP/corepack"
+          export PATH="$RUNNER_TEMP/corepack:$PATH"
+          pnpm install --frozen-lockfile --ignore-scripts
+          pnpm run typecheck
 
       - name: Run canonical verification
         env:
