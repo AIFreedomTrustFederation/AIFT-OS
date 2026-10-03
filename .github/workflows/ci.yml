@@ -27,6 +27,15 @@ jobs:
           go-version-file: go.mod
           cache: false
 
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version: 24
+
+      - name: Typecheck workspace
+        run: |
+          corepack pnpm install --frozen-lockfile --ignore-scripts
+          corepack pnpm run typecheck
+
       - name: Run canonical verification
         env:
           AIFT_KEEP_ARTIFACTS: "1"
