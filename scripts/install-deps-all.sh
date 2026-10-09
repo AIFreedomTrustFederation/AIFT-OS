@@ -17,7 +17,7 @@ for repo in "$WORKSPACE"/*; do
   elif [ -f "bun.lockb" ] && command -v bun >/dev/null 2>&1; then
     bun install || true
   elif [ -f "package-lock.json" ] && command -v npm >/dev/null 2>&1; then
-    npm ci || npm install || true
+    npm ci --ignore-scripts || true
   elif [ -f "package.json" ] && command -v npm >/dev/null 2>&1; then
     npm install || true
   fi
