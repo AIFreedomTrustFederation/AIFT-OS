@@ -13,7 +13,7 @@ for repo in "$WORKSPACE"/*; do
   echo "======================================"
 
   if [ -f "pnpm-lock.yaml" ] && command -v pnpm >/dev/null 2>&1; then
-    pnpm install || true
+    pnpm install --frozen-lockfile --ignore-scripts || true
   elif [ -f "bun.lockb" ] && command -v bun >/dev/null 2>&1; then
     bun install || true
   elif [ -f "package-lock.json" ] && command -v npm >/dev/null 2>&1; then
