@@ -240,11 +240,14 @@ func appendEvent(cfg config.Config, event Event) error {
 		return err
 	}
 
-	file, err := os.OpenFile(path, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+	file, err := os.OpenFile(path, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0600)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
+	if err := file.Chmod(0600); err != nil {
+		return err
+	}
 
 	if _, err := file.Write(append(data, '\n')); err != nil {
 		return err

@@ -110,6 +110,29 @@ func TestPublishAndLoad(t *testing.T) {
 	}
 }
 
+func TestPublishSecuresEventLog(t *testing.T) {
+	cfg := testConfig(t)
+	path := logPath(cfg)
+	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(path, nil, 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := Publish(cfg, "test.topic", "event", "test-source", "private", nil); err != nil {
+		t.Fatalf("Publish failed: %v", err)
+	}
+
+	info, err := os.Stat(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := info.Mode().Perm(); got != 0600 {
+		t.Fatalf("event log permissions = %04o, want 0600", got)
+	}
+}
+
 func TestPublishEmptyTopic(t *testing.T) {
 	cfg := testConfig(t)
 	err := Publish(cfg, "", "event", "source", "msg", nil)
