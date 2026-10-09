@@ -19,7 +19,7 @@ for repo in "$WORKSPACE"/*; do
   elif [ -f "package-lock.json" ] && command -v npm >/dev/null 2>&1; then
     npm ci --ignore-scripts || true
   elif [ -f "package.json" ] && command -v npm >/dev/null 2>&1; then
-    npm install || true
+    npm install --ignore-scripts || true
   fi
 
   if [ -f "Cargo.toml" ] && command -v cargo >/dev/null 2>&1; then
