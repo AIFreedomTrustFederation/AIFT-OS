@@ -186,6 +186,7 @@ func discoverManifests(obj *DiscoveryObject, now string, root string) {
 		"pyproject.toml",
 		"requirements.txt",
 		"deno.json",
+		"bun.lock",
 		"bun.lockb",
 		"pnpm-lock.yaml",
 		"yarn.lock",

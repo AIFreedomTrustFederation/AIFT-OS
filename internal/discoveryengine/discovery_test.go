@@ -214,6 +214,21 @@ func TestDiscoverRepositoryWithManifests(t *testing.T) {
 	}
 }
 
+func TestDiscoverRepositoryWithModernBunLock(t *testing.T) {
+	dir := t.TempDir()
+	os.MkdirAll(filepath.Join(dir, ".git"), 0755)
+	os.WriteFile(filepath.Join(dir, "bun.lock"), []byte("{}"), 0644)
+
+	obj := DiscoverRepository("2024-01-01T00:00:00Z", "bun-repo", dir)
+
+	for _, manifest := range obj.Manifests {
+		if manifest == "bun.lock" {
+			return
+		}
+	}
+	t.Fatal("should discover modern bun.lock manifest")
+}
+
 func TestDiscoverRepositoryWithAIFTContracts(t *testing.T) {
 	dir := t.TempDir()
 	os.MkdirAll(filepath.Join(dir, ".git"), 0755)
