@@ -79,27 +79,20 @@ Receive → Inspect → Name → Propose → Consent → Act → Verify → Reco
 
 **Receive** accepts a repository, command, mission, event, or desired state. **Inspect** runs discovery rather than assumption. **Name** classifies repositories, capabilities, runtimes, dependencies, status, risk, and readiness. **Propose** builds a plan and assigns an explicit next action. **Consent** gates work that exceeds delegated authority or touches high-risk domains. **Act** invokes the real repository or runtime command rather than a simulated success. **Verify** checks the resulting state and architectural invariants. **Record** preserves evidence, reports, registry state, and learning. **Return** reports what happened, what remains blocked, and who owns the next step.
 
-Core commands reflect that lifecycle:
+The current Go CLI exposes a smaller **implemented** command set than the full architecture envisions. From the repository root, after building `./aift` as shown below, use:
 
 ```bash
-# environment and system health
-aift doctor
-
-# inspect repository/federation reality
-aift introspect scan
-
-# discover available capabilities
-aift capabilities scan
-
-# evaluate runtime readiness
-aift runtime scan
-
-# verify the operating system
-aift verify
-
-# validate architecture
+./aift help             # list actual commands and readiness labels
+./aift status           # local status (doctor is an alias)
+./aift apps list        # discover app manifests
+./aift registry         # inspect the command registry
+./aift bootstrap        # inspect local bootstrap discovery
+./aift verify           # local bootstrap checks, not full make verify
+make verify             # broader repository verification
 go run ./tools/architecture --ci
 ```
+
+**Not yet exposed by this CLI:** `aift introspect scan`, `aift capabilities scan`, and `aift runtime scan`. They describe intended control-plane capabilities, not commands implemented in `cmd/aift/main.go`. The `federation`, `repo`, and `workflow` command groups are registered as **planned** and should not be treated as operational. For supported commands and their current status, inspect `./aift registry`.
 
 Installation follows the Go implementation:
 
