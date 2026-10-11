@@ -8,6 +8,7 @@ BIN="$OS/bin/aiftd"
 cd "$OS" || exit 1
 
 if [ ! -x "$BIN" ]; then
+  mkdir -p "$(dirname "$BIN")"
   go build -o "$BIN" ./cmd/aift
   chmod +x "$BIN"
 fi
