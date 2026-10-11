@@ -28,4 +28,18 @@ output="$(cd "$TMP" && env -u AIFT_OS_HOME -u AIFT_ROOT PATH="$TMP/mock-bin:$PAT
 output="$(cd "$TMP" && env -u AIFT_OS_HOME -u AIFT_ROOT PATH="/usr/bin:/bin" sh "$TMP/checkout/aift-os.sh" verify)"
 [[ "$output" == "launched:verify" ]] || { echo "unexpected reuse output: $output" >&2; exit 1; }
 
-echo "PASS: launcher resolves arbitrary checkout without overrides, creates bin/, and reuses built executable"
+# Explicit AIFT_ROOT must resolve to <root>/AIFT-OS when AIFT_OS_HOME is unset.
+mkdir -p "$TMP/custom-root/AIFT-OS"
+cp "$ROOT/aift-os.sh" "$TMP/custom-root/AIFT-OS/aift-os.sh"
+output="$(cd "$TMP" && env -u AIFT_OS_HOME AIFT_ROOT="$TMP/custom-root" PATH="$TMP/mock-bin:$PATH" sh "$TMP/custom-root/AIFT-OS/aift-os.sh" status)"
+[[ "$output" == "launched:status" ]] || { echo "unexpected AIFT_ROOT output: $output" >&2; exit 1; }
+[[ -x "$TMP/custom-root/AIFT-OS/bin/aiftd" ]]
+
+# AIFT_OS_HOME takes precedence over AIFT_ROOT.
+mkdir -p "$TMP/explicit-home"
+cp "$ROOT/aift-os.sh" "$TMP/explicit-home/aift-os.sh"
+output="$(cd "$TMP" && AIFT_OS_HOME="$TMP/explicit-home" AIFT_ROOT="$TMP/nonexistent-root" PATH="$TMP/mock-bin:$PATH" sh "$TMP/explicit-home/aift-os.sh" verify)"
+[[ "$output" == "launched:verify" ]] || { echo "unexpected AIFT_OS_HOME output: $output" >&2; exit 1; }
+[[ -x "$TMP/explicit-home/bin/aiftd" ]]
+
+echo "PASS: default checkout, AIFT_ROOT, AIFT_OS_HOME precedence, and binary reuse"
