@@ -117,10 +117,13 @@ This repository also contains a **pnpm-managed JavaScript/TypeScript workspace**
 The [CI workflow](.github/workflows/ci.yml) runs on pushes to `main`, pull requests, and manual dispatch. It uses Go from `go.mod` and Node.js 24, installs dependencies with `pnpm install --frozen-lockfile --ignore-scripts`, then runs workspace typechecking followed by the canonical `make verify` target. A local reproduction of its principal checks, with Go, Node.js 24, Corepack, and the pinned pnpm version available, is:
 
 ```bash
-corepack pnpm install --frozen-lockfile --ignore-scripts
-corepack pnpm run typecheck
+corepack enable
+pnpm install --frozen-lockfile --ignore-scripts
+pnpm run typecheck
 make verify
 ```
+
+`corepack enable` makes the `pnpm` executable available to package scripts that invoke `pnpm` directly. If the default shim directory is not writable, use the CI approach: `mkdir -p "$HOME/.local/bin" && corepack enable --install-directory "$HOME/.local/bin" && export PATH="$HOME/.local/bin:$PATH"` before running `pnpm`. Simply prefixing the top-level commands with `corepack` is not sufficient when nested scripts call `pnpm`.
 
 CI also checks for unexpected working-tree changes and uploads coverage and architecture reports when available. **The existence of this workflow does not mean the current branch has passed CI**: consult the relevant run's actual job results and artifacts before claiming a verified build. The commands above reproduce the main verification steps, not every CI environment or checkout-cleanliness check.
 
