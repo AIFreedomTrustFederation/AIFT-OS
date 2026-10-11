@@ -20,12 +20,12 @@ chmod +x "$TMP/mock-bin/go"
 
 # No bin/ exists at first launch. The wrapper must create it.
 [[ ! -e "$TMP/checkout/bin" ]]
-output="$(AIFT_OS_HOME="$TMP/checkout" PATH="$TMP/mock-bin:$PATH" sh "$TMP/checkout/aift-os.sh" status)"
+output="$(cd "$TMP" && env -u AIFT_OS_HOME -u AIFT_ROOT PATH="$TMP/mock-bin:$PATH" sh "$TMP/checkout/aift-os.sh" status)"
 [[ "$output" == "launched:status" ]] || { echo "unexpected first-launch output: $output" >&2; exit 1; }
 [[ -x "$TMP/checkout/bin/aiftd" ]]
 
 # A second launch must reuse the executable without requiring Go.
-output="$(AIFT_OS_HOME="$TMP/checkout" PATH="/usr/bin:/bin" sh "$TMP/checkout/aift-os.sh" verify)"
+output="$(cd "$TMP" && env -u AIFT_OS_HOME -u AIFT_ROOT PATH="/usr/bin:/bin" sh "$TMP/checkout/aift-os.sh" verify)"
 [[ "$output" == "launched:verify" ]] || { echo "unexpected reuse output: $output" >&2; exit 1; }
 
-echo "PASS: fresh launcher creates bin/ and reuses built executable"
+echo "PASS: launcher resolves arbitrary checkout without overrides, creates bin/, and reuses built executable"
