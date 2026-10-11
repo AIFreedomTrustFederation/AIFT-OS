@@ -152,6 +152,8 @@ install_hooks() {
 verify_fast() {
   check_format
   check_shell
+  say "Testing fresh CLI launcher"
+  bash tests/test-aift-launcher.sh
   test_all
   check_build
   check_artifacts
