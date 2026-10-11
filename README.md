@@ -107,8 +107,11 @@ Installation follows the Go implementation:
 git clone https://github.com/AIFreedomTrustFederation/AIFT-OS
 cd AIFT-OS
 go mod download
-go build ./cmd/aift
+go build -o ./aift ./cmd/aift
+./aift doctor
 ```
+
+The build creates a local `./aift` executable; it does **not** automatically add `aift` to your shell's `PATH`. For the `aift ...` commands shown above, either invoke `./aift ...` from the repository root or install the executable in a directory on your `PATH`. Run `./aift --help` to inspect supported commands for the checked-out revision before assuming every documented subcommand is available.
 
 ### Workspace verification and CI prerequisites
 
