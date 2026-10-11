@@ -1,8 +1,9 @@
 #!/usr/bin/env sh
 set -eu
 
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 ROOT="${AIFT_ROOT:-$HOME/AIFT}"
-OS="${AIFT_OS_HOME:-$ROOT/AIFT-OS}"
+OS="${AIFT_OS_HOME:-$SCRIPT_DIR}"
 BIN="$OS/bin/aiftd"
 
 cd "$OS" || exit 1
