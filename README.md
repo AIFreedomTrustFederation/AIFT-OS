@@ -121,6 +121,15 @@ make verify
 
 `corepack enable` makes the `pnpm` executable available to package scripts that invoke `pnpm` directly. If the default shim directory is not writable, use the CI approach: `mkdir -p "$HOME/.local/bin" && corepack enable --install-directory "$HOME/.local/bin" && export PATH="$HOME/.local/bin:$PATH"` before running `pnpm`. Simply prefixing the top-level commands with `corepack` is not sufficient when nested scripts call `pnpm`.
 
+The CLI launcher also has an SDK-free, isolated regression test that checks first-run creation of `bin/` and reuse of the built executable. Run it directly with:
+
+```bash
+bash -n aift-os.sh tests/test-aift-launcher.sh
+bash tests/test-aift-launcher.sh
+```
+
+`make verify-fast` and `make verify` invoke this test through `scripts/dev.sh`. This test uses a mock `go` executable; it does not replace a real `go build` or full CI run.
+
 CI also checks for unexpected working-tree changes and uploads coverage and architecture reports when available. **The existence of this workflow does not mean the current branch has passed CI**: consult the relevant run's actual job results and artifacts before claiming a verified build. The commands above reproduce the main verification steps, not every CI environment or checkout-cleanliness check.
 
 The truthfulness contract remains strict: no invented commands, fabricated repositories, silent failures, fake readiness, or capability claims unsupported by evidence. A planned object may be reported as planned. A missing object must remain missing. A blocked object remains blocked until the evidence changes.
