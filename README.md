@@ -110,6 +110,20 @@ go mod download
 go build ./cmd/aift
 ```
 
+### Workspace verification and CI prerequisites
+
+This repository also contains a **pnpm-managed JavaScript/TypeScript workspace**, in addition to its Go implementation. The root [`package.json`](package.json) declares `pnpm@11.25.0`, rejects non-pnpm installs in its `preinstall` script, and defines `typecheck`, `lint`, `test`, and `build` scripts. Do not substitute `npm install` for the documented pnpm workflow.
+
+The [CI workflow](.github/workflows/ci.yml) runs on pushes to `main`, pull requests, and manual dispatch. It uses Go from `go.mod` and Node.js 24, installs dependencies with `pnpm install --frozen-lockfile --ignore-scripts`, then runs workspace typechecking followed by the canonical `make verify` target. A local reproduction of its principal checks, with Go, Node.js 24, Corepack, and the pinned pnpm version available, is:
+
+```bash
+corepack pnpm install --frozen-lockfile --ignore-scripts
+corepack pnpm run typecheck
+make verify
+```
+
+CI also checks for unexpected working-tree changes and uploads coverage and architecture reports when available. **The existence of this workflow does not mean the current branch has passed CI**: consult the relevant run's actual job results and artifacts before claiming a verified build. The commands above reproduce the main verification steps, not every CI environment or checkout-cleanliness check.
+
 The truthfulness contract remains strict: no invented commands, fabricated repositories, silent failures, fake readiness, or capability claims unsupported by evidence. A planned object may be reported as planned. A missing object must remain missing. A blocked object remains blocked until the evidence changes.
 
 ---
