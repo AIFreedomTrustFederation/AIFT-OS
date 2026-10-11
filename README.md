@@ -104,6 +104,8 @@ go build -o ./aift ./cmd/aift
 ./aift doctor
 ```
 
+The optional `aift-os.sh` launcher resolves its checkout from the script location by default, supports `AIFT_ROOT` and `AIFT_OS_HOME` overrides (the latter takes precedence), and builds `bin/aiftd` on first use. **It reuses that executable on subsequent runs**: after updating Go source, rebuild with `make build` or remove `bin/aiftd` before launching again to avoid running an older binary. The launcher does not currently detect source changes automatically.
+
 The build creates a local `./aift` executable; it does **not** automatically add `aift` to your shell's `PATH`. For the `aift ...` commands shown above, either invoke `./aift ...` from the repository root or install the executable in a directory on your `PATH`. Run `./aift --help` to inspect supported commands for the checked-out revision before assuming every documented subcommand is available.
 
 ### Workspace verification and CI prerequisites
