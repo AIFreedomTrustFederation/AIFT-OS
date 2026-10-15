@@ -141,6 +141,16 @@ bash tests/test-aift-launcher.sh
 
 CI also checks for unexpected working-tree changes and uploads coverage and architecture reports when available. **The existence of this workflow does not mean the current branch has passed CI**: consult the relevant run's actual job results and artifacts before claiming a verified build. The commands above reproduce the main verification steps, not every CI environment or checkout-cleanliness check.
 
+### Cross-repository verification
+
+For a best-effort check of the local AIFT workspace, run:
+
+```bash
+bash scripts/verify-all.sh "$HOME/AIFT"
+```
+
+This helper inspects Git worktrees immediately under the selected workspace and attempts available npm lint/typecheck/test/build, Cargo check, and Go tests. It continues across repositories but now returns a **nonzero exit status** if an attempted check fails, a required tool for a detected manifest is missing, or no Git repositories are found. A green result is not proof that every repository has tests: npm commands use `--if-present`, so absent scripts are skipped; other languages and nested worktrees are outside this helper's coverage. Use each repository's own documented verification command and inspect CI results before declaring a federation-wide release verified.
+
 The truthfulness contract remains strict: no invented commands, fabricated repositories, silent failures, fake readiness, or capability claims unsupported by evidence. A planned object may be reported as planned. A missing object must remain missing. A blocked object remains blocked until the evidence changes.
 
 ---
