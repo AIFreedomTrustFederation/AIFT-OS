@@ -4,7 +4,7 @@ set -eu
 SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 OS="${AIFT_OS_HOME:-${AIFT_ROOT:+$AIFT_ROOT/AIFT-OS}}"
 OS="${OS:-$SCRIPT_DIR}"
-BIN="$OS/bin/aiftd"
+BIN="$OS/bin/aift"
 
 cd "$OS" || exit 1
 
