@@ -104,14 +104,14 @@ go build -o ./aift ./cmd/aift
 ./aift doctor
 ```
 
-The optional `aift-os.sh` launcher resolves its checkout from the script location by default, supports `AIFT_ROOT` and `AIFT_OS_HOME` overrides (the latter takes precedence), and builds `bin/aiftd` **from `./cmd/aift`** on first use. **It reuses that executable on subsequent runs** and does not detect source changes automatically. After updating CLI source, rebuild the launcher's executable explicitly:
+The optional `aift-os.sh` launcher resolves its checkout from the script location by default, supports `AIFT_ROOT` and `AIFT_OS_HOME` overrides (the latter takes precedence), and builds **`bin/aift` from `./cmd/aift`** on first use. It reuses that CLI executable on subsequent runs and does not detect source changes automatically. After updating CLI source, rebuild it explicitly:
 
 ```bash
 mkdir -p bin
-go build -o bin/aiftd ./cmd/aift
+go build -o bin/aift ./cmd/aift
 ```
 
-**Do not use `make build` to refresh this launcher executable.** The Makefile's build target instead compiles `./cmd/aiftd` into the *same* `bin/aiftd` path; that is the separate loopback MoBox UXI HTTP server, not the `aift` CLI. Running `make build` therefore replaces the binary that `aift-os.sh` subsequently executes. If this has happened, use the explicit `go build` command above (or remove `bin/aiftd` and let the launcher rebuild it) before running CLI subcommands. This filename collision is an existing implementation limitation, not an intentional interchangeability between the two programs.
+Alternatively, `make build` builds both commands into distinct paths: **`bin/aift` is the CLI**, while **`bin/aiftd` is the separate loopback MoBox UXI HTTP server**. The launcher never executes `bin/aiftd`, even when it exists. The isolated launcher regression test checks this separation, first-run CLI creation, binary reuse, and environment overrides. That mock-based test does not replace a real Go build or full repository verification.
 
 The build creates a local `./aift` executable; it does **not** automatically add `aift` to your shell's `PATH`. For the `aift ...` commands shown above, either invoke `./aift ...` from the repository root or install the executable in a directory on your `PATH`. Run `./aift --help` to inspect supported commands for the checked-out revision before assuming every documented subcommand is available.
 
