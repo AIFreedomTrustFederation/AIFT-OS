@@ -4,7 +4,7 @@
   "packageManager": "pnpm@11.25.0",
   "license": "MIT",
   "scripts": {
-    "preinstall": "sh -c 'rm -f package-lock.json yarn.lock; case \"$npm_config_user_agent\" in pnpm/*) ;; *) echo \"Use pnpm instead\" >&2; exit 1 ;; esac'",
+    "preinstall": "sh -c 'case \"$npm_config_user_agent\" in pnpm/*) ;; *) echo \"Use pnpm instead\" >&2; exit 1 ;; esac'",
     "build": "pnpm run typecheck && pnpm -r --if-present run build",
     "lint": "prettier --check package.json pnpm-workspace.yaml \"artifacts/**/*.{ts,tsx,js,jsx,json,css,md}\" \"lib/**/*.{ts,tsx,js,jsx,json,css,md}\" \"scripts/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "test": "node scripts/check-js-tests.mjs",

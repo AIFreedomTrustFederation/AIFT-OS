@@ -119,6 +119,8 @@ The build creates a local `./aift` executable; it does **not** automatically add
 
 This repository also contains a **pnpm-managed JavaScript/TypeScript workspace**, in addition to its Go implementation. The root [`package.json`](package.json) declares `pnpm@11.25.0`, rejects non-pnpm installs in its `preinstall` script, and defines `typecheck`, `lint`, `test`, and `build` scripts. Do not substitute `npm install` for the documented pnpm workflow.
 
+The `preinstall` guard rejects unsupported installers **without deleting `package-lock.json` or `yarn.lock`**. Its three-case regression runs in temporary directories without installing dependencies: `node --test scripts/preinstall-policy.test.mjs`. CI runs that focused test separately; it does not establish a successful dependency install or complete workspace verification.
+
 The [CI workflow](.github/workflows/ci.yml) runs on pushes to `main`, pull requests, and manual dispatch. It uses Go from `go.mod` and Node.js 24, installs dependencies with `pnpm install --frozen-lockfile --ignore-scripts`, then runs workspace typechecking followed by the canonical `make verify` target. A local reproduction of its principal checks, with Go, Node.js 24, Corepack, and the pinned pnpm version available, is:
 
 ```bash
