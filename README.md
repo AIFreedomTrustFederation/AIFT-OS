@@ -111,7 +111,12 @@ mkdir -p bin
 go build -o bin/aift ./cmd/aift
 ```
 
-Alternatively, `make build` builds both commands into distinct paths: **`bin/aift` is the CLI**, while **`bin/aiftd` is the separate loopback MoBox UXI HTTP server**. The launcher never executes `bin/aiftd`, even when it exists. The isolated launcher regression test checks this separation, first-run CLI creation, binary reuse, and environment overrides. That mock-based test does not replace a real Go build or full repository verification.
+Alternatively, `make build` builds both commands into distinct paths: **`bin/aift` is the CLI**, while **`bin/aiftd` is the separate loopback MoBox UXI HTTP server**. The launcher never executes `bin/aiftd`, even when it exists.
+
+### MoBox UXI HTTP exposure boundary
+
+The separate `bin/aiftd` service defaults to `127.0.0.1:8787` and exposes local federation metadata, sessions, artifacts, and registered read-only adapter invocation. Its HTTP handlers do not authenticate callers; binding to loopback is a deployment boundary, not per-user authorization. In the current implementation, `requireLoopback` accepts an empty hostname, so **do not** set `AIFT_UXI_ADDR=:8787` (or use another empty-host listen address): Go's HTTP listener can then bind to non-loopback interfaces. Keep the explicit loopback address and restrict access to trusted local processes. Action decisions are recorded separately from invocation; the adapter executor rejects mutating adapters, but this does not make the HTTP API safe for network exposure. See [`cmd/aiftd/main.go`](cmd/aiftd/main.go) and [`internal/uxihttp/server.go`](internal/uxihttp/server.go). This is a documented current limitation, not an implemented authentication or network-isolation guarantee.
+ The isolated launcher regression test checks this separation, first-run CLI creation, binary reuse, and environment overrides. That mock-based test does not replace a real Go build or full repository verification.
 
 The build creates a local `./aift` executable; it does **not** automatically add `aift` to your shell's `PATH`. For the `aift ...` commands shown above, either invoke `./aift ...` from the repository root or install the executable in a directory on your `PATH`. Run `./aift --help` to inspect supported commands for the checked-out revision before assuming every documented subcommand is available.
 
