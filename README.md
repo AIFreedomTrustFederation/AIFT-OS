@@ -120,6 +120,10 @@ The separate `bin/aiftd` service defaults to `127.0.0.1:8787` and exposes local 
 
 The build creates a local `./aift` executable; it does **not** automatically add `aift` to your shell's `PATH`. For the `aift ...` commands shown above, either invoke `./aift ...` from the repository root or install the executable in a directory on your `PATH`. Run `./aift --help` to inspect supported commands for the checked-out revision before assuming every documented subcommand is available.
 
+### Termux Ubuntu PRoot verification limitation
+
+The current [`scripts/dev.sh`](scripts/dev.sh) uses Bash process substitution (`done < <(find ... -print0)`) in `check_shell`. On some Termux `proot-distro` Ubuntu installations, the `/dev/fd` path required by process substitution is unavailable, causing `make verify` to stop at the shell-syntax check before running the remaining tests. This is an environment-specific limitation, not evidence that the Go tests failed. The hosted [CI workflow](.github/workflows/ci.yml) uses Ubuntu 24.04 GitHub-hosted runners rather than Android PRoot. For local PRoot verification, use a checkout with a separately validated compatible shell-check implementation; do not report a full `make verify` pass if the command stops at this stage. See [the verification orchestrator](scripts/dev.sh) for the current implementation.
+
 ### Workspace verification and CI prerequisites
 
 This repository also contains a **pnpm-managed JavaScript/TypeScript workspace**, in addition to its Go implementation. The root [`package.json`](package.json) declares `pnpm@11.25.0`, rejects non-pnpm installs in its `preinstall` script, and defines `typecheck`, `lint`, `test`, and `build` scripts. Do not substitute `npm install` for the documented pnpm workflow.
