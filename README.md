@@ -113,6 +113,16 @@ go build -o bin/aift ./cmd/aift
 
 Alternatively, `make build` builds both commands into distinct paths: **`bin/aift` is the CLI**, while **`bin/aiftd` is the separate loopback MoBox UXI HTTP server**. The launcher never executes `bin/aiftd`, even when it exists.
 
+To start the separately built MoBox UXI server from the repository root, use one terminal:
+
+```bash
+make build
+./bin/aiftd -addr 127.0.0.1:8787
+```
+
+In another terminal, check `curl -fsS http://127.0.0.1:8787/health`, then open `http://127.0.0.1:8787` in a local browser. The health response confirms only that the HTTP handler is responding; it does **not** verify model inference, federation discovery, or production readiness. `AIFT_ROOT` selects the federation workspace, `AIFT_UXI_HOME` selects the local persistent state directory, and `AIFT_MODEL_URL` / `AIFT_MODEL_NAME` configure the local inference endpoint and model. If the model endpoint is unavailable, conversational inference reports degraded mode. See the [MoBox UXI operator guide](docs/MOBOX-UXI.md) for UI and configuration details.
+
+
 ### MoBox UXI HTTP exposure boundary
 
 The separate `bin/aiftd` service defaults to `127.0.0.1:8787` and exposes local federation metadata, sessions, artifacts, and registered read-only adapter invocation. Its HTTP handlers do not authenticate callers; binding to loopback is a deployment boundary, not per-user authorization. In the current implementation, `requireLoopback` accepts an empty hostname, so **do not** set `AIFT_UXI_ADDR=:8787` (or use another empty-host listen address): Go's HTTP listener can then bind to non-loopback interfaces. Keep the explicit loopback address and restrict access to trusted local processes. Action decisions are recorded separately from invocation; the adapter executor rejects mutating adapters, but this does not make the HTTP API safe for network exposure. See [`cmd/aiftd/main.go`](cmd/aiftd/main.go) and [`internal/uxihttp/server.go`](internal/uxihttp/server.go). This is a documented current limitation, not an implemented authentication or network-isolation guarantee.
