@@ -8,7 +8,7 @@ func TestRequireLoopback(t *testing.T) {
 			t.Fatalf("requireLoopback(%q): %v", addr, err)
 		}
 	}
-	for _, addr := range []string{"0.0.0.0:8787", "192.168.1.10:8787"} {
+	for _, addr := range []string{"0.0.0.0:8787", "[::]:8787", "192.168.1.10:8787", ":8787", ":0"} {
 		if err := requireLoopback(addr); err == nil {
 			t.Fatalf("requireLoopback(%q) unexpectedly passed", addr)
 		}
