@@ -77,7 +77,7 @@ func requireLoopback(addr string) error {
 	if err != nil {
 		return fmt.Errorf("invalid listen address: %w", err)
 	}
-	if host == "localhost" || host == "" {
+	if host == "localhost" {
 		return nil
 	}
 	ip := net.ParseIP(host)
