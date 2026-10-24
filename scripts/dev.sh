@@ -36,14 +36,24 @@ check_format() {
 
 check_shell() {
   say "Checking shell syntax"
-  local status=0
-  while IFS= read -r -d '' file; do
-    if ! bash -n "$file"; then
-      printf 'FAIL: %s\n' "$file" >&2
-      status=1
-    fi
-  done < <(find . -type f -name '*.sh'     -not -path './.git/*'     -not -path './node_modules/*'     -print0)
-  return "$status"
+  # Process substitution hides find failures and needs /dev/fd, which is
+  # unavailable in some Termux PRoot environments. Let find propagate errors.
+  if ! find . -type f -name '*.sh' \
+      -not -path './.git/*' \
+      -not -path './node_modules/*' \
+      -exec bash -c '
+        status=0
+        for file; do
+          if ! bash -n "$file"; then
+            printf "FAIL: %s\n" "$file" >&2
+            status=1
+          fi
+        done
+        exit "$status"
+      ' _ {} +; then
+    printf 'ERROR: shell syntax verification failed\n' >&2
+    return 1
+  fi
 }
 
 test_all() {
@@ -152,6 +162,8 @@ install_hooks() {
 verify_fast() {
   check_format
   check_shell
+  say "Testing shell syntax verification failures"
+  bash tests/test-dev-shell.sh
   say "Testing fresh CLI launcher"
   bash tests/test-aift-launcher.sh
   test_all
