@@ -130,9 +130,11 @@ The separate `bin/aiftd` service defaults to `127.0.0.1:8787` and exposes local 
 
 The build creates a local `./aift` executable; it does **not** automatically add `aift` to your shell's `PATH`. For the `aift ...` commands shown above, either invoke `./aift ...` from the repository root or install the executable in a directory on your `PATH`. Run `./aift --help` to inspect supported commands for the checked-out revision before assuming every documented subcommand is available.
 
-### Termux Ubuntu PRoot verification limitation
+### Shell syntax verification and Termux PRoot boundary
 
-The current [`scripts/dev.sh`](scripts/dev.sh) uses Bash process substitution (`done < <(find ... -print0)`) in `check_shell`. On some Termux `proot-distro` Ubuntu installations, the `/dev/fd` path required by process substitution is unavailable, causing `make verify` to stop at the shell-syntax check before running the remaining tests. This is an environment-specific limitation, not evidence that the Go tests failed. The hosted [CI workflow](.github/workflows/ci.yml) uses Ubuntu 24.04 GitHub-hosted runners rather than Android PRoot. For local PRoot verification, use a checkout with a separately validated compatible shell-check implementation; do not report a full `make verify` pass if the command stops at this stage. See [the verification orchestrator](scripts/dev.sh) for the current implementation.
+The [verification orchestrator](scripts/dev.sh) checks maintained `.sh` files with `bash -n` using `find -exec` rather than Bash process substitution. This avoids dependence on `/dev/fd` during shell-file enumeration on Termux `proot-distro` Ubuntu and makes directory-traversal failures fail the check instead of silently passing. The check handles filenames containing spaces and excludes `.git/` and `node_modules/`.
+
+Run `bash scripts/dev.sh shell` for this focused check, and `bash tests/test-dev-shell.sh` for regression coverage of malformed scripts and a failing `find`. These tests establish shell syntax and traversal error handling, not the success of Go builds or the full `make verify` workflow. The hosted [CI workflow](.github/workflows/ci.yml) uses Ubuntu 24.04 runners; Android PRoot compatibility still depends on the locally installed Bash, find, Go, and filesystem environment.
 
 ### Workspace verification and CI prerequisites
 
