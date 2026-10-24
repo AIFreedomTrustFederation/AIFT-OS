@@ -164,6 +164,8 @@ verify_fast() {
   check_shell
   say "Testing shell syntax verification failures"
   bash tests/test-dev-shell.sh
+  say "Testing federation push sweep failure handling"
+  bash tests/test-push-all-aift-repos.sh
   say "Testing fresh CLI launcher"
   bash tests/test-aift-launcher.sh
   test_all

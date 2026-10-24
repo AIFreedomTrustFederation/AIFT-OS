@@ -177,6 +177,18 @@ bash tests/test-aift-launcher.sh
 
 CI also checks for unexpected working-tree changes and uploads coverage and architecture reports when available. **The existence of this workflow does not mean the current branch has passed CI**: consult the relevant run's actual job results and artifacts before claiming a verified build. The commands above reproduce the main verification steps, not every CI environment or checkout-cleanliness check.
 
+### Federation push sweep failure reporting
+
+The optional `sh push-all-aift-repos.sh` helper **mutates every immediate Git worktree** beneath `AIFT_ROOT` (default `$HOME/AIFT`): it stages all nonignored files, commits changes, rebases from each repository's `origin` branch, and pushes that branch. Inspect every worktree for secrets and unintended changes **before** using it; this is not a read-only audit, a preflight test, or a substitute for each repository's CI.
+
+The sweep continues to other repositories after a pull/rebase or push failure, but it now reports `FAIL` and returns a nonzero exit status if any such synchronization fails. A failed pull/rebase **skips the push for that repository**. Successful synchronization prints `DONE.` only when no such failures were detected. Worktrees without an `origin` are skipped, not counted as successfully synchronized. The helper does not roll back local commits, resolve conflicts, inspect branch protection, verify builds, or guarantee that every repository was pushed.
+
+To reproduce the successful-push, failed-pull, and failed-push cases using disposable local Git repositories and injected failures (no production remotes), run:
+
+```bash
+bash tests/test-push-all-aift-repos.sh
+```
+
 ### Cross-repository verification
 
 For a best-effort check of the local AIFT workspace, run:

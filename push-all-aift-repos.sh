@@ -2,6 +2,7 @@
 set -eu
 
 ROOT="${AIFT_ROOT:-$HOME/AIFT}"
+failures=0
 
 echo "== AIFT federation push sweep =="
 echo "Root: $ROOT"
@@ -36,10 +37,18 @@ for repo in "$ROOT"/*; do
 
   if git remote get-url origin >/dev/null 2>&1; then
     echo "-- pull/rebase --"
-    git pull --rebase origin "$branch" || true
-
-    echo "-- push --"
-    git push origin "$branch" || true
+    if git pull --rebase origin "$branch"; then
+      echo "-- push --"
+      if git push origin "$branch"; then
+        echo "PASS: $name synchronized"
+      else
+        echo "FAIL: $name push failed" >&2
+        failures=$((failures + 1))
+      fi
+    else
+      echo "FAIL: $name pull/rebase failed; push skipped" >&2
+      failures=$((failures + 1))
+    fi
   else
     echo "No origin remote."
   fi
@@ -57,4 +66,9 @@ for repo in "$ROOT"/*; do
 done
 
 echo
+if [ "$failures" -ne 0 ]; then
+  echo "FAIL: federation push sweep encountered $failures synchronization failure(s)" >&2
+  exit 1
+fi
+
 echo "DONE."
