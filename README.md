@@ -94,6 +94,12 @@ go run ./tools/architecture --ci
 
 **Not yet exposed by this CLI:** `aift introspect scan`, `aift capabilities scan`, and `aift runtime scan`. They describe intended control-plane capabilities, not commands implemented in `cmd/aift/main.go`. The `federation`, `repo`, and `workflow` command groups are registered as **planned** and should not be treated as operational. For supported commands and their current status, inspect `./aift registry`.
 
+### App registry discovery is not application launch
+
+`./aift apps list` discovers app manifests from `registry/apps/*.json`, `.aift/apps/*.json`, and sibling repositories' `.aift/apps/*.json` directories relative to the current checkout. `./aift apps inspect <id>` reports a matching manifest; duplicate IDs are flagged rather than silently resolved. These commands inspect declarations, not running processes or verified integrations.
+
+`./aift apps launch <id> --plan` is **plan-only**: for a uniquely identified app it returns `status: "planned"`, `active: false`, and `verification: "planned"`. It does not execute the manifest's `command` or start an application. In particular, the `status: "ready"` field in [`registry/apps/mobox-uxi.json`](registry/apps/mobox-uxi.json) is manifest metadata, not proof that the Federation Console is listening or that model inference works. Start `bin/aiftd` separately and check `/health` as described below. The distinction is enforced by [`cmd/aift/main.go`](cmd/aift/main.go) and covered by [`cmd/aift/main_test.go`](cmd/aift/main_test.go).
+
 Installation follows the Go implementation:
 
 ```bash
