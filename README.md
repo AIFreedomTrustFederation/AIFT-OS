@@ -130,6 +130,19 @@ The separate `bin/aiftd` service defaults to `127.0.0.1:8787` and exposes local 
 
 The build creates a local `./aift` executable; it does **not** automatically add `aift` to your shell's `PATH`. For the `aift ...` commands shown above, either invoke `./aift ...` from the repository root or install the executable in a directory on your `PATH`. Run `./aift --help` to inspect supported commands for the checked-out revision before assuming every documented subcommand is available.
 
+### Living Federation world snapshot (read-only)
+
+The separately started Federation Console (`bin/aiftd`) serves `GET /v1/federation/world-snapshot`, an `aift.world.v1` projection of **locally discovered Git worktrees** beneath `AIFT_ROOT`. It includes repository and declared-capability entities, containment relationships, signed 64-bit logical coordinates encoded as decimal strings, semantic visualization hints, evidence references, and a SHA-256 content hash for the root chunk. It does not poll GitHub, verify a live deployment, or establish that a declared capability can execute. See the [HTTP handler](internal/uxihttp/server.go), [snapshot builder](internal/uxi/world_protocol.go), and [local repository discovery](internal/uxi/repository.go).
+
+With the local server running, inspect the response:
+
+```bash
+curl -fsS http://127.0.0.1:8787/v1/federation/world-snapshot
+go test ./internal/uxi ./internal/uxihttp -run 'TestWorldSnapshot' -count=1
+```
+
+The response declares `mutation_mode: "proposal-only"` and `human_consent_required: true`; these are **governance metadata**, not proof of authorization enforcement by an external client. The HTTP service remains unauthenticated and loopback-only as described above. Snapshot revisions are deterministic for **identical input evidence**, but local discovery assigns fresh `observed_at` timestamps. Therefore two requests may have different evidence digests, chunk hashes, or revisions without a source-file change. Do not treat a revision as a stable release version, CI result, or cross-repository integration test. The [snapshot tests](internal/uxi/world_protocol_test.go) cover deterministic projection for fixed inputs and revision changes when evidence changes.
+
 ### Shell syntax verification and Termux PRoot boundary
 
 The [verification orchestrator](scripts/dev.sh) checks maintained `.sh` files with `bash -n` using `find -exec` rather than Bash process substitution. This avoids dependence on `/dev/fd` during shell-file enumeration on Termux `proot-distro` Ubuntu and makes directory-traversal failures fail the check instead of silently passing. The check handles filenames containing spaces and excludes `.git/` and `node_modules/`.
