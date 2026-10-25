@@ -22,6 +22,7 @@ import check_federation_evidence as consumer
 
 REPO = re.compile(r"AIFreedomTrustFederation/[A-Za-z0-9_.-]+\Z")
 SHA = re.compile(r"[0-9a-f]{40}\Z")
+MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
 ARTIFACTS = {
     "AIFreedomTrustFederation/.github": ("aift-catalog-verification", "aift-catalog-verification.json"),
     "AIFreedomTrustFederation/AIFT-Runtime": ("aift-runtime-verification", "aift-runtime-verification.json"),
@@ -76,7 +77,7 @@ def download_record(repo: str, artifact_id: int, filename: str, digest: str, dir
         raise CollectionError(f"artifact SHA-256 digest mismatch: {repo}")
     # These verification JSON records should be small. Bound archive and
     # expanded member sizes; never extract arbitrary paths or links.
-    if not result.stdout or len(result.stdout) > 4 * 1024 * 1024:
+    if not result.stdout or len(result.stdout) > MAX_ARCHIVE_BYTES:
         raise CollectionError(f"artifact archive missing or too large: {repo}")
     try:
         with zipfile.ZipFile(io.BytesIO(result.stdout)) as archive:
@@ -168,6 +169,11 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
             artifact = matches[0]
             if type(artifact.get("id")) is not int or artifact["id"] <= 0:
                 raise CollectionError(f"invalid artifact identity: {repo}")
+            # Reject oversized or malformed artifacts before launching a binary download.
+            # GitHub artifact metadata provides the compressed archive size.
+            size = artifact.get("size_in_bytes")
+            if type(size) is not int or not 0 < size <= MAX_ARCHIVE_BYTES:
+                raise CollectionError(f"missing, invalid, or oversized artifact size: {repo}")
             directory = root / f"repo-{index}"
             directory.mkdir()
             downloaded = download_record(repo, artifact["id"], filename, artifact.get("digest"), directory)

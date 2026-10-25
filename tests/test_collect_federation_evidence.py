@@ -63,7 +63,10 @@ if args[0]=="api":
   digest="sha256:"+hashlib.sha256(archive_bytes(repo)).hexdigest()
   if mode=="digest_mismatch":digest="sha256:"+"0"*64
   if mode=="invalid_digest":digest="sha256:not-a-digest"
-  item={"name":artifact,"id":artifact_id,"expired":False,"digest":digest}
+  item={"name":artifact,"id":artifact_id,"expired":False,"digest":digest,"size_in_bytes":len(archive_bytes(repo))}
+  if mode=="oversized_artifact":item["size_in_bytes"]=5*1024*1024
+  if mode=="missing_artifact_size":item.pop("size_in_bytes")
+  if mode=="invalid_artifact_size":item["size_in_bytes"]=True
   if mode=="missing_digest":item.pop("digest")
   items=[item]
   if mode=="duplicate_artifact":items*=2
@@ -200,6 +203,24 @@ class CollectionTests(unittest.TestCase):
         result, output = self.invoke("extra_member")
         self.assertEqual(result.returncode, 1)
         self.assertIn("exactly one file", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_oversized_artifact_before_download(self):
+        result, output = self.invoke("oversized_artifact")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("oversized artifact size", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_missing_artifact_size(self):
+        result, output = self.invoke("missing_artifact_size")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("missing, invalid, or oversized artifact size", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_invalid_artifact_size_type(self):
+        result, output = self.invoke("invalid_artifact_size")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("missing, invalid, or oversized artifact size", result.stderr)
         self.assertFalse(output.exists())
 
     def test_rejects_artifact_digest_mismatch(self):
