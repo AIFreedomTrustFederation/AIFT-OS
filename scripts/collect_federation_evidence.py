@@ -227,8 +227,11 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
             provenance.append({"repository": repo, "run_id": int(run_id), "artifact_id": artifact["id"],
                                "artifact_digest": artifact["digest"], "commit_sha": sha,
                                "default_branch": branch})
-        assessment, code = consumer.inspect(records, expected)
-        if code:
+        assessment, _ = consumer.inspect(records, expected)
+        # A verified record reporting a failed check or security gate is valid
+        # negative evidence, not malformed input. Publish its failed status
+        # while continuing to reject missing, duplicate, or invalid records.
+        if assessment["errors"]:
             raise CollectionError("retrieved evidence failed structural verification")
         # A branch can advance while artifacts are downloaded. Recheck every
         # producer immediately before publishing a current-commit assessment.
