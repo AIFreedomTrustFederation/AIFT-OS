@@ -8,7 +8,9 @@ of unsigned aift.verification.v1 records to check_federation_evidence.py.
 from __future__ import annotations
 
 import argparse
+import io
 import json
+import zipfile
 import re
 import subprocess
 import sys
@@ -54,6 +56,38 @@ def api(path: str) -> dict:
         raise CollectionError(f"invalid GitHub API object for {path}")
     return value
 
+
+
+def download_record(repo: str, artifact_id: int, filename: str, directory: Path) -> Path:
+    """Fetch the *listed artifact ID*, not a potentially different same-name archive."""
+    endpoint = f"repos/{repo}/actions/artifacts/{artifact_id}/zip"
+    try:
+        result = subprocess.run(["gh", "api", endpoint], capture_output=True, check=False, timeout=60)
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        raise CollectionError(f"artifact download failed for {repo}: {exc}") from exc
+    if result.returncode:
+        raise CollectionError(f"artifact ID download failed for {repo} (exit {result.returncode})")
+    # These verification JSON records should be small. Bound archive and
+    # expanded member sizes; never extract arbitrary paths or links.
+    if not result.stdout or len(result.stdout) > 4 * 1024 * 1024:
+        raise CollectionError(f"artifact archive missing or too large: {repo}")
+    try:
+        with zipfile.ZipFile(io.BytesIO(result.stdout)) as archive:
+            members = archive.infolist()
+            if len(members) != 1:
+                raise CollectionError(f"artifact must contain exactly one file: {repo}")
+            member = members[0]
+            kind = (member.external_attr >> 16) & 0o170000
+            if (member.filename != filename or member.is_dir() or
+                    kind not in (0, 0o100000) or member.file_size > 1024 * 1024):
+                raise CollectionError(f"artifact contains an unsafe or unexpected file: {repo}")
+            payload = archive.read(member)
+    except (zipfile.BadZipFile, zipfile.LargeZipFile, RuntimeError, EOFError, OSError,
+            NotImplementedError) as exc:
+        raise CollectionError(f"invalid artifact ZIP for {repo}: {exc}") from exc
+    target = directory / filename
+    target.write_bytes(payload)
+    return target
 
 def parse_pairs(values: list[str], kind: str) -> dict[str, str]:
     result = {}
@@ -111,16 +145,13 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
                 raise CollectionError(f"invalid artifact identity: {repo}")
             directory = root / f"repo-{index}"
             directory.mkdir()
-            gh("run", "download", run_id, "--repo", repo, "--name", artifact_name, "--dir", str(directory))
-            files = list(directory.rglob("*"))
-            if len(files) != 1 or files[0].name != filename or not files[0].is_file() or files[0].is_symlink():
-                raise CollectionError(f"artifact must contain exactly {filename}: {repo}")
-            record = consumer.read_record(files[0])
+            downloaded = download_record(repo, artifact["id"], filename, directory)
+            record = consumer.read_record(downloaded)
             consumer.validate(record, expected)
             if (record.get("source", {}).get("type") != "github-actions" or
                     record["source"].get("run_url") != f"https://github.com/{repo}/actions/runs/{run_id}"):
                 raise CollectionError(f"artifact source does not match authenticated run: {repo}")
-            records.append(files[0])
+            records.append(downloaded)
             provenance.append({"repository": repo, "run_id": int(run_id), "artifact_id": artifact["id"],
                                "commit_sha": sha, "default_branch": branch})
         assessment, code = consumer.inspect(records, expected)
