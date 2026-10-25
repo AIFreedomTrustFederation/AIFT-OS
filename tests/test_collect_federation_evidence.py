@@ -135,6 +135,13 @@ class CollectionTests(unittest.TestCase):
         self.assertEqual(report["status"], "partial")
         self.assertEqual(report["provenance"], "github_api_run_and_artifact_checked_unsigned")
         self.assertEqual(len(report["github_runs"]), 2)
+        expected_workflows = {
+            "AIFreedomTrustFederation/.github": (362136764, ".github/workflows/catalog-integrity.yml"),
+            "AIFreedomTrustFederation/AIFT-Runtime": (361044013, ".github/workflows/qa.yml"),
+        }
+        for run in report["github_runs"]:
+            self.assertEqual((run["workflow_id"], run["workflow_path"]),
+                             expected_workflows[run["repository"]])
         self.assertEqual(len(list(output.iterdir())), 3)
 
     def test_subset_collection_cannot_report_full_federation_pass(self):

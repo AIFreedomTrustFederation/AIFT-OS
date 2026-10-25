@@ -232,7 +232,8 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
             records.append(downloaded)
             provenance.append({"repository": repo, "run_id": int(run_id), "artifact_id": artifact["id"],
                                "artifact_digest": artifact["digest"], "commit_sha": sha,
-                               "default_branch": branch, "workflow_conclusion": run["conclusion"]})
+                               "default_branch": branch, "workflow_id": workflow_id,
+                               "workflow_path": workflow_path, "workflow_conclusion": run["conclusion"]})
         assessment, _ = consumer.inspect(records, expected)
         # A verified record reporting a failed check or security gate is valid
         # negative evidence, not malformed input. Publish its failed status
