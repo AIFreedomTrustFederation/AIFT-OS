@@ -158,7 +158,7 @@ class CollectionTests(unittest.TestCase):
 
     def test_publishes_authenticated_failed_security_gate(self):
         result, output = self.invoke("failed_gate")
-        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.returncode, 1, result.stderr)
         report = json.loads((output / "federation-assessment.json").read_text())
         self.assertEqual(report["status"], "failed")
         self.assertTrue(all("security" in r["failed_gates"] for r in report["repositories"]))
@@ -166,7 +166,7 @@ class CollectionTests(unittest.TestCase):
 
     def test_publishes_authenticated_failed_check(self):
         result, output = self.invoke("failed_check")
-        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.returncode, 1, result.stderr)
         report = json.loads((output / "federation-assessment.json").read_text())
         self.assertEqual(report["status"], "failed")
         self.assertTrue(all(r["status"] == "failed" for r in report["repositories"]))
