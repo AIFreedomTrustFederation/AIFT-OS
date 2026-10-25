@@ -52,7 +52,7 @@ elif args[:2]==["run","download"]:
   data=json.loads(src.read_text());data["source"]["run_url"]="https://github.com/AIFreedomTrustFederation/.github/actions/runs/123"
   (out/filename).write_text(json.dumps(data))
  else:shutil.copyfile(src,out/filename)
- if mode=="branch_advanced": (Path(os.environ["FAKE_GH_FIXTURES"])/".branch-advanced").write_text("advanced")
+ if mode=="branch_advanced" and repo.endswith("/AIFT-Runtime"): (Path(os.environ["FAKE_GH_FIXTURES"])/".branch-advanced").write_text("advanced")
 else:sys.exit(5)
 '''
 
