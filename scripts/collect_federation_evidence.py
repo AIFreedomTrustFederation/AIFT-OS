@@ -195,6 +195,9 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
         for index, (repo, run_id) in enumerate(sorted(runs.items())):
             sha = expected[repo]
             info = api(f"repos/{repo}")
+            repo_id = info.get("id")
+            if type(repo_id) is not int or repo_id <= 0:
+                raise CollectionError(f"invalid repository identity: {repo}")
             branch = info.get("default_branch")
             if not isinstance(branch, str) or not branch or "/" in branch:
                 raise CollectionError(f"invalid default branch for {repo}")
@@ -206,7 +209,13 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
             if (type(run.get("workflow_id")) is not int or run["workflow_id"] != workflow_id or
                     run.get("path") != workflow_path):
                 raise CollectionError(f"run workflow identity mismatch: {repo}")
-            if (not isinstance(run.get("repository"), dict) or run["repository"].get("full_name") != repo or
+            # Bind the workflow's source and execution repositories to the
+            # authenticated repository ID, not just its reusable full name.
+            run_repo, head_repo = run.get("repository"), run.get("head_repository")
+            if (not isinstance(run_repo, dict) or run_repo.get("full_name") != repo or
+                    type(run_repo.get("id")) is not int or run_repo["id"] != repo_id or
+                    not isinstance(head_repo, dict) or head_repo.get("full_name") != repo or
+                    type(head_repo.get("id")) is not int or head_repo["id"] != repo_id or
                     run.get("head_sha") != sha or run.get("head_branch") != branch or
                     run.get("event") != "push" or run.get("status") != "completed" or
                     run.get("conclusion") not in ("success", "failure")):
@@ -227,8 +236,7 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
             # identity with the authenticated repository, run and branch.
             # Both current producers publish these GitHub metadata fields.
             artifact_run = artifact.get("workflow_run")
-            repo_id = info.get("id")
-            if (not isinstance(artifact_run, dict) or type(repo_id) is not int or
+            if (not isinstance(artifact_run, dict) or
                     type(artifact_run.get("id")) is not int or
                     artifact_run["id"] != int(run_id) or
                     artifact_run.get("head_sha") != sha or
@@ -259,7 +267,8 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
                 raise CollectionError(f"artifact source does not match authenticated run: {repo}")
             records.append(downloaded)
             validated_records[repo] = record
-            provenance.append({"repository": repo, "run_id": int(run_id), "artifact_id": artifact["id"],
+            provenance.append({"repository": repo, "repository_id": repo_id,
+                               "run_id": int(run_id), "artifact_id": artifact["id"],
                                "artifact_digest": artifact["digest"], "commit_sha": sha,
                                "default_branch": branch, "workflow_id": workflow_id,
                                "workflow_path": workflow_path, "workflow_conclusion": run["conclusion"]})
