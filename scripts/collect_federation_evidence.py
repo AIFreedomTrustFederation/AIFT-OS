@@ -8,6 +8,7 @@ of unsigned aift.verification.v1 records to check_federation_evidence.py.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import io
 import json
 import zipfile
@@ -58,7 +59,7 @@ def api(path: str) -> dict:
 
 
 
-def download_record(repo: str, artifact_id: int, filename: str, directory: Path) -> Path:
+def download_record(repo: str, artifact_id: int, filename: str, digest: str, directory: Path) -> Path:
     """Fetch the *listed artifact ID*, not a potentially different same-name archive."""
     endpoint = f"repos/{repo}/actions/artifacts/{artifact_id}/zip"
     try:
@@ -67,6 +68,12 @@ def download_record(repo: str, artifact_id: int, filename: str, directory: Path)
         raise CollectionError(f"artifact download failed for {repo}: {exc}") from exc
     if result.returncode:
         raise CollectionError(f"artifact ID download failed for {repo} (exit {result.returncode})")
+    # GitHub publishes a SHA-256 digest for Actions artifacts. Bind the
+    # downloaded ZIP bytes to the exact artifact metadata we inspected.
+    if not isinstance(digest, str) or not re.fullmatch(r"sha256:[0-9a-f]{64}", digest):
+        raise CollectionError(f"missing or invalid artifact SHA-256 digest: {repo}")
+    if hashlib.sha256(result.stdout).hexdigest() != digest.removeprefix("sha256:"):
+        raise CollectionError(f"artifact SHA-256 digest mismatch: {repo}")
     # These verification JSON records should be small. Bound archive and
     # expanded member sizes; never extract arbitrary paths or links.
     if not result.stdout or len(result.stdout) > 4 * 1024 * 1024:
@@ -145,7 +152,7 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
                 raise CollectionError(f"invalid artifact identity: {repo}")
             directory = root / f"repo-{index}"
             directory.mkdir()
-            downloaded = download_record(repo, artifact["id"], filename, directory)
+            downloaded = download_record(repo, artifact["id"], filename, artifact.get("digest"), directory)
             record = consumer.read_record(downloaded)
             consumer.validate(record, expected)
             if (record.get("source", {}).get("type") != "github-actions" or
@@ -153,7 +160,8 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
                 raise CollectionError(f"artifact source does not match authenticated run: {repo}")
             records.append(downloaded)
             provenance.append({"repository": repo, "run_id": int(run_id), "artifact_id": artifact["id"],
-                               "commit_sha": sha, "default_branch": branch})
+                               "artifact_digest": artifact["digest"], "commit_sha": sha,
+                               "default_branch": branch})
         assessment, code = consumer.inspect(records, expected)
         if code:
             raise CollectionError("retrieved evidence failed structural verification")
