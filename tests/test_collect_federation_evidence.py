@@ -199,7 +199,7 @@ class CollectionTests(unittest.TestCase):
     def test_rejects_failed_run(self):
         result, output = self.invoke("failed_run")
         self.assertEqual(result.returncode, 1)
-        self.assertIn("successful default-branch CI", result.stderr)
+        self.assertIn("failed CI run lacks failed verification evidence", result.stderr)
         self.assertFalse(output.exists())
 
     def test_preserves_negative_security_evidence_from_failed_ci_run(self):
