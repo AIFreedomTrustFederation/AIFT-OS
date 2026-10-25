@@ -107,6 +107,24 @@ def parse_pairs(values: list[str], kind: str) -> dict[str, str]:
     return result
 
 
+def publish_records(output: Path, records: list[Path], provenance: list[dict], assessment: dict) -> None:
+    """Publish only a complete assessment; discard staged files on failure."""
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix=".aift-evidence-stage-", dir=output.parent) as temp:
+        stage = Path(temp) / "complete"
+        stage.mkdir()
+        for source, entry in zip(records, provenance):
+            target = stage / ARTIFACTS[entry["repository"]][1]
+            target.write_bytes(source.read_bytes())
+        (stage / "federation-assessment.json").write_text(
+            json.dumps(assessment, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        # The final rename makes the complete directory visible in one step.
+        # Never intentionally replace a previously published assessment.
+        if output.exists():
+            raise CollectionError("output directory already exists; refusing overwrite")
+        stage.rename(output)
+
+
 def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dict:
     if not runs or set(runs) != set(expected):
         raise CollectionError("run and expected-commit repository sets must match")
@@ -178,12 +196,7 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
                 raise CollectionError(f"default branch advanced during collection: {repo}")
         assessment["provenance"] = "github_api_run_and_artifact_checked_unsigned"
         assessment["github_runs"] = provenance
-        output.mkdir(parents=True, exist_ok=False)
-        for source, entry in zip(records, provenance):
-            target = output / ARTIFACTS[entry["repository"]][1]
-            target.write_bytes(source.read_bytes())
-        (output / "federation-assessment.json").write_text(
-            json.dumps(assessment, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        publish_records(output, records, provenance, assessment)
         return assessment
 
 
