@@ -58,9 +58,15 @@ if args[0]=="api":
   advanced=mode=="branch_advanced" and (Path(os.environ["FAKE_GH_FIXTURES"])/".branch-advanced").exists()
   result={"commit":{"sha":"0"*40 if mode=="stale" or advanced else sha}}
  elif suffix=="/actions/runs/"+run:
-  result={"repository":{"full_name":repo},"head_sha":sha,"head_branch":"main","event":"push","status":"completed","conclusion":"failure" if mode in ("failed_run", "failed_run_with_failed_gate", "failed_run_with_failed_check") else "success",
+  repository_id=1271861965 if repo.endswith("/.github") else 1298897337
+  result={"repository":{"full_name":repo,"id":repository_id},
+          "head_repository":{"full_name":repo,"id":repository_id},
+          "head_sha":sha,"head_branch":"main","event":"push","status":"completed","conclusion":"failure" if mode in ("failed_run", "failed_run_with_failed_gate", "failed_run_with_failed_check") else "success",
           "workflow_id":362136764 if repo.endswith("/.github") else 361044013,
           "path":".github/workflows/catalog-integrity.yml" if repo.endswith("/.github") else ".github/workflows/qa.yml"}
+  if mode=="wrong_run_repo_id":result["repository"]["id"]+=1
+  if mode=="wrong_run_head_repo_id":result["head_repository"]["id"]+=1
+  if mode=="missing_run_head_repo":result.pop("head_repository")
   if mode=="wrong_workflow":result["workflow_id"]=999
   if mode=="wrong_workflow_path":result["path"]=".github/workflows/untrusted.yml"
  elif suffix=="/actions/runs/"+run+"/artifacts?per_page=100":
@@ -145,6 +151,12 @@ class CollectionTests(unittest.TestCase):
         self.assertEqual(report["status"], "partial")
         self.assertEqual(report["provenance"], "github_api_run_and_artifact_checked_unsigned")
         self.assertEqual(len(report["github_runs"]), 2)
+        expected_repo_ids = {
+            "AIFreedomTrustFederation/.github": 1271861965,
+            "AIFreedomTrustFederation/AIFT-Runtime": 1298897337,
+        }
+        for run in report["github_runs"]:
+            self.assertEqual(run["repository_id"], expected_repo_ids[run["repository"]])
         expected_workflows = {
             "AIFreedomTrustFederation/.github": (362136764, ".github/workflows/catalog-integrity.yml"),
             "AIFreedomTrustFederation/AIFT-Runtime": (361044013, ".github/workflows/qa.yml"),
@@ -251,6 +263,15 @@ class CollectionTests(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertIn("workflow identity mismatch", result.stderr)
         self.assertFalse(output.exists())
+
+    def test_rejects_wrong_run_repository_identity(self):
+        for mode in ("wrong_run_repo_id", "wrong_run_head_repo_id",
+                     "missing_run_head_repo"):
+            with self.subTest(mode=mode):
+                result, output = self.invoke(mode, output=self.root / mode)
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn("run metadata does not establish", result.stderr)
+                self.assertFalse(output.exists())
 
     def test_rejects_failed_run(self):
         result, output = self.invoke("failed_run")
