@@ -11,11 +11,14 @@ import argparse
 import hashlib
 import io
 import json
+import os
+import selectors
 import zipfile
 import re
 import subprocess
 import sys
 import tempfile
+import time
 from pathlib import Path
 
 import check_federation_evidence as consumer
@@ -60,27 +63,62 @@ def api(path: str) -> dict:
 
 
 
+def bounded_archive_download(repo: str, endpoint: str) -> bytes:
+    """Read at most MAX_ARCHIVE_BYTES + 1 bytes, with a wall-clock deadline.
+
+    Do not use subprocess.run(capture_output=True) for untrusted binary content:
+    that buffers the complete response before its size can be checked.
+    """
+    try:
+        process = subprocess.Popen(["gh", "api", endpoint], stdout=subprocess.PIPE,
+                                   stderr=subprocess.DEVNULL, bufsize=0)
+    except OSError as exc:
+        raise CollectionError(f"artifact download failed for {repo}: {exc}") from exc
+    deadline = time.monotonic() + 60
+    try:
+        data = bytearray()
+        with selectors.DefaultSelector() as selector:
+            selector.register(process.stdout, selectors.EVENT_READ)
+            while True:
+                remaining = deadline - time.monotonic()
+                if remaining <= 0 or not selector.select(remaining):
+                    raise CollectionError(f"artifact download timed out for {repo}")
+                chunk = os.read(process.stdout.fileno(), min(65536, MAX_ARCHIVE_BYTES + 1 - len(data)))
+                if not chunk:
+                    break
+                data.extend(chunk)
+                if len(data) > MAX_ARCHIVE_BYTES:
+                    raise CollectionError(f"artifact archive missing or too large: {repo}")
+        try:
+            status = process.wait(timeout=max(0.001, deadline - time.monotonic()))
+        except subprocess.TimeoutExpired as exc:
+            raise CollectionError(f"artifact download timed out for {repo}") from exc
+        if status:
+            raise CollectionError(f"artifact ID download failed for {repo} (exit {status})")
+        return bytes(data)
+    finally:
+        if process.poll() is None:
+            process.kill()
+            process.wait()
+        process.stdout.close()
+
+
 def download_record(repo: str, artifact_id: int, filename: str, digest: str, directory: Path) -> Path:
     """Fetch the *listed artifact ID*, not a potentially different same-name archive."""
     endpoint = f"repos/{repo}/actions/artifacts/{artifact_id}/zip"
-    try:
-        result = subprocess.run(["gh", "api", endpoint], capture_output=True, check=False, timeout=60)
-    except (OSError, subprocess.TimeoutExpired) as exc:
-        raise CollectionError(f"artifact download failed for {repo}: {exc}") from exc
-    if result.returncode:
-        raise CollectionError(f"artifact ID download failed for {repo} (exit {result.returncode})")
+    archive_bytes = bounded_archive_download(repo, endpoint)
     # GitHub publishes a SHA-256 digest for Actions artifacts. Bind the
     # downloaded ZIP bytes to the exact artifact metadata we inspected.
     if not isinstance(digest, str) or not re.fullmatch(r"sha256:[0-9a-f]{64}", digest):
         raise CollectionError(f"missing or invalid artifact SHA-256 digest: {repo}")
-    if hashlib.sha256(result.stdout).hexdigest() != digest.removeprefix("sha256:"):
+    if hashlib.sha256(archive_bytes).hexdigest() != digest.removeprefix("sha256:"):
         raise CollectionError(f"artifact SHA-256 digest mismatch: {repo}")
     # These verification JSON records should be small. Bound archive and
     # expanded member sizes; never extract arbitrary paths or links.
-    if not result.stdout or len(result.stdout) > MAX_ARCHIVE_BYTES:
+    if not archive_bytes or len(archive_bytes) > MAX_ARCHIVE_BYTES:
         raise CollectionError(f"artifact archive missing or too large: {repo}")
     try:
-        with zipfile.ZipFile(io.BytesIO(result.stdout)) as archive:
+        with zipfile.ZipFile(io.BytesIO(archive_bytes)) as archive:
             members = archive.infolist()
             if len(members) != 1:
                 raise CollectionError(f"artifact must contain exactly one file: {repo}")
