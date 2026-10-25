@@ -112,6 +112,11 @@ class CollectionTests(unittest.TestCase):
                       "dependencies": {"status": "passed" if mode == "all_gates_pass" else "not_checked"},
                       "deployment": {"status": "passed" if mode == "all_gates_pass" else "not_applicable"},
                       "limitations": ["No live deployment tested."]}
+            if mode == "failed_gate":
+                record["security"]["status"] = "failed"
+            if mode == "failed_check":
+                record["checks"][0].update(status="failed", exit_code=1)
+                record["overall_status"] = "failed"
             (fixture_dir / filename).write_text(json.dumps(record), encoding="utf-8")
         output = output or self.root / "evidence"
         cmd = [sys.executable, "-B", str(SCRIPT), "--output-dir", str(output)]
@@ -150,6 +155,22 @@ class CollectionTests(unittest.TestCase):
         self.assertEqual(report["status"], "reported_pass")
         self.assertEqual(report["producer_coverage"]["collected"], sorted(REPOS))
         self.assertEqual(report["producer_coverage"]["not_collected"], [])
+
+    def test_publishes_authenticated_failed_security_gate(self):
+        result, output = self.invoke("failed_gate")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = json.loads((output / "federation-assessment.json").read_text())
+        self.assertEqual(report["status"], "failed")
+        self.assertTrue(all("security" in r["failed_gates"] for r in report["repositories"]))
+        self.assertEqual(len(list(output.iterdir())), 3)
+
+    def test_publishes_authenticated_failed_check(self):
+        result, output = self.invoke("failed_check")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = json.loads((output / "federation-assessment.json").read_text())
+        self.assertEqual(report["status"], "failed")
+        self.assertTrue(all(r["status"] == "failed" for r in report["repositories"]))
+        self.assertEqual(len(list(output.iterdir())), 3)
 
     def test_rejects_stale_default_branch(self):
         result, output = self.invoke("stale")
