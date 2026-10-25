@@ -37,7 +37,11 @@ if args[0]=="api":
   advanced=mode=="branch_advanced" and (Path(os.environ["FAKE_GH_FIXTURES"])/".branch-advanced").exists()
   result={"commit":{"sha":"0"*40 if mode=="stale" or advanced else sha}}
  elif suffix=="/actions/runs/"+run:
-  result={"repository":{"full_name":repo},"head_sha":sha,"head_branch":"main","event":"push","status":"completed","conclusion":"failure" if mode=="failed_run" else "success"}
+  result={"repository":{"full_name":repo},"head_sha":sha,"head_branch":"main","event":"push","status":"completed","conclusion":"failure" if mode=="failed_run" else "success",
+          "workflow_id":362136764 if repo.endswith("/.github") else 361044013,
+          "path":".github/workflows/catalog-integrity.yml" if repo.endswith("/.github") else ".github/workflows/qa.yml"}
+  if mode=="wrong_workflow":result["workflow_id"]=999
+  if mode=="wrong_workflow_path":result["path"]=".github/workflows/untrusted.yml"
  elif suffix=="/actions/runs/"+run+"/artifacts?per_page=100":
   items=[{"name":artifact,"id":artifact_id,"expired":False}]
   if mode=="duplicate_artifact":items*=2
@@ -107,6 +111,18 @@ class CollectionTests(unittest.TestCase):
         result, output = self.invoke("branch_advanced")
         self.assertEqual(result.returncode, 1)
         self.assertIn("default branch advanced during collection", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_wrong_workflow_id(self):
+        result, output = self.invoke("wrong_workflow")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("workflow identity mismatch", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_wrong_workflow_path(self):
+        result, output = self.invoke("wrong_workflow_path")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("workflow identity mismatch", result.stderr)
         self.assertFalse(output.exists())
 
     def test_rejects_failed_run(self):

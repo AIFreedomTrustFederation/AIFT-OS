@@ -23,6 +23,11 @@ ARTIFACTS = {
     "AIFreedomTrustFederation/.github": ("aift-catalog-verification", "aift-catalog-verification.json"),
     "AIFreedomTrustFederation/AIFT-Runtime": ("aift-runtime-verification", "aift-runtime-verification.json"),
 }
+# Restrict provenance to the designated producer workflows, not any successful push run.
+WORKFLOWS = {
+    "AIFreedomTrustFederation/.github": (362136764, ".github/workflows/catalog-integrity.yml"),
+    "AIFreedomTrustFederation/AIFT-Runtime": (361044013, ".github/workflows/qa.yml"),
+}
 
 
 class CollectionError(ValueError):
@@ -84,6 +89,10 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
             if not isinstance(branch_info.get("commit"), dict) or branch_info["commit"].get("sha") != sha:
                 raise CollectionError(f"expected commit is not current {repo}/{branch}")
             run = api(f"repos/{repo}/actions/runs/{run_id}")
+            workflow_id, workflow_path = WORKFLOWS[repo]
+            if (type(run.get("workflow_id")) is not int or run["workflow_id"] != workflow_id or
+                    run.get("path") != workflow_path):
+                raise CollectionError(f"run workflow identity mismatch: {repo}")
             if (not isinstance(run.get("repository"), dict) or run["repository"].get("full_name") != repo or
                     run.get("head_sha") != sha or run.get("head_branch") != branch or
                     run.get("event") != "push" or run.get("status") != "completed" or
