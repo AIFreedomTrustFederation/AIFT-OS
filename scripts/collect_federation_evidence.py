@@ -270,7 +270,9 @@ def main(argv: list[str] | None = None) -> int:
         assessment = collect(parse_pairs(args.run, "run"), parse_pairs(args.expect, "commit"), args.output_dir)
         print(json.dumps({"status": assessment["status"], "provenance": assessment["provenance"],
                           "output_dir": str(args.output_dir)}, sort_keys=True))
-        return 0
+        # Publish negative evidence, but retain a failing CLI exit status so
+        # automation cannot mistake verified failed gates for a green run.
+        return 1 if assessment["status"] == "failed" else 0
     except (CollectionError, consumer.EvidenceError, OSError) as exc:
         print(f"Federation evidence collection failed: {exc}", file=sys.stderr)
         return 1
