@@ -17,7 +17,7 @@ REPOS = {
 }
 
 FAKE_GH = r'''#!/usr/bin/env python3
-import io,json,os,sys,zipfile
+import hashlib,io,json,os,sys,zipfile
 from pathlib import Path
 args=sys.argv[1:]
 repo_by_id={"40146248552":"AIFreedomTrustFederation/.github","40150125926":"AIFreedomTrustFederation/AIFT-Runtime"}
@@ -26,6 +26,21 @@ repos={
 "AIFreedomTrustFederation/AIFT-Runtime":("40150125926","d953ddccacdb5700d46e2d79d5af7c7dd309807f","aift-runtime-verification","aift-runtime-verification.json",12582097262),
 }
 mode=os.environ.get("FAKE_GH_MODE", "ok")
+def archive_bytes(repo):
+ filename=repos[repo][3]
+ if mode=="corrupt_archive":return b"not a ZIP"
+ data=(Path(os.environ["FAKE_GH_FIXTURES"])/filename).read_bytes()
+ if mode=="tampered" and repo.endswith("/.github"):
+  record=json.loads(data);record["source"]["run_url"]="https://github.com/AIFreedomTrustFederation/.github/actions/runs/123"
+  data=json.dumps(record).encode()
+ buffer=io.BytesIO()
+ with zipfile.ZipFile(buffer,"w",compression=zipfile.ZIP_DEFLATED) as archive:
+  info=zipfile.ZipInfo(filename,date_time=(2020,1,1,0,0,0));info.compress_type=zipfile.ZIP_DEFLATED
+  archive.writestr(info,data)
+  if mode=="extra_member":
+   extra=zipfile.ZipInfo("unexpected.txt",date_time=(2020,1,1,0,0,0));extra.compress_type=zipfile.ZIP_DEFLATED
+   archive.writestr(extra,b"untrusted")
+ return buffer.getvalue()
 if args[0]=="api":
  path=args[1].removeprefix("repos/")
  repo=next((r for r in repos if path==r or path.startswith(r+"/")),None)
@@ -43,22 +58,17 @@ if args[0]=="api":
   if mode=="wrong_workflow":result["workflow_id"]=999
   if mode=="wrong_workflow_path":result["path"]=".github/workflows/untrusted.yml"
  elif suffix=="/actions/runs/"+run+"/artifacts?per_page=100":
-  items=[{"name":artifact,"id":artifact_id,"expired":False}]
+  digest="sha256:"+hashlib.sha256(archive_bytes(repo)).hexdigest()
+  if mode=="digest_mismatch":digest="sha256:"+"0"*64
+  if mode=="invalid_digest":digest="sha256:not-a-digest"
+  item={"name":artifact,"id":artifact_id,"expired":False,"digest":digest}
+  if mode=="missing_digest":item.pop("digest")
+  items=[item]
   if mode=="duplicate_artifact":items*=2
   if mode=="wrong_artifact_id":items[0]["id"]+=1
   result={"total_count":len(items),"artifacts":items}
  elif suffix=="/actions/artifacts/"+str(artifact_id)+"/zip":
-  src=Path(os.environ["FAKE_GH_FIXTURES"])/filename
-  if mode=="corrupt_archive":sys.stdout.buffer.write(b"not a ZIP");sys.exit(0)
-  data=src.read_bytes()
-  if mode=="tampered" and repo.endswith("/.github"):
-   record=json.loads(data);record["source"]["run_url"]="https://github.com/AIFreedomTrustFederation/.github/actions/runs/123"
-   data=json.dumps(record).encode()
-  buffer=io.BytesIO()
-  with zipfile.ZipFile(buffer,"w",compression=zipfile.ZIP_DEFLATED) as archive:
-   archive.writestr(filename,data)
-   if mode=="extra_member":archive.writestr("unexpected.txt",b"untrusted")
-  sys.stdout.buffer.write(buffer.getvalue())
+  sys.stdout.buffer.write(archive_bytes(repo))
   if mode=="branch_advanced" and repo.endswith("/AIFT-Runtime"): (Path(os.environ["FAKE_GH_FIXTURES"])/".branch-advanced").write_text("advanced")
   sys.exit(0)
  else: sys.exit(3)
@@ -166,6 +176,24 @@ class CollectionTests(unittest.TestCase):
         result, output = self.invoke("extra_member")
         self.assertEqual(result.returncode, 1)
         self.assertIn("exactly one file", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_artifact_digest_mismatch(self):
+        result, output = self.invoke("digest_mismatch")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("artifact SHA-256 digest mismatch", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_missing_artifact_digest(self):
+        result, output = self.invoke("missing_digest")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("missing or invalid artifact SHA-256 digest", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_malformed_artifact_digest(self):
+        result, output = self.invoke("invalid_digest")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("missing or invalid artifact SHA-256 digest", result.stderr)
         self.assertFalse(output.exists())
 
     def test_never_overwrites_existing_directory(self):
