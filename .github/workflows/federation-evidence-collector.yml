@@ -21,3 +21,55 @@ jobs:
           python-version: "3.13"
       - name: Test authenticated artifact collection contract
         run: python -B -m unittest discover -s tests -p 'test_collect_federation_evidence.py' -v
+
+  live-producer-evidence:
+    # Keep GH_TOKEN away from untrusted fork code; only same-repository PRs.
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    needs: collector
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.13"
+      - name: Verify live producer artifacts with read-only GitHub API
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          args=()
+          for repo in AIFreedomTrustFederation/.github AIFreedomTrustFederation/AIFT-Runtime; do
+            branch=$(gh api "repos/${repo}" --jq '.default_branch')
+            sha=$(gh api "repos/${repo}/branches/${branch}" --jq '.commit.sha')
+            case "$repo" in
+              AIFreedomTrustFederation/.github) workflow=362136764 ;;
+              AIFreedomTrustFederation/AIFT-Runtime) workflow=361044013 ;;
+            esac
+            query=".workflow_runs | map(select(.head_sha == \"${sha}\" and .status == \"completed\" and .conclusion == \"success\")) | .[0].id // empty"
+            run_id=$(gh api "repos/${repo}/actions/workflows/${workflow}/runs?branch=${branch}&event=push&per_page=100" --jq "$query")
+            if [[ ! "$run_id" =~ ^[1-9][0-9]*$ ]]; then
+              echo "No successful current-commit producer run found for ${repo}@${sha}" >&2
+              exit 1
+            fi
+            args+=(--run "${repo}=${run_id}" --expect "${repo}=${sha}")
+          done
+          python -B scripts/collect_federation_evidence.py "${args[@]}" --output-dir "$RUNNER_TEMP/federation-evidence-live"
+          python - "$RUNNER_TEMP/federation-evidence-live/federation-assessment.json" <<'PY'
+          import json
+          import sys
+          with open(sys.argv[1], encoding="utf-8") as handle:
+              assessment = json.load(handle)
+          assert len(assessment["github_runs"]) == 2
+          assert assessment["federation_scope"]["federation_wide_acceptance"] is False
+          assert assessment["errors"] == []
+          print(json.dumps({"status": assessment["status"],
+                            "verified_producers": [x["repository"] for x in assessment["github_runs"]],
+                            "federation_wide_acceptance": False}, sort_keys=True))
+          PY
