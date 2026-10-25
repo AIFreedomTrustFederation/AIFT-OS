@@ -13,8 +13,8 @@ import re
 import sys
 from pathlib import Path
 
-REPO = re.compile(r"AIFreedomTrustFederation/[A-Za-z0-9_.-]+\\Z")
-SHA = re.compile(r"[0-9a-f]{40}\\Z")
+REPO = re.compile(r"AIFreedomTrustFederation/[A-Za-z0-9_.-]+\Z")
+SHA = re.compile(r"[0-9a-f]{40}\Z")
 GATE_STATUSES = {"passed", "failed", "not_checked", "not_applicable"}
 MAX_BYTES = 1024 * 1024
 
@@ -70,7 +70,7 @@ def validate(record: dict, expected: dict[str, str]) -> dict:
         raise EvidenceError("invalid source type")
     run_url = source.get("run_url")
     if run_url is not None and (not isinstance(run_url, str) or
-                                not re.fullmatch(rf"https://github\\.com/{re.escape(repo)}/actions/runs/[1-9][0-9]*", run_url)):
+                                not re.fullmatch(rf"https://github\.com/{re.escape(repo)}/actions/runs/[1-9][0-9]*", run_url)):
         raise EvidenceError("source run URL does not match repository")
     checks = record.get("checks")
     if not isinstance(checks, list) or not checks:
