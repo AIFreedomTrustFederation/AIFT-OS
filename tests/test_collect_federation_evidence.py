@@ -67,7 +67,17 @@ if args[0]=="api":
   digest="sha256:"+hashlib.sha256(archive_bytes(repo)).hexdigest()
   if mode=="digest_mismatch":digest="sha256:"+"0"*64
   if mode=="invalid_digest":digest="sha256:not-a-digest"
-  item={"name":artifact,"id":artifact_id,"expired":False,"digest":digest,"size_in_bytes":len(archive_bytes(repo))}
+  repository_id=1271861965 if repo.endswith("/.github") else 1298897337
+  artifact_run={"id":int(run),"head_sha":sha,"head_branch":"main",
+                "repository_id":repository_id,"head_repository_id":repository_id}
+  if mode=="artifact_wrong_run_id":artifact_run["id"]+=1
+  if mode=="artifact_wrong_run_sha":artifact_run["head_sha"]="0"*40
+  if mode=="artifact_wrong_run_branch":artifact_run["head_branch"]="other"
+  if mode=="artifact_wrong_repo_id":artifact_run["repository_id"]+=1
+  if mode=="artifact_wrong_head_repo_id":artifact_run["head_repository_id"]+=1
+  item={"name":artifact,"id":artifact_id,"expired":False,"digest":digest,
+        "size_in_bytes":len(archive_bytes(repo)),"workflow_run":artifact_run}
+  if mode=="artifact_missing_run_identity":item.pop("workflow_run")
   if mode=="oversized_artifact":item["size_in_bytes"]=5*1024*1024
   if mode=="missing_artifact_size":item.pop("size_in_bytes")
   if mode=="invalid_artifact_size":item["size_in_bytes"]=True
@@ -246,6 +256,38 @@ class CollectionTests(unittest.TestCase):
         report = json.loads((output / "federation-assessment.json").read_text())
         self.assertEqual(report["status"], "failed")
         self.assertTrue(all(r["status"] == "failed" for r in report["repositories"]))
+
+    def test_rejects_artifact_bound_to_different_run(self):
+        result, output = self.invoke("artifact_wrong_run_id")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("artifact workflow run identity mismatch", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_artifact_bound_to_different_commit(self):
+        result, output = self.invoke("artifact_wrong_run_sha")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("artifact workflow run identity mismatch", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_artifact_bound_to_different_branch(self):
+        result, output = self.invoke("artifact_wrong_run_branch")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("artifact workflow run identity mismatch", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_artifact_from_wrong_repository(self):
+        for mode in ("artifact_wrong_repo_id", "artifact_wrong_head_repo_id"):
+            with self.subTest(mode=mode):
+                result, output = self.invoke(mode, output=self.root / mode)
+                self.assertEqual(result.returncode, 1)
+                self.assertIn("artifact workflow run identity mismatch", result.stderr)
+                self.assertFalse(output.exists())
+
+    def test_rejects_artifact_missing_workflow_run_provenance(self):
+        result, output = self.invoke("artifact_missing_run_identity")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("artifact workflow run identity mismatch", result.stderr)
+        self.assertFalse(output.exists())
 
     def test_rejects_duplicate_artifact(self):
         result, output = self.invoke("duplicate_artifact")
