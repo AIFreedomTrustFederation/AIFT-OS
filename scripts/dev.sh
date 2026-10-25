@@ -166,6 +166,9 @@ verify_fast() {
   bash tests/test-dev-shell.sh
   say "Testing federation push sweep failure handling"
   bash tests/test-push-all-aift-repos.sh
+  say "Testing commit-bound Federation evidence consumer"
+  require python3
+  python3 -B -m unittest discover -s tests -p test_federation_evidence.py -v
   say "Testing fresh CLI launcher"
   bash tests/test-aift-launcher.sh
   test_all
