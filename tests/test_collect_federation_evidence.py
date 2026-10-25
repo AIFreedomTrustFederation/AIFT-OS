@@ -73,6 +73,9 @@ if args[0]=="api":
   if mode=="wrong_artifact_id":items[0]["id"]+=1
   result={"total_count":len(items),"artifacts":items}
  elif suffix=="/actions/artifacts/"+str(artifact_id)+"/zip":
+  if mode=="oversized_stream":
+   sys.stdout.buffer.write(b"x"*(5*1024*1024))
+   sys.exit(0)
   sys.stdout.buffer.write(archive_bytes(repo))
   if mode=="branch_advanced" and repo.endswith("/AIFT-Runtime"): (Path(os.environ["FAKE_GH_FIXTURES"])/".branch-advanced").write_text("advanced")
   sys.exit(0)
@@ -209,6 +212,14 @@ class CollectionTests(unittest.TestCase):
         result, output = self.invoke("oversized_artifact")
         self.assertEqual(result.returncode, 1)
         self.assertIn("oversized artifact size", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_oversized_actual_download_even_when_metadata_is_small(self):
+        # The advertised artifact size is valid, but the subprocess emits >4 MiB.
+        # The collector must stop reading before buffering the whole response.
+        result, output = self.invoke("oversized_stream")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("artifact archive missing or too large", result.stderr)
         self.assertFalse(output.exists())
 
     def test_rejects_missing_artifact_size(self):
