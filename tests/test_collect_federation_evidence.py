@@ -17,7 +17,7 @@ REPOS = {
 }
 
 FAKE_GH = r'''#!/usr/bin/env python3
-import json,os,sys,shutil
+import io,json,os,sys,zipfile
 from pathlib import Path
 args=sys.argv[1:]
 repo_by_id={"40146248552":"AIFreedomTrustFederation/.github","40150125926":"AIFreedomTrustFederation/AIFT-Runtime"}
@@ -45,18 +45,24 @@ if args[0]=="api":
  elif suffix=="/actions/runs/"+run+"/artifacts?per_page=100":
   items=[{"name":artifact,"id":artifact_id,"expired":False}]
   if mode=="duplicate_artifact":items*=2
+  if mode=="wrong_artifact_id":items[0]["id"]+=1
   result={"total_count":len(items),"artifacts":items}
+ elif suffix=="/actions/artifacts/"+str(artifact_id)+"/zip":
+  src=Path(os.environ["FAKE_GH_FIXTURES"])/filename
+  if mode=="corrupt_archive":sys.stdout.buffer.write(b"not a ZIP");sys.exit(0)
+  data=src.read_bytes()
+  if mode=="tampered" and repo.endswith("/.github"):
+   record=json.loads(data);record["source"]["run_url"]="https://github.com/AIFreedomTrustFederation/.github/actions/runs/123"
+   data=json.dumps(record).encode()
+  buffer=io.BytesIO()
+  with zipfile.ZipFile(buffer,"w",compression=zipfile.ZIP_DEFLATED) as archive:
+   archive.writestr(filename,data)
+   if mode=="extra_member":archive.writestr("unexpected.txt",b"untrusted")
+  sys.stdout.buffer.write(buffer.getvalue())
+  if mode=="branch_advanced" and repo.endswith("/AIFT-Runtime"): (Path(os.environ["FAKE_GH_FIXTURES"])/".branch-advanced").write_text("advanced")
+  sys.exit(0)
  else: sys.exit(3)
  print(json.dumps(result))
-elif args[:2]==["run","download"]:
- run=args[2]; repo=args[args.index("--repo")+1]; out=Path(args[args.index("--dir")+1]); filename=repos[repo][3]
- if repo_by_id[run]!=repo:sys.exit(4)
- src=Path(os.environ["FAKE_GH_FIXTURES"])/filename
- if mode=="tampered" and repo.endswith(".github"):
-  data=json.loads(src.read_text());data["source"]["run_url"]="https://github.com/AIFreedomTrustFederation/.github/actions/runs/123"
-  (out/filename).write_text(json.dumps(data))
- else:shutil.copyfile(src,out/filename)
- if mode=="branch_advanced" and repo.endswith("/AIFT-Runtime"): (Path(os.environ["FAKE_GH_FIXTURES"])/".branch-advanced").write_text("advanced")
 else:sys.exit(5)
 '''
 
@@ -141,6 +147,25 @@ class CollectionTests(unittest.TestCase):
         result, output = self.invoke("tampered")
         self.assertEqual(result.returncode, 1)
         self.assertIn("artifact source", result.stderr)
+        self.assertFalse(output.exists())
+
+
+    def test_rejects_unlisted_artifact_id(self):
+        result, output = self.invoke("wrong_artifact_id")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("artifact ID download failed", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_invalid_zip(self):
+        result, output = self.invoke("corrupt_archive")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("invalid artifact ZIP", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_extra_zip_member(self):
+        result, output = self.invoke("extra_member")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("exactly one file", result.stderr)
         self.assertFalse(output.exists())
 
     def test_never_overwrites_existing_directory(self):
