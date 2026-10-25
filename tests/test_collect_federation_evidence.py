@@ -2,11 +2,13 @@
 """Black-box tests of the authenticated GitHub Actions evidence collector."""
 
 import json
+import importlib.util
 import os
 import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -195,6 +197,44 @@ class CollectionTests(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertIn("missing or invalid artifact SHA-256 digest", result.stderr)
         self.assertFalse(output.exists())
+
+    def test_atomic_publication_leaves_no_partial_directory_on_write_error(self):
+        # Exercise the publisher with a deterministic mid-publication disk failure.
+        sys.path.insert(0, str(ROOT / "scripts"))
+        try:
+            spec = importlib.util.spec_from_file_location("_collector_publication_test", SCRIPT)
+            collector = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(collector)
+        finally:
+            sys.path.remove(str(ROOT / "scripts"))
+        records, provenance = [], []
+        for index, repo in enumerate(REPOS):
+            source = self.root / f"source-{index}.json"
+            source.write_text("{}", encoding="utf-8")
+            records.append(source)
+            provenance.append({"repository": repo})
+        output = self.root / "atomic-assessment"
+        original_write = Path.write_bytes
+
+        def fail_second_record(path, data):
+            if (path.name == "aift-runtime-verification.json" and
+                    ".aift-evidence-stage-" in str(path)):
+                raise OSError("simulated disk-full during publication")
+            return original_write(path, data)
+
+        with mock.patch.object(Path, "write_bytes", fail_second_record):
+            with self.assertRaisesRegex(OSError, "simulated disk-full"):
+                collector.publish_records(output, records, provenance, {"status": "partial"})
+        self.assertFalse(output.exists(), "incomplete assessment must never be published")
+        self.assertEqual(list(self.root.glob(".aift-evidence-stage-*")), [])
+
+        # A subsequent successful publication is complete and leaves no staging debris.
+        collector.publish_records(output, records, provenance, {"status": "partial"})
+        self.assertEqual({p.name for p in output.iterdir()},
+                         {"aift-catalog-verification.json", "aift-runtime-verification.json",
+                          "federation-assessment.json"})
+        self.assertEqual(list(self.root.glob(".aift-evidence-stage-*")), [])
+
 
     def test_never_overwrites_existing_directory(self):
         target = self.root / "evidence"
