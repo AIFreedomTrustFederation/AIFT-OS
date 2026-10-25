@@ -197,8 +197,8 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
             if (not isinstance(run.get("repository"), dict) or run["repository"].get("full_name") != repo or
                     run.get("head_sha") != sha or run.get("head_branch") != branch or
                     run.get("event") != "push" or run.get("status") != "completed" or
-                    run.get("conclusion") != "success"):
-                raise CollectionError(f"run metadata does not establish successful default-branch CI: {repo}")
+                    run.get("conclusion") not in ("success", "failure")):
+                raise CollectionError(f"run metadata does not establish completed default-branch CI: {repo}")
             listing = api(f"repos/{repo}/actions/runs/{run_id}/artifacts?per_page=100")
             artifact_name, filename = ARTIFACTS[repo]
             artifacts = listing.get("artifacts")
@@ -219,14 +219,20 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
             directory.mkdir()
             downloaded = download_record(repo, artifact["id"], filename, artifact.get("digest"), directory)
             record = consumer.read_record(downloaded)
-            consumer.validate(record, expected)
+            result = consumer.validate(record, expected)
+            # A failed producer workflow may publish valid negative evidence
+            # through an if: always() artifact upload. Accept it only when the
+            # authenticated record actually reports a failed check or gate.
+            # Never turn an unrelated failed workflow into a verified pass.
+            if run["conclusion"] == "failure" and result["status"] != "failed":
+                raise CollectionError(f"failed CI run lacks failed verification evidence: {repo}")
             if (record.get("source", {}).get("type") != "github-actions" or
                     record["source"].get("run_url") != f"https://github.com/{repo}/actions/runs/{run_id}"):
                 raise CollectionError(f"artifact source does not match authenticated run: {repo}")
             records.append(downloaded)
             provenance.append({"repository": repo, "run_id": int(run_id), "artifact_id": artifact["id"],
                                "artifact_digest": artifact["digest"], "commit_sha": sha,
-                               "default_branch": branch})
+                               "default_branch": branch, "workflow_conclusion": run["conclusion"]})
         assessment, _ = consumer.inspect(records, expected)
         # A verified record reporting a failed check or security gate is valid
         # negative evidence, not malformed input. Publish its failed status
