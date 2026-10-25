@@ -194,6 +194,16 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
             if (not isinstance(latest_branch.get("commit"), dict) or
                     latest_branch["commit"].get("sha") != sha):
                 raise CollectionError(f"default branch advanced during collection: {repo}")
+        # A caller may intentionally collect a subset of supported producers.
+        # Preserve that CLI behavior, but never label subset evidence as a
+        # complete reported pass for the supported Federation baseline.
+        missing_producers = sorted(set(ARTIFACTS) - set(runs))
+        assessment["producer_coverage"] = {
+            "collected": sorted(runs),
+            "not_collected": missing_producers,
+        }
+        if missing_producers and assessment["status"] == "reported_pass":
+            assessment["status"] = "partial"
         assessment["provenance"] = "github_api_run_and_artifact_checked_unsigned"
         assessment["github_runs"] = provenance
         publish_records(output, records, provenance, assessment)
