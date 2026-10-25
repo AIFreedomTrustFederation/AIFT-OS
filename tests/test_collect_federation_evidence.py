@@ -53,7 +53,7 @@ if args[0]=="api":
   sys.stdout.buffer.write(b"x"*(2*1024*1024));sys.exit(0)
  if suffix=="" and mode=="invalid_utf8_metadata":
   sys.stdout.buffer.write(bytes([255]));sys.exit(0)
- if suffix=="": result={"default_branch":"main"}
+ if suffix=="": result={"default_branch":"main","id":1271861965 if repo.endswith("/.github") else 1298897337}
  elif suffix=="/branches/main":
   advanced=mode=="branch_advanced" and (Path(os.environ["FAKE_GH_FIXTURES"])/".branch-advanced").exists()
   result={"commit":{"sha":"0"*40 if mode=="stale" or advanced else sha}}
