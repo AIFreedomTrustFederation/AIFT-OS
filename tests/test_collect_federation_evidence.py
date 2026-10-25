@@ -49,6 +49,10 @@ if args[0]=="api":
  if not repo: sys.exit(2)
  run,sha,artifact,filename,artifact_id=repos[repo]
  suffix=path[len(repo):]
+ if suffix=="" and mode=="oversized_metadata":
+  sys.stdout.buffer.write(b"x"*(2*1024*1024));sys.exit(0)
+ if suffix=="" and mode=="invalid_utf8_metadata":
+  sys.stdout.buffer.write(b"\\xff");sys.exit(0)
  if suffix=="": result={"default_branch":"main"}
  elif suffix=="/branches/main":
   advanced=mode=="branch_advanced" and (Path(os.environ["FAKE_GH_FIXTURES"])/".branch-advanced").exists()
@@ -206,6 +210,19 @@ class CollectionTests(unittest.TestCase):
         result, output = self.invoke("extra_member")
         self.assertEqual(result.returncode, 1)
         self.assertIn("exactly one file", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_oversized_api_metadata_before_json_parsing(self):
+        result, output = self.invoke("oversized_metadata")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("GitHub API metadata", result.stderr)
+        self.assertIn("too large", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_non_utf8_api_metadata(self):
+        result, output = self.invoke("invalid_utf8_metadata")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("GitHub API metadata is not UTF-8", result.stderr)
         self.assertFalse(output.exists())
 
     def test_rejects_oversized_artifact_before_download(self):
