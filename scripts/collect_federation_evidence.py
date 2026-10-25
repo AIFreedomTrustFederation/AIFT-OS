@@ -26,6 +26,7 @@ import check_federation_evidence as consumer
 REPO = re.compile(r"AIFreedomTrustFederation/[A-Za-z0-9_.-]+\Z")
 SHA = re.compile(r"[0-9a-f]{40}\Z")
 MAX_ARCHIVE_BYTES = 4 * 1024 * 1024
+MAX_METADATA_BYTES = 1024 * 1024
 ARTIFACTS = {
     "AIFreedomTrustFederation/.github": ("aift-catalog-verification", "aift-catalog-verification.json"),
     "AIFreedomTrustFederation/AIFT-Runtime": ("aift-runtime-verification", "aift-runtime-verification.json"),
@@ -42,13 +43,15 @@ class CollectionError(ValueError):
 
 
 def gh(*args: str) -> str:
+    # API metadata is also untrusted input. Do not buffer unlimited stdout
+    # before parsing JSON, even when the artifact archive itself is bounded.
+    if len(args) != 2 or args[0] != "api":
+        raise CollectionError("unsupported gh invocation")
+    raw = bounded_archive_download("GitHub API metadata", args[1], MAX_METADATA_BYTES)
     try:
-        result = subprocess.run(["gh", *args], capture_output=True, text=True, check=False, timeout=60)
-    except (OSError, subprocess.TimeoutExpired) as exc:
-        raise CollectionError(f"gh invocation failed: {exc}") from exc
-    if result.returncode:
-        raise CollectionError(f"gh command failed (exit {result.returncode}): {' '.join(args[:3])}")
-    return result.stdout
+        return raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise CollectionError("GitHub API metadata is not UTF-8") from exc
 
 
 def api(path: str) -> dict:
@@ -63,8 +66,8 @@ def api(path: str) -> dict:
 
 
 
-def bounded_archive_download(repo: str, endpoint: str) -> bytes:
-    """Read at most MAX_ARCHIVE_BYTES + 1 bytes, with a wall-clock deadline.
+def bounded_archive_download(repo: str, endpoint: str, max_bytes: int = MAX_ARCHIVE_BYTES) -> bytes:
+    """Read at most max_bytes + 1 bytes, with a wall-clock deadline.
 
     Do not use subprocess.run(capture_output=True) for untrusted binary content:
     that buffers the complete response before its size can be checked.
@@ -83,11 +86,11 @@ def bounded_archive_download(repo: str, endpoint: str) -> bytes:
                 remaining = deadline - time.monotonic()
                 if remaining <= 0 or not selector.select(remaining):
                     raise CollectionError(f"artifact download timed out for {repo}")
-                chunk = os.read(process.stdout.fileno(), min(65536, MAX_ARCHIVE_BYTES + 1 - len(data)))
+                chunk = os.read(process.stdout.fileno(), min(65536, max_bytes + 1 - len(data)))
                 if not chunk:
                     break
                 data.extend(chunk)
-                if len(data) > MAX_ARCHIVE_BYTES:
+                if len(data) > max_bytes:
                     raise CollectionError(f"artifact archive missing or too large: {repo}")
         try:
             status = process.wait(timeout=max(0.001, deadline - time.monotonic()))
