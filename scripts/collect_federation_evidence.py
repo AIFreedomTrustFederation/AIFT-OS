@@ -205,6 +205,10 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
             if not isinstance(branch_info.get("commit"), dict) or branch_info["commit"].get("sha") != sha:
                 raise CollectionError(f"expected commit is not current {repo}/{branch}")
             run = api(f"repos/{repo}/actions/runs/{run_id}")
+            # The API endpoint is selected by run ID, but independently bind
+            # the returned workflow-run object to that exact identifier.
+            if type(run.get("id")) is not int or run["id"] != int(run_id):
+                raise CollectionError(f"run identity mismatch: {repo}")
             workflow_id, workflow_path = WORKFLOWS[repo]
             if (type(run.get("workflow_id")) is not int or run["workflow_id"] != workflow_id or
                     run.get("path") != workflow_path):

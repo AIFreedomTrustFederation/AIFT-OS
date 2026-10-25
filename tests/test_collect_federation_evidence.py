@@ -59,11 +59,13 @@ if args[0]=="api":
   result={"commit":{"sha":"0"*40 if mode=="stale" or advanced else sha}}
  elif suffix=="/actions/runs/"+run:
   repository_id=1271861965 if repo.endswith("/.github") else 1298897337
-  result={"repository":{"full_name":repo,"id":repository_id},
+  result={"id":int(run),"repository":{"full_name":repo,"id":repository_id},
           "head_repository":{"full_name":repo,"id":repository_id},
           "head_sha":sha,"head_branch":"main","event":"push","status":"completed","conclusion":"failure" if mode in ("failed_run", "failed_run_with_failed_gate", "failed_run_with_failed_check") else "success",
           "workflow_id":362136764 if repo.endswith("/.github") else 361044013,
           "path":".github/workflows/catalog-integrity.yml" if repo.endswith("/.github") else ".github/workflows/qa.yml"}
+  if mode=="wrong_run_id":result["id"]+=1
+  if mode=="missing_run_id":result.pop("id")
   if mode=="wrong_run_repo_id":result["repository"]["id"]+=1
   if mode=="wrong_run_head_repo_id":result["head_repository"]["id"]+=1
   if mode=="missing_run_head_repo":result.pop("head_repository")
@@ -263,6 +265,14 @@ class CollectionTests(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertIn("workflow identity mismatch", result.stderr)
         self.assertFalse(output.exists())
+
+    def test_rejects_mismatched_or_missing_workflow_run_id(self):
+        for mode in ("wrong_run_id", "missing_run_id"):
+            with self.subTest(mode=mode):
+                result, output = self.invoke(mode, output=self.root / mode)
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn("run identity mismatch", result.stderr)
+                self.assertFalse(output.exists())
 
     def test_rejects_wrong_run_repository_identity(self):
         for mode in ("wrong_run_repo_id", "wrong_run_head_repo_id",
