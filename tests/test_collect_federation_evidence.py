@@ -144,6 +144,29 @@ class CollectionTests(unittest.TestCase):
                              expected_workflows[run["repository"]])
         self.assertEqual(len(list(output.iterdir())), 3)
 
+    def test_assessment_exposes_reported_checks_gates_and_limitations(self):
+        result, output = self.invoke()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = json.loads((output / "federation-assessment.json").read_text())
+        for entry in report["repositories"]:
+            self.assertEqual(entry["reported_checks"], [
+                {"id": "qa", "command": "python -m unittest", "status": "passed", "exit_code": 0}
+            ])
+            self.assertEqual(entry["reported_gates"], {
+                "security": "not_checked", "dependencies": "not_checked",
+                "deployment": "not_applicable",
+            })
+            self.assertEqual(entry["reported_limitations"], ["No live deployment tested."])
+
+    def test_failed_checks_remain_visible_in_assessment(self):
+        result, output = self.invoke("failed_run_with_failed_check")
+        self.assertEqual(result.returncode, 1, result.stderr)
+        report = json.loads((output / "federation-assessment.json").read_text())
+        self.assertEqual(report["status"], "failed")
+        for entry in report["repositories"]:
+            self.assertEqual(entry["reported_checks"][0]["status"], "failed")
+            self.assertEqual(entry["reported_checks"][0]["exit_code"], 1)
+
     def test_subset_collection_cannot_report_full_federation_pass(self):
         only_repo = "AIFreedomTrustFederation/.github"
         result, output = self.invoke("all_gates_pass", selected_repos={only_repo})

@@ -179,6 +179,7 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
     with tempfile.TemporaryDirectory(prefix="aift-evidence-") as temp:
         root = Path(temp)
         records = []
+        validated_records = {}
         provenance = []
         for index, (repo, run_id) in enumerate(sorted(runs.items())):
             sha = expected[repo]
@@ -230,6 +231,7 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
                     record["source"].get("run_url") != f"https://github.com/{repo}/actions/runs/{run_id}"):
                 raise CollectionError(f"artifact source does not match authenticated run: {repo}")
             records.append(downloaded)
+            validated_records[repo] = record
             provenance.append({"repository": repo, "run_id": int(run_id), "artifact_id": artifact["id"],
                                "artifact_digest": artifact["digest"], "commit_sha": sha,
                                "default_branch": branch, "workflow_id": workflow_id,
@@ -240,6 +242,20 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
         # while continuing to reject missing, duplicate, or invalid records.
         if assessment["errors"]:
             raise CollectionError("retrieved evidence failed structural verification")
+        # Preserve producer-reported commands, outcomes, gate statuses and
+        # limitations alongside independently checked GitHub provenance. These
+        # fields remain self-reported, not independently verified test results.
+        for summary in assessment["repositories"]:
+            record = validated_records[summary["repository"]]
+            summary["reported_checks"] = [
+                {key: check[key] for key in ("id", "command", "status", "exit_code")}
+                for check in record["checks"]
+            ]
+            summary["reported_gates"] = {
+                gate: record[gate]["status"]
+                for gate in ("security", "dependencies", "deployment")
+            }
+            summary["reported_limitations"] = record["limitations"]
         # A branch can advance while artifacts are downloaded. Recheck every
         # producer immediately before publishing a current-commit assessment.
         for entry in provenance:
