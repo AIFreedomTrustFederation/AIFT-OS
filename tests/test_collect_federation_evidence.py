@@ -90,7 +90,7 @@ class CollectionTests(unittest.TestCase):
         executable.write_text(FAKE_GH, encoding="utf-8")
         executable.chmod(0o755)
 
-    def invoke(self, mode="ok", output=None):
+    def invoke(self, mode="ok", output=None, selected_repos=None):
         fixture_dir = self.root / "fixtures"
         fixture_dir.mkdir(exist_ok=True)
         for repo, (run, sha, _, filename, _) in REPOS.items():
@@ -98,13 +98,16 @@ class CollectionTests(unittest.TestCase):
                       "generated_at": "2026-10-25T01:00:00+00:00",
                       "source": {"type": "github-actions", "run_url": f"https://github.com/{repo}/actions/runs/{run}"},
                       "checks": [{"id": "qa", "command": "python -m unittest", "status": "passed", "exit_code": 0}],
-                      "overall_status": "passed", "security": {"status": "not_checked"},
-                      "dependencies": {"status": "not_checked"}, "deployment": {"status": "not_applicable"},
+                      "overall_status": "passed", "security": {"status": "passed" if mode == "all_gates_pass" else "not_checked"},
+                      "dependencies": {"status": "passed" if mode == "all_gates_pass" else "not_checked"},
+                      "deployment": {"status": "passed" if mode == "all_gates_pass" else "not_applicable"},
                       "limitations": ["No live deployment tested."]}
             (fixture_dir / filename).write_text(json.dumps(record), encoding="utf-8")
         output = output or self.root / "evidence"
         cmd = [sys.executable, "-B", str(SCRIPT), "--output-dir", str(output)]
         for repo, (run, sha, _, _, _) in REPOS.items():
+            if selected_repos is not None and repo not in selected_repos:
+                continue
             cmd.extend(["--run", f"{repo}={run}", "--expect", f"{repo}={sha}"])
         env = dict(os.environ, PATH=f"{self.bin}:{os.environ.get('PATH','')}",
                    FAKE_GH_MODE=mode, FAKE_GH_FIXTURES=str(fixture_dir))
@@ -118,6 +121,25 @@ class CollectionTests(unittest.TestCase):
         self.assertEqual(report["provenance"], "github_api_run_and_artifact_checked_unsigned")
         self.assertEqual(len(report["github_runs"]), 2)
         self.assertEqual(len(list(output.iterdir())), 3)
+
+    def test_subset_collection_cannot_report_full_federation_pass(self):
+        only_repo = "AIFreedomTrustFederation/.github"
+        result, output = self.invoke("all_gates_pass", selected_repos={only_repo})
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = json.loads((output / "federation-assessment.json").read_text())
+        self.assertEqual(report["status"], "partial")
+        self.assertEqual(report["producer_coverage"]["collected"], [only_repo])
+        self.assertEqual(report["producer_coverage"]["not_collected"],
+                         ["AIFreedomTrustFederation/AIFT-Runtime"])
+        self.assertEqual(len(report["repositories"]), 1)
+
+    def test_complete_supported_coverage_can_report_pass(self):
+        result, output = self.invoke("all_gates_pass")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = json.loads((output / "federation-assessment.json").read_text())
+        self.assertEqual(report["status"], "reported_pass")
+        self.assertEqual(report["producer_coverage"]["collected"], sorted(REPOS))
+        self.assertEqual(report["producer_coverage"]["not_collected"], [])
 
     def test_rejects_stale_default_branch(self):
         result, output = self.invoke("stale")
