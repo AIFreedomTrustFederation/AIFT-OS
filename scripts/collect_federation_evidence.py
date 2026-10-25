@@ -117,6 +117,17 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
         assessment, code = consumer.inspect(records, expected)
         if code:
             raise CollectionError("retrieved evidence failed structural verification")
+        # A branch can advance while artifacts are downloaded. Recheck every
+        # producer immediately before publishing a current-commit assessment.
+        for entry in provenance:
+            repo, branch, sha = entry["repository"], entry["default_branch"], entry["commit_sha"]
+            latest_repo = api(f"repos/{repo}")
+            if latest_repo.get("default_branch") != branch:
+                raise CollectionError(f"default branch changed during collection: {repo}")
+            latest_branch = api(f"repos/{repo}/branches/{branch}")
+            if (not isinstance(latest_branch.get("commit"), dict) or
+                    latest_branch["commit"].get("sha") != sha):
+                raise CollectionError(f"default branch advanced during collection: {repo}")
         assessment["provenance"] = "github_api_run_and_artifact_checked_unsigned"
         assessment["github_runs"] = provenance
         output.mkdir(parents=True, exist_ok=False)
