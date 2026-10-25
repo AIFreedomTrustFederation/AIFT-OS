@@ -33,7 +33,9 @@ if args[0]=="api":
  run,sha,artifact,filename,artifact_id=repos[repo]
  suffix=path[len(repo):]
  if suffix=="": result={"default_branch":"main"}
- elif suffix=="/branches/main": result={"commit":{"sha":"0"*40 if mode=="stale" else sha}}
+ elif suffix=="/branches/main":
+  advanced=mode=="branch_advanced" and (Path(os.environ["FAKE_GH_FIXTURES"])/".branch-advanced").exists()
+  result={"commit":{"sha":"0"*40 if mode=="stale" or advanced else sha}}
  elif suffix=="/actions/runs/"+run:
   result={"repository":{"full_name":repo},"head_sha":sha,"head_branch":"main","event":"push","status":"completed","conclusion":"failure" if mode=="failed_run" else "success"}
  elif suffix=="/actions/runs/"+run+"/artifacts?per_page=100":
@@ -50,6 +52,7 @@ elif args[:2]==["run","download"]:
   data=json.loads(src.read_text());data["source"]["run_url"]="https://github.com/AIFreedomTrustFederation/.github/actions/runs/123"
   (out/filename).write_text(json.dumps(data))
  else:shutil.copyfile(src,out/filename)
+ if mode=="branch_advanced": (Path(os.environ["FAKE_GH_FIXTURES"])/".branch-advanced").write_text("advanced")
 else:sys.exit(5)
 '''
 
@@ -98,6 +101,12 @@ class CollectionTests(unittest.TestCase):
         result, output = self.invoke("stale")
         self.assertEqual(result.returncode, 1)
         self.assertIn("not current", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_branch_advance_during_artifact_download(self):
+        result, output = self.invoke("branch_advanced")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("default branch advanced during collection", result.stderr)
         self.assertFalse(output.exists())
 
     def test_rejects_failed_run(self):
