@@ -211,6 +211,22 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
             artifact = matches[0]
             if type(artifact.get("id")) is not int or artifact["id"] <= 0:
                 raise CollectionError(f"invalid artifact identity: {repo}")
+            # The run-scoped artifact listing is not the only provenance
+            # assertion: corroborate the artifact's embedded workflow_run
+            # identity with the authenticated repository, run and branch.
+            # Both current producers publish these GitHub metadata fields.
+            artifact_run = artifact.get("workflow_run")
+            repo_id = info.get("id")
+            if (not isinstance(artifact_run, dict) or type(repo_id) is not int or
+                    type(artifact_run.get("id")) is not int or
+                    artifact_run["id"] != int(run_id) or
+                    artifact_run.get("head_sha") != sha or
+                    artifact_run.get("head_branch") != branch or
+                    type(artifact_run.get("repository_id")) is not int or
+                    artifact_run["repository_id"] != repo_id or
+                    type(artifact_run.get("head_repository_id")) is not int or
+                    artifact_run["head_repository_id"] != repo_id):
+                raise CollectionError(f"artifact workflow run identity mismatch: {repo}")
             # Reject oversized or malformed artifacts before launching a binary download.
             # GitHub artifact metadata provides the compressed archive size.
             size = artifact.get("size_in_bytes")
