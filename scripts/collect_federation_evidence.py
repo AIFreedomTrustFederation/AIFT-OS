@@ -37,6 +37,17 @@ WORKFLOWS = {
     "AIFreedomTrustFederation/AIFT-Runtime": (361044013, ".github/workflows/qa.yml"),
 }
 
+# Verified organization repositories that do not yet publish collector-compatible
+# evidence. This is a known, non-exhaustive integration backlog, not a roster.
+KNOWN_UNINTEGRATED = (
+    "AIFreedomTrustFederation/AIFT-Genesis",
+    "AIFreedomTrustFederation/AIFT-Forge",
+    "AIFreedomTrustFederation/TheMindofAll",
+    "AIFreedomTrustFederation/VPS",
+    "AIFreedomTrustFederation/AI-Freedom-Trust",
+    "AIFreedomTrustFederation/www.aifreedomtrust.com",
+)
+
 
 class CollectionError(ValueError):
     """GitHub evidence could not be safely corroborated."""
@@ -293,6 +304,15 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
         }
         if missing_producers and assessment["status"] == "reported_pass":
             assessment["status"] = "partial"
+        # A pass over supported producers is not a Federation-wide acceptance
+        # result. Make that boundary machine-readable even for reported_pass.
+        assessment["federation_scope"] = {
+            "verification_level": "supported_producers_only",
+            "supported_producers": sorted(ARTIFACTS),
+            "known_unintegrated_repositories": sorted(KNOWN_UNINTEGRATED),
+            "known_unintegrated_repositories_exhaustive": False,
+            "federation_wide_acceptance": False,
+        }
         assessment["provenance"] = "github_api_run_and_artifact_checked_unsigned"
         assessment["github_runs"] = provenance
         publish_records(output, records, provenance, assessment)

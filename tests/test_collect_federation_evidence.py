@@ -196,6 +196,22 @@ class CollectionTests(unittest.TestCase):
         self.assertEqual(report["producer_coverage"]["collected"], sorted(REPOS))
         self.assertEqual(report["producer_coverage"]["not_collected"], [])
 
+    def test_reported_pass_is_explicitly_not_federation_wide_acceptance(self):
+        result, output = self.invoke("all_gates_pass")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = json.loads((output / "federation-assessment.json").read_text())
+        self.assertEqual(report["status"], "reported_pass")
+        scope = report["federation_scope"]
+        self.assertEqual(scope["verification_level"], "supported_producers_only")
+        self.assertEqual(scope["supported_producers"], sorted(REPOS))
+        self.assertIs(scope["federation_wide_acceptance"], False)
+        self.assertIs(scope["known_unintegrated_repositories_exhaustive"], False)
+        self.assertTrue(set(scope["known_unintegrated_repositories"]).isdisjoint(REPOS))
+        for name in ("AIFT-Genesis", "AIFT-Forge", "TheMindofAll", "VPS",
+                     "AI-Freedom-Trust", "www.aifreedomtrust.com"):
+            self.assertIn(f"AIFreedomTrustFederation/{name}",
+                          scope["known_unintegrated_repositories"])
+
     def test_publishes_authenticated_failed_security_gate(self):
         result, output = self.invoke("failed_gate")
         self.assertEqual(result.returncode, 1, result.stderr)
