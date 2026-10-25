@@ -52,7 +52,7 @@ if args[0]=="api":
  if suffix=="" and mode=="oversized_metadata":
   sys.stdout.buffer.write(b"x"*(2*1024*1024));sys.exit(0)
  if suffix=="" and mode=="invalid_utf8_metadata":
-  sys.stdout.buffer.write(b"\\xff");sys.exit(0)
+  sys.stdout.buffer.write(bytes([255]));sys.exit(0)
  if suffix=="": result={"default_branch":"main"}
  elif suffix=="/branches/main":
   advanced=mode=="branch_advanced" and (Path(os.environ["FAKE_GH_FIXTURES"])/".branch-advanced").exists()
