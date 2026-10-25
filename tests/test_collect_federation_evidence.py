@@ -58,7 +58,7 @@ if args[0]=="api":
   advanced=mode=="branch_advanced" and (Path(os.environ["FAKE_GH_FIXTURES"])/".branch-advanced").exists()
   result={"commit":{"sha":"0"*40 if mode=="stale" or advanced else sha}}
  elif suffix=="/actions/runs/"+run:
-  result={"repository":{"full_name":repo},"head_sha":sha,"head_branch":"main","event":"push","status":"completed","conclusion":"failure" if mode=="failed_run" else "success",
+  result={"repository":{"full_name":repo},"head_sha":sha,"head_branch":"main","event":"push","status":"completed","conclusion":"failure" if mode in ("failed_run", "failed_run_with_failed_gate", "failed_run_with_failed_check") else "success",
           "workflow_id":362136764 if repo.endswith("/.github") else 361044013,
           "path":".github/workflows/catalog-integrity.yml" if repo.endswith("/.github") else ".github/workflows/qa.yml"}
   if mode=="wrong_workflow":result["workflow_id"]=999
@@ -112,9 +112,9 @@ class CollectionTests(unittest.TestCase):
                       "dependencies": {"status": "passed" if mode == "all_gates_pass" else "not_checked"},
                       "deployment": {"status": "passed" if mode == "all_gates_pass" else "not_applicable"},
                       "limitations": ["No live deployment tested."]}
-            if mode == "failed_gate":
+            if mode in ("failed_gate", "failed_run_with_failed_gate"):
                 record["security"]["status"] = "failed"
-            if mode == "failed_check":
+            if mode in ("failed_check", "failed_run_with_failed_check"):
                 record["checks"][0].update(status="failed", exit_code=1)
                 record["overall_status"] = "failed"
             (fixture_dir / filename).write_text(json.dumps(record), encoding="utf-8")
@@ -201,6 +201,21 @@ class CollectionTests(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertIn("successful default-branch CI", result.stderr)
         self.assertFalse(output.exists())
+
+    def test_preserves_negative_security_evidence_from_failed_ci_run(self):
+        # Both supported producers upload the verification JSON even on QA failure.
+        result, output = self.invoke("failed_run_with_failed_gate")
+        self.assertEqual(result.returncode, 1, result.stderr)
+        report = json.loads((output / "federation-assessment.json").read_text())
+        self.assertEqual(report["status"], "failed")
+        self.assertTrue(all("security" in r["failed_gates"] for r in report["repositories"]))
+
+    def test_preserves_negative_check_evidence_from_failed_ci_run(self):
+        result, output = self.invoke("failed_run_with_failed_check")
+        self.assertEqual(result.returncode, 1, result.stderr)
+        report = json.loads((output / "federation-assessment.json").read_text())
+        self.assertEqual(report["status"], "failed")
+        self.assertTrue(all(r["status"] == "failed" for r in report["repositories"]))
 
     def test_rejects_duplicate_artifact(self):
         result, output = self.invoke("duplicate_artifact")
