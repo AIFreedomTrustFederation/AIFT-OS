@@ -581,7 +581,10 @@ class CollectionTests(unittest.TestCase):
             sys.path.remove(str(ROOT / "scripts"))
         records, provenance = [], []
         for index, repo in enumerate(REPOS):
-            source = self.root / f"source-{index}.json"
+            directory = self.root / f"source-{index}"
+            directory.mkdir()
+            source = directory / ("aift-catalog-verification.json" if repo.endswith("/.github")
+                                  else "aift-runtime-verification.json")
             source.write_text("{}", encoding="utf-8")
             records.append(source)
             provenance.append({"repository": repo})
@@ -633,6 +636,33 @@ class CollectionTests(unittest.TestCase):
                     collector.publish_records(output, records, provenance, {"status": "partial"})
                 self.assertFalse(output.exists())
                 self.assertEqual(list(self.root.glob(".aift-evidence-stage-*")), [])
+
+    def test_publication_rejects_swapped_source_filenames(self):
+        # Equal-sized source/provenance lists are insufficient if their
+        # ordering differs; never publish a producer's file under another name.
+        sys.path.insert(0, str(ROOT / "scripts"))
+        try:
+            spec = importlib.util.spec_from_file_location("_collector_mapping_test", SCRIPT)
+            collector = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(collector)
+        finally:
+            sys.path.remove(str(ROOT / "scripts"))
+        sources, provenance = [], []
+        for index, repo in enumerate(REPOS):
+            directory = self.root / f"mapping-source-{index}"
+            directory.mkdir()
+            source = directory / collector.ARTIFACTS[repo][1]
+            source.write_text("{}", encoding="utf-8")
+            sources.append(source)
+            provenance.append({"repository": repo})
+        output = self.root / "swapped-assessment"
+        with self.assertRaisesRegex(collector.CollectionError,
+                                    "publication source does not match repository"):
+            collector.publish_records(output, sources[::-1], provenance,
+                                      {"status": "partial"})
+        self.assertFalse(output.exists())
+        self.assertEqual(list(self.root.glob(".aift-evidence-stage-*")), [])
+
 
     def test_never_overwrites_existing_directory(self):
         target = self.root / "evidence"

@@ -176,6 +176,11 @@ def publish_records(output: Path, records: list[Path], provenance: list[dict], a
     if (len(set(repositories)) != len(repositories) or
             any(repo not in ARTIFACTS for repo in repositories)):
         raise CollectionError("incomplete or duplicate publication records")
+    # Publication order must preserve producer identity; equal-length, unique
+    # provenance alone would allow two source files to be silently swapped.
+    for source, entry in zip(records, provenance):
+        if source.name != ARTIFACTS[entry["repository"]][1]:
+            raise CollectionError("publication source does not match repository")
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix=".aift-evidence-stage-", dir=output.parent) as temp:
         stage = Path(temp) / "complete"
