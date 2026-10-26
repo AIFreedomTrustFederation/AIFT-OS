@@ -317,7 +317,13 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
                                "artifact_id": artifact["id"],
                                "artifact_digest": artifact["digest"], "commit_sha": sha,
                                "default_branch": branch, "workflow_id": workflow_id,
-                               "workflow_path": workflow_path, "workflow_conclusion": run["conclusion"]})
+                               "workflow_path": workflow_path, "workflow_conclusion": run["conclusion"],
+                               # Preserve authenticated API timing and byte-size metadata
+                               # for downstream provenance audits (not a signed attestation).
+                               "workflow_started_at": run["run_started_at"],
+                               "workflow_updated_at": run["updated_at"],
+                               "artifact_created_at": artifact["created_at"],
+                               "artifact_size_in_bytes": size})
         assessment, _ = consumer.inspect(records, expected)
         # A verified record reporting a failed check or security gate is valid
         # negative evidence, not malformed input. Publish its failed status

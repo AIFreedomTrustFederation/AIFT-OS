@@ -193,6 +193,27 @@ class CollectionTests(unittest.TestCase):
                              expected_workflows[run["repository"]])
         self.assertEqual(len(list(output.iterdir())), 3)
 
+    def test_assessment_exposes_authenticated_artifact_timing_and_size(self):
+        # Preserve the GitHub API facts used by the temporal/size guards so a
+        # downstream auditor can examine them without re-fetching the run.
+        result, output = self.invoke()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = json.loads((output / "federation-assessment.json").read_text())
+        expected = {
+            "AIFreedomTrustFederation/.github": (
+                "2026-10-25T00:19:35Z", "2026-10-25T00:19:49Z", "2026-10-25T00:19:46Z"),
+            "AIFreedomTrustFederation/AIFT-Runtime": (
+                "2026-10-25T01:18:37Z", "2026-10-25T01:18:49Z", "2026-10-25T01:18:46Z"),
+        }
+        for entry in report["github_runs"]:
+            started, updated, created = expected[entry["repository"]]
+            self.assertEqual(entry["workflow_started_at"], started)
+            self.assertEqual(entry["workflow_updated_at"], updated)
+            self.assertEqual(entry["artifact_created_at"], created)
+            self.assertIs(type(entry["artifact_size_in_bytes"]), int)
+            self.assertGreater(entry["artifact_size_in_bytes"], 0)
+            self.assertLessEqual(entry["artifact_size_in_bytes"], 4 * 1024 * 1024)
+
     def test_assessment_records_unsigned_verifier_source_fingerprints(self):
         result, output = self.invoke()
         self.assertEqual(result.returncode, 0, result.stderr)
