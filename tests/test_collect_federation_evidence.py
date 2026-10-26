@@ -69,7 +69,7 @@ if args[0]=="api":
           "head_sha":sha,"head_branch":"main","event":"push","status":"completed","conclusion":"failure" if mode in ("failed_run", "failed_run_with_failed_gate", "failed_run_with_failed_check") else "success",
           "workflow_id":362136764 if repo.endswith("/.github") else 361044013,
           "path":".github/workflows/catalog-integrity.yml" if repo.endswith("/.github") else ".github/workflows/qa.yml",
-          "run_attempt":2 if mode=="artifact_created_before_run" else 1,
+          "run_attempt":2 if mode in ("artifact_created_before_run", "artifact_created_just_before_run") else 1,
           "run_started_at":"2026-10-25T00:19:35Z" if repo.endswith("/.github") else "2026-10-25T01:18:37Z",
           "updated_at":"2026-10-25T00:19:49Z" if repo.endswith("/.github") else "2026-10-25T01:18:49Z"}
   if mode=="wrong_run_id":result["id"]+=1
@@ -98,6 +98,10 @@ if args[0]=="api":
         "size_in_bytes":len(archive_bytes(repo)),"workflow_run":artifact_run}
   if mode=="artifact_created_before_run":item["created_at"]="2026-10-24T00:00:00Z"
   if mode=="artifact_created_after_run":item["created_at"]="2026-10-25T02:00:00Z"
+  if mode=="artifact_created_just_before_run":
+   item["created_at"]="2026-10-25T00:19:34Z" if repo.endswith("/.github") else "2026-10-25T01:18:36Z"
+  if mode=="artifact_created_just_after_run":
+   item["created_at"]="2026-10-25T00:19:50Z" if repo.endswith("/.github") else "2026-10-25T01:18:50Z"
   if mode=="artifact_missing_created_at":item.pop("created_at")
   if mode=="artifact_missing_run_identity":item.pop("workflow_run")
   if mode=="oversized_artifact":item["size_in_bytes"]=5*1024*1024
@@ -316,6 +320,17 @@ class CollectionTests(unittest.TestCase):
 
     def test_rejects_artifact_created_outside_authenticated_attempt(self):
         for mode in ("artifact_created_before_run", "artifact_created_after_run"):
+            with self.subTest(mode=mode):
+                result, output = self.invoke(mode, output=self.root / mode)
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn("artifact created outside authenticated workflow window", result.stderr)
+                self.assertFalse(output.exists())
+
+    def test_rejects_artifact_one_second_outside_authenticated_run(self):
+        # Both timestamps are authenticated GitHub metadata; accepting a
+        # pre-start artifact within a clock-skew grace period could accept
+        # evidence from a previous attempt of the same workflow run.
+        for mode in ("artifact_created_just_before_run", "artifact_created_just_after_run"):
             with self.subTest(mode=mode):
                 result, output = self.invoke(mode, output=self.root / mode)
                 self.assertEqual(result.returncode, 1, result.stderr)

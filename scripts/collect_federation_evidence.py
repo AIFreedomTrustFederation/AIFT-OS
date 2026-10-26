@@ -296,7 +296,10 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
                     raise ValueError("artifact timestamp must be timezone-aware")
             except (KeyError, TypeError, ValueError) as exc:
                 raise CollectionError(f"invalid authenticated artifact timestamp: {repo}") from exc
-            if not started - timedelta(minutes=5) <= created <= finished + timedelta(minutes=5):
+            # These timestamps all come from GitHub's API, unlike the
+            # producer's generated_at. A five-minute tolerance here could
+            # admit an artifact from a previous run attempt near a rerun.
+            if not started <= created <= finished:
                 raise CollectionError(f"artifact created outside authenticated workflow window: {repo}")
             # A failed producer workflow may publish valid negative evidence
             # through an if: always() artifact upload. Accept it only when the
