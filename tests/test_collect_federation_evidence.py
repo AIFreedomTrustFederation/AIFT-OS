@@ -599,6 +599,32 @@ class CollectionTests(unittest.TestCase):
         self.assertEqual(list(self.root.glob(".aift-evidence-stage-*")), [])
 
 
+    def test_publication_rejects_missing_and_duplicate_provenance(self):
+        # The publisher must not silently truncate mismatched lists via zip().
+        sys.path.insert(0, str(ROOT / "scripts"))
+        try:
+            spec = importlib.util.spec_from_file_location("_collector_invariant_test", SCRIPT)
+            collector = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(collector)
+        finally:
+            sys.path.remove(str(ROOT / "scripts"))
+        sources = []
+        for index in range(2):
+            source = self.root / f"publisher-source-{index}.json"
+            source.write_text("{}", encoding="utf-8")
+            sources.append(source)
+        repositories = list(REPOS)
+        for case, records, provenance in (
+            ("missing", sources[:1], [{"repository": repo} for repo in repositories]),
+            ("duplicate", sources, [{"repository": repositories[0]}] * 2),
+        ):
+            with self.subTest(case=case):
+                output = self.root / f"publisher-{case}"
+                with self.assertRaisesRegex(collector.CollectionError, "incomplete or duplicate"):
+                    collector.publish_records(output, records, provenance, {"status": "partial"})
+                self.assertFalse(output.exists())
+                self.assertEqual(list(self.root.glob(".aift-evidence-stage-*")), [])
+
     def test_never_overwrites_existing_directory(self):
         target = self.root / "evidence"
         target.mkdir()

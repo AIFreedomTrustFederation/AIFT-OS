@@ -168,6 +168,14 @@ def parse_pairs(values: list[str], kind: str) -> dict[str, str]:
 
 def publish_records(output: Path, records: list[Path], provenance: list[dict], assessment: dict) -> None:
     """Publish only a complete assessment; discard staged files on failure."""
+    # A mismatched mapping would be silently truncated by zip(), allowing an
+    # assessment to claim repositories whose evidence files were not published.
+    if not records or len(records) != len(provenance):
+        raise CollectionError("incomplete or duplicate publication records")
+    repositories = [entry.get("repository") for entry in provenance]
+    if (len(set(repositories)) != len(repositories) or
+            any(repo not in ARTIFACTS for repo in repositories)):
+        raise CollectionError("incomplete or duplicate publication records")
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix=".aift-evidence-stage-", dir=output.parent) as temp:
         stage = Path(temp) / "complete"
