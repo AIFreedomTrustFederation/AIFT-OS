@@ -471,5 +471,21 @@ class CollectionTests(unittest.TestCase):
         self.assertEqual((target / "sentinel").read_text(), "preserve")
 
 
+    def test_live_collector_runs_on_main_push_but_excludes_fork_prs(self):
+        # Default-branch pushes need evidence; fork PRs must not receive the live token.
+        workflow = (ROOT / ".github/workflows/federation-evidence-collector.yml").read_text(encoding="utf-8")
+        self.assertIn("  push:\n    branches: [main]\n", workflow)
+        live_job = workflow.split("\n  live-producer-evidence:\n", 1)[1]
+        guards = [line.strip().removeprefix("if: ") for line in live_job.splitlines()
+                  if line.startswith("    if: ")]
+        self.assertEqual(guards, [
+            "github.event_name == 'push' || "
+            "(github.event_name == 'pull_request' && "
+            "github.event.pull_request.head.repo.full_name == github.repository)"
+        ])
+        self.assertIn("    needs: collector\n", live_job)
+        self.assertIn("      actions: read\n", live_job)
+
+
 if __name__ == "__main__":
     unittest.main()
