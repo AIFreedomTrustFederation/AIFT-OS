@@ -27,8 +27,9 @@ jobs:
         run: python -B -m unittest discover -s tests -p 'test_collect_federation_evidence.py' -v
 
   live-producer-evidence:
-    # Keep GH_TOKEN away from untrusted fork code; only same-repository PRs.
-    if: github.event_name == 'push' || github.event_name == 'schedule' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
+    # PR code is untrusted even from same-repository branches. Authenticate only
+    # default-branch runs; PRs execute offline regressions without GH_TOKEN.
+    if: github.event_name == 'push' || github.event_name == 'schedule'
     needs: collector
     runs-on: ubuntu-24.04
     timeout-minutes: 8

@@ -507,21 +507,23 @@ class CollectionTests(unittest.TestCase):
         self.assertEqual((target / "sentinel").read_text(), "preserve")
 
 
-    def test_live_collector_runs_on_main_push_and_hourly_schedule_but_excludes_fork_prs(self):
-        # Producer changes need periodic checks; fork PRs must not receive the live token.
+    def test_live_collector_authenticates_only_on_default_branch_events(self):
+        # Same-repository PRs can also modify the collector. No PR-controlled
+        # code should execute in a job with GH_TOKEN, even when read-only.
         workflow = (ROOT / ".github/workflows/federation-evidence-collector.yml").read_text(encoding="utf-8")
         self.assertIn("  push:\n    branches: [main]\n", workflow)
+        self.assertIn("  pull_request:\n", workflow)
         self.assertIn("  schedule:\n    - cron: '23 * * * *'\n", workflow)
         live_job = workflow.split("\n  live-producer-evidence:\n", 1)[1]
         guards = [line.strip().removeprefix("if: ") for line in live_job.splitlines()
                   if line.startswith("    if: ")]
         self.assertEqual(guards, [
-            "github.event_name == 'push' || github.event_name == 'schedule' || "
-            "(github.event_name == 'pull_request' && "
-            "github.event.pull_request.head.repo.full_name == github.repository)"
+            "github.event_name == 'push' || github.event_name == 'schedule'"
         ])
+        self.assertNotIn("github.event.pull_request", live_job)
         self.assertIn("    needs: collector\n", live_job)
         self.assertIn("      actions: read\n", live_job)
+        self.assertIn("          GH_TOKEN: ${{ github.token }}\n", live_job)
 
 
     def test_live_collector_retains_verified_negative_producer_evidence(self):
