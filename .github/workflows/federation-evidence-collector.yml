@@ -69,7 +69,26 @@ jobs:
           assert len(assessment["github_runs"]) == 2
           assert assessment["federation_scope"]["federation_wide_acceptance"] is False
           assert assessment["errors"] == []
+          from pathlib import Path
+          expected_files = {
+              "federation-assessment.json",
+              "aift-catalog-verification.json",
+              "aift-runtime-verification.json",
+          }
+          actual_files = {entry.name for entry in Path(sys.argv[1]).parent.iterdir()}
+          assert actual_files == expected_files, f"unexpected published evidence files: {actual_files}"
           print(json.dumps({"status": assessment["status"],
                             "verified_producers": [x["repository"] for x in assessment["github_runs"]],
                             "federation_wide_acceptance": False}, sort_keys=True))
           PY
+      # Retain only the three validated JSON outputs; never archive runner state or tokens.
+      - name: Retain verified Federation assessment
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: federation-evidence-live-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/federation-evidence-live/federation-assessment.json
+            ${{ runner.temp }}/federation-evidence-live/aift-catalog-verification.json
+            ${{ runner.temp }}/federation-evidence-live/aift-runtime-verification.json
+          if-no-files-found: error
+          retention-days: 7
