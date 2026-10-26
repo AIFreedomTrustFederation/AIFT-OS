@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
   pull_request:
+  # Refresh evidence when producer repositories change without an AIFT-OS push.
+  # GitHub scheduled workflows run from the default branch and may be delayed.
+  schedule:
+    - cron: '23 * * * *'
 
 permissions:
   contents: read
@@ -24,7 +28,7 @@ jobs:
 
   live-producer-evidence:
     # Keep GH_TOKEN away from untrusted fork code; only same-repository PRs.
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
+    if: github.event_name == 'push' || github.event_name == 'schedule' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
     needs: collector
     runs-on: ubuntu-24.04
     timeout-minutes: 8
