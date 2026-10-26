@@ -68,12 +68,15 @@ if args[0]=="api":
           "head_repository":{"full_name":repo,"id":repository_id},
           "head_sha":sha,"head_branch":"main","event":"push","status":"completed","conclusion":"failure" if mode in ("failed_run", "failed_run_with_failed_gate", "failed_run_with_failed_check") else "success",
           "workflow_id":362136764 if repo.endswith("/.github") else 361044013,
-          "path":".github/workflows/catalog-integrity.yml" if repo.endswith("/.github") else ".github/workflows/qa.yml"}
+          "path":".github/workflows/catalog-integrity.yml" if repo.endswith("/.github") else ".github/workflows/qa.yml",
+          "run_started_at":"2026-10-25T00:19:35Z" if repo.endswith("/.github") else "2026-10-25T01:18:37Z",
+          "updated_at":"2026-10-25T00:19:49Z" if repo.endswith("/.github") else "2026-10-25T01:18:49Z"}
   if mode=="wrong_run_id":result["id"]+=1
   if mode=="missing_run_id":result.pop("id")
   if mode=="wrong_run_repo_id":result["repository"]["id"]+=1
   if mode=="wrong_run_head_repo_id":result["head_repository"]["id"]+=1
   if mode=="missing_run_head_repo":result.pop("head_repository")
+  if mode=="missing_run_timestamps":result.pop("run_started_at")
   if mode=="wrong_workflow":result["workflow_id"]=999
   if mode=="wrong_workflow_path":result["path"]=".github/workflows/untrusted.yml"
  elif suffix=="/actions/runs/"+run+"/artifacts?per_page=100":
@@ -129,7 +132,7 @@ class CollectionTests(unittest.TestCase):
         fixture_dir.mkdir(exist_ok=True)
         for repo, (run, sha, _, filename, _) in REPOS.items():
             record = {"schema": "aift.verification.v1", "repository": repo, "commit_sha": sha,
-                      "generated_at": "2026-10-25T01:00:00+00:00",
+                      "generated_at": "2026-10-25T00:19:40+00:00" if repo.endswith("/.github") else "2026-10-25T01:18:42+00:00",
                       "source": {"type": "github-actions", "run_url": f"https://github.com/{repo}/actions/runs/{run}"},
                       "checks": [{"id": "qa", "command": "python -m unittest", "status": "passed", "exit_code": 0}],
                       "overall_status": "passed", "security": {"status": "passed" if mode == "all_gates_pass" else "not_checked"},
@@ -138,6 +141,10 @@ class CollectionTests(unittest.TestCase):
                       "limitations": ["No live deployment tested."]}
             if mode == "future_generated_at":
                 record["generated_at"] = "2999-01-01T00:00:00+00:00"
+            if mode == "stale_generated_at":
+                record["generated_at"] = "2026-10-24T00:00:00+00:00"
+            if mode == "post_run_generated_at":
+                record["generated_at"] = "2026-10-25T02:00:00+00:00"
             if mode in ("failed_gate", "failed_run_with_failed_gate"):
                 record["security"]["status"] = "failed"
             if mode in ("failed_check", "failed_run_with_failed_check"):
@@ -269,6 +276,24 @@ class CollectionTests(unittest.TestCase):
         result, output = self.invoke("future_generated_at")
         self.assertEqual(result.returncode, 1, result.stderr)
         self.assertIn("verification evidence timestamp is in the future", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_stale_generated_at_relative_to_authenticated_run(self):
+        result, output = self.invoke("stale_generated_at")
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("timestamp outside authenticated workflow window", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_post_run_generated_at(self):
+        result, output = self.invoke("post_run_generated_at")
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("timestamp outside authenticated workflow window", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_missing_authenticated_run_timestamp(self):
+        result, output = self.invoke("missing_run_timestamps")
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("invalid authenticated workflow timestamps", result.stderr)
         self.assertFalse(output.exists())
 
     def test_rejects_stale_default_branch(self):

@@ -273,6 +273,17 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
             generated = datetime.fromisoformat(record["generated_at"])
             if generated > datetime.now(timezone.utc) + timedelta(minutes=5):
                 raise CollectionError(f"verification evidence timestamp is in the future: {repo}")
+            # Self-reported generation time must also be plausible for the
+            # authenticated workflow execution, not merely earlier than now.
+            try:
+                started = datetime.fromisoformat(run["run_started_at"])
+                finished = datetime.fromisoformat(run["updated_at"])
+                if started.tzinfo is None or finished.tzinfo is None or finished < started:
+                    raise ValueError("invalid workflow execution interval")
+            except (KeyError, TypeError, ValueError) as exc:
+                raise CollectionError(f"invalid authenticated workflow timestamps: {repo}") from exc
+            if not started - timedelta(minutes=5) <= generated <= finished + timedelta(minutes=5):
+                raise CollectionError(f"verification evidence timestamp outside authenticated workflow window: {repo}")
             # A failed producer workflow may publish valid negative evidence
             # through an if: always() artifact upload. Accept it only when the
             # authenticated record actually reports a failed check or gate.
