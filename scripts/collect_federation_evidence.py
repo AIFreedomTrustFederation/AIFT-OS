@@ -330,6 +330,19 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
             "federation_wide_acceptance": False,
         }
         assessment["provenance"] = "github_api_run_and_artifact_checked_unsigned"
+        # Identify the exact verifier source bytes used for this assessment.
+        # These are reproducibility fingerprints, NOT signed attestations.
+        assessment["verifier_implementation"] = {
+            "attestation": "local_file_sha256_unsigned",
+            "collector": {
+                "path": "scripts/collect_federation_evidence.py",
+                "sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+            },
+            "structural_consumer": {
+                "path": "scripts/check_federation_evidence.py",
+                "sha256": hashlib.sha256(Path(consumer.__file__).read_bytes()).hexdigest(),
+            },
+        }
         assessment["github_runs"] = provenance
         publish_records(output, records, provenance, assessment)
         return assessment

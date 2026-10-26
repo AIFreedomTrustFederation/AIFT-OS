@@ -2,6 +2,7 @@
 """Black-box tests of the authenticated GitHub Actions evidence collector."""
 
 import json
+import hashlib
 import importlib.util
 import os
 import subprocess
@@ -171,6 +172,21 @@ class CollectionTests(unittest.TestCase):
             self.assertEqual((run["workflow_id"], run["workflow_path"]),
                              expected_workflows[run["repository"]])
         self.assertEqual(len(list(output.iterdir())), 3)
+
+    def test_assessment_records_unsigned_verifier_source_fingerprints(self):
+        result, output = self.invoke()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = json.loads((output / "federation-assessment.json").read_text())
+        verifier = report["verifier_implementation"]
+        self.assertEqual(verifier["attestation"], "local_file_sha256_unsigned")
+        for name, filename in (
+            ("collector", "collect_federation_evidence.py"),
+            ("structural_consumer", "check_federation_evidence.py"),
+        ):
+            source = ROOT / "scripts" / filename
+            self.assertEqual(verifier[name]["path"], f"scripts/{filename}")
+            self.assertEqual(verifier[name]["sha256"], hashlib.sha256(source.read_bytes()).hexdigest())
+        self.assertIs(report["federation_scope"]["federation_wide_acceptance"], False)
 
     def test_assessment_exposes_reported_checks_gates_and_limitations(self):
         result, output = self.invoke()
