@@ -7,6 +7,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import textwrap
 import unittest
 from unittest import mock
 from pathlib import Path
@@ -498,6 +499,66 @@ class CollectionTests(unittest.TestCase):
         self.assertIn('          echo "validated=true" >> "$GITHUB_OUTPUT"\n', live_job)
         self.assertIn('          exit "$collector_status"\n', live_job)
         self.assertIn("        if: ${{ always() && steps.collect.outputs.validated == 'true' }}\n", live_job)
+
+
+    def test_live_workflow_shell_retains_failed_producer_assessment(self):
+        # Execute the workflow's actual post-collection shell, not just its
+        # YAML text. A verified producer failure must remain red while setting
+        # the output that permits the validated JSON files to be retained.
+        workflow = (ROOT / ".github/workflows/federation-evidence-collector.yml").read_text(
+            encoding="utf-8"
+        )
+        start = "          set +e\\n"
+        end = '          exit "$collector_status"\\n'
+        self.assertEqual(workflow.count(start), 1)
+        self.assertEqual(workflow.count(end), 1)
+        tail = workflow.split(start, 1)[1].split(end, 1)[0]
+        shell = textwrap.dedent(start + tail + end)
+        args = " ".join(
+            f'--run "{repo}={run}" --expect "{repo}={sha}"'
+            for repo, (run, sha, _, _, _) in REPOS.items()
+        )
+
+        for mode, validated in (
+            ("failed_run_with_failed_check", True),
+            ("digest_mismatch", False),
+        ):
+            with self.subTest(mode=mode):
+                # Prepare the same fixture files consumed by the fake gh CLI.
+                self.invoke(mode, output=self.root / f"preflight-{mode}")
+                runner_temp = self.root / mode
+                runner_temp.mkdir()
+                github_output = runner_temp / "github-output"
+                env = dict(
+                    os.environ,
+                    PATH=f"{self.bin}:{os.environ.get('PATH', '')}",
+                    FAKE_GH_MODE=mode,
+                    FAKE_GH_FIXTURES=str(self.root / "fixtures"),
+                    RUNNER_TEMP=str(runner_temp),
+                    GITHUB_OUTPUT=str(github_output),
+                )
+                result = subprocess.run(
+                    ["bash", "-c", f"set -euo pipefail\\nargs=({args})\\n" + shell],
+                    cwd=ROOT, env=env, capture_output=True, text=True, check=False,
+                )
+                self.assertEqual(result.returncode, 1, result.stderr)
+                output = runner_temp / "federation-evidence-live"
+                if validated:
+                    self.assertEqual(github_output.read_text(), "validated=true\\n")
+                    self.assertEqual(
+                        {p.name for p in output.iterdir()},
+                        {"federation-assessment.json",
+                         "aift-catalog-verification.json",
+                         "aift-runtime-verification.json"},
+                    )
+                    assessment = json.loads(
+                        (output / "federation-assessment.json").read_text()
+                    )
+                    self.assertEqual(assessment["status"], "failed")
+                    self.assertEqual(assessment["errors"], [])
+                else:
+                    self.assertFalse(github_output.exists())
+                    self.assertFalse(output.exists())
 
 
 if __name__ == "__main__":
