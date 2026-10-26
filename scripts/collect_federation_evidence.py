@@ -215,6 +215,9 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
             # the returned workflow-run object to that exact identifier.
             if type(run.get("id")) is not int or run["id"] != int(run_id):
                 raise CollectionError(f"run identity mismatch: {repo}")
+            attempt = run.get("run_attempt")
+            if type(attempt) is not int or attempt < 1:
+                raise CollectionError(f"invalid workflow run attempt: {repo}")
             workflow_id, workflow_path = WORKFLOWS[repo]
             if (type(run.get("workflow_id")) is not int or run["workflow_id"] != workflow_id or
                     run.get("path") != workflow_path):
@@ -284,6 +287,17 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
                 raise CollectionError(f"invalid authenticated workflow timestamps: {repo}") from exc
             if not started - timedelta(minutes=5) <= generated <= finished + timedelta(minutes=5):
                 raise CollectionError(f"verification evidence timestamp outside authenticated workflow window: {repo}")
+            # Run IDs and commit SHAs survive workflow reruns. Corroborate the
+            # artifact creation time against the latest authenticated attempt,
+            # rather than relying solely on its run ID and self-reported time.
+            try:
+                created = datetime.fromisoformat(artifact["created_at"])
+                if created.tzinfo is None or created.utcoffset() is None:
+                    raise ValueError("artifact timestamp must be timezone-aware")
+            except (KeyError, TypeError, ValueError) as exc:
+                raise CollectionError(f"invalid authenticated artifact timestamp: {repo}") from exc
+            if not started - timedelta(minutes=5) <= created <= finished + timedelta(minutes=5):
+                raise CollectionError(f"artifact created outside authenticated workflow window: {repo}")
             # A failed producer workflow may publish valid negative evidence
             # through an if: always() artifact upload. Accept it only when the
             # authenticated record actually reports a failed check or gate.
@@ -296,7 +310,8 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
             records.append(downloaded)
             validated_records[repo] = record
             provenance.append({"repository": repo, "repository_id": repo_id,
-                               "run_id": int(run_id), "artifact_id": artifact["id"],
+                               "run_id": int(run_id), "run_attempt": attempt,
+                               "artifact_id": artifact["id"],
                                "artifact_digest": artifact["digest"], "commit_sha": sha,
                                "default_branch": branch, "workflow_id": workflow_id,
                                "workflow_path": workflow_path, "workflow_conclusion": run["conclusion"]})

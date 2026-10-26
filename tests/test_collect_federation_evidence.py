@@ -69,6 +69,7 @@ if args[0]=="api":
           "head_sha":sha,"head_branch":"main","event":"push","status":"completed","conclusion":"failure" if mode in ("failed_run", "failed_run_with_failed_gate", "failed_run_with_failed_check") else "success",
           "workflow_id":362136764 if repo.endswith("/.github") else 361044013,
           "path":".github/workflows/catalog-integrity.yml" if repo.endswith("/.github") else ".github/workflows/qa.yml",
+          "run_attempt":2 if mode=="artifact_created_before_run" else 1,
           "run_started_at":"2026-10-25T00:19:35Z" if repo.endswith("/.github") else "2026-10-25T01:18:37Z",
           "updated_at":"2026-10-25T00:19:49Z" if repo.endswith("/.github") else "2026-10-25T01:18:49Z"}
   if mode=="wrong_run_id":result["id"]+=1
@@ -77,6 +78,7 @@ if args[0]=="api":
   if mode=="wrong_run_head_repo_id":result["head_repository"]["id"]+=1
   if mode=="missing_run_head_repo":result.pop("head_repository")
   if mode=="missing_run_timestamps":result.pop("run_started_at")
+  if mode=="invalid_run_attempt":result["run_attempt"]=True
   if mode=="wrong_workflow":result["workflow_id"]=999
   if mode=="wrong_workflow_path":result["path"]=".github/workflows/untrusted.yml"
  elif suffix=="/actions/runs/"+run+"/artifacts?per_page=100":
@@ -92,7 +94,11 @@ if args[0]=="api":
   if mode=="artifact_wrong_repo_id":artifact_run["repository_id"]+=1
   if mode=="artifact_wrong_head_repo_id":artifact_run["head_repository_id"]+=1
   item={"name":artifact,"id":artifact_id,"expired":False,"digest":digest,
+        "created_at":"2026-10-25T00:19:46Z" if repo.endswith("/.github") else "2026-10-25T01:18:46Z",
         "size_in_bytes":len(archive_bytes(repo)),"workflow_run":artifact_run}
+  if mode=="artifact_created_before_run":item["created_at"]="2026-10-24T00:00:00Z"
+  if mode=="artifact_created_after_run":item["created_at"]="2026-10-25T02:00:00Z"
+  if mode=="artifact_missing_created_at":item.pop("created_at")
   if mode=="artifact_missing_run_identity":item.pop("workflow_run")
   if mode=="oversized_artifact":item["size_in_bytes"]=5*1024*1024
   if mode=="wrong_artifact_size":item["size_in_bytes"]-=1
@@ -294,6 +300,32 @@ class CollectionTests(unittest.TestCase):
         result, output = self.invoke("missing_run_timestamps")
         self.assertEqual(result.returncode, 1, result.stderr)
         self.assertIn("invalid authenticated workflow timestamps", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_records_authenticated_run_attempt(self):
+        result, output = self.invoke()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = json.loads((output / "federation-assessment.json").read_text())
+        self.assertTrue(all(run["run_attempt"] == 1 for run in report["github_runs"]))
+
+    def test_rejects_invalid_run_attempt(self):
+        result, output = self.invoke("invalid_run_attempt")
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("invalid workflow run attempt", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_artifact_created_outside_authenticated_attempt(self):
+        for mode in ("artifact_created_before_run", "artifact_created_after_run"):
+            with self.subTest(mode=mode):
+                result, output = self.invoke(mode, output=self.root / mode)
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn("artifact created outside authenticated workflow window", result.stderr)
+                self.assertFalse(output.exists())
+
+    def test_rejects_missing_artifact_creation_timestamp(self):
+        result, output = self.invoke("artifact_missing_created_at")
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("invalid authenticated artifact timestamp", result.stderr)
         self.assertFalse(output.exists())
 
     def test_rejects_stale_default_branch(self):
