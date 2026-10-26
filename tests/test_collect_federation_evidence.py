@@ -33,7 +33,8 @@ mode=os.environ.get("FAKE_GH_MODE", "ok")
 def archive_bytes(repo):
  filename=repos[repo][3]
  if mode=="corrupt_archive":return b"not a ZIP"
- data=(Path(os.environ["FAKE_GH_FIXTURES"])/filename).read_bytes()
+ fixture_name=next(v[3] for k,v in repos.items() if k!=repo) if mode=="swapped_producer_records" else filename
+ data=(Path(os.environ["FAKE_GH_FIXTURES"])/fixture_name).read_bytes()
  if mode=="tampered" and repo.endswith("/.github"):
   record=json.loads(data);record["source"]["run_url"]="https://github.com/AIFreedomTrustFederation/.github/actions/runs/123"
   data=json.dumps(record).encode()
@@ -192,6 +193,14 @@ class CollectionTests(unittest.TestCase):
             self.assertEqual((run["workflow_id"], run["workflow_path"]),
                              expected_workflows[run["repository"]])
         self.assertEqual(len(list(output.iterdir())), 3)
+
+    def test_rejects_cross_repository_artifact_record_swap(self):
+        # Both GitHub artifact digests and the record set remain valid, but
+        # each archive contains the other producer's verification payload.
+        result, output = self.invoke("swapped_producer_records")
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("artifact record does not match authenticated producer", result.stderr)
+        self.assertFalse(output.exists())
 
     def test_assessment_exposes_authenticated_artifact_timing_and_size(self):
         # Preserve the GitHub API facts used by the temporal/size guards so a

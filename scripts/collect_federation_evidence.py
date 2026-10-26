@@ -277,6 +277,10 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
             downloaded = download_record(repo, artifact["id"], filename, artifact.get("digest"), directory,
                                          expected_size=size)
             record = consumer.read_record(downloaded)
+            # Bind the payload to the repository whose authenticated artifact
+            # supplied it, not merely to any expected Federation producer.
+            if record["repository"] != repo or record["commit_sha"] != sha:
+                raise CollectionError(f"artifact record does not match authenticated producer: {repo}")
             result = consumer.validate(record, expected)
             # A producer-reported timestamp is not an attestation, but it must
             # not claim generation later than the authenticated collection.
