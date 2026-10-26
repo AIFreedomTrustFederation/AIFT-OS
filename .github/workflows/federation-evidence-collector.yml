@@ -39,6 +39,7 @@ jobs:
         with:
           python-version: "3.13"
       - name: Verify live producer artifacts with read-only GitHub API
+        id: collect
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -52,7 +53,7 @@ jobs:
               AIFreedomTrustFederation/.github) workflow=362136764 ;;
               AIFreedomTrustFederation/AIFT-Runtime) workflow=361044013 ;;
             esac
-            query=".workflow_runs | map(select(.head_sha == \"${sha}\" and .status == \"completed\" and .conclusion == \"success\")) | .[0].id // empty"
+            query=".workflow_runs | map(select(.head_sha == \"${sha}\" and .status == \"completed\" and (.conclusion == \"success\" or .conclusion == \"failure\"))) | .[0].id // empty"
             run_id=$(gh api "repos/${repo}/actions/workflows/${workflow}/runs?branch=${branch}&event=push&per_page=100" --jq "$query")
             if [[ ! "$run_id" =~ ^[1-9][0-9]*$ ]]; then
               echo "No successful current-commit producer run found for ${repo}@${sha}" >&2
@@ -60,7 +61,10 @@ jobs:
             fi
             args+=(--run "${repo}=${run_id}" --expect "${repo}=${sha}")
           done
+          set +e
           python -B scripts/collect_federation_evidence.py "${args[@]}" --output-dir "$RUNNER_TEMP/federation-evidence-live"
+          collector_status=$?
+          set -e
           python - "$RUNNER_TEMP/federation-evidence-live/federation-assessment.json" <<'PY'
           import json
           import sys
@@ -81,8 +85,11 @@ jobs:
                             "verified_producers": [x["repository"] for x in assessment["github_runs"]],
                             "federation_wide_acceptance": False}, sort_keys=True))
           PY
+          echo "validated=true" >> "$GITHUB_OUTPUT"
+          exit "$collector_status"
       # Retain only the three validated JSON outputs; never archive runner state or tokens.
       - name: Retain verified Federation assessment
+        if: ${{ always() && steps.collect.outputs.validated == 'true' }}
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: federation-evidence-live-${{ github.run_id }}-${{ github.run_attempt }}

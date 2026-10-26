@@ -487,5 +487,18 @@ class CollectionTests(unittest.TestCase):
         self.assertIn("      actions: read\n", live_job)
 
 
+    def test_live_collector_retains_verified_negative_producer_evidence(self):
+        # A producer may upload valid failed-check evidence from an unsuccessful run.
+        # Keep CI red, but retain only records that passed the assessment validation.
+        workflow = (ROOT / ".github/workflows/federation-evidence-collector.yml").read_text(encoding="utf-8")
+        live_job = workflow.split("\n  live-producer-evidence:\n", 1)[1]
+        self.assertIn(r'(.conclusion == \"success\" or .conclusion == \"failure\")', live_job)
+        self.assertIn("        id: collect\n", live_job)
+        self.assertIn("          collector_status=$?\n", live_job)
+        self.assertIn('          echo "validated=true" >> "$GITHUB_OUTPUT"\n', live_job)
+        self.assertIn('          exit "$collector_status"\n', live_job)
+        self.assertIn("        if: ${{ always() && steps.collect.outputs.validated == 'true' }}\n", live_job)
+
+
 if __name__ == "__main__":
     unittest.main()
