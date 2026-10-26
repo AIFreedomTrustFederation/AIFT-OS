@@ -508,8 +508,8 @@ class CollectionTests(unittest.TestCase):
         workflow = (ROOT / ".github/workflows/federation-evidence-collector.yml").read_text(
             encoding="utf-8"
         )
-        start = "          set +e\\n"
-        end = '          exit "$collector_status"\\n'
+        start = "          set +e\n"
+        end = '          exit "$collector_status"\n'
         self.assertEqual(workflow.count(start), 1)
         self.assertEqual(workflow.count(end), 1)
         tail = workflow.split(start, 1)[1].split(end, 1)[0]
@@ -538,13 +538,13 @@ class CollectionTests(unittest.TestCase):
                     GITHUB_OUTPUT=str(github_output),
                 )
                 result = subprocess.run(
-                    ["bash", "-c", f"set -euo pipefail\\nargs=({args})\\n" + shell],
+                    ["bash", "-c", f"set -euo pipefail\nargs=({args})\n" + shell],
                     cwd=ROOT, env=env, capture_output=True, text=True, check=False,
                 )
                 self.assertEqual(result.returncode, 1, result.stderr)
                 output = runner_temp / "federation-evidence-live"
                 if validated:
-                    self.assertEqual(github_output.read_text(), "validated=true\\n")
+                    self.assertEqual(github_output.read_text(), "validated=true\n")
                     self.assertEqual(
                         {p.name for p in output.iterdir()},
                         {"federation-assessment.json",
