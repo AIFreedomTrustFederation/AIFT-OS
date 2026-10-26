@@ -132,6 +132,8 @@ In another terminal, check `curl -fsS http://127.0.0.1:8787/health`, then open `
 ### MoBox UXI HTTP exposure boundary
 
 The separate `bin/aiftd` service defaults to `127.0.0.1:8787` and exposes local federation metadata, sessions, artifacts, and registered read-only adapter invocation. Its HTTP handlers do not authenticate callers; binding to loopback is a deployment boundary, not per-user authorization. The `requireLoopback` startup check rejects wildcard and empty-host listen addresses (including `:8787`, `0.0.0.0:8787`, and `[::]:8787`) before the server starts. Use an explicit loopback address such as `127.0.0.1:8787` or `[::1]:8787`, and restrict access to trusted local processes. Run `go test ./cmd/aiftd -run TestRequireLoopback -count=1` to verify this boundary. Action decisions are recorded separately from invocation; the adapter executor rejects mutating adapters, but this does not make the HTTP API safe for network exposure. See [`cmd/aiftd/main.go`](cmd/aiftd/main.go) and [`internal/uxihttp/server.go`](internal/uxihttp/server.go). Loopback binding limits network exposure but is not per-user authentication; trusted local processes can still call the API.
+
+**MoBox UXI operator-guide drift:** The [operator guide](docs/MOBOX-UXI.md) still says no action-invocation endpoint exists, but [`internal/uxihttp/server.go`](internal/uxihttp/server.go) registers `POST /v1/sessions/{id}/actions/{actionID}/invoke`. Its [`Engine.InvokeAction`](internal/uxi/execution.go) path permits only registered non-mutating adapters and requires a recorded approval when an action is marked `approval_required`. This is not a shell, deployment, or wallet execution API; the loopback HTTP service does not authenticate individual callers. Treat the guide's endpoint list and no-invocation statement as outdated until reconciled with source. The route's presence is not evidence of external governance authorization or production readiness.
  The isolated launcher regression test checks this separation, first-run CLI creation, binary reuse, and environment overrides. That mock-based test does not replace a real Go build or full repository verification.
 
 The build creates a local `./aift` executable; it does **not** automatically add `aift` to your shell's `PATH`. For the `aift ...` commands shown above, either invoke `./aift ...` from the repository root or install the executable in a directory on your `PATH`. Run `./aift --help` to inspect supported commands for the checked-out revision before assuming every documented subcommand is available.
@@ -193,6 +195,16 @@ To reproduce the successful-push, failed-pull, and failed-push cases using dispo
 
 ```bash
 bash tests/test-push-all-aift-repos.sh
+```
+
+### Commit-bound Federation evidence assessment (offline)
+
+The [Federation evidence consumer](scripts/check_federation_evidence.py) accepts supplied `aift.verification.v1` JSON records using repeatable `--expect AIFreedomTrustFederation/REPO=COMMIT_SHA` and `--input RECORD.json` arguments. It checks repository identity and exact expected commit, record structure, unique checks and repositories, consistent check exit codes, and explicit security, dependency, and deployment gate statuses. It emits an `aift.federation-assessment.v1` JSON report; missing, stale, contradictory, or failed evidence produces a nonzero exit. An assessment of `partial` means reported checks passed but one or more gates remain unverified or not applicable. The consumer's `reported_pass` status reflects consistency of **supplied** records, not independently authenticated execution.
+
+This is a **read-only, offline structural validator**. It does not fetch GitHub artifacts, authenticate their origin or run conclusion, verify signatures, establish that supplied SHAs are current default-branch heads, test live integrations, or authorize deployment. Supply expected commits and records from a separately trusted source. The [consumer regressions](tests/test_federation_evidence.py) run within `make verify-fast` and `make verify`; reproduce that focused test with:
+
+```bash
+python3 -B -m unittest discover -s tests -p test_federation_evidence.py -v
 ```
 
 ### Cross-repository verification
