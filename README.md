@@ -94,6 +94,8 @@ go run ./tools/architecture --ci
 
 **Not yet exposed by this CLI:** `aift introspect scan`, `aift capabilities scan`, and `aift runtime scan`. They describe intended control-plane capabilities, not commands implemented in `cmd/aift/main.go`. The `federation`, `repo`, and `workflow` command groups are registered as **planned** and should not be treated as operational. For supported commands and their current status, inspect `./aift registry`.
 
+**Runtime-readiness guide command boundary:** The [runtime-readiness guide](docs/RUNTIME-READINESS.md) currently presents `aift runtime scan/status/ready/blocked/report` and `aift operator check` as operator commands. At this revision, [`cmd/aift/main.go`](cmd/aift/main.go) registers neither `runtime` nor `operator`, so those examples are architectural guidance, not invocable commands in the built `./aift` CLI. Use `./aift help` or `./aift registry` for the implemented command surface and `make verify` for the repository verification gate. The guide's readiness descriptions do not establish that a CLI scan executed or that a discovered service is operational.
+
 ### App registry discovery is not application launch
 
 `./aift apps list` discovers app manifests from `registry/apps/*.json`, `.aift/apps/*.json`, and sibling repositories' `.aift/apps/*.json` directories relative to the current checkout. `./aift apps inspect <id>` reports a matching manifest; duplicate IDs are flagged rather than silently resolved. These commands inspect declarations, not running processes or verified integrations.
