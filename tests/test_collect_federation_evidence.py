@@ -54,7 +54,10 @@ if args[0]=="api":
   sys.stdout.buffer.write(b"x"*(2*1024*1024));sys.exit(0)
  if suffix=="" and mode=="invalid_utf8_metadata":
   sys.stdout.buffer.write(bytes([255]));sys.exit(0)
- if suffix=="": result={"default_branch":"main","id":1271861965 if repo.endswith("/.github") else 1298897337}
+ if suffix=="":
+  result={"default_branch":"main","id":1271861965 if repo.endswith("/.github") else 1298897337}
+  if mode=="repo_id_changed" and (Path(os.environ["FAKE_GH_FIXTURES"])/".branch-advanced").exists():
+   result["id"]+=1
  elif suffix=="/branches/main":
   advanced=mode=="branch_advanced" and (Path(os.environ["FAKE_GH_FIXTURES"])/".branch-advanced").exists()
   result={"commit":{"sha":"0"*40 if mode=="stale" or advanced else sha}}
@@ -100,7 +103,7 @@ if args[0]=="api":
    sys.stdout.buffer.write(b"x"*(5*1024*1024))
    sys.exit(0)
   sys.stdout.buffer.write(archive_bytes(repo))
-  if mode=="branch_advanced" and repo.endswith("/AIFT-Runtime"): (Path(os.environ["FAKE_GH_FIXTURES"])/".branch-advanced").write_text("advanced")
+  if mode in ("branch_advanced", "repo_id_changed") and repo.endswith("/AIFT-Runtime"): (Path(os.environ["FAKE_GH_FIXTURES"])/".branch-advanced").write_text("advanced")
   sys.exit(0)
  else: sys.exit(3)
  print(json.dumps(result))
@@ -253,6 +256,14 @@ class CollectionTests(unittest.TestCase):
         result, output = self.invoke("branch_advanced")
         self.assertEqual(result.returncode, 1)
         self.assertIn("default branch advanced during collection", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_repository_identity_change_during_collection(self):
+        # A repository can be renamed or transferred while its SHA stays the same.
+        # The final metadata recheck must preserve the original numeric identity.
+        result, output = self.invoke("repo_id_changed")
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("repository identity changed during collection", result.stderr)
         self.assertFalse(output.exists())
 
     def test_rejects_wrong_workflow_id(self):

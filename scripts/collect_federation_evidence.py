@@ -303,6 +303,9 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
             latest_repo = api(f"repos/{repo}")
             if latest_repo.get("default_branch") != branch:
                 raise CollectionError(f"default branch changed during collection: {repo}")
+            if (type(latest_repo.get("id")) is not int or
+                    latest_repo["id"] != entry["repository_id"]):
+                raise CollectionError(f"repository identity changed during collection: {repo}")
             latest_branch = api(f"repos/{repo}/branches/{branch}")
             if (not isinstance(latest_branch.get("commit"), dict) or
                     latest_branch["commit"].get("sha") != sha):
