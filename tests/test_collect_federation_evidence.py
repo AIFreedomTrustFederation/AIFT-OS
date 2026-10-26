@@ -136,6 +136,8 @@ class CollectionTests(unittest.TestCase):
                       "dependencies": {"status": "passed" if mode == "all_gates_pass" else "not_checked"},
                       "deployment": {"status": "passed" if mode == "all_gates_pass" else "not_applicable"},
                       "limitations": ["No live deployment tested."]}
+            if mode == "future_generated_at":
+                record["generated_at"] = "2999-01-01T00:00:00+00:00"
             if mode in ("failed_gate", "failed_run_with_failed_gate"):
                 record["security"]["status"] = "failed"
             if mode in ("failed_check", "failed_run_with_failed_check"):
@@ -262,6 +264,12 @@ class CollectionTests(unittest.TestCase):
         self.assertEqual(report["status"], "failed")
         self.assertTrue(all(r["status"] == "failed" for r in report["repositories"]))
         self.assertEqual(len(list(output.iterdir())), 3)
+
+    def test_rejects_future_generated_at(self):
+        result, output = self.invoke("future_generated_at")
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("verification evidence timestamp is in the future", result.stderr)
+        self.assertFalse(output.exists())
 
     def test_rejects_stale_default_branch(self):
         result, output = self.invoke("stale")

@@ -8,6 +8,7 @@ of unsigned aift.verification.v1 records to check_federation_evidence.py.
 from __future__ import annotations
 
 import argparse
+from datetime import datetime, timedelta, timezone
 import hashlib
 import io
 import json
@@ -266,6 +267,12 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
                                          expected_size=size)
             record = consumer.read_record(downloaded)
             result = consumer.validate(record, expected)
+            # A producer-reported timestamp is not an attestation, but it must
+            # not claim generation later than the authenticated collection.
+            # Tolerate modest clock skew between the producer and CI runner.
+            generated = datetime.fromisoformat(record["generated_at"])
+            if generated > datetime.now(timezone.utc) + timedelta(minutes=5):
+                raise CollectionError(f"verification evidence timestamp is in the future: {repo}")
             # A failed producer workflow may publish valid negative evidence
             # through an if: always() artifact upload. Accept it only when the
             # authenticated record actually reports a failed check or gate.
