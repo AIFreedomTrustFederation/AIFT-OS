@@ -92,6 +92,7 @@ if args[0]=="api":
         "size_in_bytes":len(archive_bytes(repo)),"workflow_run":artifact_run}
   if mode=="artifact_missing_run_identity":item.pop("workflow_run")
   if mode=="oversized_artifact":item["size_in_bytes"]=5*1024*1024
+  if mode=="wrong_artifact_size":item["size_in_bytes"]-=1
   if mode=="missing_artifact_size":item.pop("size_in_bytes")
   if mode=="invalid_artifact_size":item["size_in_bytes"]=True
   if mode=="missing_digest":item.pop("digest")
@@ -420,6 +421,13 @@ class CollectionTests(unittest.TestCase):
         result, output = self.invoke("oversized_stream")
         self.assertEqual(result.returncode, 1)
         self.assertIn("artifact archive missing or too large", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_inconsistent_artifact_size_even_with_matching_digest(self):
+        # An otherwise valid archive must match its authenticated size metadata.
+        result, output = self.invoke("wrong_artifact_size")
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("artifact archive size does not match metadata", result.stderr)
         self.assertFalse(output.exists())
 
     def test_rejects_missing_artifact_size(self):

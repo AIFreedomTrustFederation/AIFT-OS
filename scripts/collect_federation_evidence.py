@@ -117,10 +117,15 @@ def bounded_archive_download(repo: str, endpoint: str, max_bytes: int = MAX_ARCH
         process.stdout.close()
 
 
-def download_record(repo: str, artifact_id: int, filename: str, digest: str, directory: Path) -> Path:
+def download_record(repo: str, artifact_id: int, filename: str, digest: str, directory: Path,
+                    expected_size: int) -> Path:
     """Fetch the *listed artifact ID*, not a potentially different same-name archive."""
     endpoint = f"repos/{repo}/actions/artifacts/{artifact_id}/zip"
     archive_bytes = bounded_archive_download(repo, endpoint)
+    # Bind the downloaded archive length to the authenticated artifact metadata.
+    # A digest match alone would not detect an inconsistent advertised size.
+    if len(archive_bytes) != expected_size:
+        raise CollectionError(f"artifact archive size does not match metadata: {repo}")
     # GitHub publishes a SHA-256 digest for Actions artifacts. Bind the
     # downloaded ZIP bytes to the exact artifact metadata we inspected.
     if not isinstance(digest, str) or not re.fullmatch(r"sha256:[0-9a-f]{64}", digest):
@@ -257,7 +262,8 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
                 raise CollectionError(f"missing, invalid, or oversized artifact size: {repo}")
             directory = root / f"repo-{index}"
             directory.mkdir()
-            downloaded = download_record(repo, artifact["id"], filename, artifact.get("digest"), directory)
+            downloaded = download_record(repo, artifact["id"], filename, artifact.get("digest"), directory,
+                                         expected_size=size)
             record = consumer.read_record(downloaded)
             result = consumer.validate(record, expected)
             # A failed producer workflow may publish valid negative evidence
