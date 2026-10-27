@@ -689,7 +689,7 @@ class CollectionTests(unittest.TestCase):
         self.assertNotIn("github.event.pull_request", live_job)
         self.assertIn("    needs: collector\n", live_job)
         self.assertIn("      actions: read\n", live_job)
-        self.assertIn("          GH_TOKEN: ${{ github.token }}\n", live_job)
+        self.assertIn("          GH_TOKEN: ${{ steps.producer-token.outputs.token }}\n", live_job)
 
 
     def test_live_collector_retains_verified_negative_producer_evidence(self):
