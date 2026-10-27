@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Fail closed when the source under test is not the workflow's exact checkout.
+# no-harness: read-only Git HEAD/status inspection; no AIFT mutation or orchestration.
 set -euo pipefail
 if [[ -z "${GITHUB_SHA:-}" || ! "${GITHUB_SHA}" =~ ^[0-9a-f]{40}$ ]]; then
   echo 'Missing or invalid GITHUB_SHA' >&2
