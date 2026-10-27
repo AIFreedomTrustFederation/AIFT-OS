@@ -146,6 +146,8 @@ The build creates a local `./aift` executable; it does **not** automatically add
 
 The separately started Federation Console (`bin/aiftd`) serves `GET /v1/federation/world-snapshot`, an `aift.world.v1` projection of **locally discovered Git worktrees** beneath `AIFT_ROOT`. It includes repository and declared-capability entities, containment relationships, signed 64-bit logical coordinates encoded as decimal strings, semantic visualization hints, evidence references, and a SHA-256 content hash for the root chunk. It does not poll GitHub, verify a live deployment, or establish that a declared capability can execute. See the [HTTP handler](internal/uxihttp/server.go), [snapshot builder](internal/uxi/world_protocol.go), and [local repository discovery](internal/uxi/repository.go).
 
+**World-snapshot readiness aggregation boundary:** Repository-level `status` is calculated from the **declared** statuses in each local `.aift/capabilities.json`, not from executed verification. A `blocked`, `broken`, `fail`, or `failed` capability makes its repository `blocked`; otherwise any `ready`, `active`, or `v1` capability makes it `ready` even if other capabilities remain `planned` or `detected`. Without such a ready declaration, the repository remains `detected`. The world snapshot reuses this aggregate status and its visual palette; a `ready` repository is not proof that every capability is tested, integrated, operational, or authorized. See [`aggregateCapabilityStatus`](internal/uxi/repository.go) and [`repositoryPalette`](internal/uxi/world_protocol.go).
+
 With the local server running, inspect the response:
 
 ```bash
