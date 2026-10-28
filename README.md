@@ -148,6 +148,8 @@ The separately started Federation Console (`bin/aiftd`) serves `GET /v1/federati
 
 **World-snapshot readiness aggregation boundary:** Repository-level `status` is calculated from the **declared** statuses in each local `.aift/capabilities.json`, not from executed verification. A `blocked`, `broken`, `fail`, or `failed` capability makes its repository `blocked`; otherwise any `ready`, `active`, or `v1` capability makes it `ready` even if other capabilities remain `planned` or `detected`. Without such a ready declaration, the repository remains `detected`. The world snapshot reuses this aggregate status and its visual palette; a `ready` repository is not proof that every capability is tested, integrated, operational, or authorized. See [`aggregateCapabilityStatus`](internal/uxi/repository.go) and [`repositoryPalette`](internal/uxi/world_protocol.go).
 
+**World-snapshot capability evidence boundary:** The current snapshot builder emits each capability entity with its declared `status` but an empty `evidence_refs` array. Repository entities instead reference local discovery records, including observations of `.aift/capabilities.json`; those records establish that declarations were observed, not that individual capabilities passed tests, performed inference, were deployed, or received authorization. The root chunk hash covers the projected entities and relations, not independently authenticated execution evidence. Consumers must not treat a capability's `ready` or `active` label, or a matching chunk hash, as operational proof. See [`BuildWorldSnapshot`](internal/uxi/world_protocol.go) and [`inspectRepository`](internal/uxi/repository.go).
+
 With the local server running, inspect the response:
 
 ```bash
