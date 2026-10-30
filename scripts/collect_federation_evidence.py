@@ -70,7 +70,7 @@ def api(path: str) -> dict:
     try:
         value = json.loads(gh("api", path), object_pairs_hook=consumer.no_duplicate_keys,
                            parse_constant=consumer.reject_constant)
-    except (ValueError, consumer.EvidenceError) as exc:
+    except (ValueError, RecursionError, consumer.EvidenceError) as exc:
         raise CollectionError(f"invalid GitHub API response for {path}: {exc}") from exc
     if not isinstance(value, dict):
         raise CollectionError(f"invalid GitHub API object for {path}")

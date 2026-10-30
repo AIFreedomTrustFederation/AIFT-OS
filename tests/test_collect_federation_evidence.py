@@ -56,6 +56,8 @@ if args[0]=="api":
   sys.stdout.buffer.write(b"x"*(2*1024*1024));sys.exit(0)
  if suffix=="" and mode=="invalid_utf8_metadata":
   sys.stdout.buffer.write(bytes([255]));sys.exit(0)
+ if suffix=="" and mode=="deeply_nested_metadata":
+  sys.stdout.write('{"id":' + "[" * 20000 + "0" + "]" * 20000 + "}");sys.exit(0)
  if suffix=="":
   result={"default_branch":"main","id":1271861965 if repo.endswith("/.github") else 1298897337}
   if mode=="repo_id_changed" and (Path(os.environ["FAKE_GH_FIXTURES"])/".branch-advanced").exists():
@@ -517,6 +519,15 @@ class CollectionTests(unittest.TestCase):
         result, output = self.invoke("invalid_utf8_metadata")
         self.assertEqual(result.returncode, 1)
         self.assertIn("GitHub API metadata is not UTF-8", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_deeply_nested_api_metadata_without_traceback(self):
+        # A 40 KiB GitHub API response can exceed Python JSON parser depth.
+        # Fail with a controlled collection error, not an uncaught traceback.
+        result, output = self.invoke("deeply_nested_metadata")
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("invalid GitHub API response", result.stderr)
+        self.assertNotIn("Traceback (most recent call last)", result.stderr)
         self.assertFalse(output.exists())
 
     def test_rejects_oversized_artifact_before_download(self):
