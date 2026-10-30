@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import math
 import re
 import sys
 from pathlib import Path
@@ -36,13 +37,21 @@ def reject_constant(value: str) -> None:
     raise EvidenceError(f"invalid numeric literal: {value}")
 
 
+def finite_json_float(value: str) -> float:
+    """Reject JSON exponent overflow instead of silently accepting infinity."""
+    number = float(value)
+    if not math.isfinite(number):
+        raise EvidenceError("non-finite JSON number")
+    return number
+
+
 def read_record(path: Path) -> dict:
     if path.stat().st_size > MAX_BYTES:
         raise EvidenceError("evidence exceeds 1 MiB")
     try:
         record = json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=no_duplicate_keys,
-                            parse_constant=reject_constant)
-    except (UnicodeError, json.JSONDecodeError) as exc:
+                            parse_constant=reject_constant, parse_float=finite_json_float)
+    except (UnicodeError, json.JSONDecodeError, EvidenceError, RecursionError) as exc:
         raise EvidenceError(f"invalid JSON: {exc}") from exc
     if not isinstance(record, dict):
         raise EvidenceError("record must be a JSON object")
