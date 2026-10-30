@@ -64,6 +64,12 @@ if args[0]=="api":
   sys.stdout.buffer.write(bytes([255]));sys.exit(0)
  if suffix=="" and mode=="deeply_nested_metadata":
   sys.stdout.write('{"id":' + "[" * 20000 + "0" + "]" * 20000 + "}");sys.exit(0)
+ if suffix=="" and mode in ("overflowing_exponent_metadata","negative_overflowing_exponent_metadata","finite_exponent_metadata"):
+  repo_id=1271861965 if repo.endswith("/.github") else 1298897337
+  exponent={"overflowing_exponent_metadata":"1e9999",
+            "negative_overflowing_exponent_metadata":"-1e9999",
+            "finite_exponent_metadata":"1e2"}[mode]
+  sys.stdout.write('{"default_branch":"main","id":' + str(repo_id) + ',"extra":' + exponent + "}");sys.exit(0)
  if suffix=="":
   result={"default_branch":"main","id":1271861965 if repo.endswith("/.github") else 1298897337}
   if mode=="repo_id_changed" and (Path(os.environ["FAKE_GH_FIXTURES"])/".branch-advanced").exists():
@@ -544,6 +550,22 @@ class CollectionTests(unittest.TestCase):
         self.assertIn("invalid GitHub API response", result.stderr)
         self.assertNotIn("Traceback (most recent call last)", result.stderr)
         self.assertFalse(output.exists())
+
+    def test_rejects_overflowing_api_exponents_without_traceback(self):
+        # Python json.loads otherwise silently converts 1e9999 to infinity.
+        # Even unused metadata must be valid finite JSON before provenance checks.
+        for mode in ("overflowing_exponent_metadata", "negative_overflowing_exponent_metadata"):
+            with self.subTest(mode=mode):
+                result, output = self.invoke(mode, output=self.root / f"evidence-{mode}")
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn("non-finite GitHub API number", result.stderr)
+                self.assertNotIn("Traceback (most recent call last)", result.stderr)
+                self.assertFalse(output.exists())
+
+    def test_accepts_finite_api_exponent(self):
+        result, output = self.invoke("finite_exponent_metadata", output=self.root / "evidence-finite")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue(output.is_dir())
 
     def test_rejects_oversized_artifact_before_download(self):
         result, output = self.invoke("oversized_artifact")
