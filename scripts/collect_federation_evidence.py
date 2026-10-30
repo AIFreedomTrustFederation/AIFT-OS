@@ -12,6 +12,7 @@ from datetime import datetime, timedelta, timezone
 import hashlib
 import io
 import json
+import math
 import os
 import selectors
 import zipfile
@@ -67,10 +68,19 @@ def gh(*args: str) -> str:
         raise CollectionError("GitHub API metadata is not UTF-8") from exc
 
 
+def finite_json_float(value: str) -> float:
+    """Reject overflowing JSON exponents instead of accepting Python infinity."""
+    number = float(value)
+    if not math.isfinite(number):
+        raise CollectionError("non-finite GitHub API number")
+    return number
+
+
 def api(path: str) -> dict:
     try:
         value = json.loads(gh("api", path), object_pairs_hook=consumer.no_duplicate_keys,
-                           parse_constant=consumer.reject_constant)
+                           parse_constant=consumer.reject_constant,
+                           parse_float=finite_json_float)
     except (ValueError, RecursionError, consumer.EvidenceError) as exc:
         raise CollectionError(f"invalid GitHub API response for {path}: {exc}") from exc
     if not isinstance(value, dict):
