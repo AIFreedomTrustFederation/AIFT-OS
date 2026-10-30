@@ -54,10 +54,14 @@ def bounded_json_int(value: str) -> int:
 
 
 def read_record(path: Path) -> dict:
-    if path.stat().st_size > MAX_BYTES:
+    # A stat-only limit is vulnerable to a file growing between stat and read.
+    # Bound bytes actually consumed, including for changing or special files.
+    with path.open("rb") as stream:
+        raw = stream.read(MAX_BYTES + 1)
+    if len(raw) > MAX_BYTES:
         raise EvidenceError("evidence exceeds 1 MiB")
     try:
-        record = json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=no_duplicate_keys,
+        record = json.loads(raw.decode("utf-8"), object_pairs_hook=no_duplicate_keys,
                             parse_constant=reject_constant, parse_float=finite_json_float,
                             parse_int=bounded_json_int)
     except (UnicodeError, ValueError, RecursionError) as exc:

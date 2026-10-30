@@ -169,5 +169,30 @@ class ConsumerTests(unittest.TestCase):
         self.assertEqual(json.loads(result.stdout)["status"], "partial")
 
 
+    def test_rejects_growth_after_stale_size_metadata(self):
+        # Simulate a file growing after the previous stat-based size check.
+        # The old reader accepted this valid but oversized JSON document.
+        import runpy
+        from types import SimpleNamespace
+        from unittest.mock import patch
+
+        module = runpy.run_path(str(SCRIPT))
+        path = self.root / "grown-evidence.json"
+        path.write_text(json.dumps({"padding": "x" * (1024 * 1024)}), encoding="utf-8")
+        with patch.object(Path, "stat", return_value=SimpleNamespace(st_size=0)):
+            with self.assertRaisesRegex(module["EvidenceError"], "evidence exceeds 1 MiB"):
+                module["read_record"](path)
+
+    def test_accepts_exact_byte_limit(self):
+        # Preserve the documented inclusive 1 MiB boundary.
+        first = json.dumps(record(REPOS[0], SHAS[0]))
+        raw = first + " " * (1024 * 1024 - len(first.encode("utf-8")))
+        result = self.run_consumer([record(REPOS[0], SHAS[0])],
+                                   raw=raw, expect={REPOS[0]: SHAS[0]})
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["status"], "partial")
+
+
+
 if __name__ == "__main__":
     unittest.main()
