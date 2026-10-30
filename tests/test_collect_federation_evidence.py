@@ -45,6 +45,12 @@ def archive_bytes(repo):
   if mode=="extra_member":
    extra=zipfile.ZipInfo("unexpected.txt",date_time=(2020,1,1,0,0,0));extra.compress_type=zipfile.ZIP_DEFLATED
    archive.writestr(extra,b"untrusted")
+ if mode=="invalid_deflate":
+  # Preserve a valid ZIP container and metadata while corrupting its deflate stream.
+  damaged=bytearray(buffer.getvalue())
+  offset=30+int.from_bytes(damaged[26:28],"little")+int.from_bytes(damaged[28:30],"little")
+  damaged[offset]=0xFF
+  return bytes(damaged)
  return buffer.getvalue()
 if args[0]=="api":
  path=args[1].removeprefix("repos/")
@@ -500,6 +506,15 @@ class CollectionTests(unittest.TestCase):
         result, output = self.invoke("corrupt_archive")
         self.assertEqual(result.returncode, 1)
         self.assertIn("invalid artifact ZIP", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_corrupted_deflate_without_traceback(self):
+        # The simulated GitHub API reports the digest and length of the damaged
+        # ZIP itself, so only decompression error handling can reject this input.
+        result, output = self.invoke("invalid_deflate")
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("invalid artifact ZIP", result.stderr)
+        self.assertNotIn("Traceback (most recent call last)", result.stderr)
         self.assertFalse(output.exists())
 
     def test_rejects_extra_zip_member(self):

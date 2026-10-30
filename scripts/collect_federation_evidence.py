@@ -15,6 +15,7 @@ import json
 import os
 import selectors
 import zipfile
+import zlib
 import re
 import subprocess
 import sys
@@ -148,8 +149,8 @@ def download_record(repo: str, artifact_id: int, filename: str, digest: str, dir
                     kind not in (0, 0o100000) or member.file_size > 1024 * 1024):
                 raise CollectionError(f"artifact contains an unsafe or unexpected file: {repo}")
             payload = archive.read(member)
-    except (zipfile.BadZipFile, zipfile.LargeZipFile, RuntimeError, EOFError, OSError,
-            NotImplementedError) as exc:
+    except (zipfile.BadZipFile, zipfile.LargeZipFile, zlib.error, RuntimeError, EOFError,
+            OSError, NotImplementedError) as exc:
         raise CollectionError(f"invalid artifact ZIP for {repo}: {exc}") from exc
     target = directory / filename
     target.write_bytes(payload)
