@@ -18,6 +18,7 @@ REPO = re.compile(r"AIFreedomTrustFederation/[A-Za-z0-9_.-]+\Z")
 SHA = re.compile(r"[0-9a-f]{40}\Z")
 GATE_STATUSES = {"passed", "failed", "not_checked", "not_applicable"}
 MAX_BYTES = 1024 * 1024
+MAX_INTEGER_DIGITS = 4300
 
 
 class EvidenceError(ValueError):
@@ -45,13 +46,21 @@ def finite_json_float(value: str) -> float:
     return number
 
 
+def bounded_json_int(value: str) -> int:
+    """Bound JSON integer parsing independent of Python's interpreter limit."""
+    if len(value.lstrip("-")) > MAX_INTEGER_DIGITS:
+        raise EvidenceError("JSON integer exceeds 4300 digits")
+    return int(value)
+
+
 def read_record(path: Path) -> dict:
     if path.stat().st_size > MAX_BYTES:
         raise EvidenceError("evidence exceeds 1 MiB")
     try:
         record = json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=no_duplicate_keys,
-                            parse_constant=reject_constant, parse_float=finite_json_float)
-    except (UnicodeError, json.JSONDecodeError, EvidenceError, RecursionError) as exc:
+                            parse_constant=reject_constant, parse_float=finite_json_float,
+                            parse_int=bounded_json_int)
+    except (UnicodeError, ValueError, RecursionError) as exc:
         raise EvidenceError(f"invalid JSON: {exc}") from exc
     if not isinstance(record, dict):
         raise EvidenceError("record must be a JSON object")

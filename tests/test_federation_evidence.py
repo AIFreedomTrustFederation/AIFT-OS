@@ -150,6 +150,24 @@ class ConsumerTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(json.loads(result.stdout)["status"], "partial")
 
+    def test_rejects_oversized_json_integer_without_traceback(self):
+        # Python's default integer parser can raise an uncaught ValueError
+        # for a 5,000-digit integer even though the JSON is below 1 MiB.
+        base = json.dumps(record(REPOS[0], SHAS[0]))[:-1]
+        raw = base + ', "extra": ' + "9" * 5000 + "}"
+        result = self.run_consumer([record(REPOS[0], SHAS[0])], raw=raw)
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["status"], "failed")
+        self.assertIn("JSON integer exceeds 4300 digits", result.stdout)
+        self.assertNotIn("Traceback", result.stderr)
+
+    def test_accepts_reasonable_json_integer(self):
+        first = record(REPOS[0], SHAS[0])
+        first["extra"] = 1234567890123456789012345
+        result = self.run_consumer([first, record(REPOS[1], SHAS[1])])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["status"], "partial")
+
 
 if __name__ == "__main__":
     unittest.main()
