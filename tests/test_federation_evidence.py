@@ -120,5 +120,36 @@ class ConsumerTests(unittest.TestCase):
         self.assertIn("invalid check status", result.stdout)
 
 
+    def test_rejects_nonfinite_json_numbers_without_traceback(self):
+        # Even ignored fields must be valid finite JSON; a matching commit
+        # does not make malformed producer evidence acceptable.
+        base = json.dumps(record(REPOS[0], SHAS[0]))[:-1]
+        for literal in ("NaN", "Infinity", "-Infinity", "1e9999", "-1e9999"):
+            with self.subTest(literal=literal):
+                raw = base + ', "extra": ' + literal + "}"
+                result = self.run_consumer([record(REPOS[0], SHAS[0])], raw=raw)
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertEqual(json.loads(result.stdout)["status"], "failed")
+                self.assertIn("invalid JSON", result.stdout)
+                self.assertNotIn("Traceback", result.stderr)
+
+    def test_rejects_deeply_nested_json_without_traceback(self):
+        # Roughly 40 KiB is well below the size limit but exceeds parser depth.
+        raw = (json.dumps(record(REPOS[0], SHAS[0]))[:-1]
+               + ', "extra": ' + "[" * 20000 + "0" + "]" * 20000 + "}")
+        result = self.run_consumer([record(REPOS[0], SHAS[0])], raw=raw)
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["status"], "failed")
+        self.assertIn("invalid JSON", result.stdout)
+        self.assertNotIn("Traceback", result.stderr)
+
+    def test_accepts_finite_json_decimal(self):
+        first = record(REPOS[0], SHAS[0])
+        first["extra"] = 1.25
+        result = self.run_consumer([first, record(REPOS[1], SHAS[1])])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["status"], "partial")
+
+
 if __name__ == "__main__":
     unittest.main()
