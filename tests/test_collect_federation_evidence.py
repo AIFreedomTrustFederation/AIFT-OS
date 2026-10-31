@@ -38,6 +38,11 @@ def archive_bytes(repo):
  if mode=="tampered" and repo.endswith("/.github"):
   record=json.loads(data);record["source"]["run_url"]="https://github.com/AIFreedomTrustFederation/.github/actions/runs/123"
   data=json.dumps(record).encode()
+ if mode in ("nonfinite_producer_json", "deeply_nested_producer_json") and repo.endswith("/.github"):
+  # Keep authenticated ZIP size/digest valid; only the embedded JSON is malformed.
+  extra=(b"1e9999" if mode=="nonfinite_producer_json" else
+         b"["*20000+b"0"+b"]"*20000)
+  data=data.rstrip()[:-1]+b',"ignored":'+extra+b"}"
  buffer=io.BytesIO()
  with zipfile.ZipFile(buffer,"w",compression=zipfile.ZIP_DEFLATED) as archive:
   info=zipfile.ZipInfo(filename,date_time=(2020,1,1,0,0,0));info.compress_type=zipfile.ZIP_DEFLATED
@@ -507,6 +512,18 @@ class CollectionTests(unittest.TestCase):
         self.assertIn("duplicate", result.stderr)
         self.assertFalse(output.exists())
 
+    def test_collector_rejects_malformed_producer_json_through_strict_consumer(self):
+        # Integration regression: the collector must use the strict consumer,
+        # not just pass its own API/digest checks. The fake API computes the
+        # correct SHA-256 and size for each malformed producer archive.
+        for mode in ("nonfinite_producer_json", "deeply_nested_producer_json"):
+            with self.subTest(mode=mode):
+                result, output = self.invoke(mode, output=self.root / f"evidence-{mode}")
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn("invalid JSON", result.stderr)
+                self.assertNotIn("Traceback (most recent call last)", result.stderr)
+                self.assertFalse(output.exists())
+
     def test_rejects_mismatched_artifact_run_url(self):
         result, output = self.invoke("tampered")
         self.assertEqual(result.returncode, 1)
@@ -747,6 +764,48 @@ class CollectionTests(unittest.TestCase):
         result, _ = self.invoke(output=target)
         self.assertEqual(result.returncode, 1)
         self.assertEqual((target / "sentinel").read_text(), "preserve")
+
+
+    def test_publication_race_preserves_concurrently_created_empty_destination(self):
+        # Deterministically create the destination after the publisher's final
+        # exists() check but before the atomic no-clobber rename.
+        sys.path.insert(0, str(ROOT / "scripts"))
+        try:
+            spec = importlib.util.spec_from_file_location("_collector_race_test", SCRIPT)
+            collector = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(collector)
+        finally:
+            sys.path.remove(str(ROOT / "scripts"))
+        records, provenance = [], []
+        for index, repo in enumerate(REPOS):
+            directory = self.root / f"race-source-{index}"
+            directory.mkdir()
+            source = directory / collector.ARTIFACTS[repo][1]
+            source.write_text("{}", encoding="utf-8")
+            records.append(source)
+            provenance.append({"repository": repo})
+        output = self.root / "raced-assessment"
+        actual_rename = collector.rename_directory_no_replace
+
+        def create_destination_before_rename(stage, destination):
+            destination.mkdir()
+            return actual_rename(stage, destination)
+
+        with mock.patch.object(collector, "rename_directory_no_replace",
+                               side_effect=create_destination_before_rename):
+            with self.assertRaisesRegex(collector.CollectionError, "already exists"):
+                collector.publish_records(output, records, provenance, {"status": "reported_pass"})
+        self.assertTrue(output.is_dir())
+        self.assertEqual(list(output.iterdir()), [], "existing empty directory was replaced")
+        self.assertEqual(list(self.root.glob(".aift-evidence-stage-*")), [])
+
+        # The same publisher still succeeds normally after the collision.
+        output.rmdir()
+        collector.publish_records(output, records, provenance, {"status": "reported_pass"})
+        self.assertEqual({p.name for p in output.iterdir()},
+                         {"aift-catalog-verification.json", "aift-runtime-verification.json",
+                          "federation-assessment.json"})
+        self.assertEqual(list(self.root.glob(".aift-evidence-stage-*")), [])
 
 
     def test_live_collector_authenticates_only_on_default_branch_events(self):
