@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import math
 import re
 import sys
 from pathlib import Path
@@ -17,6 +18,7 @@ REPO = re.compile(r"AIFreedomTrustFederation/[A-Za-z0-9_.-]+\Z")
 SHA = re.compile(r"[0-9a-f]{40}\Z")
 GATE_STATUSES = {"passed", "failed", "not_checked", "not_applicable"}
 MAX_BYTES = 1024 * 1024
+MAX_INTEGER_DIGITS = 4300
 
 
 class EvidenceError(ValueError):
@@ -36,13 +38,33 @@ def reject_constant(value: str) -> None:
     raise EvidenceError(f"invalid numeric literal: {value}")
 
 
+def finite_json_float(value: str) -> float:
+    """Reject JSON exponent overflow instead of silently accepting infinity."""
+    number = float(value)
+    if not math.isfinite(number):
+        raise EvidenceError("non-finite JSON number")
+    return number
+
+
+def bounded_json_int(value: str) -> int:
+    """Bound JSON integer parsing independent of Python's interpreter limit."""
+    if len(value.lstrip("-")) > MAX_INTEGER_DIGITS:
+        raise EvidenceError("JSON integer exceeds 4300 digits")
+    return int(value)
+
+
 def read_record(path: Path) -> dict:
-    if path.stat().st_size > MAX_BYTES:
+    # A stat-only limit is vulnerable to a file growing between stat and read.
+    # Bound bytes actually consumed, including for changing or special files.
+    with path.open("rb") as stream:
+        raw = stream.read(MAX_BYTES + 1)
+    if len(raw) > MAX_BYTES:
         raise EvidenceError("evidence exceeds 1 MiB")
     try:
-        record = json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=no_duplicate_keys,
-                            parse_constant=reject_constant)
-    except (UnicodeError, json.JSONDecodeError) as exc:
+        record = json.loads(raw.decode("utf-8"), object_pairs_hook=no_duplicate_keys,
+                            parse_constant=reject_constant, parse_float=finite_json_float,
+                            parse_int=bounded_json_int)
+    except (UnicodeError, ValueError, RecursionError) as exc:
         raise EvidenceError(f"invalid JSON: {exc}") from exc
     if not isinstance(record, dict):
         raise EvidenceError("record must be a JSON object")
@@ -69,6 +91,8 @@ def validate(record: dict, expected: dict[str, str]) -> dict:
     if not isinstance(source, dict) or source.get("type") not in ("local", "github-actions"):
         raise EvidenceError("invalid source type")
     run_url = source.get("run_url")
+    if source["type"] == "github-actions" and run_url is None:
+        raise EvidenceError("GitHub Actions source requires a run URL")
     if run_url is not None and (not isinstance(run_url, str) or
                                 not re.fullmatch(rf"https://github\.com/{re.escape(repo)}/actions/runs/[1-9][0-9]*", run_url)):
         raise EvidenceError("source run URL does not match repository")
