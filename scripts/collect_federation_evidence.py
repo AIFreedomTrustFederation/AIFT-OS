@@ -270,7 +270,9 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
             listing = api(f"repos/{repo}/actions/runs/{run_id}/artifacts?per_page=100")
             artifact_name, filename = ARTIFACTS[repo]
             artifacts = listing.get("artifacts")
-            if not isinstance(artifacts, list) or listing.get("total_count") != len(artifacts):
+            if (not isinstance(artifacts, list) or
+                    type(listing.get("total_count")) is not int or
+                    listing["total_count"] != len(artifacts)):
                 raise CollectionError(f"artifact list incomplete for {repo}")
             matches = [a for a in artifacts if isinstance(a, dict) and a.get("name") == artifact_name]
             if len(matches) != 1 or matches[0].get("expired") is not False:
