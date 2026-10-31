@@ -8,6 +8,8 @@ of unsigned aift.verification.v1 records to check_federation_evidence.py.
 from __future__ import annotations
 
 import argparse
+import ctypes
+import errno
 from datetime import datetime, timedelta, timezone
 import hashlib
 import io
@@ -182,6 +184,34 @@ def parse_pairs(values: list[str], kind: str) -> dict[str, str]:
     return result
 
 
+def rename_directory_no_replace(stage: Path, output: Path) -> None:
+    """Atomically publish a directory without replacing an existing path.
+
+    Linux renameat2(RENAME_NOREPLACE) provides the required single-operation
+    no-clobber guarantee. Fail closed if the primitive is unavailable rather
+    than falling back to a check-then-rename race.
+    """
+    if sys.platform != "linux":
+        raise CollectionError("atomic no-clobber directory publication requires Linux")
+    try:
+        libc = ctypes.CDLL(None, use_errno=True)
+        renameat2 = libc.renameat2
+    except (OSError, AttributeError) as exc:
+        raise CollectionError("atomic no-clobber directory publication unavailable") from exc
+    renameat2.argtypes = (ctypes.c_int, ctypes.c_char_p, ctypes.c_int,
+                          ctypes.c_char_p, ctypes.c_uint)
+    renameat2.restype = ctypes.c_int
+    # AT_FDCWD = -100, RENAME_NOREPLACE = 1 (Linux renameat2).
+    if renameat2(-100, os.fsencode(stage), -100, os.fsencode(output), 1) == 0:
+        return
+    error = ctypes.get_errno()
+    if error in (errno.EEXIST, errno.ENOTEMPTY):
+        raise CollectionError("output directory already exists; refusing overwrite")
+    if error in (errno.ENOSYS, errno.EINVAL, errno.EOPNOTSUPP):
+        raise CollectionError("atomic no-clobber directory publication unavailable")
+    raise OSError(error, os.strerror(error), str(output))
+
+
 def publish_records(output: Path, records: list[Path], provenance: list[dict], assessment: dict) -> None:
     """Publish only a complete assessment; discard staged files on failure."""
     # A mismatched mapping would be silently truncated by zip(), allowing an
@@ -210,7 +240,7 @@ def publish_records(output: Path, records: list[Path], provenance: list[dict], a
         # Never intentionally replace a previously published assessment.
         if output.exists():
             raise CollectionError("output directory already exists; refusing overwrite")
-        stage.rename(output)
+        rename_directory_no_replace(stage, output)
 
 
 def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dict:

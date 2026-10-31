@@ -766,6 +766,48 @@ class CollectionTests(unittest.TestCase):
         self.assertEqual((target / "sentinel").read_text(), "preserve")
 
 
+    def test_publication_race_preserves_concurrently_created_empty_destination(self):
+        # Deterministically create the destination after the publisher's final
+        # exists() check but before the atomic no-clobber rename.
+        sys.path.insert(0, str(ROOT / "scripts"))
+        try:
+            spec = importlib.util.spec_from_file_location("_collector_race_test", SCRIPT)
+            collector = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(collector)
+        finally:
+            sys.path.remove(str(ROOT / "scripts"))
+        records, provenance = [], []
+        for index, repo in enumerate(REPOS):
+            directory = self.root / f"race-source-{index}"
+            directory.mkdir()
+            source = directory / collector.ARTIFACTS[repo][1]
+            source.write_text("{}", encoding="utf-8")
+            records.append(source)
+            provenance.append({"repository": repo})
+        output = self.root / "raced-assessment"
+        actual_rename = collector.rename_directory_no_replace
+
+        def create_destination_before_rename(stage, destination):
+            destination.mkdir()
+            return actual_rename(stage, destination)
+
+        with mock.patch.object(collector, "rename_directory_no_replace",
+                               side_effect=create_destination_before_rename):
+            with self.assertRaisesRegex(collector.CollectionError, "already exists"):
+                collector.publish_records(output, records, provenance, {"status": "reported_pass"})
+        self.assertTrue(output.is_dir())
+        self.assertEqual(list(output.iterdir()), [], "existing empty directory was replaced")
+        self.assertEqual(list(self.root.glob(".aift-evidence-stage-*")), [])
+
+        # The same publisher still succeeds normally after the collision.
+        output.rmdir()
+        collector.publish_records(output, records, provenance, {"status": "reported_pass"})
+        self.assertEqual({p.name for p in output.iterdir()},
+                         {"aift-catalog-verification.json", "aift-runtime-verification.json",
+                          "federation-assessment.json"})
+        self.assertEqual(list(self.root.glob(".aift-evidence-stage-*")), [])
+
+
     def test_live_collector_authenticates_only_on_default_branch_events(self):
         # Same-repository PRs can also modify the collector. No PR-controlled
         # code should execute in a job with GH_TOKEN, even when read-only.
