@@ -38,6 +38,11 @@ def archive_bytes(repo):
  if mode=="tampered" and repo.endswith("/.github"):
   record=json.loads(data);record["source"]["run_url"]="https://github.com/AIFreedomTrustFederation/.github/actions/runs/123"
   data=json.dumps(record).encode()
+ if mode in ("nonfinite_producer_json", "deeply_nested_producer_json") and repo.endswith("/.github"):
+  # Keep authenticated ZIP size/digest valid; only the embedded JSON is malformed.
+  extra=(b"1e9999" if mode=="nonfinite_producer_json" else
+         b"["*20000+b"0"+b"]"*20000)
+  data=data.rstrip()[:-1]+b',"ignored":'+extra+b"}"
  buffer=io.BytesIO()
  with zipfile.ZipFile(buffer,"w",compression=zipfile.ZIP_DEFLATED) as archive:
   info=zipfile.ZipInfo(filename,date_time=(2020,1,1,0,0,0));info.compress_type=zipfile.ZIP_DEFLATED
@@ -506,6 +511,18 @@ class CollectionTests(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertIn("duplicate", result.stderr)
         self.assertFalse(output.exists())
+
+    def test_collector_rejects_malformed_producer_json_through_strict_consumer(self):
+        # Integration regression: the collector must use the strict consumer,
+        # not just pass its own API/digest checks. The fake API computes the
+        # correct SHA-256 and size for each malformed producer archive.
+        for mode in ("nonfinite_producer_json", "deeply_nested_producer_json"):
+            with self.subTest(mode=mode):
+                result, output = self.invoke(mode, output=self.root / f"evidence-{mode}")
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn("invalid JSON", result.stderr)
+                self.assertNotIn("Traceback (most recent call last)", result.stderr)
+                self.assertFalse(output.exists())
 
     def test_rejects_mismatched_artifact_run_url(self):
         result, output = self.invoke("tampered")
