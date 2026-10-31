@@ -1,0 +1,148 @@
+name: Federation Evidence Collector Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  # Refresh evidence when producer repositories change without an AIFT-OS push.
+  # GitHub scheduled workflows run from the default branch and may be delayed.
+  schedule:
+    - cron: '23 * * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  collector:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.13"
+      - name: Test authenticated artifact collection contract
+        run: python -B -m unittest discover -s tests -p 'test_collect_federation_evidence.py' -v
+      - name: Test cross-repository token scope contract
+        run: python -B -m unittest discover -s tests -p 'test_collector_cross_repo_auth.py' -v
+      - name: Test collector checkout commit binding
+        run: python -B -m unittest discover -s tests -p 'test_collector_checkout_binding.py' -v
+      - name: Verify collector checkout after offline QA
+        run: bash scripts/verify_collector_checkout.sh
+
+  live-producer-evidence:
+    # PR code is untrusted even from same-repository branches. Authenticate only
+    # default-branch runs; PRs execute offline regressions without GH_TOKEN.
+    if: github.event_name == 'push' || github.event_name == 'schedule'
+    needs: collector
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.13"
+      - name: Verify trusted collector checkout before App token creation
+        run: bash scripts/verify_collector_checkout.sh
+      # The workflow GITHUB_TOKEN is scoped to AIFT-OS. Mint a short-lived
+      # installation token for the two explicit producer repositories instead.
+      # Requires a GitHub App installed on both producers with Actions and
+      # Contents read permission; missing credentials fail closed.
+      - name: Mint scoped producer evidence token
+        id: producer-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.AIFT_FEDERATION_EVIDENCE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.AIFT_FEDERATION_EVIDENCE_APP_PRIVATE_KEY }}
+          owner: AIFreedomTrustFederation
+          repositories: |
+            .github
+            AIFT-Runtime
+          permission-actions: read
+          permission-contents: read
+      - name: Fail closed if producer Actions APIs are not accessible
+        shell: bash
+        env:
+          GH_TOKEN: ${{ steps.producer-token.outputs.token }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$GH_TOKEN" ]]; then
+            echo "No GitHub App installation token available for producer evidence" >&2
+            exit 1
+          fi
+          for repo in AIFreedomTrustFederation/.github AIFreedomTrustFederation/AIFT-Runtime; do
+            actual=$(gh api "repos/${repo}" --jq '.full_name')
+            if [[ "$actual" != "$repo" ]]; then
+              echo "Producer repository identity mismatch: ${repo}" >&2
+              exit 1
+            fi
+            gh api "repos/${repo}/actions/workflows?per_page=1" --jq '.total_count' >/dev/null
+          done
+      - name: Verify live producer artifacts with read-only GitHub API
+        id: collect
+        shell: bash
+        env:
+          GH_TOKEN: ${{ steps.producer-token.outputs.token }}
+        run: |
+          set -euo pipefail
+          args=()
+          for repo in AIFreedomTrustFederation/.github AIFreedomTrustFederation/AIFT-Runtime; do
+            branch=$(gh api "repos/${repo}" --jq '.default_branch')
+            sha=$(gh api "repos/${repo}/branches/${branch}" --jq '.commit.sha')
+            case "$repo" in
+              AIFreedomTrustFederation/.github) workflow=362136764 ;;
+              AIFreedomTrustFederation/AIFT-Runtime) workflow=361044013 ;;
+            esac
+            query=".workflow_runs | map(select(.head_sha == \"${sha}\" and .status == \"completed\" and (.conclusion == \"success\" or .conclusion == \"failure\"))) | .[0].id // empty"
+            run_id=$(gh api "repos/${repo}/actions/workflows/${workflow}/runs?branch=${branch}&event=push&per_page=100" --jq "$query")
+            if [[ ! "$run_id" =~ ^[1-9][0-9]*$ ]]; then
+              echo "No successful current-commit producer run found for ${repo}@${sha}" >&2
+              exit 1
+            fi
+            args+=(--run "${repo}=${run_id}" --expect "${repo}=${sha}")
+          done
+          set +e
+          python -B scripts/collect_federation_evidence.py "${args[@]}" --output-dir "$RUNNER_TEMP/federation-evidence-live"
+          collector_status=$?
+          set -e
+          python - "$RUNNER_TEMP/federation-evidence-live/federation-assessment.json" <<'PY'
+          import json
+          import sys
+          with open(sys.argv[1], encoding="utf-8") as handle:
+              assessment = json.load(handle)
+          assert len(assessment["github_runs"]) == 2
+          assert assessment["federation_scope"]["federation_wide_acceptance"] is False
+          assert assessment["errors"] == []
+          from pathlib import Path
+          expected_files = {
+              "federation-assessment.json",
+              "aift-catalog-verification.json",
+              "aift-runtime-verification.json",
+          }
+          actual_files = {entry.name for entry in Path(sys.argv[1]).parent.iterdir()}
+          assert actual_files == expected_files, f"unexpected published evidence files: {actual_files}"
+          print(json.dumps({"status": assessment["status"],
+                            "verified_producers": [x["repository"] for x in assessment["github_runs"]],
+                            "federation_wide_acceptance": False}, sort_keys=True))
+          PY
+          echo "validated=true" >> "$GITHUB_OUTPUT"
+          exit "$collector_status"
+      # Retain only the three validated JSON outputs; never archive runner state or tokens.
+      - name: Retain verified Federation assessment
+        if: ${{ always() && steps.collect.outputs.validated == 'true' }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: federation-evidence-live-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/federation-evidence-live/federation-assessment.json
+            ${{ runner.temp }}/federation-evidence-live/aift-catalog-verification.json
+            ${{ runner.temp }}/federation-evidence-live/aift-runtime-verification.json
+          if-no-files-found: error
+          retention-days: 7
