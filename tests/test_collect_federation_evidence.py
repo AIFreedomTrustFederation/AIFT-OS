@@ -128,6 +128,8 @@ if args[0]=="api":
   if mode=="duplicate_artifact":items*=2
   if mode=="wrong_artifact_id":items[0]["id"]+=1
   result={"total_count":len(items),"artifacts":items}
+  if mode=="artifact_count_boolean":result["total_count"]=True
+  if mode=="artifact_count_float":result["total_count"]=1.0
  elif suffix=="/actions/artifacts/"+str(artifact_id)+"/zip":
   if mode=="oversized_stream":
    sys.stdout.buffer.write(b"x"*(5*1024*1024))
@@ -488,6 +490,16 @@ class CollectionTests(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertIn("artifact workflow run identity mismatch", result.stderr)
         self.assertFalse(output.exists())
+
+    def test_rejects_noninteger_artifact_listing_count(self):
+        # Python considers True == 1 and 1.0 == 1; neither is a valid
+        # GitHub API integer count, even when one artifact is listed.
+        for mode in ("artifact_count_boolean", "artifact_count_float"):
+            with self.subTest(mode=mode):
+                result, output = self.invoke(mode)
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn("artifact list incomplete", result.stderr)
+                self.assertFalse(output.exists())
 
     def test_rejects_duplicate_artifact(self):
         result, output = self.invoke("duplicate_artifact")
