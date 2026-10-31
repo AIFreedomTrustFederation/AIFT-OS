@@ -496,7 +496,7 @@ class CollectionTests(unittest.TestCase):
         # GitHub API integer count, even when one artifact is listed.
         for mode in ("artifact_count_boolean", "artifact_count_float"):
             with self.subTest(mode=mode):
-                result, output = self.invoke(mode)
+                result, output = self.invoke(mode, output=self.root / f"evidence-{mode}")
                 self.assertEqual(result.returncode, 1, result.stderr)
                 self.assertIn("artifact list incomplete", result.stderr)
                 self.assertFalse(output.exists())
