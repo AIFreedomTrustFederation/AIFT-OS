@@ -813,5 +813,25 @@ class CollectionTests(unittest.TestCase):
                     self.assertFalse(output.exists())
 
 
+    def test_rejects_oversized_numeric_run_id_without_traceback(self):
+        # A 5,000-digit ASCII run ID previously raised Python's integer
+        # conversion ValueError outside the collector's handled error path.
+        output = self.root / "oversized-run-id-evidence"
+        repo, (_, sha, _, _, _) = next(iter(REPOS.items()))
+        for run_id in ("9" * 5000, "0" * 5000, "0"):
+            with self.subTest(run_id_length=len(run_id), first=run_id[0]):
+                result = subprocess.run(
+                    [sys.executable, "-B", str(SCRIPT),
+                     "--run", f"{repo}={run_id}",
+                     "--expect", f"{repo}={sha}",
+                     "--output-dir", str(output)],
+                    capture_output=True, text=True, check=False,
+                )
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn("invalid or duplicate run", result.stderr)
+                self.assertNotIn("Traceback", result.stderr)
+                self.assertFalse(output.exists())
+
+
 if __name__ == "__main__":
     unittest.main()

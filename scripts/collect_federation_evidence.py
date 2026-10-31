@@ -170,8 +170,13 @@ def parse_pairs(values: list[str], kind: str) -> dict[str, str]:
     result = {}
     for item in values:
         repo, sep, value = item.partition("=")
-        if (not sep or not REPO.fullmatch(repo) or repo in result or
-                not (SHA.fullmatch(value) if kind == "commit" else value.isascii() and value.isdecimal() and int(value) > 0)):
+        # GitHub run IDs are positive decimal identifiers. Bound their length
+        # before any int() conversion: Python rejects >4300-digit integers and
+        # otherwise leaks a traceback for malformed operator-supplied input.
+        valid_value = (SHA.fullmatch(value) if kind == "commit" else
+                       value.isascii() and value.isdecimal() and
+                       0 < len(value) <= 20 and bool(value.strip("0")))
+        if not sep or not REPO.fullmatch(repo) or repo in result or not valid_value:
             raise CollectionError(f"invalid or duplicate {kind}: {item}")
         result[repo] = value
     return result
