@@ -712,6 +712,22 @@ class CollectionTests(unittest.TestCase):
         self.assertEqual(list(self.root.glob(".aift-evidence-stage-*")), [])
 
 
+    def test_rejects_checkout_local_output_before_download(self):
+        # A successful collector run must never create files in the source
+        # checkout after the workflow's clean-checkout verification.
+        with tempfile.TemporaryDirectory(prefix=".aift-collector-boundary-", dir=ROOT) as directory:
+            direct = Path(directory) / "evidence"
+            alias = self.root / "checkout-alias"
+            alias.symlink_to(directory, target_is_directory=True)
+            for output in (direct, alias / "evidence"):
+                with self.subTest(output=str(output)):
+                    result, _ = self.invoke(output=output)
+                    self.assertEqual(result.returncode, 1, result.stderr)
+                    self.assertIn("output directory must be outside the collector checkout",
+                                  result.stderr)
+                    self.assertFalse(direct.exists())
+
+
     def test_never_overwrites_existing_directory(self):
         target = self.root / "evidence"
         target.mkdir()

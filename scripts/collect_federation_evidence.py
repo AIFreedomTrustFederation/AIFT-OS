@@ -219,6 +219,11 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
     if any(repo not in ARTIFACTS for repo in runs):
         raise CollectionError("unsupported repository artifact contract")
     output = output.resolve()
+    # Publishing inside the verified checkout would mutate the very source
+    # tree whose commit identity this collector is meant to corroborate.
+    # Resolve symlinks before checking so aliases cannot bypass this boundary.
+    if output.is_relative_to(Path(__file__).resolve().parents[1]):
+        raise CollectionError("output directory must be outside the collector checkout")
     if output.exists():
         raise CollectionError("output directory already exists; refusing overwrite")
     # Validate all GitHub metadata and record contents before publishing results.
