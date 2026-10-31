@@ -15,7 +15,7 @@ SHAS = ("a" * 40, "b" * 40)
 
 def record(repo, sha):
     return {"schema": "aift.verification.v1", "repository": repo, "commit_sha": sha,
-            "generated_at": "2026-10-24T18:00:00+00:00", "source": {"type": "github-actions", "run_url": None},
+            "generated_at": "2026-10-24T18:00:00+00:00", "source": {"type": "github-actions", "run_url": f"https://github.com/{repo}/actions/runs/123"},
             "checks": [{"id": "source", "command": "python -m unittest", "status": "passed", "exit_code": 0}],
             "overall_status": "passed", "security": {"status": "not_checked"},
             "dependencies": {"status": "not_checked"}, "deployment": {"status": "not_applicable"},
@@ -83,6 +83,24 @@ class ConsumerTests(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertIn("duplicate JSON key", result.stdout)
 
+    def test_github_actions_source_requires_run_url(self):
+        for missing in (None, ""):
+            with self.subTest(run_url=missing):
+                broken = record(REPOS[0], SHAS[0])
+                broken["source"]["run_url"] = missing
+                result = self.run_consumer([broken, record(REPOS[1], SHAS[1])])
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertEqual(json.loads(result.stdout)["status"], "failed")
+                self.assertIn("source", result.stdout)
+                self.assertNotIn("Traceback", result.stderr)
+
+    def test_local_source_without_run_url_remains_supported(self):
+        first = record(REPOS[0], SHAS[0])
+        first["source"] = {"type": "local", "run_url": None}
+        result = self.run_consumer([first, record(REPOS[1], SHAS[1])])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["status"], "partial")
+
     def test_rejects_incorrect_source_url(self):
         broken = record(REPOS[0], SHAS[0])
         broken["source"]["run_url"] = "https://github.com/another/repo/actions/runs/42"
@@ -118,6 +136,80 @@ class ConsumerTests(unittest.TestCase):
         result = self.run_consumer([broken, record(REPOS[1], SHAS[1])])
         self.assertEqual(result.returncode, 1)
         self.assertIn("invalid check status", result.stdout)
+
+
+    def test_rejects_nonfinite_json_numbers_without_traceback(self):
+        # Even ignored fields must be valid finite JSON; a matching commit
+        # does not make malformed producer evidence acceptable.
+        base = json.dumps(record(REPOS[0], SHAS[0]))[:-1]
+        for literal in ("NaN", "Infinity", "-Infinity", "1e9999", "-1e9999"):
+            with self.subTest(literal=literal):
+                raw = base + ', "extra": ' + literal + "}"
+                result = self.run_consumer([record(REPOS[0], SHAS[0])], raw=raw)
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertEqual(json.loads(result.stdout)["status"], "failed")
+                self.assertIn("invalid JSON", result.stdout)
+                self.assertNotIn("Traceback", result.stderr)
+
+    def test_rejects_deeply_nested_json_without_traceback(self):
+        # Roughly 40 KiB is well below the size limit but exceeds parser depth.
+        raw = (json.dumps(record(REPOS[0], SHAS[0]))[:-1]
+               + ', "extra": ' + "[" * 20000 + "0" + "]" * 20000 + "}")
+        result = self.run_consumer([record(REPOS[0], SHAS[0])], raw=raw)
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["status"], "failed")
+        self.assertIn("invalid JSON", result.stdout)
+        self.assertNotIn("Traceback", result.stderr)
+
+    def test_accepts_finite_json_decimal(self):
+        first = record(REPOS[0], SHAS[0])
+        first["extra"] = 1.25
+        result = self.run_consumer([first, record(REPOS[1], SHAS[1])])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["status"], "partial")
+
+    def test_rejects_oversized_json_integer_without_traceback(self):
+        # Python's default integer parser can raise an uncaught ValueError
+        # for a 5,000-digit integer even though the JSON is below 1 MiB.
+        base = json.dumps(record(REPOS[0], SHAS[0]))[:-1]
+        raw = base + ', "extra": ' + "9" * 5000 + "}"
+        result = self.run_consumer([record(REPOS[0], SHAS[0])], raw=raw)
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["status"], "failed")
+        self.assertIn("JSON integer exceeds 4300 digits", result.stdout)
+        self.assertNotIn("Traceback", result.stderr)
+
+    def test_accepts_reasonable_json_integer(self):
+        first = record(REPOS[0], SHAS[0])
+        first["extra"] = 1234567890123456789012345
+        result = self.run_consumer([first, record(REPOS[1], SHAS[1])])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["status"], "partial")
+
+
+    def test_rejects_growth_after_stale_size_metadata(self):
+        # Simulate a file growing after the previous stat-based size check.
+        # The old reader accepted this valid but oversized JSON document.
+        import runpy
+        from types import SimpleNamespace
+        from unittest.mock import patch
+
+        module = runpy.run_path(str(SCRIPT))
+        path = self.root / "grown-evidence.json"
+        path.write_text(json.dumps({"padding": "x" * (1024 * 1024)}), encoding="utf-8")
+        with patch.object(Path, "stat", return_value=SimpleNamespace(st_size=0)):
+            with self.assertRaisesRegex(module["EvidenceError"], "evidence exceeds 1 MiB"):
+                module["read_record"](path)
+
+    def test_accepts_exact_byte_limit(self):
+        # Preserve the documented inclusive 1 MiB boundary.
+        first = json.dumps(record(REPOS[0], SHAS[0]))
+        raw = first + " " * (1024 * 1024 - len(first.encode("utf-8")))
+        result = self.run_consumer([record(REPOS[0], SHAS[0])],
+                                   raw=raw, expect={REPOS[0]: SHAS[0]})
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["status"], "partial")
+
 
 
 if __name__ == "__main__":
