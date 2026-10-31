@@ -15,7 +15,7 @@ SHAS = ("a" * 40, "b" * 40)
 
 def record(repo, sha):
     return {"schema": "aift.verification.v1", "repository": repo, "commit_sha": sha,
-            "generated_at": "2026-10-24T18:00:00+00:00", "source": {"type": "github-actions", "run_url": None},
+            "generated_at": "2026-10-24T18:00:00+00:00", "source": {"type": "github-actions", "run_url": f"https://github.com/{repo}/actions/runs/123"},
             "checks": [{"id": "source", "command": "python -m unittest", "status": "passed", "exit_code": 0}],
             "overall_status": "passed", "security": {"status": "not_checked"},
             "dependencies": {"status": "not_checked"}, "deployment": {"status": "not_applicable"},
@@ -82,6 +82,24 @@ class ConsumerTests(unittest.TestCase):
         result = self.run_consumer([record(REPOS[0], SHAS[0])], raw='{"schema":"aift.verification.v1","schema":"aift.verification.v1"}')
         self.assertEqual(result.returncode, 1)
         self.assertIn("duplicate JSON key", result.stdout)
+
+    def test_github_actions_source_requires_run_url(self):
+        for missing in (None, ""):
+            with self.subTest(run_url=missing):
+                broken = record(REPOS[0], SHAS[0])
+                broken["source"]["run_url"] = missing
+                result = self.run_consumer([broken, record(REPOS[1], SHAS[1])])
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertEqual(json.loads(result.stdout)["status"], "failed")
+                self.assertIn("source", result.stdout)
+                self.assertNotIn("Traceback", result.stderr)
+
+    def test_local_source_without_run_url_remains_supported(self):
+        first = record(REPOS[0], SHAS[0])
+        first["source"] = {"type": "local", "run_url": None}
+        result = self.run_consumer([first, record(REPOS[1], SHAS[1])])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["status"], "partial")
 
     def test_rejects_incorrect_source_url(self):
         broken = record(REPOS[0], SHAS[0])
