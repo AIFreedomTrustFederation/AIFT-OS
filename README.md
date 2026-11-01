@@ -92,7 +92,11 @@ make verify             # broader repository verification
 go run ./tools/architecture --ci
 ```
 
+**CLI status and verification scope:** `./aift status` and `./aift verify` run bootstrap checks relative to the **invoking working directory**: expected paths, `git`/`go` availability, and `go build ./cmd/aift`. They do not run `git status`, authenticate the repository or commit identity, check remote CI, or prove operational inference. Missing expected paths are marked `planned`, which yields aggregate `partial` unless another check fails; `./aift verify` exits zero for both `pass` and `partial` and fails only for `fail`. A zero exit therefore does not establish a clean, correctly identified, or fully verified Federation checkout. See [`cmd/aift/main.go`](cmd/aift/main.go).
+
 **Not yet exposed by this CLI:** `aift introspect scan`, `aift capabilities scan`, and `aift runtime scan`. They describe intended control-plane capabilities, not commands implemented in `cmd/aift/main.go`. The `federation`, `repo`, and `workflow` command groups are registered as **planned** and should not be treated as operational. For supported commands and their current status, inspect `./aift registry`.
+
+**Runtime-readiness guide command boundary:** The [runtime-readiness guide](docs/RUNTIME-READINESS.md) currently presents `aift runtime scan/status/ready/blocked/report` and `aift operator check` as operator commands. At this revision, [`cmd/aift/main.go`](cmd/aift/main.go) registers neither `runtime` nor `operator`, so those examples are architectural guidance, not invocable commands in the built `./aift` CLI. Use `./aift help` or `./aift registry` for the implemented command surface and `make verify` for the repository verification gate. The guide's readiness descriptions do not establish that a CLI scan executed or that a discovered service is operational.
 
 ### App registry discovery is not application launch
 
@@ -141,6 +145,10 @@ The build creates a local `./aift` executable; it does **not** automatically add
 ### Living Federation world snapshot (read-only)
 
 The separately started Federation Console (`bin/aiftd`) serves `GET /v1/federation/world-snapshot`, an `aift.world.v1` projection of **locally discovered Git worktrees** beneath `AIFT_ROOT`. It includes repository and declared-capability entities, containment relationships, signed 64-bit logical coordinates encoded as decimal strings, semantic visualization hints, evidence references, and a SHA-256 content hash for the root chunk. It does not poll GitHub, verify a live deployment, or establish that a declared capability can execute. See the [HTTP handler](internal/uxihttp/server.go), [snapshot builder](internal/uxi/world_protocol.go), and [local repository discovery](internal/uxi/repository.go).
+
+**World-snapshot readiness aggregation boundary:** Repository-level `status` is calculated from the **declared** statuses in each local `.aift/capabilities.json`, not from executed verification. A `blocked`, `broken`, `fail`, or `failed` capability makes its repository `blocked`; otherwise any `ready`, `active`, or `v1` capability makes it `ready` even if other capabilities remain `planned` or `detected`. Without such a ready declaration, the repository remains `detected`. The world snapshot reuses this aggregate status and its visual palette; a `ready` repository is not proof that every capability is tested, integrated, operational, or authorized. See [`aggregateCapabilityStatus`](internal/uxi/repository.go) and [`repositoryPalette`](internal/uxi/world_protocol.go).
+
+**World-snapshot capability evidence boundary:** The current snapshot builder emits each capability entity with its declared `status` but an empty `evidence_refs` array. Repository entities instead reference local discovery records, including observations of `.aift/capabilities.json`; those records establish that declarations were observed, not that individual capabilities passed tests, performed inference, were deployed, or received authorization. The root chunk hash covers the projected entities and relations, not independently authenticated execution evidence. Consumers must not treat a capability's `ready` or `active` label, or a matching chunk hash, as operational proof. See [`BuildWorldSnapshot`](internal/uxi/world_protocol.go) and [`inspectRepository`](internal/uxi/repository.go).
 
 With the local server running, inspect the response:
 
