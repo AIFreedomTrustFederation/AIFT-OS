@@ -20,6 +20,7 @@ import selectors
 import zipfile
 import zlib
 import re
+import signal
 import subprocess
 import sys
 import tempfile
@@ -99,7 +100,8 @@ def bounded_archive_download(repo: str, endpoint: str, max_bytes: int = MAX_ARCH
     """
     try:
         process = subprocess.Popen(["gh", "api", endpoint], stdout=subprocess.PIPE,
-                                   stderr=subprocess.DEVNULL, bufsize=0)
+                                   stderr=subprocess.DEVNULL, bufsize=0,
+                                   start_new_session=(os.name == "posix"))
     except OSError as exc:
         raise CollectionError(f"artifact download failed for {repo}: {exc}") from exc
     deadline = time.monotonic() + 60
@@ -107,10 +109,22 @@ def bounded_archive_download(repo: str, endpoint: str, max_bytes: int = MAX_ARCH
         data = bytearray()
         with selectors.DefaultSelector() as selector:
             selector.register(process.stdout, selectors.EVENT_READ)
+            descendants_cleaned = False
             while True:
                 remaining = deadline - time.monotonic()
-                if remaining <= 0 or not selector.select(remaining):
+                if remaining <= 0:
                     raise CollectionError(f"artifact download timed out for {repo}")
+                # The gh parent may exit while a background descendant keeps
+                # stdout open. Reap its process group before waiting for EOF.
+                if os.name == "posix" and process.poll() is not None and not descendants_cleaned:
+                    try:
+                        os.killpg(process.pid, signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
+                    descendants_cleaned = True
+                # Check for parent exit periodically even if no pipe activity.
+                if not selector.select(min(remaining, 0.25)):
+                    continue
                 chunk = os.read(process.stdout.fileno(), min(65536, max_bytes + 1 - len(data)))
                 if not chunk:
                     break
@@ -125,9 +139,16 @@ def bounded_archive_download(repo: str, endpoint: str, max_bytes: int = MAX_ARCH
             raise CollectionError(f"artifact ID download failed for {repo} (exit {status})")
         return bytes(data)
     finally:
-        if process.poll() is None:
+        # A timed-out gh may have spawned descendants that inherited stdout.
+        # POSIX process-group cleanup is best-effort, not an OS sandbox.
+        if os.name == "posix":
+            try:
+                os.killpg(process.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+        elif process.poll() is None:
             process.kill()
-            process.wait()
+        process.wait()
         process.stdout.close()
 
 

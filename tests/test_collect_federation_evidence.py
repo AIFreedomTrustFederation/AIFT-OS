@@ -5,10 +5,12 @@ import json
 import hashlib
 import importlib.util
 import os
+import shlex
 import subprocess
 import sys
 import tempfile
 import textwrap
+import time
 import unittest
 from unittest import mock
 from pathlib import Path
@@ -609,6 +611,38 @@ class CollectionTests(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertIn("artifact archive missing or too large", result.stderr)
         self.assertFalse(output.exists())
+
+
+    @unittest.skipUnless(os.name == "posix", "POSIX process-group containment required")
+    def test_gh_descendant_cannot_hold_download_pipe_open(self):
+        # A gh CLI parent may exit successfully after spawning a background
+        # child that inherits stdout. The collector must not wait for that
+        # child's delayed write or let it outlive the verification subprocess.
+        sys.path.insert(0, str(ROOT / "scripts"))
+        try:
+            spec = importlib.util.spec_from_file_location("_collector_pipe_test", SCRIPT)
+            collector = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(collector)
+        finally:
+            sys.path.remove(str(ROOT / "scripts"))
+        marker = self.root / "unexpected-descendant-write"
+        executable = self.root / "gh"
+        executable.write_text(
+            "#!/bin/sh\n"
+            "(sleep 2; printf escaped > " + shlex.quote(str(marker)) + ") &\n"
+            "printf ok\n", encoding="utf-8"
+        )
+        executable.chmod(0o755)
+        with mock.patch.dict(os.environ, {
+            "PATH": str(self.root) + os.pathsep + os.environ.get("PATH", "")
+        }):
+            started = time.monotonic()
+            result = collector.bounded_archive_download("fixture", "fixture", max_bytes=1024)
+            elapsed = time.monotonic() - started
+        self.assertEqual(result, b"ok")
+        self.assertLess(elapsed, 1.5, "collector waited for a descendant's inherited pipe")
+        time.sleep(2.2)
+        self.assertFalse(marker.exists(), "gh descendant escaped after successful parent exit")
 
     def test_rejects_inconsistent_artifact_size_even_with_matching_digest(self):
         # An otherwise valid archive must match its authenticated size metadata.
