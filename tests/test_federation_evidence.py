@@ -135,6 +135,41 @@ class ConsumerTests(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertIn("duplicate evidence", result.stdout)
 
+    def test_conflicting_duplicate_evidence_is_order_independent(self):
+        # Two structurally valid records for the same commit can report
+        # different commands. Neither may win solely by CLI argument order.
+        first = record(REPOS[0], SHAS[0])
+        second = record(REPOS[0], SHAS[0])
+        first["checks"][0]["command"] = "python -m unittest first"
+        second["checks"][0]["command"] = "python -m unittest second"
+        paths = [self.root / "a-first.json", self.root / "z-second.json",
+                 self.root / "other.json"]
+        for path, value in zip(paths, (first, second, record(REPOS[1], SHAS[1]))):
+            path.write_text(json.dumps(value), encoding="utf-8")
+
+        def run(order):
+            cmd = [sys.executable, "-B", str(SCRIPT)]
+            for repo, sha in zip(REPOS, SHAS):
+                cmd.extend(["--expect", f"{repo}={sha}"])
+            for path in order:
+                cmd.extend(["--input", str(path)])
+            return subprocess.run(cmd, capture_output=True, text=True, check=False)
+
+        forward = run(paths)
+        reverse = run(list(reversed(paths)))
+        self.assertEqual(forward.returncode, 1, forward.stderr)
+        self.assertEqual(reverse.returncode, 1, reverse.stderr)
+        report = json.loads(forward.stdout)
+        self.assertEqual(report, json.loads(reverse.stdout))
+        self.assertEqual(report["status"], "failed")
+        self.assertEqual([item["repository"] for item in report["repositories"]],
+                         [REPOS[1]])
+        self.assertEqual(sum("duplicate evidence" in item["error"]
+                             for item in report["errors"]), 2)
+        self.assertTrue(any(item.get("repository") == REPOS[0]
+                            and item["error"] == "expected repository evidence missing"
+                            for item in report["errors"]))
+
     def test_rejects_false_success(self):
         broken = record(REPOS[0], SHAS[0])
         broken["checks"][0]["exit_code"] = 1
