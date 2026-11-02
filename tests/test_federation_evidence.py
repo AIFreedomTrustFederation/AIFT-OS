@@ -101,6 +101,32 @@ class ConsumerTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(json.loads(result.stdout)["status"], "partial")
 
+    def test_accepts_valid_optional_source_run_attempt(self):
+        for attempt in (1, 2, 9999999999):
+            with self.subTest(attempt=attempt):
+                first = record(REPOS[0], SHAS[0])
+                first["source"]["run_attempt"] = attempt
+                result = self.run_consumer([first, record(REPOS[1], SHAS[1])])
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(json.loads(result.stdout)["status"], "partial")
+
+    def test_rejects_invalid_reported_run_attempt_without_traceback(self):
+        for attempt in (None, True, False, 0, -1, "2", 10000000000):
+            with self.subTest(attempt=attempt):
+                first = record(REPOS[0], SHAS[0])
+                first["source"]["run_attempt"] = attempt
+                result = self.run_consumer([first, record(REPOS[1], SHAS[1])])
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn("invalid source run attempt", result.stdout)
+                self.assertNotIn("Traceback", result.stderr)
+
+    def test_local_null_run_attempt_remains_supported(self):
+        first = record(REPOS[0], SHAS[0])
+        first["source"] = {"type": "local", "run_url": None, "run_attempt": None}
+        result = self.run_consumer([first, record(REPOS[1], SHAS[1])])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["status"], "partial")
+
     def test_rejects_incorrect_source_url(self):
         broken = record(REPOS[0], SHAS[0])
         broken["source"]["run_url"] = "https://github.com/another/repo/actions/runs/42"

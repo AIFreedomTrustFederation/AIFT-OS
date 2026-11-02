@@ -96,6 +96,14 @@ def validate(record: dict, expected: dict[str, str]) -> dict:
     if run_url is not None and (not isinstance(run_url, str) or
                                 not re.fullmatch(rf"https://github\.com/{re.escape(repo)}/actions/runs/[1-9][0-9]*", run_url)):
         raise EvidenceError("source run URL does not match repository")
+    # A run ID is shared across reruns. Validate an optional producer attempt
+    # even in offline mode; older records may omit it, and local records use null.
+    if "run_attempt" in source:
+        attempt = source["run_attempt"]
+        if ((attempt is None and source["type"] != "local") or
+                (attempt is not None and
+                 (type(attempt) is not int or not 1 <= attempt <= 9999999999))):
+            raise EvidenceError("invalid source run attempt")
     checks = record.get("checks")
     if not isinstance(checks, list) or not checks:
         raise EvidenceError("checks must be a nonempty list")
