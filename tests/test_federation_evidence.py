@@ -95,6 +95,25 @@ class ConsumerTests(unittest.TestCase):
                 self.assertIn("source", result.stdout)
                 self.assertNotIn("Traceback", result.stderr)
 
+    def test_github_run_url_length_matches_collector_run_id_contract(self):
+        # The authenticated collector accepts at most 20 decimal run-ID
+        # digits. Offline evidence must not silently accept longer IDs.
+        for run_id in ("123", "1" + "0" * 19):
+            with self.subTest(run_id_length=len(run_id), valid=True):
+                first = record(REPOS[0], SHAS[0])
+                first["source"]["run_url"] = f"https://github.com/{REPOS[0]}/actions/runs/{run_id}"
+                result = self.run_consumer([first, record(REPOS[1], SHAS[1])])
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(json.loads(result.stdout)["status"], "partial")
+        for run_id in ("1" + "0" * 20, "0" + "1" * 19):
+            with self.subTest(run_id_length=len(run_id), valid=False):
+                first = record(REPOS[0], SHAS[0])
+                first["source"]["run_url"] = f"https://github.com/{REPOS[0]}/actions/runs/{run_id}"
+                result = self.run_consumer([first, record(REPOS[1], SHAS[1])])
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn("source run URL", result.stdout)
+                self.assertNotIn("Traceback", result.stderr)
+
     def test_local_source_without_run_url_remains_supported(self):
         first = record(REPOS[0], SHAS[0])
         first["source"] = {"type": "local", "run_url": None}
