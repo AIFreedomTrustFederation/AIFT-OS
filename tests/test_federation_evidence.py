@@ -71,6 +71,30 @@ class ConsumerTests(unittest.TestCase):
         self.assertEqual(summary["check_count"], 2)
         self.assertEqual(report["provenance"], "unsigned_supplied_json_not_authenticated")
 
+    def test_offline_report_retains_optional_gate_reasons_as_unverified_claims(self):
+        # Forge-style gate explanations are important for downstream gap
+        # analysis, but remain self-reported and must not become attestations.
+        first = record(REPOS[0], SHAS[0])
+        first["security"]["reason"] = "No security assessment."
+        first["dependencies"]["reason"] = "Cross-repository contracts not checked."
+        first["deployment"]["reason"] = "No deployment performed."
+        second = record(REPOS[1], SHAS[1])
+        result = self.run_consumer([first, second])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = json.loads(result.stdout)
+        self.assertEqual(report["status"], "partial")
+        self.assertEqual(report["provenance"], "unsigned_supplied_json_not_authenticated")
+        summary = next(item for item in report["repositories"]
+                       if item["repository"] == REPOS[0])
+        self.assertEqual(summary["reported_gate_reasons"], {
+            "security": "No security assessment.",
+            "dependencies": "Cross-repository contracts not checked.",
+            "deployment": "No deployment performed.",
+        })
+        other = next(item for item in report["repositories"]
+                     if item["repository"] == REPOS[1])
+        self.assertEqual(other["reported_gate_reasons"], {})
+
     def test_offline_report_retains_validated_source_provenance(self):
         # Offline reports must retain origin metadata without claiming it is
         # independently authenticated by the structural consumer.
