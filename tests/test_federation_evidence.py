@@ -71,6 +71,24 @@ class ConsumerTests(unittest.TestCase):
         self.assertEqual(summary["check_count"], 2)
         self.assertEqual(report["provenance"], "unsigned_supplied_json_not_authenticated")
 
+    def test_offline_report_retains_validated_source_provenance(self):
+        # Offline reports must retain origin metadata without claiming it is
+        # independently authenticated by the structural consumer.
+        first = record(REPOS[0], SHAS[0])
+        first["source"]["run_attempt"] = 2
+        second = record(REPOS[1], SHAS[1])
+        second["source"] = {"type": "local", "run_url": None, "run_attempt": None}
+        result = self.run_consumer([first, second])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = json.loads(result.stdout)
+        self.assertEqual(report["status"], "partial")
+        self.assertEqual(report["provenance"], "unsigned_supplied_json_not_authenticated")
+        for original in (first, second):
+            summary = next(x for x in report["repositories"]
+                           if x["repository"] == original["repository"])
+            self.assertEqual(summary["reported_generated_at"], original["generated_at"])
+            self.assertEqual(summary["reported_source"], original["source"])
+
     def test_missing_repository_fails_closed(self):
         result = self.run_consumer([record(REPOS[0], SHAS[0])])
         self.assertEqual(result.returncode, 1)
