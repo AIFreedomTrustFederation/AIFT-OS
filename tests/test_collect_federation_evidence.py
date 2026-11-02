@@ -173,6 +173,12 @@ class CollectionTests(unittest.TestCase):
                       "dependencies": {"status": "passed" if mode == "all_gates_pass" else "not_checked"},
                       "deployment": {"status": "passed" if mode == "all_gates_pass" else "not_applicable"},
                       "limitations": ["No live deployment tested."]}
+            if mode == "matching_reported_attempt":
+                record["source"]["run_attempt"] = 1
+            elif mode == "mismatched_reported_attempt":
+                record["source"]["run_attempt"] = 2
+            elif mode == "invalid_reported_attempt":
+                record["source"]["run_attempt"] = True
             if mode == "future_generated_at":
                 record["generated_at"] = "2999-01-01T00:00:00+00:00"
             if mode == "stale_generated_at":
@@ -364,6 +370,20 @@ class CollectionTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         report = json.loads((output / "federation-assessment.json").read_text())
         self.assertTrue(all(run["run_attempt"] == 1 for run in report["github_runs"]))
+
+    def test_accepts_matching_reported_run_attempt(self):
+        result, output = self.invoke("matching_reported_attempt")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = json.loads((output / "federation-assessment.json").read_text())
+        self.assertTrue(all(run["run_attempt"] == 1 for run in report["github_runs"]))
+
+    def test_rejects_mismatched_or_malformed_reported_run_attempt(self):
+        for mode in ("mismatched_reported_attempt", "invalid_reported_attempt"):
+            with self.subTest(mode=mode):
+                result, output = self.invoke(mode, output=self.root / mode)
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn("artifact source run attempt does not match authenticated run", result.stderr)
+                self.assertFalse(output.exists())
 
     def test_rejects_invalid_run_attempt(self):
         result, output = self.invoke("invalid_run_attempt")

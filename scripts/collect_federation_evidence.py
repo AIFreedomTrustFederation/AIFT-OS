@@ -401,6 +401,13 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
             if (record.get("source", {}).get("type") != "github-actions" or
                     record["source"].get("run_url") != f"https://github.com/{repo}/actions/runs/{run_id}"):
                 raise CollectionError(f"artifact source does not match authenticated run: {repo}")
+            # Older producers omit run_attempt. When a producer supplies it,
+            # require agreement with the authenticated GitHub API attempt.
+            # A run ID alone is not sufficient to distinguish reruns.
+            if "run_attempt" in record["source"] and (
+                    type(record["source"]["run_attempt"]) is not int or
+                    record["source"]["run_attempt"] != attempt):
+                raise CollectionError(f"artifact source run attempt does not match authenticated run: {repo}")
             records.append(downloaded)
             validated_records[repo] = record
             provenance.append({"repository": repo, "repository_id": repo_id,
