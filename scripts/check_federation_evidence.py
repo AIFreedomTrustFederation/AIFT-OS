@@ -189,9 +189,12 @@ def inspect(paths: list[Path], expected: dict[str, str]) -> tuple[dict, int]:
             results.append(result)
         except (OSError, EvidenceError) as exc:
             errors.append({"file": str(path), "error": str(exc)})
+    # Stable ordering makes independently collected Federation snapshots comparable.
+    results.sort(key=lambda item: item["repository"])
     missing = sorted(set(expected) - observed)
     for repo in missing:
         errors.append({"repository": repo, "error": "expected repository evidence missing"})
+    errors.sort(key=lambda item: (item.get("repository", ""), item.get("file", ""), item["error"]))
     status = "failed" if errors or any(r["status"] == "failed" for r in results) else (
         "partial" if any(r["unverified_gates"] for r in results) else "reported_pass")
     return {"schema": "aift.federation-assessment.v1", "status": status,

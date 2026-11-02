@@ -89,6 +89,36 @@ class ConsumerTests(unittest.TestCase):
             self.assertEqual(summary["reported_generated_at"], original["generated_at"])
             self.assertEqual(summary["reported_source"], original["source"])
 
+    def test_report_order_is_independent_of_input_order(self):
+        # Equivalent evidence sets must yield identical machine-readable reports.
+        first, second = (record(*pair) for pair in zip(REPOS, SHAS))
+        forward = self.run_consumer([first, second])
+        reverse = self.run_consumer([second, first])
+        self.assertEqual(forward.returncode, 0, forward.stderr)
+        self.assertEqual(reverse.returncode, 0, reverse.stderr)
+        self.assertEqual(json.loads(forward.stdout), json.loads(reverse.stdout))
+        self.assertEqual(
+            [item["repository"] for item in json.loads(forward.stdout)["repositories"]],
+            sorted(REPOS))
+
+    def test_error_order_is_independent_of_input_order(self):
+        # Use fixed file paths so only --input argument order changes.
+        invalid_paths = [self.root / "z-invalid.json", self.root / "a-invalid.json"]
+        for path in invalid_paths:
+            path.write_text('{"schema":"wrong"}', encoding="utf-8")
+        def run(paths):
+            cmd = [sys.executable, "-B", str(SCRIPT),
+                   "--expect", f"{REPOS[0]}={SHAS[0]}"]
+            for path in paths:
+                cmd.extend(["--input", str(path)])
+            return subprocess.run(cmd, capture_output=True, text=True, check=False)
+        forward = run(invalid_paths)
+        reverse = run(list(reversed(invalid_paths)))
+        self.assertEqual(forward.returncode, 1, forward.stderr)
+        self.assertEqual(reverse.returncode, 1, reverse.stderr)
+        self.assertEqual(json.loads(forward.stdout), json.loads(reverse.stdout))
+        self.assertEqual(len(json.loads(forward.stdout)["errors"]), 3)
+
     def test_missing_repository_fails_closed(self):
         result = self.run_consumer([record(REPOS[0], SHAS[0])])
         self.assertEqual(result.returncode, 1)
