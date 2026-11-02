@@ -169,7 +169,10 @@ def validate(record: dict, expected: dict[str, str]) -> dict:
             "reported_gates": {
                 gate: record[gate]["status"] for gate in ("security", "dependencies", "deployment")
             },
-            "reported_limitations": limits}
+            "reported_limitations": limits,
+            "reported_generated_at": record["generated_at"],
+            "reported_source": {key: source[key] for key in ("type", "run_url", "run_attempt")
+                                if key in source}}
 
 
 def inspect(paths: list[Path], expected: dict[str, str]) -> tuple[dict, int]:
