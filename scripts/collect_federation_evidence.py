@@ -269,10 +269,13 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
         raise CollectionError("run and expected-commit repository sets must match")
     if any(repo not in ARTIFACTS for repo in runs):
         raise CollectionError("unsupported repository artifact contract")
-    output = output.resolve()
+    # Resolve parent aliases for the checkout boundary, but preserve the final
+    # output component. A dangling symlink must not redirect publication.
+    output = output.parent.resolve() / output.name
+    if output.is_symlink():
+        raise CollectionError("output directory must not be a symlink")
     # Publishing inside the verified checkout would mutate the very source
     # tree whose commit identity this collector is meant to corroborate.
-    # Resolve symlinks before checking so aliases cannot bypass this boundary.
     if output.is_relative_to(Path(__file__).resolve().parents[1]):
         raise CollectionError("output directory must be outside the collector checkout")
     if output.exists():

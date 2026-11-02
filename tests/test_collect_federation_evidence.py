@@ -813,6 +813,20 @@ class CollectionTests(unittest.TestCase):
                     self.assertFalse(direct.exists())
 
 
+    def test_rejects_dangling_output_symlink_without_redirecting_publication(self):
+        # Path.resolve() previously followed a dangling final symlink and
+        # published evidence under an unintended target name.
+        target = self.root / "unrequested-target"
+        alias = self.root / "requested-output"
+        alias.symlink_to(target, target_is_directory=True)
+        result, _ = self.invoke(output=alias)
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("output directory must not be a symlink", result.stderr)
+        self.assertNotIn("Traceback", result.stderr)
+        self.assertTrue(alias.is_symlink())
+        self.assertFalse(target.exists())
+
+
     def test_never_overwrites_existing_directory(self):
         target = self.root / "evidence"
         target.mkdir()
