@@ -106,6 +106,7 @@ if args[0]=="api":
   if mode=="missing_run_head_repo":result.pop("head_repository")
   if mode=="missing_run_timestamps":result.pop("run_started_at")
   if mode=="invalid_run_attempt":result["run_attempt"]=True
+  if mode=="oversized_run_attempt":result["run_attempt"]=10000000000
   if mode=="wrong_workflow":result["workflow_id"]=999
   if mode=="wrong_workflow_path":result["path"]=".github/workflows/untrusted.yml"
  elif suffix=="/actions/runs/"+run+"/artifacts?per_page=100":
@@ -402,6 +403,14 @@ class CollectionTests(unittest.TestCase):
 
     def test_rejects_invalid_run_attempt(self):
         result, output = self.invoke("invalid_run_attempt")
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("invalid workflow run attempt", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_authenticated_attempt_above_producer_contract(self):
+        # The producer and offline consumer cap run_attempt at ten digits.
+        # GitHub API metadata must obey the same bound before publication.
+        result, output = self.invoke("oversized_run_attempt")
         self.assertEqual(result.returncode, 1, result.stderr)
         self.assertIn("invalid workflow run attempt", result.stderr)
         self.assertFalse(output.exists())

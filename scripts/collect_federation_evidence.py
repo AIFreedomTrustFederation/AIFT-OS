@@ -305,7 +305,7 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
             if type(run.get("id")) is not int or run["id"] != int(run_id):
                 raise CollectionError(f"run identity mismatch: {repo}")
             attempt = run.get("run_attempt")
-            if type(attempt) is not int or attempt < 1:
+            if type(attempt) is not int or not 1 <= attempt <= 9999999999:
                 raise CollectionError(f"invalid workflow run attempt: {repo}")
             workflow_id, workflow_path = WORKFLOWS[repo]
             if (type(run.get("workflow_id")) is not int or run["workflow_id"] != workflow_id or
