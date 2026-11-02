@@ -99,7 +99,8 @@ def bounded_archive_download(repo: str, endpoint: str, max_bytes: int = MAX_ARCH
     that buffers the complete response before its size can be checked.
     """
     try:
-        process = subprocess.Popen(["gh", "api", endpoint], stdout=subprocess.PIPE,
+        # Pin the public GitHub host: ambient GH_HOST must not redirect provenance checks.
+        process = subprocess.Popen(["gh", "api", "--hostname", "github.com", endpoint], stdout=subprocess.PIPE,
                                    stderr=subprocess.DEVNULL, bufsize=0,
                                    start_new_session=(os.name == "posix"))
     except OSError as exc:

@@ -59,6 +59,11 @@ def archive_bytes(repo):
   damaged[offset]=0xFF
   return bytes(damaged)
  return buffer.getvalue()
+# Emulate gh api's explicit host override of the ambient GH_HOST selector.
+if args[:3]==["api","--hostname","github.com"]:
+ args=["api",*args[3:]]
+elif "--hostname" in args or os.environ.get("GH_HOST") not in (None,"","github.com"):
+ sys.stderr.write("unexpected GitHub API hostname\\n");sys.exit(8)
 if args[0]=="api":
  path=args[1].removeprefix("repos/")
  repo=next((r for r in repos if path==r or path.startswith(r+"/")),None)
@@ -200,6 +205,14 @@ class CollectionTests(unittest.TestCase):
         env = dict(os.environ, PATH=f"{self.bin}:{os.environ.get('PATH','')}",
                    FAKE_GH_MODE=mode, FAKE_GH_FIXTURES=str(fixture_dir))
         return subprocess.run(cmd, capture_output=True, text=True, env=env, check=False), output
+
+    def test_ambient_enterprise_host_cannot_redirect_public_github_evidence(self):
+        # Without an explicit --hostname, gh api may select GH_HOST instead
+        # of the public GitHub API that the repository/run identity checks assume.
+        with mock.patch.dict(os.environ, {"GH_HOST": "enterprise.example.invalid"}):
+            result, output = self.invoke()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue((output / "federation-assessment.json").is_file())
 
     def test_collects_two_artifact_formats_and_reports_partial(self):
         result, output = self.invoke()
