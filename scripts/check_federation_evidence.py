@@ -176,21 +176,28 @@ def validate(record: dict, expected: dict[str, str]) -> dict:
 
 
 def inspect(paths: list[Path], expected: dict[str, str]) -> tuple[dict, int]:
-    results = []
-    observed = set()
+    # Collect candidates before selecting any result. If a repository appears
+    # more than once, neither record is authoritative: keeping the first one
+    # makes even a failed assessment depend on caller-supplied input order.
+    candidates = {}
     errors = []
     for path in paths:
         try:
             record = read_record(path)
             result = validate(record, expected)
-            if result["repository"] in observed:
-                raise EvidenceError(f"duplicate evidence for {result['repository']}")
-            observed.add(result["repository"])
-            results.append(result)
+            candidates.setdefault(result["repository"], []).append((path, result))
         except (OSError, EvidenceError) as exc:
             errors.append({"file": str(path), "error": str(exc)})
+    results = []
+    for repo, entries in candidates.items():
+        if len(entries) == 1:
+            results.append(entries[0][1])
+        else:
+            for path, _ in entries:
+                errors.append({"file": str(path), "error": f"duplicate evidence for {repo}"})
     # Stable ordering makes independently collected Federation snapshots comparable.
     results.sort(key=lambda item: item["repository"])
+    observed = {item["repository"] for item in results}
     missing = sorted(set(expected) - observed)
     for repo in missing:
         errors.append({"repository": repo, "error": "expected repository evidence missing"})
