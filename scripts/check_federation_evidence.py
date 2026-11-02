@@ -154,9 +154,19 @@ def validate(record: dict, expected: dict[str, str]) -> dict:
         status = "reported_checks_passed_with_gaps"
     else:
         status = "reported_checks_passed"
+    # Preserve validated producer claims in the offline machine-readable report.
+    # These are self-reported, not authenticated test or security attestations.
     return {"repository": repo, "commit_sha": commit, "status": status,
             "unverified_gates": gaps, "failed_gates": failed_gates,
-            "check_count": len(checks)}
+            "check_count": len(checks),
+            "reported_checks": [
+                {key: check[key] for key in ("id", "command", "status", "exit_code")}
+                for check in checks
+            ],
+            "reported_gates": {
+                gate: record[gate]["status"] for gate in ("security", "dependencies", "deployment")
+            },
+            "reported_limitations": limits}
 
 
 def inspect(paths: list[Path], expected: dict[str, str]) -> tuple[dict, int]:

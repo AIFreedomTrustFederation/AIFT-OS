@@ -48,6 +48,29 @@ class ConsumerTests(unittest.TestCase):
         self.assertEqual(len(report["repositories"]), 2)
         self.assertEqual(report["provenance"], "unsigned_supplied_json_not_authenticated")
 
+    def test_offline_report_preserves_validated_producer_details(self):
+        # Structural validation must not discard commands, gate outcomes or
+        # limitations needed by downstream Federation verification tooling.
+        first = record(REPOS[0], SHAS[0])
+        first["checks"].append({"id": "build", "command": "npm run build",
+                                "status": "failed", "exit_code": 7})
+        first["overall_status"] = "failed"
+        first["security"] = {"status": "failed", "reason": "synthetic negative gate"}
+        first["limitations"] = ["No live deployment checked.", "Unsigned producer claims."]
+        result = self.run_consumer([first, record(REPOS[1], SHAS[1])])
+        self.assertEqual(result.returncode, 1, result.stderr)
+        report = json.loads(result.stdout)
+        self.assertEqual(report["status"], "failed")
+        summary = next(x for x in report["repositories"] if x["repository"] == REPOS[0])
+        self.assertEqual(summary["reported_checks"], first["checks"])
+        self.assertEqual(summary["reported_gates"],
+                         {"security": "failed", "dependencies": "not_checked",
+                          "deployment": "not_applicable"})
+        self.assertEqual(summary["reported_limitations"], first["limitations"])
+        self.assertEqual(summary["failed_gates"], ["security"])
+        self.assertEqual(summary["check_count"], 2)
+        self.assertEqual(report["provenance"], "unsigned_supplied_json_not_authenticated")
+
     def test_missing_repository_fails_closed(self):
         result = self.run_consumer([record(REPOS[0], SHAS[0])])
         self.assertEqual(result.returncode, 1)
