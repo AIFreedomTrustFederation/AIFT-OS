@@ -2,6 +2,7 @@
 """Black-box regression tests for the offline Federation evidence consumer."""
 
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -226,6 +227,23 @@ class ConsumerTests(unittest.TestCase):
         with patch.object(Path, "stat", return_value=SimpleNamespace(st_size=0)):
             with self.assertRaisesRegex(module["EvidenceError"], "evidence exceeds 1 MiB"):
                 module["read_record"](path)
+
+    @unittest.skipUnless(hasattr(os, "mkfifo"), "requires POSIX named pipes")
+    def test_rejects_fifo_without_blocking(self):
+        # A FIFO without a writer must not hang the CLI before JSON validation.
+        fifo = self.root / "blocked-evidence.fifo"
+        os.mkfifo(fifo)
+        alias = self.root / "fifo-alias.json"
+        alias.symlink_to(fifo)
+        for path in (fifo, alias):
+            with self.subTest(path=path.name):
+                result = subprocess.run(
+                    [sys.executable, "-B", str(SCRIPT), "--expect",
+                     f"{REPOS[0]}={SHAS[0]}", "--input", str(path)],
+                    capture_output=True, text=True, timeout=2, check=False)
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn("evidence must be a regular file", result.stdout)
+                self.assertNotIn("Traceback", result.stderr)
 
     def test_accepts_exact_byte_limit(self):
         # Preserve the documented inclusive 1 MiB boundary.

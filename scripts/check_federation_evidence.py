@@ -9,8 +9,10 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import os
 import math
 import re
+import stat
 import sys
 from pathlib import Path
 
@@ -56,8 +58,16 @@ def bounded_json_int(value: str) -> int:
 def read_record(path: Path) -> dict:
     # A stat-only limit is vulnerable to a file growing between stat and read.
     # Bound bytes actually consumed, including for changing or special files.
-    with path.open("rb") as stream:
-        raw = stream.read(MAX_BYTES + 1)
+    # A supplied FIFO can block at open() before the byte limit applies.
+    # Open nonblocking, then inspect the descriptor to avoid a stat/open race.
+    fd = os.open(path, os.O_RDONLY | getattr(os, "O_NONBLOCK", 0))
+    try:
+        if not stat.S_ISREG(os.fstat(fd).st_mode):
+            raise EvidenceError("evidence must be a regular file")
+        with os.fdopen(fd, "rb", closefd=False) as stream:
+            raw = stream.read(MAX_BYTES + 1)
+    finally:
+        os.close(fd)
     if len(raw) > MAX_BYTES:
         raise EvidenceError("evidence exceeds 1 MiB")
     try:
