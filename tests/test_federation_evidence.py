@@ -144,6 +144,22 @@ class ConsumerTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(json.loads(result.stdout)["status"], "partial")
 
+    def test_local_source_cannot_claim_github_actions_provenance(self):
+        # Offline source labels must not mix local execution with Actions IDs.
+        actions_url = f"https://github.com/{REPOS[0]}/actions/runs/123"
+        for source, expected_error in (
+            ({"type": "local", "run_url": actions_url}, "local source must not claim"),
+            ({"type": "local", "run_url": None, "run_attempt": 2}, "invalid source run attempt"),
+            ({"type": "local", "run_url": actions_url, "run_attempt": 2}, "local source must not claim"),
+        ):
+            with self.subTest(source=source):
+                first = record(REPOS[0], SHAS[0])
+                first["source"] = source
+                result = self.run_consumer([first, record(REPOS[1], SHAS[1])])
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn(expected_error, result.stdout)
+                self.assertNotIn("Traceback", result.stderr)
+
     def test_accepts_valid_optional_source_run_attempt(self):
         for attempt in (1, 2, 9999999999):
             with self.subTest(attempt=attempt):
