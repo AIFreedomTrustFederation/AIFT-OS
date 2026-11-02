@@ -382,7 +382,9 @@ class CollectionTests(unittest.TestCase):
             with self.subTest(mode=mode):
                 result, output = self.invoke(mode, output=self.root / mode)
                 self.assertEqual(result.returncode, 1, result.stderr)
-                self.assertIn("artifact source run attempt does not match authenticated run", result.stderr)
+                expected_error = ("invalid source run attempt" if mode == "invalid_reported_attempt"
+                                  else "artifact source run attempt does not match authenticated run")
+                self.assertIn(expected_error, result.stderr)
                 self.assertFalse(output.exists())
 
     def test_rejects_invalid_run_attempt(self):
