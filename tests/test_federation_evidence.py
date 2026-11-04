@@ -2,6 +2,7 @@
 """Black-box regression tests for the offline Federation evidence consumer."""
 
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -15,7 +16,7 @@ SHAS = ("a" * 40, "b" * 40)
 
 def record(repo, sha):
     return {"schema": "aift.verification.v1", "repository": repo, "commit_sha": sha,
-            "generated_at": "2026-10-24T18:00:00+00:00", "source": {"type": "github-actions", "run_url": None},
+            "generated_at": "2026-10-24T18:00:00+00:00", "source": {"type": "github-actions", "run_url": f"https://github.com/{repo}/actions/runs/123"},
             "checks": [{"id": "source", "command": "python -m unittest", "status": "passed", "exit_code": 0}],
             "overall_status": "passed", "security": {"status": "not_checked"},
             "dependencies": {"status": "not_checked"}, "deployment": {"status": "not_applicable"},
@@ -47,6 +48,101 @@ class ConsumerTests(unittest.TestCase):
         self.assertEqual(len(report["repositories"]), 2)
         self.assertEqual(report["provenance"], "unsigned_supplied_json_not_authenticated")
 
+    def test_offline_report_preserves_validated_producer_details(self):
+        # Structural validation must not discard commands, gate outcomes or
+        # limitations needed by downstream Federation verification tooling.
+        first = record(REPOS[0], SHAS[0])
+        first["checks"].append({"id": "build", "command": "npm run build",
+                                "status": "failed", "exit_code": 7})
+        first["overall_status"] = "failed"
+        first["security"] = {"status": "failed", "reason": "synthetic negative gate"}
+        first["limitations"] = ["No live deployment checked.", "Unsigned producer claims."]
+        result = self.run_consumer([first, record(REPOS[1], SHAS[1])])
+        self.assertEqual(result.returncode, 1, result.stderr)
+        report = json.loads(result.stdout)
+        self.assertEqual(report["status"], "failed")
+        summary = next(x for x in report["repositories"] if x["repository"] == REPOS[0])
+        self.assertEqual(summary["reported_checks"], first["checks"])
+        self.assertEqual(summary["reported_gates"],
+                         {"security": "failed", "dependencies": "not_checked",
+                          "deployment": "not_applicable"})
+        self.assertEqual(summary["reported_limitations"], first["limitations"])
+        self.assertEqual(summary["failed_gates"], ["security"])
+        self.assertEqual(summary["check_count"], 2)
+        self.assertEqual(report["provenance"], "unsigned_supplied_json_not_authenticated")
+
+    def test_offline_report_retains_optional_gate_reasons_as_unverified_claims(self):
+        # Forge-style gate explanations are important for downstream gap
+        # analysis, but remain self-reported and must not become attestations.
+        first = record(REPOS[0], SHAS[0])
+        first["security"]["reason"] = "No security assessment."
+        first["dependencies"]["reason"] = "Cross-repository contracts not checked."
+        first["deployment"]["reason"] = "No deployment performed."
+        second = record(REPOS[1], SHAS[1])
+        result = self.run_consumer([first, second])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = json.loads(result.stdout)
+        self.assertEqual(report["status"], "partial")
+        self.assertEqual(report["provenance"], "unsigned_supplied_json_not_authenticated")
+        summary = next(item for item in report["repositories"]
+                       if item["repository"] == REPOS[0])
+        self.assertEqual(summary["reported_gate_reasons"], {
+            "security": "No security assessment.",
+            "dependencies": "Cross-repository contracts not checked.",
+            "deployment": "No deployment performed.",
+        })
+        other = next(item for item in report["repositories"]
+                     if item["repository"] == REPOS[1])
+        self.assertEqual(other["reported_gate_reasons"], {})
+
+    def test_offline_report_retains_validated_source_provenance(self):
+        # Offline reports must retain origin metadata without claiming it is
+        # independently authenticated by the structural consumer.
+        first = record(REPOS[0], SHAS[0])
+        first["source"]["run_attempt"] = 2
+        second = record(REPOS[1], SHAS[1])
+        second["source"] = {"type": "local", "run_url": None, "run_attempt": None}
+        result = self.run_consumer([first, second])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = json.loads(result.stdout)
+        self.assertEqual(report["status"], "partial")
+        self.assertEqual(report["provenance"], "unsigned_supplied_json_not_authenticated")
+        for original in (first, second):
+            summary = next(x for x in report["repositories"]
+                           if x["repository"] == original["repository"])
+            self.assertEqual(summary["reported_generated_at"], original["generated_at"])
+            self.assertEqual(summary["reported_source"], original["source"])
+
+    def test_report_order_is_independent_of_input_order(self):
+        # Equivalent evidence sets must yield identical machine-readable reports.
+        first, second = (record(*pair) for pair in zip(REPOS, SHAS))
+        forward = self.run_consumer([first, second])
+        reverse = self.run_consumer([second, first])
+        self.assertEqual(forward.returncode, 0, forward.stderr)
+        self.assertEqual(reverse.returncode, 0, reverse.stderr)
+        self.assertEqual(json.loads(forward.stdout), json.loads(reverse.stdout))
+        self.assertEqual(
+            [item["repository"] for item in json.loads(forward.stdout)["repositories"]],
+            sorted(REPOS))
+
+    def test_error_order_is_independent_of_input_order(self):
+        # Use fixed file paths so only --input argument order changes.
+        invalid_paths = [self.root / "z-invalid.json", self.root / "a-invalid.json"]
+        for path in invalid_paths:
+            path.write_text('{"schema":"wrong"}', encoding="utf-8")
+        def run(paths):
+            cmd = [sys.executable, "-B", str(SCRIPT),
+                   "--expect", f"{REPOS[0]}={SHAS[0]}"]
+            for path in paths:
+                cmd.extend(["--input", str(path)])
+            return subprocess.run(cmd, capture_output=True, text=True, check=False)
+        forward = run(invalid_paths)
+        reverse = run(list(reversed(invalid_paths)))
+        self.assertEqual(forward.returncode, 1, forward.stderr)
+        self.assertEqual(reverse.returncode, 1, reverse.stderr)
+        self.assertEqual(json.loads(forward.stdout), json.loads(reverse.stdout))
+        self.assertEqual(len(json.loads(forward.stdout)["errors"]), 3)
+
     def test_missing_repository_fails_closed(self):
         result = self.run_consumer([record(REPOS[0], SHAS[0])])
         self.assertEqual(result.returncode, 1)
@@ -62,6 +158,41 @@ class ConsumerTests(unittest.TestCase):
                                     record(REPOS[1], SHAS[1])])
         self.assertEqual(result.returncode, 1)
         self.assertIn("duplicate evidence", result.stdout)
+
+    def test_conflicting_duplicate_evidence_is_order_independent(self):
+        # Two structurally valid records for the same commit can report
+        # different commands. Neither may win solely by CLI argument order.
+        first = record(REPOS[0], SHAS[0])
+        second = record(REPOS[0], SHAS[0])
+        first["checks"][0]["command"] = "python -m unittest first"
+        second["checks"][0]["command"] = "python -m unittest second"
+        paths = [self.root / "a-first.json", self.root / "z-second.json",
+                 self.root / "other.json"]
+        for path, value in zip(paths, (first, second, record(REPOS[1], SHAS[1]))):
+            path.write_text(json.dumps(value), encoding="utf-8")
+
+        def run(order):
+            cmd = [sys.executable, "-B", str(SCRIPT)]
+            for repo, sha in zip(REPOS, SHAS):
+                cmd.extend(["--expect", f"{repo}={sha}"])
+            for path in order:
+                cmd.extend(["--input", str(path)])
+            return subprocess.run(cmd, capture_output=True, text=True, check=False)
+
+        forward = run(paths)
+        reverse = run(list(reversed(paths)))
+        self.assertEqual(forward.returncode, 1, forward.stderr)
+        self.assertEqual(reverse.returncode, 1, reverse.stderr)
+        report = json.loads(forward.stdout)
+        self.assertEqual(report, json.loads(reverse.stdout))
+        self.assertEqual(report["status"], "failed")
+        self.assertEqual([item["repository"] for item in report["repositories"]],
+                         [REPOS[1]])
+        self.assertEqual(sum("duplicate evidence" in item["error"]
+                             for item in report["errors"]), 2)
+        self.assertTrue(any(item.get("repository") == REPOS[0]
+                            and item["error"] == "expected repository evidence missing"
+                            for item in report["errors"]))
 
     def test_rejects_false_success(self):
         broken = record(REPOS[0], SHAS[0])
@@ -82,6 +213,85 @@ class ConsumerTests(unittest.TestCase):
         result = self.run_consumer([record(REPOS[0], SHAS[0])], raw='{"schema":"aift.verification.v1","schema":"aift.verification.v1"}')
         self.assertEqual(result.returncode, 1)
         self.assertIn("duplicate JSON key", result.stdout)
+
+    def test_github_actions_source_requires_run_url(self):
+        for missing in (None, ""):
+            with self.subTest(run_url=missing):
+                broken = record(REPOS[0], SHAS[0])
+                broken["source"]["run_url"] = missing
+                result = self.run_consumer([broken, record(REPOS[1], SHAS[1])])
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertEqual(json.loads(result.stdout)["status"], "failed")
+                self.assertIn("source", result.stdout)
+                self.assertNotIn("Traceback", result.stderr)
+
+    def test_github_run_url_length_matches_collector_run_id_contract(self):
+        # The authenticated collector accepts at most 20 decimal run-ID
+        # digits. Offline evidence must not silently accept longer IDs.
+        for run_id in ("123", "1" + "0" * 19):
+            with self.subTest(run_id_length=len(run_id), valid=True):
+                first = record(REPOS[0], SHAS[0])
+                first["source"]["run_url"] = f"https://github.com/{REPOS[0]}/actions/runs/{run_id}"
+                result = self.run_consumer([first, record(REPOS[1], SHAS[1])])
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(json.loads(result.stdout)["status"], "partial")
+        for run_id in ("1" + "0" * 20, "0" + "1" * 19):
+            with self.subTest(run_id_length=len(run_id), valid=False):
+                first = record(REPOS[0], SHAS[0])
+                first["source"]["run_url"] = f"https://github.com/{REPOS[0]}/actions/runs/{run_id}"
+                result = self.run_consumer([first, record(REPOS[1], SHAS[1])])
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn("source run URL", result.stdout)
+                self.assertNotIn("Traceback", result.stderr)
+
+    def test_local_source_without_run_url_remains_supported(self):
+        first = record(REPOS[0], SHAS[0])
+        first["source"] = {"type": "local", "run_url": None}
+        result = self.run_consumer([first, record(REPOS[1], SHAS[1])])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["status"], "partial")
+
+    def test_local_source_cannot_claim_github_actions_provenance(self):
+        # Offline source labels must not mix local execution with Actions IDs.
+        actions_url = f"https://github.com/{REPOS[0]}/actions/runs/123"
+        for source, expected_error in (
+            ({"type": "local", "run_url": actions_url}, "local source must not claim"),
+            ({"type": "local", "run_url": None, "run_attempt": 2}, "invalid source run attempt"),
+            ({"type": "local", "run_url": actions_url, "run_attempt": 2}, "local source must not claim"),
+        ):
+            with self.subTest(source=source):
+                first = record(REPOS[0], SHAS[0])
+                first["source"] = source
+                result = self.run_consumer([first, record(REPOS[1], SHAS[1])])
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn(expected_error, result.stdout)
+                self.assertNotIn("Traceback", result.stderr)
+
+    def test_accepts_valid_optional_source_run_attempt(self):
+        for attempt in (1, 2, 9999999999):
+            with self.subTest(attempt=attempt):
+                first = record(REPOS[0], SHAS[0])
+                first["source"]["run_attempt"] = attempt
+                result = self.run_consumer([first, record(REPOS[1], SHAS[1])])
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(json.loads(result.stdout)["status"], "partial")
+
+    def test_rejects_invalid_reported_run_attempt_without_traceback(self):
+        for attempt in (None, True, False, 0, -1, "2", 10000000000):
+            with self.subTest(attempt=attempt):
+                first = record(REPOS[0], SHAS[0])
+                first["source"]["run_attempt"] = attempt
+                result = self.run_consumer([first, record(REPOS[1], SHAS[1])])
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn("invalid source run attempt", result.stdout)
+                self.assertNotIn("Traceback", result.stderr)
+
+    def test_local_null_run_attempt_remains_supported(self):
+        first = record(REPOS[0], SHAS[0])
+        first["source"] = {"type": "local", "run_url": None, "run_attempt": None}
+        result = self.run_consumer([first, record(REPOS[1], SHAS[1])])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["status"], "partial")
 
     def test_rejects_incorrect_source_url(self):
         broken = record(REPOS[0], SHAS[0])
@@ -118,6 +328,97 @@ class ConsumerTests(unittest.TestCase):
         result = self.run_consumer([broken, record(REPOS[1], SHAS[1])])
         self.assertEqual(result.returncode, 1)
         self.assertIn("invalid check status", result.stdout)
+
+
+    def test_rejects_nonfinite_json_numbers_without_traceback(self):
+        # Even ignored fields must be valid finite JSON; a matching commit
+        # does not make malformed producer evidence acceptable.
+        base = json.dumps(record(REPOS[0], SHAS[0]))[:-1]
+        for literal in ("NaN", "Infinity", "-Infinity", "1e9999", "-1e9999"):
+            with self.subTest(literal=literal):
+                raw = base + ', "extra": ' + literal + "}"
+                result = self.run_consumer([record(REPOS[0], SHAS[0])], raw=raw)
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertEqual(json.loads(result.stdout)["status"], "failed")
+                self.assertIn("invalid JSON", result.stdout)
+                self.assertNotIn("Traceback", result.stderr)
+
+    def test_rejects_deeply_nested_json_without_traceback(self):
+        # Roughly 40 KiB is well below the size limit but exceeds parser depth.
+        raw = (json.dumps(record(REPOS[0], SHAS[0]))[:-1]
+               + ', "extra": ' + "[" * 20000 + "0" + "]" * 20000 + "}")
+        result = self.run_consumer([record(REPOS[0], SHAS[0])], raw=raw)
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["status"], "failed")
+        self.assertIn("invalid JSON", result.stdout)
+        self.assertNotIn("Traceback", result.stderr)
+
+    def test_accepts_finite_json_decimal(self):
+        first = record(REPOS[0], SHAS[0])
+        first["extra"] = 1.25
+        result = self.run_consumer([first, record(REPOS[1], SHAS[1])])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["status"], "partial")
+
+    def test_rejects_oversized_json_integer_without_traceback(self):
+        # Python's default integer parser can raise an uncaught ValueError
+        # for a 5,000-digit integer even though the JSON is below 1 MiB.
+        base = json.dumps(record(REPOS[0], SHAS[0]))[:-1]
+        raw = base + ', "extra": ' + "9" * 5000 + "}"
+        result = self.run_consumer([record(REPOS[0], SHAS[0])], raw=raw)
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["status"], "failed")
+        self.assertIn("JSON integer exceeds 4300 digits", result.stdout)
+        self.assertNotIn("Traceback", result.stderr)
+
+    def test_accepts_reasonable_json_integer(self):
+        first = record(REPOS[0], SHAS[0])
+        first["extra"] = 1234567890123456789012345
+        result = self.run_consumer([first, record(REPOS[1], SHAS[1])])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["status"], "partial")
+
+
+    def test_rejects_growth_after_stale_size_metadata(self):
+        # Simulate a file growing after the previous stat-based size check.
+        # The old reader accepted this valid but oversized JSON document.
+        import runpy
+        from types import SimpleNamespace
+        from unittest.mock import patch
+
+        module = runpy.run_path(str(SCRIPT))
+        path = self.root / "grown-evidence.json"
+        path.write_text(json.dumps({"padding": "x" * (1024 * 1024)}), encoding="utf-8")
+        with patch.object(Path, "stat", return_value=SimpleNamespace(st_size=0)):
+            with self.assertRaisesRegex(module["EvidenceError"], "evidence exceeds 1 MiB"):
+                module["read_record"](path)
+
+    @unittest.skipUnless(hasattr(os, "mkfifo"), "requires POSIX named pipes")
+    def test_rejects_fifo_without_blocking(self):
+        # A FIFO without a writer must not hang the CLI before JSON validation.
+        fifo = self.root / "blocked-evidence.fifo"
+        os.mkfifo(fifo)
+        alias = self.root / "fifo-alias.json"
+        alias.symlink_to(fifo)
+        for path in (fifo, alias):
+            with self.subTest(path=path.name):
+                result = subprocess.run(
+                    [sys.executable, "-B", str(SCRIPT), "--expect",
+                     f"{REPOS[0]}={SHAS[0]}", "--input", str(path)],
+                    capture_output=True, text=True, timeout=2, check=False)
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn("evidence must be a regular file", result.stdout)
+                self.assertNotIn("Traceback", result.stderr)
+
+    def test_accepts_exact_byte_limit(self):
+        # Preserve the documented inclusive 1 MiB boundary.
+        first = json.dumps(record(REPOS[0], SHAS[0]))
+        raw = first + " " * (1024 * 1024 - len(first.encode("utf-8")))
+        result = self.run_consumer([record(REPOS[0], SHAS[0])],
+                                   raw=raw, expect={REPOS[0]: SHAS[0]})
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["status"], "partial")
+
 
 
 if __name__ == "__main__":

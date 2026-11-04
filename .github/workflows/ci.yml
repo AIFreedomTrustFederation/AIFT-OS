@@ -42,6 +42,9 @@ jobs:
       - name: Verify unsupported installs preserve lockfiles
         run: node --test scripts/preinstall.test.mjs
 
+      - name: Test offline Federation evidence parsing
+        run: python3 -B -m unittest discover -s tests -p 'test_federation_evidence.py' -v
+
       - name: Run canonical verification
         env:
           AIFT_KEEP_ARTIFACTS: "1"
