@@ -55,6 +55,19 @@ jobs:
       # installation token for the two explicit producer repositories instead.
       # Requires a GitHub App installed on both producers with Actions and
       # Contents read permission; missing credentials fail closed.
+      - name: Require producer evidence App credentials
+        shell: bash
+        env:
+          APP_CLIENT_ID: ${{ vars.AIFT_FEDERATION_EVIDENCE_APP_CLIENT_ID }}
+          APP_PRIVATE_KEY: ${{ secrets.AIFT_FEDERATION_EVIDENCE_APP_PRIVATE_KEY }}
+        run: |
+          missing=()
+          [[ -n "$APP_CLIENT_ID" ]] || missing+=("variable AIFT_FEDERATION_EVIDENCE_APP_CLIENT_ID")
+          [[ -n "$APP_PRIVATE_KEY" ]] || missing+=("secret AIFT_FEDERATION_EVIDENCE_APP_PRIVATE_KEY")
+          if (( ${#missing[@]} )); then
+            echo "::error::Live producer evidence is blocked; configure in AIFT-OS settings: ${missing[*]}" >&2
+            exit 1
+          fi
       - name: Mint scoped producer evidence token
         id: producer-token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
