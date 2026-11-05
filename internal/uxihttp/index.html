@@ -73,6 +73,32 @@
     @media(max-width:700px) { .palette-trigger { padding:6px 8px; font-size:12px; } }
 
 
+    /* Living Universe: local evidence projection, not a product/deployment attestation. */
+    .universe-view { height:100%;overflow:auto;padding:clamp(12px,2vw,28px);background:radial-gradient(circle at 48% 10%,#30204d55,transparent 38%),radial-gradient(circle at 60% 95%,#126c5744,transparent 45%); }
+    .universe-hero { max-width:1180px;margin:auto;display:flex;gap:16px;align-items:end;justify-content:space-between;flex-wrap:wrap }
+    .universe-hero h1 { font:clamp(27px,4vw,46px)/1.05 Georgia,serif;color:#f6dfb3;margin:6px 0 }
+    .universe-hero p { max-width:690px;color:var(--muted);line-height:1.6 }
+    .universe-banner { max-width:1180px;margin:14px auto;padding:12px 16px;border-left:3px solid var(--gold);background:#162236;border-radius:8px;color:#e7dfc9 }
+    .universe-toolbar { max-width:1180px;margin:12px auto;display:flex;gap:8px;flex-wrap:wrap }
+    .universe-toolbar input,.universe-toolbar select,.universe-toolbar button { border:1px solid #56708c;background:#101c30;color:#eef4ff;border-radius:10px;padding:10px;font:inherit }
+    .universe-toolbar input { flex:1;min-width:170px }
+    .universe-layout { max-width:1180px;margin:auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,320px);gap:12px }
+    .universe-map { overflow:auto;min-height:560px;border:1px solid #3a5575;border-radius:20px;background:radial-gradient(ellipse at 50% 45%,#173747,#071321 70%); }
+    .universe-map svg { display:block;min-width:650px;width:100%;height:580px }
+    .universe-edge { fill:none;stroke:#6de4ca;stroke-width:1.5;opacity:.42 }
+    .universe-node { cursor:pointer }
+    .universe-node circle { fill:#101c2b;stroke-width:3 }
+    .universe-node text { fill:#f4f8ff;font-size:11px;text-anchor:middle;paint-order:stroke;stroke:#06101c;stroke-width:3px;pointer-events:none }
+    .universe-node:focus-visible circle,.universe-node.selected circle { stroke:#fff;stroke-width:5;filter:drop-shadow(0 0 10px #b4eaff) }
+    .universe-node.dim { opacity:.17 }
+    .universe-detail { border:1px solid #3a5575;border-radius:20px;background:#0d192b;padding:18px;align-self:start }
+    .universe-detail h2 { color:#f6dfb3;font:24px Georgia,serif;margin:8px 0 }
+    .universe-detail p { color:#c6d4e7;line-height:1.6 }
+    .universe-index { max-width:1180px;margin:18px auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:8px }
+    .universe-index button { text-align:left;padding:12px;border:1px solid #385475;border-radius:12px;background:#142137;color:#f1f7ff;cursor:pointer }
+    .universe-index small { display:block;color:#a5c4d4 }
+    .universe-index button:focus-visible { outline:3px solid var(--cyan) }
+    @media(max-width:850px) { .universe-layout { grid-template-columns:1fr } .universe-map { min-height:450px } .universe-map svg { height:500px } }
     .tree-view { overflow:auto; height:100%; padding:18px; background:radial-gradient(circle at 50% 88%,rgba(0,205,160,.08),transparent 34%),radial-gradient(circle at 50% 5%,rgba(158,89,255,.08),transparent 35%); }
     .tree-hero { max-width:1100px; margin:0 auto 14px; display:flex; align-items:flex-end; justify-content:space-between; gap:16px; }
     .tree-eyebrow { color:var(--muted); font-size:10px; letter-spacing:.22em; text-transform:uppercase; }
@@ -152,7 +178,7 @@
     <header class="topbar">
       <button class="mobile-toggle" id="leftToggle" aria-label="Open workspaces">☰</button>
       <div class="brand">MOBOX UXI</div><span class="badge">truthful local-first operator</span>
-      <nav class="view-switch" id="workspaceTabs" role="tablist" aria-label="Workspace view"><button id="conversationTab" class="active" role="tab" aria-selected="true">Conversation</button><button id="treeTab" role="tab" aria-selected="false">Tree of Life</button></nav>
+      <nav class="view-switch" id="workspaceTabs" role="tablist" aria-label="Workspace view"><button id="conversationTab" class="active" role="tab" aria-selected="true">Conversation</button><button id="treeTab" role="tab" aria-selected="false">Tree of Life</button><button id="universeTab" role="tab" aria-selected="false">Living Universe</button></nav>
       <button class="palette-trigger" id="paletteTrigger" type="button" aria-keyshortcuts="Control+K Meta+K" aria-haspopup="dialog">Search ⌕</button>
       <div class="pulse" id="pulse">connecting…</div>
       <button class="mobile-toggle" id="rightToggle" aria-label="Open context">Context</button>
@@ -174,6 +200,13 @@
         </div>
         <div class="tree-stage-wrap"><div class="tree-stage"><svg id="treeSvg" viewBox="0 0 900 650" role="img" aria-label="Interactive federation tree"></svg></div></div>
         <div class="quest-board"><div class="quest-heading"><strong>Federation Quests</strong><small id="questSummary"></small></div><div class="quest-grid" id="questGrid"></div></div>
+      </section>
+      <section class="universe-view view" id="universeView" aria-label="Living Universe source lineage">
+        <div class="universe-hero"><div><div class="tree-eyebrow">AIFT · Source to emergence</div><h1>Roots nourish the federation.</h1><p>Explore local observed repositories as roots, the federation as trunk, and reported capabilities as leaves. A product becomes fruit only when a verifiable user-facing outcome exists.</p></div><a href="https://aifreedomtrustfederation.github.io/www.aifreedomtrust.com/living-universe.html" target="_blank" rel="noopener noreferrer">Explore the curated public universe ↗</a></div>
+        <div class="universe-banner">Local projection from existing MoBox evidence. This is not a synchronized copy of the public Genesis atlas, a dependency graph, or proof of product deployment. No fruit is invented from repository status.</div>
+        <div class="universe-toolbar"><input id="universeSearch" type="search" placeholder="Find repositories and capabilities…" aria-label="Search local world"><select id="universeKind" aria-label="Growth layer"><option value="all">All growth layers</option><option value="root">Repository roots</option><option value="trunk">Federation trunk</option><option value="leaf">Capability leaves</option></select><button id="universeReset" type="button">Reset</button></div>
+        <div class="universe-layout"><div class="universe-map"><svg id="universeSvg" viewBox="0 0 900 580" role="group" aria-label="Source-linked local federation roots and capabilities"></svg></div><aside class="universe-detail" aria-live="polite"><small id="universeLayer">Select a node</small><h2 id="universeTitle">The Living Universe</h2><p id="universeDescription">Select a source root or capability leaf to inspect observed local evidence.</p><div id="universeLineage"></div></aside></div>
+        <div id="universeIndex" class="universe-index" aria-label="Accessible local world index"></div>
       </section>
       <div class="composer" id="composerWrap"><form id="composer"><input id="message" autocomplete="off" placeholder="Ask Aetherion, /inspect AIFT-OS, or /forge"><button type="submit">Send</button></form></div>
     </main>
@@ -201,8 +234,19 @@
     function clear(node){while(node.firstChild)node.removeChild(node.firstChild)}
     function reportError(error){const message=error&&error.message?error.message:String(error);window.alert(message);$("#pulse").textContent="blocked · "+message}
     async function api(path,options={}){const response=await fetch(path,{headers:{"Content-Type":"application/json"},...options});const data=await response.json();if(!response.ok)throw new Error(data.error||response.statusText);return data}
-    async function load(){const [system,sessions,repos,tree]=await Promise.all([api("/v1/system"),api("/v1/sessions"),api("/v1/repositories"),api("/v1/federation/tree")]);state.sessions=sessions.sessions||[];state.repos=repos.repositories||[];state.tree=tree;$("#pulse").textContent=`active · ${system.repository_count} repos · ${system.mode}`;const systemNode=$("#system");clear(systemNode);systemNode.append(element("strong","",system.status),document.createElement("br"),document.createTextNode(system.truth_contract),document.createElement("br"),document.createElement("br"),element("span","badge",system.aift_root));renderSessions();renderRepos();renderTree();if(state.sessions[0])await openSession(state.sessions[0].id);else renderTurns()}
-    function setView(view){const tree=view==="tree";$("#conversationView").classList.toggle("active",!tree);$("#treeView").classList.toggle("active",tree);$("#conversationTab").classList.toggle("active",!tree);$("#treeTab").classList.toggle("active",tree);$("#conversationTab").setAttribute("aria-selected",String(!tree));$("#treeTab").setAttribute("aria-selected",String(tree));$("#composerWrap").classList.toggle("hidden",tree);$("#main").classList.toggle("tree-mode",tree);if(tree)renderTree();closeDrawers()}
+    async function load(){const [system,sessions,repos,tree]=await Promise.all([api("/v1/system"),api("/v1/sessions"),api("/v1/repositories"),api("/v1/federation/tree")]);state.sessions=sessions.sessions||[];state.repos=repos.repositories||[];state.tree=tree;$("#pulse").textContent=`active · ${system.repository_count} repos · ${system.mode}`;const systemNode=$("#system");clear(systemNode);systemNode.append(element("strong","",system.status),document.createElement("br"),document.createTextNode(system.truth_contract),document.createElement("br"),document.createElement("br"),element("span","badge",system.aift_root));renderSessions();renderRepos();renderTree();renderUniverse();if(state.sessions[0])await openSession(state.sessions[0].id);else renderTurns()}
+    function setView(view){
+      const tree=view==="tree",universe=view==="universe";
+      $("#conversationView").classList.toggle("active",!tree&&!universe);
+      $("#treeView").classList.toggle("active",tree);
+      $("#universeView").classList.toggle("active",universe);
+      for(const [name,id] of [["conversation","conversationTab"],["tree","treeTab"],["universe","universeTab"]]){
+        const active=name===view;$("#"+id).classList.toggle("active",active);$("#"+id).setAttribute("aria-selected",String(active));
+      }
+      $("#composerWrap").classList.toggle("hidden",tree||universe);
+      $("#main").classList.toggle("tree-mode",tree||universe);
+      if(tree)renderTree();if(universe)renderUniverse();closeDrawers();
+    }
     function renderSessions(){const root=$("#sessions");clear(root);for(const session of state.sessions){const button=element("button",`nav-button ${state.session&&state.session.id===session.id?"active":""}`,session.title);button.append(element("small","",new Date(session.updated_at).toLocaleString()));button.addEventListener("click",()=>{setView("conversation");openSession(session.id).catch(reportError)});root.append(button)}}
     function renderRepos(){const root=$("#repos");clear(root);for(const repo of state.repos){const button=element("button","nav-button",repo.name);button.append(element("small","",`${repo.role} · ${repo.status}`));button.addEventListener("click",()=>{setView("conversation");$("#message").value=`/inspect ${repo.name}`;showRepo(repo.name);closeDrawers();$("#message").focus()});root.append(button)}}
     function showRepo(name){const repo=state.repos.find(item=>item.name===name);const root=$("#evidence");clear(root);if(!repo||!(repo.evidence||[]).length){root.textContent="No evidence records.";return}for(const evidence of repo.evidence)root.append(evidenceCard(evidence))}
@@ -228,6 +272,7 @@
       return [
         {label:"Conversation",description:"Open conversation view",action:()=>setView("conversation")},
         {label:"Tree of Life",description:"Open observed federation tree",action:()=>setView("tree")},
+        {label:"Living Universe",description:"Explore local repository roots and capability leaves",action:()=>setView("universe")},
         ...state.sessions.map(session=>({label:session.title||"Untitled session",description:"Local session",action:()=>{setView("conversation");openSession(session.id).catch(reportError)}})),
         ...state.repos.map(repo=>({label:repo.name,description:`Repository · ${repo.role} · ${repo.status}`,action:()=>{setView("conversation");showRepo(repo.name);$("#message").value=`/inspect ${repo.name}`;$("#message").focus()}}))
       ];
@@ -259,6 +304,49 @@
       else if(event.key==="Tab"){event.preventDefault();$("#paletteQuery").focus()}
     });
     document.addEventListener("keydown",event=>{if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="k"){event.preventDefault();if($("#paletteBackdrop").hidden)openPalette();else closePalette()}});
+    // This projection uses only /v1/federation/tree evidence already loaded by MoBox.
+    // It deliberately has no fruit unless an independently verified product contract is introduced.
+    let universeSelected=null;
+    function universeModel(){
+      const roots=(state.tree?.nodes||[]).filter(n=>n.kind==="repository").map(n=>({id:"root:"+n.id,kind:"root",name:n.name,repo:n,description:n.role||"Observed repository"}));
+      const trunk={id:"federation",kind:"trunk",name:"AIFT Federation",description:"Local observed federation grouping; membership is not proof of a product dependency"};
+      const leaves=[];for(const root of roots){for(const [i,cap] of (root.repo.capabilities||[]).entries()){leaves.push({id:root.id+":cap:"+i,kind:"leaf",name:cap.name||"Unnamed capability",description:cap.status||"Observed capability",parent:root.id,repo:root.repo})}}
+      return {nodes:[...roots,trunk,...leaves],roots,leaves};
+    }
+    function selectUniverse(node){
+      universeSelected=node.id;
+      $("#universeLayer").textContent=node.kind.toUpperCase()+" · local evidence";
+      $("#universeTitle").textContent=node.name;
+      $("#universeDescription").textContent=node.kind==="root"?"Repository root: source nourishment, not fruit. "+node.description:node.kind==="leaf"?"Capability leaf reported by local evidence. "+node.description:"Federation trunk: a structural grouping, not a claim of cross-repository dependency.";
+      const lineage=$("#universeLineage");clear(lineage);
+      if(node.repo){const label=element("strong","",node.repo.name);lineage.append(label,document.createElement("br"));const inspect=element("button","decision-button","Inspect source evidence");inspect.addEventListener("click",()=>{setView("conversation");$("#message").value="/inspect "+node.repo.name;$("#message").focus()});lineage.append(inspect)}
+      renderUniverse();
+    }
+    function renderUniverse(){
+      if(!state.tree)return;
+      const {nodes,roots,leaves}=universeModel(),query=$("#universeSearch").value.trim().toLocaleLowerCase(),kind=$("#universeKind").value;
+      const positions={federation:{x:450,y:290}};
+      roots.forEach((n,i)=>positions[n.id]={x:roots.length===1?450:65+i*770/(roots.length-1),y:495});
+      const grouped=new Map();for(const leaf of leaves){if(!grouped.has(leaf.parent))grouped.set(leaf.parent,[]);grouped.get(leaf.parent).push(leaf)}
+      leaves.forEach((n,i)=>{const parent=positions[n.parent],siblings=grouped.get(n.parent),offset=siblings.indexOf(n)-(siblings.length-1)/2;positions[n.id]={x:Math.max(40,Math.min(860,parent.x+offset*42)),y:85+(i%3)*38}});
+      const svg=$("#universeSvg");clear(svg);
+      const colors={root:"#63f1b4",trunk:"#f6d28b",leaf:"#b99aff"};
+      for(const root of roots){const p=positions[root.id],t=positions.federation;const edge=svgElement("path",{d:`M${p.x} ${p.y} Q${p.x} 350 ${t.x} ${t.y}`,class:"universe-edge"});svg.append(edge)}
+      for(const leaf of leaves){const p=positions[leaf.id],r=positions[leaf.parent];svg.append(svgElement("path",{d:`M${r.x} ${r.y} Q${p.x} 260 ${p.x} ${p.y}`,class:"universe-edge"}))}
+      const index=$("#universeIndex");clear(index);
+      for(const node of nodes){const p=positions[node.id],matches=(kind==="all"||kind===node.kind)&&(!query||(node.name+" "+node.description).toLocaleLowerCase().includes(query));
+        const g=svgElement("g",{class:"universe-node"+(matches?"":" dim")+(universeSelected===node.id?" selected":""),role:"button",tabindex:"0","aria-label":node.kind+": "+node.name});
+        g.append(svgElement("circle",{cx:p.x,cy:p.y,r:node.kind==="trunk"?38:node.kind==="root"?23:14,stroke:colors[node.kind]}));
+        const label=svgElement("text",{x:p.x,y:p.y+(node.kind==="leaf"?27:40)});label.textContent=node.name.length>22?node.name.slice(0,21)+"…":node.name;g.append(label);
+        g.addEventListener("click",()=>selectUniverse(node));g.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();selectUniverse(node)}});svg.append(g);
+        if(matches){const button=element("button","",node.name);button.type="button";button.append(element("small","",node.kind+" · "+node.description));button.addEventListener("click",()=>selectUniverse(node));index.append(button)}
+      }
+      if(!index.children.length)index.append(element("p","","No matching observed local nodes."));
+    }
+    $("#universeSearch").addEventListener("input",renderUniverse);
+    $("#universeKind").addEventListener("change",renderUniverse);
+    $("#universeReset").addEventListener("click",()=>{$("#universeSearch").value="";$("#universeKind").value="all";universeSelected=null;renderUniverse()});
+    $("#universeTab").addEventListener("click",()=>setView("universe"));
     $("#conversationTab").addEventListener("click",()=>setView("conversation"));$("#treeTab").addEventListener("click",()=>setView("tree"));
     $("#treeToolbar").addEventListener("click",event=>{const button=event.target.closest("[data-filter]");if(!button)return;state.treeFilter=button.dataset.filter;for(const item of document.querySelectorAll(".tree-filter"))item.classList.toggle("active",item===button);renderTreeMap()});
     $("#zoomIn").addEventListener("click",()=>{state.treeZoom=Math.min(1.5,state.treeZoom+.1);renderTreeMap()});$("#zoomOut").addEventListener("click",()=>{state.treeZoom=Math.max(.7,state.treeZoom-.1);renderTreeMap()});$("#zoomReset").addEventListener("click",()=>{state.treeZoom=1;renderTreeMap()});
