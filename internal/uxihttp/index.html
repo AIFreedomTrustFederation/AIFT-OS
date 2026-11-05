@@ -9,6 +9,11 @@
     * { box-sizing:border-box; }
     body { margin:0; height:100vh; overflow:hidden; background:radial-gradient(circle at 50% -20%,#1a294b 0,#080c14 42%,var(--background) 100%); color:#eef3ff; font:14px/1.5 Inter,system-ui,sans-serif; }
     button,input,select,textarea { font:inherit; } button { cursor:pointer; }
+    /* Keyboard focus and reduced-motion support for the local operator console. */
+    :where(a,button,input,select,textarea,[tabindex]):focus-visible { outline:3px solid var(--cyan); outline-offset:3px; }
+    .skip-link { position:absolute; top:8px; left:8px; z-index:100; padding:10px 14px; border-radius:8px; background:var(--surface); color:#fff; transform:translateY(-160%); }
+    .skip-link:focus { transform:translateY(0); }
+    @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; scroll-behavior:auto!important; } }
     .shell { display:grid; grid-template-columns:270px minmax(0,1fr) 340px; grid-template-rows:58px 1fr; height:100vh; }
     .topbar { grid-column:1/-1; display:flex; align-items:center; gap:12px; padding:0 18px; border-bottom:1px solid var(--line); background:rgba(7,11,18,.92); backdrop-filter:blur(18px); z-index:20; }
     .brand { color:var(--gold); font-weight:850; letter-spacing:.09em; white-space:nowrap; }
@@ -129,6 +134,7 @@
   </style>
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to main content</a>
   <div class="shell">
     <header class="topbar">
       <button class="mobile-toggle" id="leftToggle" aria-label="Open workspaces">☰</button>
@@ -142,7 +148,7 @@
       <h2>Sessions</h2><div class="panel-section" id="sessions"></div>
       <h2>Repositories</h2><div class="panel-section" id="repos"></div>
     </aside>
-    <main class="main" id="main">
+    <main class="main" id="main" tabindex="-1">
       <div class="stream view active" id="conversationView"></div>
       <section class="tree-view view" id="treeView" aria-label="Federation Tree of Life">
         <div class="tree-hero"><div><div class="tree-eyebrow">Fibonacci circulation · Seven living layers</div><h1 class="tree-title">Two Trees, One Root</h1><p class="tree-subtitle">The Tree of Life reveals observed runtime, infrastructure, application, and service repositories with their evidence-derived readiness classifications. The Tree of Knowledge reveals what has been remembered and understood. Every level, glow, and quest below is derived from observed repository evidence.</p></div><div class="tree-truth">Gamification never outranks truth. XP represents discovered evidence and verified capability—not imagined execution, wealth, authority, or completion.</div></div>
