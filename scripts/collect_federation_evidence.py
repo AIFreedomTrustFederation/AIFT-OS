@@ -8,6 +8,8 @@ of unsigned aift.verification.v1 records to check_federation_evidence.py.
 from __future__ import annotations
 
 import argparse
+import ctypes
+import errno
 from datetime import datetime, timedelta, timezone
 import hashlib
 import io
@@ -18,6 +20,7 @@ import selectors
 import zipfile
 import zlib
 import re
+import signal
 import subprocess
 import sys
 import tempfile
@@ -96,8 +99,10 @@ def bounded_archive_download(repo: str, endpoint: str, max_bytes: int = MAX_ARCH
     that buffers the complete response before its size can be checked.
     """
     try:
-        process = subprocess.Popen(["gh", "api", endpoint], stdout=subprocess.PIPE,
-                                   stderr=subprocess.DEVNULL, bufsize=0)
+        # Pin the public GitHub host: ambient GH_HOST must not redirect provenance checks.
+        process = subprocess.Popen(["gh", "api", "--hostname", "github.com", endpoint], stdout=subprocess.PIPE,
+                                   stderr=subprocess.DEVNULL, bufsize=0,
+                                   start_new_session=(os.name == "posix"))
     except OSError as exc:
         raise CollectionError(f"artifact download failed for {repo}: {exc}") from exc
     deadline = time.monotonic() + 60
@@ -105,10 +110,22 @@ def bounded_archive_download(repo: str, endpoint: str, max_bytes: int = MAX_ARCH
         data = bytearray()
         with selectors.DefaultSelector() as selector:
             selector.register(process.stdout, selectors.EVENT_READ)
+            descendants_cleaned = False
             while True:
                 remaining = deadline - time.monotonic()
-                if remaining <= 0 or not selector.select(remaining):
+                if remaining <= 0:
                     raise CollectionError(f"artifact download timed out for {repo}")
+                # The gh parent may exit while a background descendant keeps
+                # stdout open. Reap its process group before waiting for EOF.
+                if os.name == "posix" and process.poll() is not None and not descendants_cleaned:
+                    try:
+                        os.killpg(process.pid, signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
+                    descendants_cleaned = True
+                # Check for parent exit periodically even if no pipe activity.
+                if not selector.select(min(remaining, 0.25)):
+                    continue
                 chunk = os.read(process.stdout.fileno(), min(65536, max_bytes + 1 - len(data)))
                 if not chunk:
                     break
@@ -123,9 +140,16 @@ def bounded_archive_download(repo: str, endpoint: str, max_bytes: int = MAX_ARCH
             raise CollectionError(f"artifact ID download failed for {repo} (exit {status})")
         return bytes(data)
     finally:
-        if process.poll() is None:
+        # A timed-out gh may have spawned descendants that inherited stdout.
+        # POSIX process-group cleanup is best-effort, not an OS sandbox.
+        if os.name == "posix":
+            try:
+                os.killpg(process.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+        elif process.poll() is None:
             process.kill()
-            process.wait()
+        process.wait()
         process.stdout.close()
 
 
@@ -182,6 +206,34 @@ def parse_pairs(values: list[str], kind: str) -> dict[str, str]:
     return result
 
 
+def rename_directory_no_replace(stage: Path, output: Path) -> None:
+    """Atomically publish a directory without replacing an existing path.
+
+    Linux renameat2(RENAME_NOREPLACE) provides the required single-operation
+    no-clobber guarantee. Fail closed if the primitive is unavailable rather
+    than falling back to a check-then-rename race.
+    """
+    if sys.platform != "linux":
+        raise CollectionError("atomic no-clobber directory publication requires Linux")
+    try:
+        libc = ctypes.CDLL(None, use_errno=True)
+        renameat2 = libc.renameat2
+    except (OSError, AttributeError) as exc:
+        raise CollectionError("atomic no-clobber directory publication unavailable") from exc
+    renameat2.argtypes = (ctypes.c_int, ctypes.c_char_p, ctypes.c_int,
+                          ctypes.c_char_p, ctypes.c_uint)
+    renameat2.restype = ctypes.c_int
+    # AT_FDCWD = -100, RENAME_NOREPLACE = 1 (Linux renameat2).
+    if renameat2(-100, os.fsencode(stage), -100, os.fsencode(output), 1) == 0:
+        return
+    error = ctypes.get_errno()
+    if error in (errno.EEXIST, errno.ENOTEMPTY):
+        raise CollectionError("output directory already exists; refusing overwrite")
+    if error in (errno.ENOSYS, errno.EINVAL, errno.EOPNOTSUPP):
+        raise CollectionError("atomic no-clobber directory publication unavailable")
+    raise OSError(error, os.strerror(error), str(output))
+
+
 def publish_records(output: Path, records: list[Path], provenance: list[dict], assessment: dict) -> None:
     """Publish only a complete assessment; discard staged files on failure."""
     # A mismatched mapping would be silently truncated by zip(), allowing an
@@ -210,7 +262,7 @@ def publish_records(output: Path, records: list[Path], provenance: list[dict], a
         # Never intentionally replace a previously published assessment.
         if output.exists():
             raise CollectionError("output directory already exists; refusing overwrite")
-        stage.rename(output)
+        rename_directory_no_replace(stage, output)
 
 
 def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dict:
@@ -218,10 +270,13 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
         raise CollectionError("run and expected-commit repository sets must match")
     if any(repo not in ARTIFACTS for repo in runs):
         raise CollectionError("unsupported repository artifact contract")
-    output = output.resolve()
+    # Resolve parent aliases for the checkout boundary, but preserve the final
+    # output component. A dangling symlink must not redirect publication.
+    output = output.parent.resolve() / output.name
+    if output.is_symlink():
+        raise CollectionError("output directory must not be a symlink")
     # Publishing inside the verified checkout would mutate the very source
     # tree whose commit identity this collector is meant to corroborate.
-    # Resolve symlinks before checking so aliases cannot bypass this boundary.
     if output.is_relative_to(Path(__file__).resolve().parents[1]):
         raise CollectionError("output directory must be outside the collector checkout")
     if output.exists():
@@ -250,7 +305,7 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
             if type(run.get("id")) is not int or run["id"] != int(run_id):
                 raise CollectionError(f"run identity mismatch: {repo}")
             attempt = run.get("run_attempt")
-            if type(attempt) is not int or attempt < 1:
+            if type(attempt) is not int or not 1 <= attempt <= 9999999999:
                 raise CollectionError(f"invalid workflow run attempt: {repo}")
             workflow_id, workflow_path = WORKFLOWS[repo]
             if (type(run.get("workflow_id")) is not int or run["workflow_id"] != workflow_id or
@@ -350,6 +405,13 @@ def collect(runs: dict[str, str], expected: dict[str, str], output: Path) -> dic
             if (record.get("source", {}).get("type") != "github-actions" or
                     record["source"].get("run_url") != f"https://github.com/{repo}/actions/runs/{run_id}"):
                 raise CollectionError(f"artifact source does not match authenticated run: {repo}")
+            # Older producers omit run_attempt. When a producer supplies it,
+            # require agreement with the authenticated GitHub API attempt.
+            # A run ID alone is not sufficient to distinguish reruns.
+            if "run_attempt" in record["source"] and (
+                    type(record["source"]["run_attempt"]) is not int or
+                    record["source"]["run_attempt"] != attempt):
+                raise CollectionError(f"artifact source run attempt does not match authenticated run: {repo}")
             records.append(downloaded)
             validated_records[repo] = record
             provenance.append({"repository": repo, "repository_id": repo_id,
