@@ -5,10 +5,12 @@ import json
 import hashlib
 import importlib.util
 import os
+import shlex
 import subprocess
 import sys
 import tempfile
 import textwrap
+import time
 import unittest
 from unittest import mock
 from pathlib import Path
@@ -38,6 +40,11 @@ def archive_bytes(repo):
  if mode=="tampered" and repo.endswith("/.github"):
   record=json.loads(data);record["source"]["run_url"]="https://github.com/AIFreedomTrustFederation/.github/actions/runs/123"
   data=json.dumps(record).encode()
+ if mode in ("nonfinite_producer_json", "deeply_nested_producer_json") and repo.endswith("/.github"):
+  # Keep authenticated ZIP size/digest valid; only the embedded JSON is malformed.
+  extra=(b"1e9999" if mode=="nonfinite_producer_json" else
+         b"["*20000+b"0"+b"]"*20000)
+  data=data.rstrip()[:-1]+b',"ignored":'+extra+b"}"
  buffer=io.BytesIO()
  with zipfile.ZipFile(buffer,"w",compression=zipfile.ZIP_DEFLATED) as archive:
   info=zipfile.ZipInfo(filename,date_time=(2020,1,1,0,0,0));info.compress_type=zipfile.ZIP_DEFLATED
@@ -52,6 +59,11 @@ def archive_bytes(repo):
   damaged[offset]=0xFF
   return bytes(damaged)
  return buffer.getvalue()
+# Emulate gh api's explicit host override of the ambient GH_HOST selector.
+if args[:3]==["api","--hostname","github.com"]:
+ args=["api",*args[3:]]
+elif "--hostname" in args or os.environ.get("GH_HOST") not in (None,"","github.com"):
+ sys.stderr.write("unexpected GitHub API hostname\\n");sys.exit(8)
 if args[0]=="api":
  path=args[1].removeprefix("repos/")
  repo=next((r for r in repos if path==r or path.startswith(r+"/")),None)
@@ -94,6 +106,7 @@ if args[0]=="api":
   if mode=="missing_run_head_repo":result.pop("head_repository")
   if mode=="missing_run_timestamps":result.pop("run_started_at")
   if mode=="invalid_run_attempt":result["run_attempt"]=True
+  if mode=="oversized_run_attempt":result["run_attempt"]=10000000000
   if mode=="wrong_workflow":result["workflow_id"]=999
   if mode=="wrong_workflow_path":result["path"]=".github/workflows/untrusted.yml"
  elif suffix=="/actions/runs/"+run+"/artifacts?per_page=100":
@@ -166,6 +179,12 @@ class CollectionTests(unittest.TestCase):
                       "dependencies": {"status": "passed" if mode == "all_gates_pass" else "not_checked"},
                       "deployment": {"status": "passed" if mode == "all_gates_pass" else "not_applicable"},
                       "limitations": ["No live deployment tested."]}
+            if mode == "matching_reported_attempt":
+                record["source"]["run_attempt"] = 1
+            elif mode == "mismatched_reported_attempt":
+                record["source"]["run_attempt"] = 2
+            elif mode == "invalid_reported_attempt":
+                record["source"]["run_attempt"] = True
             if mode == "future_generated_at":
                 record["generated_at"] = "2999-01-01T00:00:00+00:00"
             if mode == "stale_generated_at":
@@ -187,6 +206,14 @@ class CollectionTests(unittest.TestCase):
         env = dict(os.environ, PATH=f"{self.bin}:{os.environ.get('PATH','')}",
                    FAKE_GH_MODE=mode, FAKE_GH_FIXTURES=str(fixture_dir))
         return subprocess.run(cmd, capture_output=True, text=True, env=env, check=False), output
+
+    def test_ambient_enterprise_host_cannot_redirect_public_github_evidence(self):
+        # Without an explicit --hostname, gh api may select GH_HOST instead
+        # of the public GitHub API that the repository/run identity checks assume.
+        with mock.patch.dict(os.environ, {"GH_HOST": "enterprise.example.invalid"}):
+            result, output = self.invoke()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue((output / "federation-assessment.json").is_file())
 
     def test_collects_two_artifact_formats_and_reports_partial(self):
         result, output = self.invoke()
@@ -358,8 +385,32 @@ class CollectionTests(unittest.TestCase):
         report = json.loads((output / "federation-assessment.json").read_text())
         self.assertTrue(all(run["run_attempt"] == 1 for run in report["github_runs"]))
 
+    def test_accepts_matching_reported_run_attempt(self):
+        result, output = self.invoke("matching_reported_attempt")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = json.loads((output / "federation-assessment.json").read_text())
+        self.assertTrue(all(run["run_attempt"] == 1 for run in report["github_runs"]))
+
+    def test_rejects_mismatched_or_malformed_reported_run_attempt(self):
+        for mode in ("mismatched_reported_attempt", "invalid_reported_attempt"):
+            with self.subTest(mode=mode):
+                result, output = self.invoke(mode, output=self.root / mode)
+                self.assertEqual(result.returncode, 1, result.stderr)
+                expected_error = ("invalid source run attempt" if mode == "invalid_reported_attempt"
+                                  else "artifact source run attempt does not match authenticated run")
+                self.assertIn(expected_error, result.stderr)
+                self.assertFalse(output.exists())
+
     def test_rejects_invalid_run_attempt(self):
         result, output = self.invoke("invalid_run_attempt")
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("invalid workflow run attempt", result.stderr)
+        self.assertFalse(output.exists())
+
+    def test_rejects_authenticated_attempt_above_producer_contract(self):
+        # The producer and offline consumer cap run_attempt at ten digits.
+        # GitHub API metadata must obey the same bound before publication.
+        result, output = self.invoke("oversized_run_attempt")
         self.assertEqual(result.returncode, 1, result.stderr)
         self.assertIn("invalid workflow run attempt", result.stderr)
         self.assertFalse(output.exists())
@@ -507,6 +558,18 @@ class CollectionTests(unittest.TestCase):
         self.assertIn("duplicate", result.stderr)
         self.assertFalse(output.exists())
 
+    def test_collector_rejects_malformed_producer_json_through_strict_consumer(self):
+        # Integration regression: the collector must use the strict consumer,
+        # not just pass its own API/digest checks. The fake API computes the
+        # correct SHA-256 and size for each malformed producer archive.
+        for mode in ("nonfinite_producer_json", "deeply_nested_producer_json"):
+            with self.subTest(mode=mode):
+                result, output = self.invoke(mode, output=self.root / f"evidence-{mode}")
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn("invalid JSON", result.stderr)
+                self.assertNotIn("Traceback (most recent call last)", result.stderr)
+                self.assertFalse(output.exists())
+
     def test_rejects_mismatched_artifact_run_url(self):
         result, output = self.invoke("tampered")
         self.assertEqual(result.returncode, 1)
@@ -592,6 +655,38 @@ class CollectionTests(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertIn("artifact archive missing or too large", result.stderr)
         self.assertFalse(output.exists())
+
+
+    @unittest.skipUnless(os.name == "posix", "POSIX process-group containment required")
+    def test_gh_descendant_cannot_hold_download_pipe_open(self):
+        # A gh CLI parent may exit successfully after spawning a background
+        # child that inherits stdout. The collector must not wait for that
+        # child's delayed write or let it outlive the verification subprocess.
+        sys.path.insert(0, str(ROOT / "scripts"))
+        try:
+            spec = importlib.util.spec_from_file_location("_collector_pipe_test", SCRIPT)
+            collector = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(collector)
+        finally:
+            sys.path.remove(str(ROOT / "scripts"))
+        marker = self.root / "unexpected-descendant-write"
+        executable = self.root / "gh"
+        executable.write_text(
+            "#!/bin/sh\n"
+            "(sleep 2; printf escaped > " + shlex.quote(str(marker)) + ") &\n"
+            "printf ok\n", encoding="utf-8"
+        )
+        executable.chmod(0o755)
+        with mock.patch.dict(os.environ, {
+            "PATH": str(self.root) + os.pathsep + os.environ.get("PATH", "")
+        }):
+            started = time.monotonic()
+            result = collector.bounded_archive_download("fixture", "fixture", max_bytes=1024)
+            elapsed = time.monotonic() - started
+        self.assertEqual(result, b"ok")
+        self.assertLess(elapsed, 1.5, "collector waited for a descendant's inherited pipe")
+        time.sleep(2.2)
+        self.assertFalse(marker.exists(), "gh descendant escaped after successful parent exit")
 
     def test_rejects_inconsistent_artifact_size_even_with_matching_digest(self):
         # An otherwise valid archive must match its authenticated size metadata.
@@ -740,6 +835,20 @@ class CollectionTests(unittest.TestCase):
                     self.assertFalse(direct.exists())
 
 
+    def test_rejects_dangling_output_symlink_without_redirecting_publication(self):
+        # Path.resolve() previously followed a dangling final symlink and
+        # published evidence under an unintended target name.
+        target = self.root / "unrequested-target"
+        alias = self.root / "requested-output"
+        alias.symlink_to(target, target_is_directory=True)
+        result, _ = self.invoke(output=alias)
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("output directory must not be a symlink", result.stderr)
+        self.assertNotIn("Traceback", result.stderr)
+        self.assertTrue(alias.is_symlink())
+        self.assertFalse(target.exists())
+
+
     def test_never_overwrites_existing_directory(self):
         target = self.root / "evidence"
         target.mkdir()
@@ -747,6 +856,48 @@ class CollectionTests(unittest.TestCase):
         result, _ = self.invoke(output=target)
         self.assertEqual(result.returncode, 1)
         self.assertEqual((target / "sentinel").read_text(), "preserve")
+
+
+    def test_publication_race_preserves_concurrently_created_empty_destination(self):
+        # Deterministically create the destination after the publisher's final
+        # exists() check but before the atomic no-clobber rename.
+        sys.path.insert(0, str(ROOT / "scripts"))
+        try:
+            spec = importlib.util.spec_from_file_location("_collector_race_test", SCRIPT)
+            collector = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(collector)
+        finally:
+            sys.path.remove(str(ROOT / "scripts"))
+        records, provenance = [], []
+        for index, repo in enumerate(REPOS):
+            directory = self.root / f"race-source-{index}"
+            directory.mkdir()
+            source = directory / collector.ARTIFACTS[repo][1]
+            source.write_text("{}", encoding="utf-8")
+            records.append(source)
+            provenance.append({"repository": repo})
+        output = self.root / "raced-assessment"
+        actual_rename = collector.rename_directory_no_replace
+
+        def create_destination_before_rename(stage, destination):
+            destination.mkdir()
+            return actual_rename(stage, destination)
+
+        with mock.patch.object(collector, "rename_directory_no_replace",
+                               side_effect=create_destination_before_rename):
+            with self.assertRaisesRegex(collector.CollectionError, "already exists"):
+                collector.publish_records(output, records, provenance, {"status": "reported_pass"})
+        self.assertTrue(output.is_dir())
+        self.assertEqual(list(output.iterdir()), [], "existing empty directory was replaced")
+        self.assertEqual(list(self.root.glob(".aift-evidence-stage-*")), [])
+
+        # The same publisher still succeeds normally after the collision.
+        output.rmdir()
+        collector.publish_records(output, records, provenance, {"status": "reported_pass"})
+        self.assertEqual({p.name for p in output.iterdir()},
+                         {"aift-catalog-verification.json", "aift-runtime-verification.json",
+                          "federation-assessment.json"})
+        self.assertEqual(list(self.root.glob(".aift-evidence-stage-*")), [])
 
 
     def test_live_collector_authenticates_only_on_default_branch_events(self):

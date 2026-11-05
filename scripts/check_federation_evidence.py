@@ -9,7 +9,10 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import os
+import math
 import re
+import stat
 import sys
 from pathlib import Path
 
@@ -17,6 +20,7 @@ REPO = re.compile(r"AIFreedomTrustFederation/[A-Za-z0-9_.-]+\Z")
 SHA = re.compile(r"[0-9a-f]{40}\Z")
 GATE_STATUSES = {"passed", "failed", "not_checked", "not_applicable"}
 MAX_BYTES = 1024 * 1024
+MAX_INTEGER_DIGITS = 4300
 
 
 class EvidenceError(ValueError):
@@ -36,13 +40,41 @@ def reject_constant(value: str) -> None:
     raise EvidenceError(f"invalid numeric literal: {value}")
 
 
+def finite_json_float(value: str) -> float:
+    """Reject JSON exponent overflow instead of silently accepting infinity."""
+    number = float(value)
+    if not math.isfinite(number):
+        raise EvidenceError("non-finite JSON number")
+    return number
+
+
+def bounded_json_int(value: str) -> int:
+    """Bound JSON integer parsing independent of Python's interpreter limit."""
+    if len(value.lstrip("-")) > MAX_INTEGER_DIGITS:
+        raise EvidenceError("JSON integer exceeds 4300 digits")
+    return int(value)
+
+
 def read_record(path: Path) -> dict:
-    if path.stat().st_size > MAX_BYTES:
+    # A stat-only limit is vulnerable to a file growing between stat and read.
+    # Bound bytes actually consumed, including for changing or special files.
+    # A supplied FIFO can block at open() before the byte limit applies.
+    # Open nonblocking, then inspect the descriptor to avoid a stat/open race.
+    fd = os.open(path, os.O_RDONLY | getattr(os, "O_NONBLOCK", 0))
+    try:
+        if not stat.S_ISREG(os.fstat(fd).st_mode):
+            raise EvidenceError("evidence must be a regular file")
+        with os.fdopen(fd, "rb", closefd=False) as stream:
+            raw = stream.read(MAX_BYTES + 1)
+    finally:
+        os.close(fd)
+    if len(raw) > MAX_BYTES:
         raise EvidenceError("evidence exceeds 1 MiB")
     try:
-        record = json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=no_duplicate_keys,
-                            parse_constant=reject_constant)
-    except (UnicodeError, json.JSONDecodeError) as exc:
+        record = json.loads(raw.decode("utf-8"), object_pairs_hook=no_duplicate_keys,
+                            parse_constant=reject_constant, parse_float=finite_json_float,
+                            parse_int=bounded_json_int)
+    except (UnicodeError, ValueError, RecursionError) as exc:
         raise EvidenceError(f"invalid JSON: {exc}") from exc
     if not isinstance(record, dict):
         raise EvidenceError("record must be a JSON object")
@@ -69,9 +101,22 @@ def validate(record: dict, expected: dict[str, str]) -> dict:
     if not isinstance(source, dict) or source.get("type") not in ("local", "github-actions"):
         raise EvidenceError("invalid source type")
     run_url = source.get("run_url")
+    if source["type"] == "github-actions" and run_url is None:
+        raise EvidenceError("GitHub Actions source requires a run URL")
+    if source["type"] == "local" and run_url is not None:
+        raise EvidenceError("local source must not claim a GitHub Actions run URL")
     if run_url is not None and (not isinstance(run_url, str) or
-                                not re.fullmatch(rf"https://github\.com/{re.escape(repo)}/actions/runs/[1-9][0-9]*", run_url)):
+                                not re.fullmatch(rf"https://github\.com/{re.escape(repo)}/actions/runs/[1-9][0-9]{{0,19}}", run_url)):
         raise EvidenceError("source run URL does not match repository")
+    # A run ID is shared across reruns. Validate an optional producer attempt
+    # even in offline mode; older Actions records may omit it, and local records
+    # must not claim an Actions attempt.
+    if "run_attempt" in source:
+        attempt = source["run_attempt"]
+        if ((source["type"] == "local" and attempt is not None) or
+                (source["type"] == "github-actions" and
+                 (type(attempt) is not int or not 1 <= attempt <= 9999999999))):
+            raise EvidenceError("invalid source run attempt")
     checks = record.get("checks")
     if not isinstance(checks, list) or not checks:
         raise EvidenceError("checks must be a nonempty list")
@@ -112,28 +157,56 @@ def validate(record: dict, expected: dict[str, str]) -> dict:
         status = "reported_checks_passed_with_gaps"
     else:
         status = "reported_checks_passed"
+    # Preserve validated producer claims in the offline machine-readable report.
+    # These are self-reported, not authenticated test or security attestations.
     return {"repository": repo, "commit_sha": commit, "status": status,
             "unverified_gates": gaps, "failed_gates": failed_gates,
-            "check_count": len(checks)}
+            "check_count": len(checks),
+            "reported_checks": [
+                {key: check[key] for key in ("id", "command", "status", "exit_code")}
+                for check in checks
+            ],
+            "reported_gates": {
+                gate: record[gate]["status"] for gate in ("security", "dependencies", "deployment")
+            },
+            "reported_gate_reasons": {
+                gate: record[gate]["reason"]
+                for gate in ("security", "dependencies", "deployment")
+                if isinstance(record[gate].get("reason"), str) and record[gate]["reason"].strip()
+            },
+            "reported_limitations": limits,
+            "reported_generated_at": record["generated_at"],
+            "reported_source": {key: source[key] for key in ("type", "run_url", "run_attempt")
+                                if key in source}}
 
 
 def inspect(paths: list[Path], expected: dict[str, str]) -> tuple[dict, int]:
-    results = []
-    observed = set()
+    # Collect candidates before selecting any result. If a repository appears
+    # more than once, neither record is authoritative: keeping the first one
+    # makes even a failed assessment depend on caller-supplied input order.
+    candidates = {}
     errors = []
     for path in paths:
         try:
             record = read_record(path)
             result = validate(record, expected)
-            if result["repository"] in observed:
-                raise EvidenceError(f"duplicate evidence for {result['repository']}")
-            observed.add(result["repository"])
-            results.append(result)
+            candidates.setdefault(result["repository"], []).append((path, result))
         except (OSError, EvidenceError) as exc:
             errors.append({"file": str(path), "error": str(exc)})
+    results = []
+    for repo, entries in candidates.items():
+        if len(entries) == 1:
+            results.append(entries[0][1])
+        else:
+            for path, _ in entries:
+                errors.append({"file": str(path), "error": f"duplicate evidence for {repo}"})
+    # Stable ordering makes independently collected Federation snapshots comparable.
+    results.sort(key=lambda item: item["repository"])
+    observed = {item["repository"] for item in results}
     missing = sorted(set(expected) - observed)
     for repo in missing:
         errors.append({"repository": repo, "error": "expected repository evidence missing"})
+    errors.sort(key=lambda item: (item.get("repository", ""), item.get("file", ""), item["error"]))
     status = "failed" if errors or any(r["status"] == "failed" for r in results) else (
         "partial" if any(r["unverified_gates"] for r in results) else "reported_pass")
     return {"schema": "aift.federation-assessment.v1", "status": status,
