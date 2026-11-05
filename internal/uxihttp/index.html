@@ -59,6 +59,19 @@
     .governance-form button { padding:8px; border:1px solid #465570; border-radius:8px; background:#182235; color:white; }
     .checkbox-row { display:flex; align-items:center; gap:8px; } .checkbox-row input { width:auto; }
     .overlay { display:none; }
+    .palette-trigger { border:1px solid var(--line); border-radius:8px; background:var(--surface); color:#eef3ff; padding:6px 10px; white-space:nowrap; }
+    .palette-backdrop[hidden] { display:none; }
+    .palette-backdrop { position:fixed; inset:0; z-index:90; background:rgba(0,0,0,.72); display:flex; justify-content:center; align-items:flex-start; padding:clamp(55px,12vh,120px) 12px 20px; }
+    .palette-dialog { width:min(600px,100%); max-height:min(72vh,650px); display:flex; flex-direction:column; border:1px solid #45607d; border-radius:16px; background:#101724; box-shadow:0 24px 70px #000b; overflow:hidden; }
+    .palette-dialog label { padding:14px 16px 4px; font-weight:700; color:var(--gold); }
+    .palette-dialog input { margin:8px 14px; padding:12px; border:1px solid #526582; border-radius:10px; background:#080d15; color:white; }
+    .palette-results { overflow:auto; padding:6px 12px 14px; }
+    .palette-result { display:block; width:100%; padding:11px; margin:3px 0; border:1px solid transparent; border-radius:10px; text-align:left; background:#182235; color:#fff; }
+    .palette-result[aria-selected="true"],.palette-result:hover { border-color:var(--cyan); background:#26364b; }
+    .palette-result small { display:block; color:var(--muted); }
+    .palette-empty { padding:14px; color:var(--muted); }
+    @media(max-width:700px) { .palette-trigger { padding:6px 8px; font-size:12px; } }
+
 
     .tree-view { overflow:auto; height:100%; padding:18px; background:radial-gradient(circle at 50% 88%,rgba(0,205,160,.08),transparent 34%),radial-gradient(circle at 50% 5%,rgba(158,89,255,.08),transparent 35%); }
     .tree-hero { max-width:1100px; margin:0 auto 14px; display:flex; align-items:flex-end; justify-content:space-between; gap:16px; }
@@ -140,6 +153,7 @@
       <button class="mobile-toggle" id="leftToggle" aria-label="Open workspaces">☰</button>
       <div class="brand">MOBOX UXI</div><span class="badge">truthful local-first operator</span>
       <nav class="view-switch" id="workspaceTabs" role="tablist" aria-label="Workspace view"><button id="conversationTab" class="active" role="tab" aria-selected="true">Conversation</button><button id="treeTab" role="tab" aria-selected="false">Tree of Life</button></nav>
+      <button class="palette-trigger" id="paletteTrigger" type="button" aria-keyshortcuts="Control+K Meta+K" aria-haspopup="dialog">Search ⌕</button>
       <div class="pulse" id="pulse">connecting…</div>
       <button class="mobile-toggle" id="rightToggle" aria-label="Open context">Context</button>
     </header>
@@ -173,6 +187,13 @@
     </aside>
   </div>
   <div class="overlay" id="overlay"></div>
+  <div class="palette-backdrop" id="paletteBackdrop" hidden>
+    <section class="palette-dialog" role="dialog" aria-modal="true" aria-labelledby="paletteLabel">
+      <label id="paletteLabel" for="paletteQuery">Search local workspaces and repositories</label>
+      <input id="paletteQuery" type="search" autocomplete="off" placeholder="Type to find a destination" aria-controls="paletteResults" aria-activedescendant="">
+      <div id="paletteResults" class="palette-results" role="listbox" aria-label="Matching destinations"></div>
+    </section>
+  </div>
   <script>
     const state={session:null,sessions:[],repos:[],tree:null,treeFilter:"all",selectedNode:null,treeZoom:1}; const $=selector=>document.querySelector(selector); const svgNS="http://www.w3.org/2000/svg";
     function element(tag,className,text){const node=document.createElement(tag);if(className)node.className=className;if(text!==undefined)node.textContent=text;return node}
@@ -201,6 +222,43 @@
     function selectTreeNode(node){state.selectedNode=node;renderTreeMap();const root=$("#selectedNode");clear(root);const card=element("div","node-detail-card");card.append(element("strong","",node.name));if(node.kind==="repository"){const grid=element("div","node-kv");for(const [label,value] of [["Layer",`${node.layer}. ${node.layer_name}`],["Branch",node.branch],["Role",node.role],["Status",node.status],["Level",node.level],["Evidence XP",node.xp],["Growth",`${node.growth}%`]]){grid.append(element("span","",label),element("span","",String(value)))}card.append(grid);const track=element("div","growth-track");const fill=element("div","growth-fill");fill.style.width=`${node.growth}%`;track.append(fill);card.append(track);for(const capability of node.capabilities||[])card.append(element("span","cap-chip",`${capability.name} · ${capability.status}`));const inspect=element("button","inspect-node","Inspect in conversation");inspect.addEventListener("click",()=>{setView("conversation");$("#message").value=`/inspect ${node.name}`;$("#message").focus()});card.append(inspect);const evidenceRoot=$("#evidence");clear(evidenceRoot);for(const evidence of node.evidence||[])evidenceRoot.append(evidenceCard(evidence))}else{card.append(document.createElement("br"),document.createTextNode(node.kind==="federation"?`Federation level ${node.level} · coherence ${node.growth}%`:`Living Layer ${node.layer}: ${node.layer_name}`))}root.append(card);document.body.classList.add("right-open")}
     function renderQuests(){const quests=[...state.tree.quests].sort((a,b)=>(a.status==="open"?0:1)-(b.status==="open"?0:1)||a.repository.localeCompare(b.repository));$("#questSummary").textContent=`${state.tree.progress.open_quests} open · ${state.tree.progress.completed_quests} completed`;const root=$("#questGrid");clear(root);for(const quest of quests.slice(0,12)){const card=element("button",`quest-card ${quest.status}`);card.type="button";card.append(element("strong","",quest.title),element("span","",quest.repository),element("span","",quest.description),element("span","quest-reward",quest.status==="complete"?`✓ Evidence observed · ${quest.reward_xp} XP`:`Reward ${quest.reward_xp} XP`));card.addEventListener("click",()=>{const node=state.tree.nodes.find(item=>item.kind==="repository"&&item.name===quest.repository);if(node)selectTreeNode(node)});root.append(card)}}
 
+    // Read-only command palette: results are derived exclusively from observed local state.
+    let paletteItems=[],paletteIndex=0,paletteReturnFocus=null;
+    function paletteDestinations(){
+      return [
+        {label:"Conversation",description:"Open conversation view",action:()=>setView("conversation")},
+        {label:"Tree of Life",description:"Open observed federation tree",action:()=>setView("tree")},
+        ...state.sessions.map(session=>({label:session.title||"Untitled session",description:"Local session",action:()=>{setView("conversation");openSession(session.id).catch(reportError)}})),
+        ...state.repos.map(repo=>({label:repo.name,description:`Repository · ${repo.role} · ${repo.status}`,action:()=>{setView("conversation");showRepo(repo.name);$("#message").value=`/inspect ${repo.name}`;$("#message").focus()}}))
+      ];
+    }
+    function renderPalette(){
+      const query=$("#paletteQuery").value.trim().toLocaleLowerCase();
+      paletteItems=paletteDestinations().filter(item=>(item.label+" "+item.description).toLocaleLowerCase().includes(query)).slice(0,40);
+      paletteIndex=Math.min(paletteIndex,Math.max(0,paletteItems.length-1));
+      const root=$("#paletteResults");clear(root);
+      if(!paletteItems.length){root.append(element("div","palette-empty","No matching local destinations."));$("#paletteQuery").removeAttribute("aria-activedescendant");return}
+      paletteItems.forEach((item,index)=>{const button=element("button","palette-result",item.label);button.type="button";button.id="paletteOption"+index;button.setAttribute("role","option");button.setAttribute("aria-selected",String(index===paletteIndex));button.append(element("small","",item.description));button.addEventListener("mouseenter",()=>{paletteIndex=index;updatePaletteSelection()});button.addEventListener("click",()=>activatePalette(index));root.append(button)});
+      updatePaletteSelection();
+    }
+    function updatePaletteSelection(){
+      for(const [index,node] of [...$("#paletteResults").querySelectorAll('[role="option"]')].entries())node.setAttribute("aria-selected",String(index===paletteIndex));
+      $("#paletteQuery").setAttribute("aria-activedescendant","paletteOption"+paletteIndex);
+      $("#paletteResults").querySelectorAll('[role="option"]')[paletteIndex]?.scrollIntoView({block:"nearest"});
+    }
+    function openPalette(){paletteReturnFocus=document.activeElement;paletteIndex=0;$("#paletteQuery").value="";$("#paletteBackdrop").hidden=false;renderPalette();$("#paletteQuery").focus()}
+    function closePalette(){if($("#paletteBackdrop").hidden)return;$("#paletteBackdrop").hidden=true;const previous=paletteReturnFocus;paletteReturnFocus=null;if(previous&&previous.isConnected)previous.focus()}
+    function activatePalette(index){const item=paletteItems[index];if(!item)return;closePalette();item.action()}
+    $("#paletteTrigger").addEventListener("click",openPalette);
+    $("#paletteQuery").addEventListener("input",()=>{paletteIndex=0;renderPalette()});
+    $("#paletteBackdrop").addEventListener("click",event=>{if(event.target===$("#paletteBackdrop"))closePalette()});
+    $("#paletteBackdrop").addEventListener("keydown",event=>{
+      if(event.key==="Escape"){event.preventDefault();closePalette()}
+      else if(event.key==="ArrowDown"||event.key==="ArrowUp"){event.preventDefault();if(paletteItems.length){paletteIndex=(paletteIndex+(event.key==="ArrowDown"?1:-1)+paletteItems.length)%paletteItems.length;updatePaletteSelection()}}
+      else if(event.key==="Enter"&&event.target===$("#paletteQuery")){event.preventDefault();activatePalette(paletteIndex)}
+      else if(event.key==="Tab"){event.preventDefault();$("#paletteQuery").focus()}
+    });
+    document.addEventListener("keydown",event=>{if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="k"){event.preventDefault();if($("#paletteBackdrop").hidden)openPalette();else closePalette()}});
     $("#conversationTab").addEventListener("click",()=>setView("conversation"));$("#treeTab").addEventListener("click",()=>setView("tree"));
     $("#treeToolbar").addEventListener("click",event=>{const button=event.target.closest("[data-filter]");if(!button)return;state.treeFilter=button.dataset.filter;for(const item of document.querySelectorAll(".tree-filter"))item.classList.toggle("active",item===button);renderTreeMap()});
     $("#zoomIn").addEventListener("click",()=>{state.treeZoom=Math.min(1.5,state.treeZoom+.1);renderTreeMap()});$("#zoomOut").addEventListener("click",()=>{state.treeZoom=Math.max(.7,state.treeZoom-.1);renderTreeMap()});$("#zoomReset").addEventListener("click",()=>{state.treeZoom=1;renderTreeMap()});
