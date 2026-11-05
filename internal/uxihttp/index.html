@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>MoBox UXI</title>
   <style>
+    .universe-expedition { margin:18px 0;padding:20px;border:1px solid #6c9eab;border-radius:18px;background:linear-gradient(120deg,#172d3c,#1b1834); }
+    .universe-expedition h2 { color:#f9d489;font:26px Georgia,serif;margin:0 0 8px; }
+    .universe-expedition p { color:#cbdce6; }
+    .universe-quests { display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:12px; }
+    .universe-quest { padding:14px;border:1px solid #587c92;border-radius:12px;background:#0b1b2b;display:grid;gap:9px; }
+    .universe-quest[data-visited="true"] { border-color:#7fe5bd; }
+    .universe-quest strong { color:#f9d489; }
+    .universe-quest button { padding:8px;border:1px solid #6bd5c8;background:#193c49;color:#fff;border-radius:9px; }
+    .universe-quest small { color:#b4cdd9; }
     :root { color-scheme: dark; --background:#04070d; --panel:rgba(10,15,24,.94); --surface:#101724; --surface-strong:#172033; --line:#29354a; --gold:#e7b95a; --cyan:#5de4d7; --violet:#b88cff; --muted:#91a0b7; --good:#bce994; --danger:#ffc0c0; }
     * { box-sizing:border-box; }
     body { margin:0; height:100vh; overflow:hidden; background:radial-gradient(circle at 50% -20%,#1a294b 0,#080c14 42%,var(--background) 100%); color:#eef3ff; font:14px/1.5 Inter,system-ui,sans-serif; }
@@ -206,7 +215,7 @@
         <div class="universe-banner">Local projection from existing MoBox evidence. This is not a synchronized copy of the public Genesis atlas, a dependency graph, or proof of product deployment. No fruit is invented from repository status.</div>
         <div class="universe-toolbar"><input id="universeSearch" type="search" placeholder="Find repositories and capabilities…" aria-label="Search local world"><select id="universeKind" aria-label="Growth layer"><option value="all">All growth layers</option><option value="root">Repository roots</option><option value="trunk">Federation trunk</option><option value="leaf">Capability leaves</option></select><button id="universeReset" type="button">Reset</button></div>
         <div class="universe-layout"><div class="universe-map"><svg id="universeSvg" viewBox="0 0 900 580" role="group" aria-label="Source-linked local federation roots and capabilities"></svg></div><aside class="universe-detail" aria-live="polite"><small id="universeLayer">Select a node</small><h2 id="universeTitle">The Living Universe</h2><p id="universeDescription">Select a source root or capability leaf to inspect observed local evidence.</p><div id="universeLineage"></div></aside></div>
-        <div id="universeIndex" class="universe-index" aria-label="Accessible local world index"></div>
+        <section class="universe-expedition" aria-labelledby="universeExpeditionTitle"><h2 id="universeExpeditionTitle">The Local Evidence Expedition</h2><p>Explore observed source roots and capability leaves. Discovery is local to this page, not a CI achievement or deployment certification.</p><div id="universeQuests" class="universe-quests"></div><p id="universeQuestStatus" role="status">Waiting for local federation evidence…</p></section><div id="universeIndex" class="universe-index" aria-label="Accessible local world index"></div>
       </section>
       <div class="composer" id="composerWrap"><form id="composer"><input id="message" autocomplete="off" placeholder="Ask Aetherion, /inspect AIFT-OS, or /forge"><button type="submit">Send</button></form></div>
     </main>
@@ -322,6 +331,21 @@
       if(node.repo){const label=element("strong","",node.repo.name);lineage.append(label,document.createElement("br"));const inspect=element("button","decision-button","Inspect source evidence");inspect.addEventListener("click",()=>{setView("conversation");$("#message").value="/inspect "+node.repo.name;$("#message").focus()});lineage.append(inspect)}
       renderUniverse();
     }
+    const universeVisited=new Set();
+    function renderUniverseQuests(){
+      if(!state.tree)return;
+      const {roots,leaves}=universeModel(),quests=[
+        {kind:"root",title:"Rootkeeper",description:"Inspect an observed repository source",items:roots},
+        {kind:"leaf",title:"Knowledge Gardener",description:"Explore a reported capability leaf",items:leaves}
+      ],container=$("#universeQuests");clear(container);
+      for(const quest of quests){
+        const visited=quest.items.some(item=>universeVisited.has(item.id)),card=element("article","universe-quest"),title=element("strong","",quest.title),description=element("p","",quest.description),status=element("small","",visited?"Explored locally · no certification implied":quest.items.length+" observed destinations"),button=element("button","",visited?"Explore again":"Begin exploration");
+        card.dataset.visited=String(visited);button.type="button";button.disabled=!quest.items.length;
+        button.addEventListener("click",()=>{const target=quest.items.find(item=>!universeVisited.has(item.id))||quest.items[0];if(!target)return;universeVisited.add(target.id);selectUniverse(target);renderUniverseQuests()});
+        card.append(title,description,status,button);container.append(card)
+      }
+      $("#universeQuestStatus").textContent=quests.filter(q=>q.items.some(n=>universeVisited.has(n.id))).length+" of "+quests.length+" local exploration objectives visited; no product fruits or live health inferred.";
+    }
     function renderUniverse(){
       if(!state.tree)return;
       const {nodes,roots,leaves}=universeModel(),query=$("#universeSearch").value.trim().toLocaleLowerCase(),kind=$("#universeKind").value;
@@ -342,6 +366,7 @@
         if(matches){const button=element("button","",node.name);button.type="button";button.append(element("small","",node.kind+" · "+node.description));button.addEventListener("click",()=>selectUniverse(node));index.append(button)}
       }
       if(!index.children.length)index.append(element("p","","No matching observed local nodes."));
+      renderUniverseQuests();
     }
     $("#universeSearch").addEventListener("input",renderUniverse);
     $("#universeKind").addEventListener("change",renderUniverse);
