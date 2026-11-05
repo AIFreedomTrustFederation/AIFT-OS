@@ -203,6 +203,21 @@
     $("#planForm").addEventListener("submit",async event=>{event.preventDefault();try{if(!state.session)await createSession();const objective=$("#planObjective").value.trim();const steps=$("#planSteps").value.split("\n").map(value=>value.trim()).filter(Boolean).map(title=>({title}));state.session=await api(`/v1/sessions/${encodeURIComponent(state.session.id)}/plans`,{method:"POST",body:JSON.stringify({objective,steps})});event.target.reset();renderGovernance()}catch(error){reportError(error)}});
     $("#actionForm").addEventListener("submit",async event=>{event.preventDefault();try{if(!state.session)await createSession();const payload={kind:$("#actionKind").value.trim(),target:$("#actionTarget").value.trim(),risk:$("#actionRisk").value,approval_required:$("#actionApproval").checked};state.session=await api(`/v1/sessions/${encodeURIComponent(state.session.id)}/actions`,{method:"POST",body:JSON.stringify(payload)});event.target.reset();$("#actionApproval").checked=true;renderGovernance()}catch(error){reportError(error)}});
     function closeDrawers(){document.body.classList.remove("left-open","right-open")} $("#leftToggle").addEventListener("click",()=>document.body.classList.toggle("left-open"));$("#rightToggle").addEventListener("click",()=>document.body.classList.toggle("right-open"));$("#overlay").addEventListener("click",closeDrawers);
+    // Keyboard navigation is read-only; never triggers execution or approval.
+    document.addEventListener("keydown",event=>{
+      if(event.defaultPrevented||event.ctrlKey||event.metaKey)return;
+      const target=event.target;
+      const editing=target instanceof HTMLElement&&(target.isContentEditable||["INPUT","TEXTAREA","SELECT"].includes(target.tagName));
+      if(event.key==="Escape"){
+        if(document.body.classList.contains("left-open")||document.body.classList.contains("right-open")){closeDrawers();event.preventDefault()}
+        return;
+      }
+      if(editing||event.altKey&&event.key!== "1"&&event.key!=="2")return;
+      if(event.key==="/"&&!event.shiftKey&&!event.altKey){
+        if(!$("#message").disabled){setView("conversation");$("#message").focus();event.preventDefault()}
+      }else if(event.altKey&&event.key==="1"){setView("conversation");event.preventDefault()}
+      else if(event.altKey&&event.key==="2"){setView("tree");event.preventDefault()}
+    });
     load().catch(error=>{$("#pulse").textContent="blocked";$("#system").textContent=error.message});
   </script>
 </body>
