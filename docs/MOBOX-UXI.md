@@ -105,7 +105,7 @@ Missing, invalid, hidden, and mapped repositories remain distinct states. Tempor
 6. Private, federation-visible, and public declarations earn equal mapping progression.
 7. Plans, action proposals, and approval decisions may be recorded locally.
 8. Approval changes authorization state but does not start a job.
-9. No execution, shell, deployment, wallet, transaction, repository-location write, or external-write endpoint exists in this foundation.
+9. Read-only adapter invocation is implemented for registered non-mutating adapters; no shell, deployment, wallet, transaction, repository-location write, or external-write endpoint exists in this foundation.
 10. Model failure is shown as degraded mode rather than hidden.
 11. The daemon refuses non-loopback binding.
 
@@ -130,8 +130,9 @@ Governance records:
 - `POST /v1/sessions/{id}/plans`
 - `POST /v1/sessions/{id}/actions`
 - `POST /v1/sessions/{id}/actions/{actionID}/decision`
+- `POST /v1/sessions/{id}/actions/{actionID}/invoke` (registered non-mutating adapters only; recorded approval required for actions marked `approval_required`)
 
-There is intentionally no action-invocation or GPS-persistence endpoint.
+The invocation endpoint runs a read-only adapter job and records its result; it does not authorize mutating adapters. The loopback HTTP service does not authenticate individual callers. There is intentionally no GPS-persistence endpoint.
 
 ## Persistence and recovery
 
@@ -147,4 +148,4 @@ The GitHub Actions CI gate runs the full Go tests, binary build, formatting chec
 
 ## Next safe extraction
 
-The next execution phase must add a capability adapter registry, immutable approval scope, snapshots, validation, rollback, and job supervision before any approved action can be invoked. AIFT-Forge must remain behind an adapter rather than being called directly by browser code. A future location-declaration writer must also require explicit approval, show the exact file diff, and preserve the same privacy defaults before it can modify repository manifests.
+The next mutating-execution phase must add stronger authorization scope, validation, rollback, and supervision before mutating actions can be considered. The existing read-only adapter registry and job records do not establish that capability. AIFT-Forge must remain behind an adapter rather than being called directly by browser code. A future location-declaration writer must also require explicit approval, show the exact file diff, and preserve the same privacy defaults before it can modify repository manifests.
