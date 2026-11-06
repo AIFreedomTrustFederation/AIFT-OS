@@ -51,6 +51,8 @@ Every status assignment includes an `evidence` string explaining why the object 
 
 ## CLI Commands
 
+**Command availability at this revision:** The commands below and `aift operator check` are proposed operator interfaces, not subcommands of the current `cmd/aift/main.go` CLI. The [`internal/readiness`](../internal/readiness/readiness.go) package implements readiness scanning, but it is not wired into the CLI command registry. Use `./aift help` or `./aift registry` to inspect the actual commands; `./aift verify` performs local bootstrap checks, while `make verify` runs the broader repository gate. The `ready` and `active` descriptions below are status-model definitions, not proof of a completed scan or running service. See the [CLI source](../cmd/aift/main.go) and [README verification scope](../README.md).
+
 ```
 aift runtime scan      # Evaluate all objects, write registry + report
 aift runtime status    # Print all objects with status
