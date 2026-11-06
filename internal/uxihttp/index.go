@@ -34,8 +34,8 @@ var indexHTML = composeIndexHTML()
 
 func composeIndexHTML() string {
 	html := injectIndexFragment(baseIndexHTML,
-		`<button id="treeTab" role="tab" aria-selected="false">Tree of Life</button></nav>`,
-		`<button id="treeTab" role="tab" aria-selected="false">Tree Game</button><button id="worldTab" role="tab" aria-selected="false">World Game</button></nav>`,
+		`<button id="treeTab" role="tab" aria-selected="false">Tree of Life</button>`,
+		`<button id="treeTab" role="tab" aria-selected="false">Tree Game</button><button id="worldTab" role="tab" aria-selected="false">World Game</button>`,
 	)
 	return injectIndexFragment(html, "</body>", "  <script>\n"+gameLauncherJS+"\n  </script>\n</body>")
 }
