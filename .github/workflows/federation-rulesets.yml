@@ -1,0 +1,31 @@
+name: Federation ruleset audit and controlled apply
+on:
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: "Optional single repository (blank audits all)"
+        required: false
+        type: string
+      apply:
+        description: "Create missing rulesets (requires approved environment)"
+        required: true
+        default: false
+        type: boolean
+permissions:
+  contents: read
+jobs:
+  rulesets:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.apply && 'federation-policy-apply' || 'federation-policy-audit' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit or apply approved repository rulesets
+        env:
+          GH_TOKEN: ${{ secrets.AIFT_RULESET_ADMIN_TOKEN }}
+          TARGET_REPO: ${{ inputs.repository }}
+          APPLY: ${{ inputs.apply }}
+        run: |
+          args=()
+          if [ -n "$TARGET_REPO" ]; then args+=(--repo "$TARGET_REPO"); fi
+          if [ "$APPLY" = "true" ]; then args+=(--apply); fi
+          python3 scripts/federation_rulesets.py "${args[@]}"
