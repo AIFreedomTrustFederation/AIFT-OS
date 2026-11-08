@@ -8,6 +8,9 @@ import (
 func TestExpeditionRootNetworkObservatory(t *testing.T) {
 	checks := []string{
 		"Root Network Observatory",
+\t\t"Evidence Readiness Observatory",
+\t\t"function renderLedger()",
+\t\t"What would verify a fruit?",
 		"id=\"root-network\"",
 		"id=\"root-sort\"",
 		"id=\"clear-selection\"",
