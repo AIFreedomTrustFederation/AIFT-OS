@@ -218,7 +218,7 @@ let theatreMode="roots";
 const theatreViewport={zoom:1,cx:500,cy:270,query:""};
 function theatreSetZoom(value){theatreViewport.zoom=Math.max(1,Math.min(3,Math.round(value*10)/10));renderTheatre()}
 function theatreResetViewport(){theatreViewport.zoom=1;theatreViewport.cx=500;theatreViewport.cy=270;theatreViewport.query="";$("theatre-search").value="";renderTheatre()}
-function theatreFocusSelected(){const roots=state.items.slice().sort((a,b)=>a.name.localeCompare(b.name));const i=roots.findIndex(n=>n.id===state.selected?.id);if(i<0)return;const cols=Math.min(12,Math.max(1,Math.ceil(Math.sqrt(roots.length*2))));const col=i%cols,row=Math.floor(i/cols);theatreViewport.cx=80+(cols===1?420:840*col/(cols-1));theatreViewport.cy=455+row*45;theatreViewport.zoom=2;theatreMode="roots";renderTheatre()}
+function theatreFocusSelected(){const roots=state.items.slice().sort((a,b)=>a.name.localeCompare(b.name));const i=roots.findIndex(n=>n.id===state.selected?.id);if(i<0)return;const cols=Math.min(12,Math.max(1,Math.ceil(Math.sqrt(roots.length*2))));const col=i%cols,row=Math.floor(i/cols);theatreViewport.cx=80+(cols===1?420:840*col/(cols-1));theatreViewport.cy=455+row*45;theatreViewport.zoom=2;theatreViewport.query="";$("theatre-search").value="";theatreMode="roots";renderTheatre()}
 
 function theatreSelect(root){state.stage=0;inspect(root);renderStages();renderTheatre();renderNetwork();renderAtlas();renderPassport();renderJourney()}
 function renderTheatre(){
