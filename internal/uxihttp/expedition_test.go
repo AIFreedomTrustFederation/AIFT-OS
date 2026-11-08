@@ -114,21 +114,21 @@ func TestExpeditionEvidenceQuestBoardContract(t *testing.T) {
 }
 
 func TestExpeditionConstellationWorkbenchContract(t *testing.T) {
- for _, required := range []string{
-  "Federation Root Constellation Workbench", "constellation-workbench",
-  "constellation-map", "constellation-results", "constellation-search",
-  "renderConstellation", "chooseConstellationRoot",
-  "No inferred products, dependencies, XP or achievements.",
-  "No integration edges attested.", "aria-pressed", "aria-live",
-  "state.items.slice()", "state.selected=root", "prefers-reduced-motion",
- } {
-  if !strings.Contains(expeditionHTML, required) {
-   t.Errorf("constellation workbench missing %q", required)
-  }
- }
- for _, forbidden := range []string{"Math.random()", "localStorage", "sessionStorage", "fetch(\"https://", "XP awarded"} {
-  if strings.Contains(expeditionHTML, forbidden) {
-   t.Errorf("constellation workbench unsafe content %q", forbidden)
-  }
- }
+for _, required := range []string{
+	"Federation Root Constellation Workbench", "constellation-workbench",
+	"constellation-map", "constellation-results", "constellation-search",
+	"renderConstellation", "chooseConstellationRoot",
+	"No inferred products, dependencies, XP or achievements.",
+	"No integration edges attested.", "aria-pressed", "aria-live",
+	"state.items.slice()", "state.selected=root", "prefers-reduced-motion",
+} {
+	if !strings.Contains(expeditionHTML, required) {
+	t.Errorf("constellation workbench missing %q", required)
+	}
+}
+for _, forbidden := range []string{"Math.random()", "localStorage", "sessionStorage", "fetch(\"https://", "XP awarded"} {
+	if strings.Contains(expeditionHTML, forbidden) {
+	t.Errorf("constellation workbench unsafe content %q", forbidden)
+	}
+}
 }
