@@ -224,7 +224,7 @@ function renderTheatre(){
  if(selected){add(detail,el("strong","Observed source root: "+selected.name));add(detail,el("p","Local status: "+selected.status+". Evidence: /v1/federation/tree. No verified source-to-product lineage is established."));const inspectButton=add(detail,el("button","Open evidence inspector"));inspectButton.onclick=()=>{$("detail").scrollIntoView({block:"start",behavior:"auto"})}}
  else add(detail,el("p","Choose an observed repository root. The tree never awards achievements for observation alone."));
  if(!roots.length){add(host,el("p",state.loadState==="error"?"Local evidence unavailable. The theatre cannot establish source identities.":"No repository roots available in the current local projection.","theatre-empty"));$("theatre-caption").textContent="No roots plotted; no relationships or products inferred.";return}
- const svg=svgEl("svg",{viewBox:"0 0 1000 540",role:"group","aria-label":"Conceptual tree with "+roots.length+" observed repository roots"},host);
+ const theatreRows=Math.ceil(roots.length/Math.min(12,Math.max(1,Math.ceil(Math.sqrt(roots.length*2)))));const theatreHeight=Math.max(540,490+theatreRows*45);const svg=svgEl("svg",{viewBox:"0 0 1000 "+theatreHeight,role:"group","aria-label":"Conceptual tree with "+roots.length+" observed repository roots"},host);
  const defs=svgEl("defs",{},svg);const grad=svgEl("linearGradient",{id:"theatre-spectrum",x1:"0%",y1:"100%",x2:"100%",y2:"0%"},defs);
  for(const [offset,color] of [["0%","#ff5378"],["45%","#46e5ae"],["100%","#66b6ff"]])svgEl("stop",{offset,"stop-color":color},grad);
  // Sacred geometric rings and branching silhouette are explicitly non-evidentiary.
@@ -236,9 +236,9 @@ function renderTheatre(){
  }else{
   const count=roots.length,columns=Math.min(12,Math.max(1,Math.ceil(Math.sqrt(count*2)))),rows=Math.ceil(count/columns);
   roots.forEach((root,i)=>{
-   const col=i%columns,row=Math.floor(i/columns),x=80+(columns===1?420:840*col/(columns-1)),y=455+row*28;
+   const col=i%columns,row=Math.floor(i/columns),x=80+(columns===1?420:840*col/(columns-1)),y=455+row*45;
    // All roots are independent observed identities; do not draw edges to trunk.
-   const node=svgEl("g",{class:"theatre-node",role:"button",tabindex:"0","aria-label":"Inspect source root "+root.name,"aria-pressed":String(selected?.id===root.id),transform:"translate("+x+" "+Math.min(y,515)+")"},svg);
+   const node=svgEl("g",{class:"theatre-node",role:"button",tabindex:"0","aria-label":"Inspect source root "+root.name,"aria-pressed":String(selected?.id===root.id),transform:"translate("+x+" "+y+")"},svg);
    svgEl("circle",{r:9},node);const label=svgEl("text",{x:0,y:-14,"text-anchor":"middle"},node);label.textContent=root.name.length>15?root.name.slice(0,13)+"…":root.name;
    const activate=()=>theatreSelect(root);node.addEventListener("click",activate);node.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();activate()}});
   });
@@ -250,7 +250,7 @@ $("theatre-roots").onclick=()=>{theatreMode="roots";renderTheatre()};
 $("theatre-canopy").onclick=()=>{theatreMode="canopy";renderTheatre()};
 $("theatre-reset").onclick=()=>{theatreMode="roots";renderTheatre()};
 
-function render(){renderTheatre();renderMatrix();syncContext();renderPassport();renderAtlas();renderJourney();renderStages();renderEntities();renderDetail();renderQuests();renderNetwork();renderLedger();renderComparison()}
+function render(){renderMatrix();renderTheatre();syncContext();renderPassport();renderAtlas();renderJourney();renderStages();renderEntities();renderDetail();renderQuests();renderNetwork();renderLedger();renderComparison()}
 $("journey-back").onclick=()=>setJourneyStep(state.journeyStep-1);$("journey-next").onclick=()=>setJourneyStep(state.journeyStep+1);$("journey-reset").onclick=()=>setJourneyStep(0);$("prev").onclick=()=>selectStage(state.stage-1);$("next").onclick=()=>selectStage(state.stage+1);$("search").oninput=e=>{state.query=e.target.value.toLowerCase().trim();renderEntities();renderNetwork();renderAtlas()};
 $("root-sort").onchange=renderNetwork;$("compare-a").onchange=renderComparison;$("compare-b").onchange=renderComparison;$("compare-clear").onclick=()=>{$("compare-a").value="";$("compare-b").value="";renderComparison()};$("clear-selection").onclick=()=>{state.selected=null;passportIndex=0;syncContext();renderPassport();renderDetail();renderEntities();renderNetwork()};
 fetch("/v1/federation/tree",{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("Tree API HTTP "+r.status);return r.json()}).then(data=>{state.items=normalized(data);if(requestedRoot){state.selected=state.items.find(n=>n.id===requestedRoot)||null;if(!state.selected)$("context-feedback").textContent="Shared root was not found in current local observations."}state.loadState="loaded";$("status").textContent="Local tree loaded: "+state.items.length+" distinct repository roots. No product attestation inferred.";render()}).catch(e=>{state.loadState="error";$("status").textContent="Local evidence unavailable: "+e.message;render()});
