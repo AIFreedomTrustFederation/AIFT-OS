@@ -26,6 +26,18 @@ func TestExpeditionImmersiveTheatreContract(t *testing.T) {
 		"No root-to-trunk lines are asserted without evidence",
 		"No verified source-to-product lineage is established.",
 		"renderMatrix();renderTheatre();",
+		"id=\"theatre-search\"",
+		"id=\"theatre-zoom-in\"",
+		"id=\"theatre-zoom-out\"",
+		"id=\"theatre-focus\"",
+		"id=\"theatre-view-reset\"",
+		"id=\"theatre-minimap-window\"",
+		"function theatreSetZoom(value)",
+		"function theatreFocusSelected()",
+		"function theatreResetViewport()",
+		"allRoots.forEach((root,i)=>{if(!root.name.toLowerCase().includes(theatreViewport.query))return;",
+		"Math.max(0,Math.min(1000-vw",
+		"No matching observed roots.",
 	}
 	for _, marker := range required {
 		if !strings.Contains(html, marker) {
