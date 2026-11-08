@@ -11,7 +11,7 @@ func TestExpeditionRootNetworkObservatory(t *testing.T) {
 		"Living Root Atlas",
 		"function renderAtlas()",
 		"function setAtlasZoom(next)",
-		"aria-label=\\\"Spatial repository root atlas\\\"",
+		"aria-label=\"Spatial repository root atlas\"",
 		"No roots plotted; no provenance inferred.",
 		"Evidence Readiness Observatory",
 		"function renderLedger()",
