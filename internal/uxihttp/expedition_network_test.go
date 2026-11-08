@@ -8,9 +8,14 @@ import (
 func TestExpeditionRootNetworkObservatory(t *testing.T) {
 	checks := []string{
 		"Root Network Observatory",
-\t\t"Evidence Readiness Observatory",
-\t\t"function renderLedger()",
-\t\t"What would verify a fruit?",
+		"Living Root Atlas",
+		"function renderAtlas()",
+		"function setAtlasZoom(next)",
+		"aria-label=\\\"Spatial repository root atlas\\\"",
+		"No roots plotted; no provenance inferred.",
+		"Evidence Readiness Observatory",
+		"function renderLedger()",
+		"What would verify a fruit?",
 		"id=\"root-network\"",
 		"id=\"root-sort\"",
 		"id=\"clear-selection\"",
