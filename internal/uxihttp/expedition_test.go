@@ -55,3 +55,18 @@ func TestExpeditionEvidenceJourneyContract(t *testing.T) {
 		}
 	}
 }
+
+func TestExpeditionEvidencePassportContract(t *testing.T) {
+ for _, required := range []string{
+  "Evidence Passport", "passport-track", "passport-focus", "passport-reset",
+  "passportStages", "renderPassport", "setPassportStage", "Inspect root in observatory",
+  "No verified outcome, contribution edge, quest completion or XP is inferred",
+  "No repository root selected", "Evidence gap", "aria-pressed",
+  "prefers-reduced-motion", "passport-grid",
+ } {
+  if !strings.Contains(expeditionHTML, required) { t.Errorf("evidence passport missing %q", required) }
+ }
+ for _, forbidden := range []string{"localStorage", "Math.random()", "XP awarded", "fetch(\\\"https://"} {
+  if strings.Contains(expeditionHTML, forbidden) { t.Errorf("passport contains unsafe behavior %q", forbidden) }
+ }
+}
