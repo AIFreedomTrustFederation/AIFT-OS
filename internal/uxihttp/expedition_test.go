@@ -42,3 +42,16 @@ func TestExpeditionSourceComparisonContract(t *testing.T) {
 		}
 	}
 }
+
+func TestExpeditionEvidenceJourneyContract(t *testing.T) {
+	for _, required := range []string{"Evidence Journey", "journey-steps", "journey-focus", "journey-back", "journey-next", "journey-reset", "renderJourney", "setJourneyStep", "Exploration position, not verified completion", "No finished product fruit can be certified", "No edge from "} {
+		if !strings.Contains(expeditionHTML, required) {
+			t.Errorf("evidence journey missing %q", required)
+		}
+	}
+	for _, forbidden := range []string{"XP awarded", "localStorage", "fetch(\"https://"} {
+		if strings.Contains(expeditionHTML, forbidden) {
+			t.Errorf("evidence journey includes forbidden behavior %q", forbidden)
+		}
+	}
+}
