@@ -65,7 +65,7 @@ function renderPassport(){
  const actions=add(focus,el("div",undefined,"passport-actions"));
  const previous=add(actions,el("button","Previous evidence stage"));previous.type="button";previous.disabled=passportIndex===0;previous.onclick=()=>setPassportStage(passportIndex-1);
  const next=add(actions,el("button","Next evidence stage"));next.type="button";next.disabled=passportIndex===5;next.onclick=()=>setPassportStage(passportIndex+1);
- const inspectButton=add(actions,el("button","Inspect root in observatory"));inspectButton.type="button";inspectButton.disabled=!root;inspectButton.onclick=()=>{$("detail").scrollIntoView({block:"start",behavior:"auto"});$("detail").focus()};
+ const inspectButton=add(actions,el("button","Inspect root in observatory"));inspectButton.type="button";inspectButton.disabled=!root;inspectButton.onclick=()=>{$("detail").scrollIntoView({block:"start",behavior:"auto"});$("detail").setAttribute("tabindex","-1");$("detail").focus()};
  $("passport-caption").textContent=(root?"Passport for "+root.name+". ":"No root selected. ")+"Stage "+(passportIndex+1)+" of 6. No verified outcome, contribution edge, quest completion or XP is inferred.";
 }
 $("passport-reset").onclick=()=>setPassportStage(0);
@@ -123,6 +123,6 @@ function setAtlasZoom(next){atlas.zoom=Math.max(.65,Math.min(2.2,Math.round(next
 $("atlas-zoom-in").onclick=()=>setAtlasZoom(atlas.zoom+.2);$("atlas-zoom-out").onclick=()=>setAtlasZoom(atlas.zoom-.2);$("atlas-reset").onclick=()=>setAtlasZoom(1);
 function render(){renderPassport();renderAtlas();renderJourney();renderStages();renderEntities();renderDetail();renderQuests();renderNetwork();renderLedger();renderComparison()}
 $("journey-back").onclick=()=>setJourneyStep(state.journeyStep-1);$("journey-next").onclick=()=>setJourneyStep(state.journeyStep+1);$("journey-reset").onclick=()=>setJourneyStep(0);$("prev").onclick=()=>selectStage(state.stage-1);$("next").onclick=()=>selectStage(state.stage+1);$("search").oninput=e=>{state.query=e.target.value.toLowerCase().trim();renderEntities();renderNetwork();renderAtlas()};
-$("root-sort").onchange=renderNetwork;$("compare-a").onchange=renderComparison;$("compare-b").onchange=renderComparison;$("compare-clear").onclick=()=>{$("compare-a").value="";$("compare-b").value="";renderComparison()};$("clear-selection").onclick=()=>{state.selected=null;renderDetail();renderEntities();renderNetwork()};
+$("root-sort").onchange=renderNetwork;$("compare-a").onchange=renderComparison;$("compare-b").onchange=renderComparison;$("compare-clear").onclick=()=>{$("compare-a").value="";$("compare-b").value="";renderComparison()};$("clear-selection").onclick=()=>{state.selected=null;passportIndex=0;renderPassport();renderDetail();renderEntities();renderNetwork()};
 fetch("/v1/federation/tree",{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("Tree API HTTP "+r.status);return r.json()}).then(data=>{state.items=normalized(data);state.loadState="loaded";$("status").textContent="Local tree loaded: "+state.items.length+" distinct repository roots. No product attestation inferred.";render()}).catch(e=>{state.loadState="error";$("status").textContent="Local evidence unavailable: "+e.message;render()});
 </script></body></html>
