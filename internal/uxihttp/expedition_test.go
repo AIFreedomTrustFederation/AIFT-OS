@@ -94,3 +94,21 @@ func TestExpeditionSharedContextContract(t *testing.T) {
 		}
 	}
 }
+
+func TestExpeditionEvidenceQuestBoardContract(t *testing.T) {
+	for _, required := range []string{
+		"questDefinitions", "questFilter", "renderQuests", "quest-board",
+		"Evidence expeditions", "Source inspectable", "Evidence gaps",
+		"No completion or achievement issued", "No product fruit can be certified",
+		"requires", "aria-pressed", "prefers-reduced-motion",
+	} {
+		if !strings.Contains(expeditionHTML, required) {
+			t.Errorf("evidence quest board missing %q", required)
+		}
+	}
+	for _, forbidden := range []string{"XP awarded", "Math.random()", "localStorage", "fetch(\"https://"} {
+		if strings.Contains(expeditionHTML, forbidden) {
+			t.Errorf("evidence quest board includes forbidden side effect %q", forbidden)
+		}
+	}
+}
