@@ -35,6 +35,7 @@ func (s *Server) routes() {
 	s.mux.HandleFunc("GET /health", s.handleHealth)
 	s.mux.HandleFunc("GET /tree", s.handleTreeGame)
 	s.mux.HandleFunc("GET /world", s.handleWorldGame)
+	s.mux.HandleFunc("GET /expedition", func(w http.ResponseWriter, r *http.Request) { writeHTML(w, expeditionHTML) })
 	s.mux.HandleFunc("GET /v1/system", s.handleSystem)
 	s.mux.HandleFunc("GET /v1/repositories", s.handleRepositories)
 	s.mux.HandleFunc("GET /v1/adapters", s.handleAdapters)
