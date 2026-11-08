@@ -29,3 +29,16 @@ func TestExpeditionRouteServesReadOnlyHTML(t *testing.T) {
 		t.Fatalf("expedition route failed: %d", rr.Code)
 	}
 }
+
+func TestExpeditionSourceComparisonContract(t *testing.T) {
+	for _, required := range []string{"Source Comparison Theatre", "compare-a", "compare-b", "compare-clear", "renderComparison", "No relationship, dependency, product or achievement is inferred", "Contribution edges", "Not attested by this projection", "comparison-grid"} {
+		if !strings.Contains(expeditionHTML, required) {
+			t.Errorf("comparison theatre missing %q", required)
+		}
+	}
+	for _, forbidden := range []string{"fetch(\"https://", "localStorage", "XP awarded"} {
+		if strings.Contains(expeditionHTML, forbidden) {
+			t.Errorf("comparison theatre has forbidden side effect %q", forbidden)
+		}
+	}
+}
