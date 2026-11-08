@@ -74,3 +74,23 @@ func TestExpeditionEvidencePassportContract(t *testing.T) {
 		}
 	}
 }
+
+func TestExpeditionSharedContextContract(t *testing.T) {
+	for _, required := range []string{
+		"Expedition workspaces", "atlas-title", "lab-title", "compare-title",
+		"passport-title", "ledger-title", "quests-title",
+		"copy-context", "clear-context", "context-feedback",
+		"requestedRoot", "rootLink", "syncContext", "navigator.clipboard.writeText",
+		"state.items.find(n=>n.id===requestedRoot)", "history.replaceState",
+		"Shared root was not found in current local observations.",
+	} {
+		if !strings.Contains(expeditionHTML, required) {
+			t.Errorf("shared inspection context missing %q", required)
+		}
+	}
+	for _, forbidden := range []string{"localStorage", "sessionStorage", "fetch(\"https://", "XP awarded"} {
+		if strings.Contains(expeditionHTML, forbidden) {
+			t.Errorf("shared context includes forbidden side effect %q", forbidden)
+		}
+	}
+}
