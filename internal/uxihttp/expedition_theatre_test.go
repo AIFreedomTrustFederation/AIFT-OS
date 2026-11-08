@@ -24,7 +24,7 @@ func TestExpeditionImmersiveTheatreContract(t *testing.T) {
 		"aria-pressed",
 		"prefers-reduced-motion",
 		"No root-to-trunk lines are asserted without evidence",
-		"no verified source-to-product lineage",
+		"No verified source-to-product lineage is established.",
 		"renderMatrix();renderTheatre();",
 	}
 	for _, marker := range required {
