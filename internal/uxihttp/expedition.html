@@ -568,27 +568,27 @@ const atlasZoomStatus=document.createElement("output");
 atlasZoomStatus.setAttribute("aria-live","polite");
 atlasZoomStatus.className="muted";
 function applyAtlasViewport(){
- const width=1080/atlasViewport.scale,height=540/atlasViewport.scale;
- atlasViewport.panX=Math.max(0,Math.min(1080-width,atlasViewport.panX));
- atlasViewport.panY=Math.max(0,Math.min(540-height,atlasViewport.panY));
+ const width=1000/atlasViewport.scale,height=530/atlasViewport.scale;
+ atlasViewport.panX=Math.max(0,Math.min(1000-width,atlasViewport.panX));
+ atlasViewport.panY=Math.max(0,Math.min(530-height,atlasViewport.panY));
  atlasSvg.setAttribute("viewBox",[atlasViewport.panX,atlasViewport.panY,width,height].join(" "));
  atlasZoomStatus.textContent=Math.round(atlasViewport.scale*100)+"% zoom";
 }
 function atlasZoom(factor){
- const oldW=1080/atlasViewport.scale,oldH=540/atlasViewport.scale;
+ const oldW=1000/atlasViewport.scale,oldH=530/atlasViewport.scale;
  const centerX=atlasViewport.panX+oldW/2,centerY=atlasViewport.panY+oldH/2;
  atlasViewport.scale=Math.max(1,Math.min(4,atlasViewport.scale*factor));
- atlasViewport.panX=centerX-1080/atlasViewport.scale/2;
- atlasViewport.panY=centerY-540/atlasViewport.scale/2;
+ atlasViewport.panX=centerX-1000/atlasViewport.scale/2;
+ atlasViewport.panY=centerY-530/atlasViewport.scale/2;
  applyAtlasViewport();
 }
 for(const [label,action] of [
  ["Zoom in",()=>atlasZoom(1.5)],["Zoom out",()=>atlasZoom(1/1.5)],
  ["Fit constellation",()=>{atlasViewport.scale=1;atlasViewport.panX=0;atlasViewport.panY=0;applyAtlasViewport()}],
- ["Previous region",()=>{atlasViewport.panX-=1080/atlasViewport.scale*.6;applyAtlasViewport()}],
- ["Next region",()=>{atlasViewport.panX+=1080/atlasViewport.scale*.6;applyAtlasViewport()}],
- ["Region above",()=>{atlasViewport.panY-=540/atlasViewport.scale*.6;applyAtlasViewport()}],
- ["Region below",()=>{atlasViewport.panY+=540/atlasViewport.scale*.6;applyAtlasViewport()}]
+ ["Previous region",()=>{atlasViewport.panX-=1000/atlasViewport.scale*.6;applyAtlasViewport()}],
+ ["Next region",()=>{atlasViewport.panX+=1000/atlasViewport.scale*.6;applyAtlasViewport()}],
+ ["Region above",()=>{atlasViewport.panY-=530/atlasViewport.scale*.6;applyAtlasViewport()}],
+ ["Region below",()=>{atlasViewport.panY+=530/atlasViewport.scale*.6;applyAtlasViewport()}]
 ]){
  const button=document.createElement("button");button.type="button";button.textContent=label;
  button.setAttribute("aria-label",label+" in imported provenance constellation");
