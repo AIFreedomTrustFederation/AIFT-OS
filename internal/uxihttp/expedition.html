@@ -87,7 +87,7 @@
 <div class="ej-rail" id="ej-rail" role="group" aria-label="Six evidence journey stages"></div>
 <div class="ej-grid"><div class="ej-panel"><h3 id="ej-heading" tabindex="-1">Select a root</h3><p class="ej-state" id="ej-state"></p><p id="ej-description"></p><ul class="ej-list" id="ej-requirements"></ul>
 <div class="ej-actions"><button id="ej-prev" type="button">Previous stage</button><button id="ej-next" type="button">Next stage</button><button id="ej-reset" type="button">Return to roots</button></div></div>
-<aside class="ej-panel" aria-label="Evidence review packet"><h3>Review packet</h3><p class="muted">Local observation only. This is not an independently verified product certificate.</p><pre class="ej-meta" id="ej-packet"></pre><button id="ej-copy" type="button">Copy review packet</button><p id="ej-feedback" role="status" aria-live="polite"></p></aside></div></section><section class="panel" id="portable-lineage" style="grid-column:1/-1" aria-labelledby="portable-lineage-title"><p class="eyebrow">Cross-surface provenance · read-only</p><h2 id="portable-lineage-title">Portable Lineage Observatory</h2><p class="muted">Inspect a curated public-portal lineage packet without fetching external services or elevating source claims to independent verification. Paste JSON exported from the portal's aift.lineage.interchange/1 module. Repository roots are never fruits; source-backed edges are claims to inspect, not certified dependencies.</p><div class="toolbar"><label for="portable-input">Lineage interchange JSON</label><textarea id="portable-input" rows="5" maxlength="500000" style="width:100%;background:#0a1424;color:#eaf3ff;border:1px solid #6c87a4;border-radius:12px;padding:.8rem" placeholder='{"schema":"aift.lineage.interchange/1","nodes":[],"edges":[]}'></textarea><button type="button" id="portable-inspect">Inspect imported lineage</button><button type="button" id="portable-clear">Clear imported packet</button></div><p id="portable-status" role="status" aria-live="polite">No imported packet. Local evidence remains unchanged.</p><div id="portable-summary" class="ledger-grid"></div><div id="portable-results" class="root-network" aria-label="Imported lineage text directory"></div><p class="muted">Imported records are isolated from local observation, evidence quests, and readiness. No external links are opened automatically. Review each source URL before navigating.</p></section></main>
+<aside class="ej-panel" aria-label="Evidence review packet"><h3>Review packet</h3><p class="muted">Local observation only. This is not an independently verified product certificate.</p><pre class="ej-meta" id="ej-packet"></pre><button id="ej-copy" type="button">Copy review packet</button><p id="ej-feedback" role="status" aria-live="polite"></p></aside></div></section><section class="panel" id="portable-lineage" style="grid-column:1/-1" aria-labelledby="portable-lineage-title"><p class="eyebrow">Cross-surface provenance · read-only</p><h2 id="portable-lineage-title">Portable Lineage Observatory</h2><p class="muted">Inspect a curated public-portal lineage packet without fetching external services or elevating source claims to independent verification. Paste JSON exported from the portal's aift.lineage.interchange/1 module. Repository roots are never fruits; source-backed edges are claims to inspect, not certified dependencies.</p><div class="toolbar"><label for="portable-input">Lineage interchange JSON</label><textarea id="portable-input" rows="5" maxlength="500000" style="width:100%;background:#0a1424;color:#eaf3ff;border:1px solid #6c87a4;border-radius:12px;padding:.8rem" placeholder='{"schema":"aift.lineage.interchange/1","nodes":[],"edges":[]}'></textarea><button type="button" id="portable-inspect">Inspect imported lineage</button><button type="button" id="portable-clear">Clear imported packet</button></div><p id="portable-status" role="status" aria-live="polite">No imported packet. Local evidence remains unchanged.</p><div id="portable-summary" class="ledger-grid"></div><nav id="portable-trail" aria-label="Imported lineage breadcrumbs" class="toolbar"></nav><div class="toolbar"><label for="portable-find">Find imported nodes</label><input id="portable-find" type="search" placeholder="Search imported roots, capabilities or outcomes" autocomplete="off"/><button type="button" id="portable-back" disabled>Previous lineage node</button><button type="button" id="portable-all">All nodes</button></div><p id="portable-focus-status" role="status" aria-live="polite">Import a packet to explore its source-backed relationships.</p><div id="portable-results" class="root-network" aria-label="Imported lineage text directory"></div><p class="muted">Imported records are isolated from local observation, evidence quests, and readiness. No external links are opened automatically. Review each source URL before navigating.</p></section></main>
 <script>
 "use strict";
 const stages=[["roots","#ff5378"],["trunk","#f4ca78"],["branches","#46e5ae"],["leaves","#66b6ff"],["flowers","#c18cff"],["fruits","#ffad70"]];
@@ -462,25 +462,61 @@ function inspectPortablePacket(packet){
  }
  return {nodes,edges};
 }
+// Read-only, reversible traversal of explicitly supplied contribution edges.
+let portableGraph=null,portableFocus=null,portableHistory=[],portableFilter="";
+function portableNavigate(id){
+ if(!portableGraph||!portableGraph.nodes.some(n=>n.id===id))return;
+ if(portableFocus!==null&&portableFocus!==id)portableHistory.push(portableFocus);
+ portableFocus=id;renderPortable(portableGraph);
+}
 function renderPortable(packet){
- const summary=$("portable-summary"),results=$("portable-results");summary.replaceChildren();results.replaceChildren();
- if(!packet)return;
+ portableGraph=packet;
+ const summary=$("portable-summary"),results=$("portable-results"),trail=$("portable-trail");
+ summary.replaceChildren();results.replaceChildren();trail.replaceChildren();
+ $("portable-back").disabled=!portableHistory.length;
+ if(!packet){$("portable-focus-status").textContent="Import a packet to explore its source-backed relationships.";return}
+ const byId=new Map(packet.nodes.map(n=>[n.id,n]));
  const roots=packet.nodes.filter(n=>n.kind==="root"),fruits=packet.nodes.filter(n=>n.kind==="fruit");
  for(const [label,count] of [["Repository roots",roots.length],["Curated source edges",packet.edges.length],["Product candidates (unverified)",fruits.length]]){
   const tile=add(summary,el("div",undefined,"ledger-stat"));add(tile,el("strong",count));add(tile,el("small",label));
  }
- for(const node of packet.nodes){
-  const tile=add(results,el("article",undefined,"card"));add(tile,el("strong",node.kind.toUpperCase()+" · "+node.label));
+ const focus=byId.get(portableFocus);
+ const crumb=add(trail,el("button","All imported nodes"));crumb.type="button";crumb.onclick=()=>{portableFocus=null;portableHistory=[];renderPortable(packet)};
+ for(const id of [...portableHistory,portableFocus].filter(Boolean)){
+  const n=byId.get(id);if(!n)continue;
+  add(trail,el("span"," / ","muted"));
+  const b=add(trail,el("button",n.label));b.type="button";b.onclick=()=>portableNavigate(id);
+ }
+ const related=new Set();
+ if(focus){related.add(focus.id);for(const e of packet.edges){if(e.from===focus.id)related.add(e.to);if(e.to===focus.id)related.add(e.from)}}
+ const visible=packet.nodes.filter(n=>(!focus||related.has(n.id))&&(!portableFilter||(n.label+" "+n.id+" "+n.kind).toLowerCase().includes(portableFilter)));
+ $("portable-focus-status").textContent=focus?"Inspecting "+focus.kind+" "+focus.label+" and "+(related.size-1)+" directly connected nodes from curated claims. No independent attestation.":visible.length+" imported nodes shown. Select a node to explore only explicit source-backed edges.";
+ if(!visible.length)add(results,el("p","No imported nodes match this view or search.","muted"));
+ for(const node of visible){
+  const tile=add(results,el("article",undefined,"card"));
+  add(tile,el("strong",node.kind.toUpperCase()+" · "+node.label));
   add(tile,el("small",node.id));
-  if(node.kind==="fruit")add(tile,el("p","Candidate outcome; independent verification not established.","muted"));
+  const b=add(tile,el("button","Explore lineage"));b.type="button";b.setAttribute("aria-label","Explore lineage of "+node.label);b.onclick=()=>portableNavigate(node.id);
+  if(node.kind==="fruit")add(tile,el("p","Candidate outcome only; independent verification not established.","muted"));
   if(node.url){const a=add(tile,el("a","Inspect source or destination"));a.href=node.url;a.target="_blank";a.rel="noopener noreferrer";}
-  const incoming=packet.edges.filter(e=>e.to===node.id);
-  if(incoming.length){add(tile,el("p","Curated incoming source claims: "+incoming.length,"muted"));for(const edge of incoming){const a=add(tile,el("a","Evidence for "+edge.from));a.href=edge.evidenceUrl;a.target="_blank";a.rel="noopener noreferrer";add(tile,el("span"," · "));}}
+  const incoming=packet.edges.filter(e=>e.to===node.id),outgoing=packet.edges.filter(e=>e.from===node.id);
+  for(const [label,edges,direction] of [["Contributors",incoming,"from"],["Contributes to",outgoing,"to"]]){
+   if(!edges.length)continue;
+   add(tile,el("p",label+" · curated claims, not verified attestations","muted"));
+   for(const edge of edges){
+    const linked=byId.get(edge[direction]);
+    const jump=add(tile,el("button",linked.label));jump.type="button";jump.onclick=()=>portableNavigate(linked.id);
+    const a=add(tile,el("a","Evidence"));a.href=edge.evidenceUrl;a.target="_blank";a.rel="noopener noreferrer";
+   }
+  }
  }
 }
+$("portable-find").addEventListener("input",e=>{portableFilter=e.target.value.toLowerCase().trim();renderPortable(portableGraph)});
+$("portable-back").onclick=()=>{if(!portableHistory.length)return;portableFocus=portableHistory.pop();renderPortable(portableGraph)};
+$("portable-all").onclick=()=>{portableFocus=null;portableHistory=[];portableFilter="";$("portable-find").value="";renderPortable(portableGraph)};
 $("portable-inspect").onclick=()=>{
- try{const raw=$("portable-input").value;if(raw.length>500000)throw Error("Packet exceeds size limit.");const graph=inspectPortablePacket(JSON.parse(raw));renderPortable(graph);$("portable-status").textContent="Curated packet inspected: "+graph.nodes.length+" nodes, "+graph.edges.length+" source claims. No independent attestation or local state changes."}
+ try{const raw=$("portable-input").value;if(raw.length>500000)throw Error("Packet exceeds size limit.");const graph=inspectPortablePacket(JSON.parse(raw));portableFocus=null;portableHistory=[];portableFilter="";$("portable-find").value="";renderPortable(graph);$("portable-status").textContent="Curated packet inspected: "+graph.nodes.length+" nodes, "+graph.edges.length+" source claims. No independent attestation or local state changes."}
  catch(e){renderPortable(null);$("portable-status").textContent="Import rejected: "+e.message}
 };
-$("portable-clear").onclick=()=>{$("portable-input").value="";renderPortable(null);$("portable-status").textContent="Imported packet cleared. Local evidence unchanged."};
+$("portable-clear").onclick=()=>{$("portable-input").value="";portableFocus=null;portableHistory=[];portableFilter="";$("portable-find").value="";renderPortable(null);$("portable-status").textContent="Imported packet cleared. Local evidence unchanged."};
 </script></body></html>
