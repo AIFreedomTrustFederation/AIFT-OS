@@ -659,7 +659,12 @@ const journeyStatus=document.createElement("p");journeyStatus.className="muted";
 const journeyRoutes=document.createElement("div");journeyRoutes.setAttribute("aria-label","Directed evidence route alternatives");
 const journeySteps=document.createElement("ol");journeySteps.setAttribute("aria-label","Selected directed lineage path and evidence");
 const journeyDossier=document.createElement("pre");journeyDossier.className="status";journeyDossier.style.whiteSpace="pre-wrap";journeyDossier.style.overflowWrap="anywhere";journeyDossier.hidden=true;
-journeyPanel.append(journeyStatus,journeyRoutes,journeySteps,journeyDossier);
+const journeyComparison=document.createElement("section");journeyComparison.setAttribute("aria-label","Alternative route evidence comparison");
+const journeyComparisonTitle=document.createElement("h3");journeyComparisonTitle.textContent="Compare evidence routes";
+const journeyComparisonSummary=document.createElement("p");journeyComparisonSummary.className="muted";
+const journeyComparisonTable=document.createElement("div");journeyComparisonTable.style.overflowX="auto";
+journeyComparison.append(journeyComparisonTitle,journeyComparisonSummary,journeyComparisonTable);
+journeyPanel.append(journeyStatus,journeyRoutes,journeyComparison,journeySteps,journeyDossier);
 $("portable-results").parentElement.insertBefore(journeyPanel,$("portable-results"));
 let journeySource="",journeyTarget="",journeySelected=-1,journeyAlternatives=[],journeyPacket=null;
 function lineageRoutes(packet,from,to,limit=3){
@@ -684,7 +689,7 @@ function lineageRoutes(packet,from,to,limit=3){
 function lineageShortestPath(packet,from,to){return lineageRoutes(packet,from,to,1)[0]||null}
 function resetJourney(message){
  journeyAlternatives=[];journeySelected=-1;journeyPacket=null;
- journeyRoutes.replaceChildren();journeySteps.replaceChildren();journeyDossier.hidden=true;journeyDossier.textContent="";journeyCopy.disabled=true;
+ journeyRoutes.replaceChildren();journeySteps.replaceChildren();journeyComparison.hidden=true;journeyComparisonTable.replaceChildren();journeyDossier.hidden=true;journeyDossier.textContent="";journeyCopy.disabled=true;
  if(message)journeyStatus.textContent=message;
 }
 function renderLineageJourney(packet){
@@ -702,9 +707,41 @@ function renderLineageJourney(packet){
  // Focus navigation must not destroy an already traced route. A new import does.
  if(oldPacket!==packet)resetJourney(roots.length+" repository roots and "+targets.length+" possible destinations. Choose a journey to inspect directed evidence.");
 }
+// Compare imported routes without ranking source claims as verified trust or product readiness.
+function renderJourneyComparison(packet,routes){
+ journeyComparisonTable.replaceChildren();
+ if(!packet||!routes.length){journeyComparison.hidden=true;return}
+ journeyComparison.hidden=false;
+ const byId=new Map(packet.nodes.map(n=>[n.id,n]));
+ const table=document.createElement("table");table.style.width="100%";table.style.borderCollapse="collapse";
+ const caption=document.createElement("caption");caption.textContent="Curated source claims only; shorter paths and more evidence links do not imply greater trust.";
+ table.appendChild(caption);
+ const head=document.createElement("thead"),header=document.createElement("tr");
+ for(const title of ["Route","Directed hops","Distinct evidence URLs","Intermediate capabilities","Inspect"]){
+  const th=document.createElement("th");th.scope="col";th.textContent=title;th.style.padding=".6rem";header.appendChild(th);
+ }
+ head.appendChild(header);table.appendChild(head);
+ const body=document.createElement("tbody");
+ const allEvidence=new Set(routes.flatMap(route=>route.map(edge=>edge.evidenceUrl)));
+ routes.forEach((route,index)=>{
+  const tr=document.createElement("tr");
+  const cells=[
+   "Route "+(index+1),
+   String(route.length),
+   String(new Set(route.map(edge=>edge.evidenceUrl)).size),
+   route.slice(0,-1).map(edge=>byId.get(edge.to)).filter(Boolean).map(n=>n.kind+" · "+n.label).join(" → ")||"Direct contribution"
+  ];
+  for(const value of cells){const td=document.createElement("td");td.textContent=value;td.style.padding=".6rem";td.style.borderTop="1px solid #425a78";tr.appendChild(td)}
+  const action=document.createElement("td"),button=document.createElement("button");button.type="button";button.textContent="Inspect route "+(index+1);
+  button.setAttribute("aria-pressed",String(index===journeySelected));
+  button.addEventListener("click",()=>showJourneyRoute(index));action.appendChild(button);tr.appendChild(action);body.appendChild(tr);
+ });
+ table.appendChild(body);journeyComparisonTable.appendChild(table);
+ journeyComparisonSummary.textContent=routes.length+" documented alternatives · "+allEvidence.size+" distinct cited URLs across routes. This is a comparison of imported claims, not a verification score.";
+}
 function showJourneyRoute(index){
  if(!portableGraph||!journeyAlternatives[index])return;
- journeySelected=index;journeySteps.replaceChildren();journeyRoutes.replaceChildren();
+ journeySelected=index;journeySteps.replaceChildren();journeyRoutes.replaceChildren();renderJourneyComparison(portableGraph,journeyAlternatives);
  const byId=new Map(portableGraph.nodes.map(n=>[n.id,n])),path=journeyAlternatives[index];
  for(let i=0;i<journeyAlternatives.length;i++){
   const b=document.createElement("button");b.type="button";b.textContent="Route "+(i+1)+" · "+journeyAlternatives[i].length+" hops";b.setAttribute("aria-pressed",String(i===index));b.addEventListener("click",()=>showJourneyRoute(i));journeyRoutes.appendChild(b);
