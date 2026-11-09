@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestExpeditionEvidenceJourneyContract(t *testing.T) {
+func TestExpeditionEvidenceJourneyReviewPacketContract(t *testing.T) {
 	checks := []string{
 		"Lineage Journey &amp; Review Packet",
 		"id=\"ej-rail\"",
