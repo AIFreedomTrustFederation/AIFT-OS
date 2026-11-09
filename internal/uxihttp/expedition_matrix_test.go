@@ -20,7 +20,7 @@ func TestExpeditionEvidenceMatrixContract(t *testing.T) {
 		"state.items.filter(n=>n.stage===0",
 		"No downstream contribution edges or product outcomes attested",
 		"Independent evidence unavailable",
-		"function render(){renderMatrix();",
+		"function render(){renderEvidenceJourney();renderConstellation();renderDossier();renderMatrix();",
 	}
 	for _, marker := range required {
 		if !strings.Contains(html, marker) {
