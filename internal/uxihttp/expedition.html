@@ -641,40 +641,56 @@ function renderPortableQuests(packet){
  if(!fruits.length){const note=add(grid,el("article",undefined,"quest-card"));add(note,el("h4","No attested outcomes"));add(note,el("p","This packet contains no fruit candidates. Do not fabricate outcomes to fill the tree.","muted"))}
 }
 
-/* Source-backed journey planner: directional paths are curated claims, never attestations. */
+/* Evidence route observatory: packet-local, directed and read-only. */
 const journeyPanel=document.createElement("section");
 journeyPanel.className="card";
 journeyPanel.setAttribute("aria-label","Root to outcome lineage journey");
-journeyPanel.innerHTML='<h3>Lineage Journey · roots to outcomes</h3><p class="muted">Follow explicit, directed contribution claims from a repository root through documented layers. Every hop has a source link; a reachable candidate is not a verified product.</p>';
+journeyPanel.innerHTML='<h3>Lineage Journey · evidence route observatory</h3><p class="muted">Trace actual directed source claims, inspect alternate routes, and export a human-readable review dossier. This is an offline review of imported claims, not an attestation.</p>';
 const journeyControls=document.createElement("div");journeyControls.className="atlas-viewport-tools";
 const journeyRoot=document.createElement("select"),journeyGoal=document.createElement("select");
 journeyRoot.setAttribute("aria-label","Starting repository root");
-journeyGoal.setAttribute("aria-label","Destination outcome or capability");
-const journeyRun=document.createElement("button");journeyRun.type="button";journeyRun.textContent="Trace evidence path";
+journeyGoal.setAttribute("aria-label","Destination capability or outcome");
+const journeyRun=document.createElement("button");journeyRun.type="button";journeyRun.textContent="Trace evidence routes";
 const journeyClear=document.createElement("button");journeyClear.type="button";journeyClear.textContent="Clear journey";
-journeyControls.append(journeyRoot,journeyGoal,journeyRun,journeyClear);
+const journeyCopy=document.createElement("button");journeyCopy.type="button";journeyCopy.textContent="Copy evidence dossier";journeyCopy.disabled=true;
+journeyControls.append(journeyRoot,journeyGoal,journeyRun,journeyClear,journeyCopy);
 journeyPanel.appendChild(journeyControls);
-const journeyStatus=document.createElement("p");journeyStatus.className="muted";journeyStatus.setAttribute("role","status");
-const journeySteps=document.createElement("ol");journeySteps.setAttribute("aria-label","Directed lineage path and evidence");
-journeyPanel.append(journeyStatus,journeySteps);
+const journeyStatus=document.createElement("p");journeyStatus.className="muted";journeyStatus.setAttribute("role","status");journeyStatus.setAttribute("aria-live","polite");
+const journeyRoutes=document.createElement("div");journeyRoutes.setAttribute("aria-label","Directed evidence route alternatives");
+const journeySteps=document.createElement("ol");journeySteps.setAttribute("aria-label","Selected directed lineage path and evidence");
+const journeyDossier=document.createElement("pre");journeyDossier.className="status";journeyDossier.style.whiteSpace="pre-wrap";journeyDossier.style.overflowWrap="anywhere";journeyDossier.hidden=true;
+journeyPanel.append(journeyStatus,journeyRoutes,journeySteps,journeyDossier);
 $("portable-results").parentElement.insertBefore(journeyPanel,$("portable-results"));
-let journeySource="",journeyTarget="";
-function lineageShortestPath(packet,from,to){
- const adjacency=new Map();
- for(const e of packet.edges){if(!adjacency.has(e.from))adjacency.set(e.from,[]);adjacency.get(e.from).push(e)}
- const queue=[from],visited=new Set([from]),parents=new Map();
- for(let i=0;i<queue.length;i++){
-  const id=queue[i];if(id===to)break;
-  for(const edge of adjacency.get(id)||[]){if(visited.has(edge.to))continue;visited.add(edge.to);parents.set(edge.to,edge);queue.push(edge.to)}
+let journeySource="",journeyTarget="",journeySelected=-1,journeyAlternatives=[],journeyPacket=null;
+function lineageRoutes(packet,from,to,limit=3){
+ // Simple directed paths only. Deterministic shortest-first enumeration, bounded to avoid combinatorial explosion.
+ const adj=new Map(),routes=[],queue=[{id:from,path:[],seen:new Set([from])}];
+ for(const e of packet.edges){if(!adj.has(e.from))adj.set(e.from,[]);adj.get(e.from).push(e)}
+ for(const edges of adj.values())edges.sort((a,b)=>a.to.localeCompare(b.to)||a.evidenceUrl.localeCompare(b.evidenceUrl));
+ let inspected=0;
+ while(queue.length&&routes.length<limit&&inspected++<20000){
+  const current=queue.shift();
+  if(current.id===to){routes.push(current.path);continue}
+  if(current.path.length>=Math.min(packet.nodes.length,30))continue;
+  for(const edge of adj.get(current.id)||[]){
+   if(current.seen.has(edge.to))continue;
+   const seen=new Set(current.seen);seen.add(edge.to);
+   queue.push({id:edge.to,path:[...current.path,edge],seen});
+   if(queue.length>5000)break;
+  }
  }
- if(!visited.has(to))return null;
- const path=[];let cursor=to;
- while(cursor!==from){const edge=parents.get(cursor);if(!edge)return null;path.unshift(edge);cursor=edge.from}
- return path;
+ return routes;
+}
+function lineageShortestPath(packet,from,to){return lineageRoutes(packet,from,to,1)[0]||null}
+function resetJourney(message){
+ journeyAlternatives=[];journeySelected=-1;journeyPacket=null;
+ journeyRoutes.replaceChildren();journeySteps.replaceChildren();journeyDossier.hidden=true;journeyDossier.textContent="";journeyCopy.disabled=true;
+ if(message)journeyStatus.textContent=message;
 }
 function renderLineageJourney(packet){
- journeySteps.replaceChildren();journeyRoot.replaceChildren();journeyGoal.replaceChildren();
- if(!packet){journeySource="";journeyTarget="";journeyStatus.textContent="Import a lineage packet to plan a source-backed journey.";journeyRun.disabled=true;return}
+ const oldPacket=journeyPacket;
+ journeyRoot.replaceChildren();journeyGoal.replaceChildren();
+ if(!packet){journeySource="";journeyTarget="";resetJourney("Import a lineage packet to plan a source-backed journey.");journeyRun.disabled=true;return}
  const roots=packet.nodes.filter(n=>n.kind==="root");
  const targets=packet.nodes.filter(n=>n.kind!=="root");
  journeyRun.disabled=!roots.length||!targets.length;
@@ -683,27 +699,48 @@ function renderLineageJourney(packet){
   if(nodes.some(n=>n.id===selected))select.value=selected;
  }
  journeySource=journeyRoot.value;journeyTarget=journeyGoal.value;
- journeyStatus.textContent=roots.length+" repository roots and "+targets.length+" possible destinations. Choose a journey to inspect directed evidence.";
+ // Focus navigation must not destroy an already traced route. A new import does.
+ if(oldPacket!==packet)resetJourney(roots.length+" repository roots and "+targets.length+" possible destinations. Choose a journey to inspect directed evidence.");
 }
-journeyRoot.addEventListener("change",()=>{journeySource=journeyRoot.value;journeySteps.replaceChildren()});
-journeyGoal.addEventListener("change",()=>{journeyTarget=journeyGoal.value;journeySteps.replaceChildren()});
-journeyClear.addEventListener("click",()=>{journeySteps.replaceChildren();journeyStatus.textContent="Journey cleared. Imported provenance remains unchanged."});
+function showJourneyRoute(index){
+ if(!portableGraph||!journeyAlternatives[index])return;
+ journeySelected=index;journeySteps.replaceChildren();journeyRoutes.replaceChildren();
+ const byId=new Map(portableGraph.nodes.map(n=>[n.id,n])),path=journeyAlternatives[index];
+ for(let i=0;i<journeyAlternatives.length;i++){
+  const b=document.createElement("button");b.type="button";b.textContent="Route "+(i+1)+" · "+journeyAlternatives[i].length+" hops";b.setAttribute("aria-pressed",String(i===index));b.addEventListener("click",()=>showJourneyRoute(i));journeyRoutes.appendChild(b);
+ }
+ const start=byId.get(journeySource),goal=byId.get(journeyTarget);
+ const dossier=["AIFT PORTABLE LINEAGE REVIEW — UNVERIFIED CLAIMS","Source: "+start.label+" ("+start.id+")","Destination: "+goal.label+" ("+goal.id+")","Route: "+(index+1)+" of "+journeyAlternatives.length,"Evidence hops: "+path.length,""];
+ for(let i=0;i<path.length;i++){
+  const edge=path[i],source=byId.get(edge.from),destination=byId.get(edge.to),item=document.createElement("li");
+  const button=document.createElement("button");button.type="button";button.textContent=destination.kind+" · "+destination.label;button.addEventListener("click",()=>portableNavigate(destination.id));
+  const evidence=document.createElement("a");evidence.href=edge.evidenceUrl;evidence.target="_blank";evidence.rel="noopener noreferrer";evidence.textContent="Inspect source evidence";
+  item.append(button,document.createTextNode(" · "),evidence);journeySteps.appendChild(item);
+  dossier.push((i+1)+". "+source.kind+" "+source.label+" -> "+destination.kind+" "+destination.label,"   "+edge.evidenceUrl);
+ }
+ dossier.push("","All links are curated contribution claims, not independent attestations.","No achievements, product certification or readiness changes result from this review.");
+ if(goal.kind==="fruit"){const note=document.createElement("li");note.textContent="Outcome candidate only. No independent product certification or achievement awarded.";journeySteps.appendChild(note)}
+ journeyDossier.textContent=dossier.join("\n");journeyDossier.hidden=false;journeyCopy.disabled=false;
+ journeyStatus.textContent="Showing route "+(index+1)+" of "+journeyAlternatives.length+" from "+start.label+" to "+goal.label+". Evidence URLs are source claims only.";
+}
+journeyRoot.addEventListener("change",()=>{journeySource=journeyRoot.value;resetJourney("Source changed. Trace routes to review its evidence.")});
+journeyGoal.addEventListener("change",()=>{journeyTarget=journeyGoal.value;resetJourney("Destination changed. Trace routes to review its evidence.")});
+journeyClear.addEventListener("click",()=>resetJourney("Journey cleared. Imported provenance remains unchanged."));
+journeyCopy.addEventListener("click",async()=>{
+ if(journeyCopy.disabled)return;
+ try{await navigator.clipboard.writeText(journeyDossier.textContent);journeyStatus.textContent="Evidence review dossier copied. Claims remain unverified."}
+ catch{journeyStatus.textContent="Clipboard unavailable. Select and copy the visible evidence dossier below."}
+});
 journeyRun.addEventListener("click",()=>{
- journeySteps.replaceChildren();
+ resetJourney();
  if(!portableGraph)return;
  const byId=new Map(portableGraph.nodes.map(n=>[n.id,n]));
  const start=byId.get(journeyRoot.value),goal=byId.get(journeyGoal.value);
  if(!start||!goal||start.kind!=="root"){journeyStatus.textContent="Choose a repository root and destination.";return}
- const path=lineageShortestPath(portableGraph,start.id,goal.id);
- if(!path){journeyStatus.textContent="Evidence gap: no directed contribution path connects this root to the selected destination. No relationship is inferred.";return}
- journeyStatus.textContent=path.length+" curated contribution hops connect "+start.label+" to "+goal.label+". These links are claims, not independent attestations.";
- for(const edge of path){
-  const destination=byId.get(edge.to),item=document.createElement("li");
-  const button=document.createElement("button");button.type="button";button.textContent=destination.kind+" · "+destination.label;button.addEventListener("click",()=>portableNavigate(destination.id));
-  const evidence=document.createElement("a");evidence.href=edge.evidenceUrl;evidence.target="_blank";evidence.rel="noopener noreferrer";evidence.textContent="Inspect source evidence";
-  item.append(button,document.createTextNode(" · "),evidence);journeySteps.appendChild(item);
- }
- if(goal.kind==="fruit"){const note=document.createElement("li");note.textContent="Outcome candidate only. No independent product certification or achievement awarded.";journeySteps.appendChild(note)}
+ journeySource=start.id;journeyTarget=goal.id;
+ journeyAlternatives=lineageRoutes(portableGraph,start.id,goal.id,3);
+ if(!journeyAlternatives.length){journeyStatus.textContent="Evidence gap: no directed contribution route connects this root to the selected destination. No relationship is inferred.";return}
+ journeyPacket=portableGraph;showJourneyRoute(0);
 });
 
 </script></body></html>
