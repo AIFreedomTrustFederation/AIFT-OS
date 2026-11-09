@@ -493,6 +493,7 @@ function renderPortable(packet){
  summary.replaceChildren();results.replaceChildren();trail.replaceChildren();
  renderPortableAtlas(packet);
  renderPortableQuests(packet);
+ renderLineageJourney(packet);
  $("portable-back").disabled=!portableHistory.length;
  if(!packet){$("portable-focus-status").textContent="Import a packet to explore its source-backed relationships.";return}
  const byId=new Map(packet.nodes.map(n=>[n.id,n]));
@@ -639,4 +640,70 @@ function renderPortableQuests(packet){
  }
  if(!fruits.length){const note=add(grid,el("article",undefined,"quest-card"));add(note,el("h4","No attested outcomes"));add(note,el("p","This packet contains no fruit candidates. Do not fabricate outcomes to fill the tree.","muted"))}
 }
+
+/* Source-backed journey planner: directional paths are curated claims, never attestations. */
+const journeyPanel=document.createElement("section");
+journeyPanel.className="card";
+journeyPanel.setAttribute("aria-label","Root to outcome lineage journey");
+journeyPanel.innerHTML='<h3>Lineage Journey · roots to outcomes</h3><p class="muted">Follow explicit, directed contribution claims from a repository root through documented layers. Every hop has a source link; a reachable candidate is not a verified product.</p>';
+const journeyControls=document.createElement("div");journeyControls.className="atlas-viewport-tools";
+const journeyRoot=document.createElement("select"),journeyGoal=document.createElement("select");
+journeyRoot.setAttribute("aria-label","Starting repository root");
+journeyGoal.setAttribute("aria-label","Destination outcome or capability");
+const journeyRun=document.createElement("button");journeyRun.type="button";journeyRun.textContent="Trace evidence path";
+const journeyClear=document.createElement("button");journeyClear.type="button";journeyClear.textContent="Clear journey";
+journeyControls.append(journeyRoot,journeyGoal,journeyRun,journeyClear);
+journeyPanel.appendChild(journeyControls);
+const journeyStatus=document.createElement("p");journeyStatus.className="muted";journeyStatus.setAttribute("role","status");
+const journeySteps=document.createElement("ol");journeySteps.setAttribute("aria-label","Directed lineage path and evidence");
+journeyPanel.append(journeyStatus,journeySteps);
+$("portable-results").parentElement.insertBefore(journeyPanel,$("portable-results"));
+let journeySource="",journeyTarget="";
+function lineageShortestPath(packet,from,to){
+ const adjacency=new Map();
+ for(const e of packet.edges){if(!adjacency.has(e.from))adjacency.set(e.from,[]);adjacency.get(e.from).push(e)}
+ const queue=[from],visited=new Set([from]),parents=new Map();
+ for(let i=0;i<queue.length;i++){
+  const id=queue[i];if(id===to)break;
+  for(const edge of adjacency.get(id)||[]){if(visited.has(edge.to))continue;visited.add(edge.to);parents.set(edge.to,edge);queue.push(edge.to)}
+ }
+ if(!visited.has(to))return null;
+ const path=[];let cursor=to;
+ while(cursor!==from){const edge=parents.get(cursor);if(!edge)return null;path.unshift(edge);cursor=edge.from}
+ return path;
+}
+function renderLineageJourney(packet){
+ journeySteps.replaceChildren();journeyRoot.replaceChildren();journeyGoal.replaceChildren();
+ if(!packet){journeySource="";journeyTarget="";journeyStatus.textContent="Import a lineage packet to plan a source-backed journey.";journeyRun.disabled=true;return}
+ const roots=packet.nodes.filter(n=>n.kind==="root");
+ const targets=packet.nodes.filter(n=>n.kind!=="root");
+ journeyRun.disabled=!roots.length||!targets.length;
+ for(const [select,nodes,selected] of [[journeyRoot,roots,journeySource],[journeyGoal,targets,journeyTarget]]){
+  for(const node of nodes){const option=document.createElement("option");option.value=node.id;option.textContent=node.kind+" · "+node.label;select.appendChild(option)}
+  if(nodes.some(n=>n.id===selected))select.value=selected;
+ }
+ journeySource=journeyRoot.value;journeyTarget=journeyGoal.value;
+ journeyStatus.textContent=roots.length+" repository roots and "+targets.length+" possible destinations. Choose a journey to inspect directed evidence.";
+}
+journeyRoot.addEventListener("change",()=>{journeySource=journeyRoot.value;journeySteps.replaceChildren()});
+journeyGoal.addEventListener("change",()=>{journeyTarget=journeyGoal.value;journeySteps.replaceChildren()});
+journeyClear.addEventListener("click",()=>{journeySteps.replaceChildren();journeyStatus.textContent="Journey cleared. Imported provenance remains unchanged."});
+journeyRun.addEventListener("click",()=>{
+ journeySteps.replaceChildren();
+ if(!portableGraph)return;
+ const byId=new Map(portableGraph.nodes.map(n=>[n.id,n]));
+ const start=byId.get(journeyRoot.value),goal=byId.get(journeyGoal.value);
+ if(!start||!goal||start.kind!=="root"){journeyStatus.textContent="Choose a repository root and destination.";return}
+ const path=lineageShortestPath(portableGraph,start.id,goal.id);
+ if(!path){journeyStatus.textContent="Evidence gap: no directed contribution path connects this root to the selected destination. No relationship is inferred.";return}
+ journeyStatus.textContent=path.length+" curated contribution hops connect "+start.label+" to "+goal.label+". These links are claims, not independent attestations.";
+ for(const edge of path){
+  const destination=byId.get(edge.to),item=document.createElement("li");
+  const button=document.createElement("button");button.type="button";button.textContent=destination.kind+" · "+destination.label;button.addEventListener("click",()=>portableNavigate(destination.id));
+  const evidence=document.createElement("a");evidence.href=edge.evidenceUrl;evidence.target="_blank";evidence.rel="noopener noreferrer";evidence.textContent="Inspect source evidence";
+  item.append(button,document.createTextNode(" · "),evidence);journeySteps.appendChild(item);
+ }
+ if(goal.kind==="fruit"){const note=document.createElement("li");note.textContent="Outcome candidate only. No independent product certification or achievement awarded.";journeySteps.appendChild(note)}
+});
+
 </script></body></html>
