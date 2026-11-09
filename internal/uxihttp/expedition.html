@@ -87,7 +87,7 @@
 <div class="ej-rail" id="ej-rail" role="group" aria-label="Six evidence journey stages"></div>
 <div class="ej-grid"><div class="ej-panel"><h3 id="ej-heading" tabindex="-1">Select a root</h3><p class="ej-state" id="ej-state"></p><p id="ej-description"></p><ul class="ej-list" id="ej-requirements"></ul>
 <div class="ej-actions"><button id="ej-prev" type="button">Previous stage</button><button id="ej-next" type="button">Next stage</button><button id="ej-reset" type="button">Return to roots</button></div></div>
-<aside class="ej-panel" aria-label="Evidence review packet"><h3>Review packet</h3><p class="muted">Local observation only. This is not an independently verified product certificate.</p><pre class="ej-meta" id="ej-packet"></pre><button id="ej-copy" type="button">Copy review packet</button><p id="ej-feedback" role="status" aria-live="polite"></p></aside></div></section></main>
+<aside class="ej-panel" aria-label="Evidence review packet"><h3>Review packet</h3><p class="muted">Local observation only. This is not an independently verified product certificate.</p><pre class="ej-meta" id="ej-packet"></pre><button id="ej-copy" type="button">Copy review packet</button><p id="ej-feedback" role="status" aria-live="polite"></p></aside></div></section><section class="panel" id="portable-lineage" style="grid-column:1/-1" aria-labelledby="portable-lineage-title"><p class="eyebrow">Cross-surface provenance · read-only</p><h2 id="portable-lineage-title">Portable Lineage Observatory</h2><p class="muted">Inspect a curated public-portal lineage packet without fetching external services or elevating source claims to independent verification. Paste JSON exported from the portal's aift.lineage.interchange/1 module. Repository roots are never fruits; source-backed edges are claims to inspect, not certified dependencies.</p><div class="toolbar"><label for="portable-input">Lineage interchange JSON</label><textarea id="portable-input" rows="5" maxlength="500000" style="width:100%;background:#0a1424;color:#eaf3ff;border:1px solid #6c87a4;border-radius:12px;padding:.8rem" placeholder='{"schema":"aift.lineage.interchange/1","nodes":[],"edges":[]}'></textarea><button type="button" id="portable-inspect">Inspect imported lineage</button><button type="button" id="portable-clear">Clear imported packet</button></div><p id="portable-status" role="status" aria-live="polite">No imported packet. Local evidence remains unchanged.</p><div id="portable-summary" class="ledger-grid"></div><div id="portable-results" class="root-network" aria-label="Imported lineage text directory"></div><p class="muted">Imported records are isolated from local observation, evidence quests, and readiness. No external links are opened automatically. Review each source URL before navigating.</p></section></main>
 <script>
 "use strict";
 const stages=[["roots","#ff5378"],["trunk","#f4ca78"],["branches","#46e5ae"],["leaves","#66b6ff"],["flowers","#c18cff"],["fruits","#ffad70"]];
@@ -443,4 +443,44 @@ function render(){renderEvidenceJourney();renderConstellation();renderDossier();
 $("journey-back").onclick=()=>setJourneyStep(state.journeyStep-1);$("journey-next").onclick=()=>setJourneyStep(state.journeyStep+1);$("journey-reset").onclick=()=>setJourneyStep(0);$("prev").onclick=()=>selectStage(state.stage-1);$("next").onclick=()=>selectStage(state.stage+1);$("search").oninput=e=>{state.query=e.target.value.toLowerCase().trim();renderEntities();renderNetwork();renderAtlas()};
 $("root-sort").onchange=renderNetwork;$("compare-a").onchange=renderComparison;$("compare-b").onchange=renderComparison;$("compare-clear").onclick=()=>{$("compare-a").value="";$("compare-b").value="";renderComparison()};$("clear-selection").onclick=()=>{state.selected=null;passportIndex=0;renderDossier();syncContext();renderPassport();renderDetail();renderEntities();renderNetwork()};
 fetch("/v1/federation/tree",{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("Tree API HTTP "+r.status);return r.json()}).then(data=>{state.items=normalized(data);if(requestedRoot){state.selected=state.items.find(n=>n.id===requestedRoot)||null;if(!state.selected)$("context-feedback").textContent="Shared root was not found in current local observations."}state.loadState="loaded";$("status").textContent="Local tree loaded: "+state.items.length+" distinct repository roots. No product attestation inferred.";render()}).catch(e=>{state.loadState="error";$("status").textContent="Local evidence unavailable: "+e.message;render()});
+
+/* Portable portal interchange inspection: untrusted, offline, and never merged into local state. */
+const portableSchema="aift.lineage.interchange/1";
+const portableKinds=new Set(["root","trunk","branch","leaf","flower","fruit"]);
+function portableUrl(value){try{const u=new URL(value);return u.protocol==="https:"&&!u.username&&!u.password&&!!u.hostname}catch{return false}}
+function inspectPortablePacket(packet){
+ if(!packet||packet.schema!==portableSchema||!Array.isArray(packet.nodes)||!Array.isArray(packet.edges)||packet.nodes.length>2000||packet.edges.length>5000)throw Error("Unsupported schema or oversized lineage graph.");
+ const ids=new Set(),nodes=[];
+ for(const n of packet.nodes){
+  if(!n||typeof n.id!=="string"||!/^[a-zA-Z0-9][a-zA-Z0-9._:-]*$/.test(n.id)||ids.has(n.id)||!portableKinds.has(n.kind)||typeof n.label!=="string"||n.label.length>300)throw Error("Invalid or duplicate lineage node.");
+  ids.add(n.id);nodes.push({id:n.id,kind:n.kind,label:n.label,url:portableUrl(n.url)?n.url:null});
+ }
+ const edges=[];
+ for(const e of packet.edges){
+  if(!e||!ids.has(e.from)||!ids.has(e.to)||e.relation!=="contributes-to"||!portableUrl(e.evidenceUrl))throw Error("Invalid contribution edge or missing source evidence URL.");
+  edges.push({from:e.from,to:e.to,evidenceUrl:e.evidenceUrl});
+ }
+ return {nodes,edges};
+}
+function renderPortable(packet){
+ const summary=$("portable-summary"),results=$("portable-results");summary.replaceChildren();results.replaceChildren();
+ if(!packet)return;
+ const roots=packet.nodes.filter(n=>n.kind==="root"),fruits=packet.nodes.filter(n=>n.kind==="fruit");
+ for(const [label,count] of [["Repository roots",roots.length],["Curated source edges",packet.edges.length],["Product candidates (unverified)",fruits.length]]){
+  const tile=add(summary,el("div",undefined,"ledger-stat"));add(tile,el("strong",count));add(tile,el("small",label));
+ }
+ for(const node of packet.nodes){
+  const tile=add(results,el("article",undefined,"card"));add(tile,el("strong",node.kind.toUpperCase()+" · "+node.label));
+  add(tile,el("small",node.id));
+  if(node.kind==="fruit")add(tile,el("p","Candidate outcome; independent verification not established.","muted"));
+  if(node.url){const a=add(tile,el("a","Inspect source or destination"));a.href=node.url;a.target="_blank";a.rel="noopener noreferrer";}
+  const incoming=packet.edges.filter(e=>e.to===node.id);
+  if(incoming.length){add(tile,el("p","Curated incoming source claims: "+incoming.length,"muted"));for(const edge of incoming){const a=add(tile,el("a","Evidence for "+edge.from));a.href=edge.evidenceUrl;a.target="_blank";a.rel="noopener noreferrer";add(tile,el("span"," · "));}}
+ }
+}
+$("portable-inspect").onclick=()=>{
+ try{const raw=$("portable-input").value;if(raw.length>500000)throw Error("Packet exceeds size limit.");const graph=inspectPortablePacket(JSON.parse(raw));renderPortable(graph);$("portable-status").textContent="Curated packet inspected: "+graph.nodes.length+" nodes, "+graph.edges.length+" source claims. No independent attestation or local state changes."}
+ catch(e){renderPortable(null);$("portable-status").textContent="Import rejected: "+e.message}
+};
+$("portable-clear").onclick=()=>{$("portable-input").value="";renderPortable(null);$("portable-status").textContent="Imported packet cleared. Local evidence unchanged."};
 </script></body></html>
