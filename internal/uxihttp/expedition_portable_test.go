@@ -19,7 +19,7 @@ func TestPortableLineageImportBoundaries(t *testing.T) {
 		"portableUrl(e.evidenceUrl)",
 		"renderPortable(null)",
 		"independent verification not established",
-		"rel=\"noopener noreferrer\"",
+		"a.rel=\"noopener noreferrer\"",
 		"Local evidence unchanged.",
 	}
 	for _, needle := range checks {
