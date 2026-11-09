@@ -1,0 +1,839 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MoBox · Living Expedition</title>
+<style>
+:root{color-scheme:dark;--gold:#f4ca78;--ink:#eaf3ff;--muted:#aec3d6;--red:#ff5378;--green:#46e5ae;--blue:#66b6ff;--line:#546e8a}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 55% 5%,#283760 0,transparent 48%),radial-gradient(ellipse at 10% 80%,#154e49 0,transparent 42%),#080c19;color:var(--ink);font:16px/1.55 system-ui,sans-serif}a{color:#b9dcff}button,input{font:inherit}button{cursor:pointer;background:#152943;color:var(--ink);border:1px solid #597da2;border-radius:12px;padding:.65rem .9rem}button[aria-pressed=true]{border-color:var(--gold);box-shadow:0 0 0 2px #f4ca7855}button:disabled{opacity:.45;cursor:not-allowed}:focus-visible{outline:3px solid var(--gold);outline-offset:3px}.skip{position:absolute;left:1rem;top:-8rem;background:#101e31;padding:1rem;z-index:9}.skip:focus{top:1rem}header{padding:1.3rem clamp(1rem,4vw,3rem);border-bottom:1px solid #4b6584;background:#090e1acb}h1{font:clamp(2rem,5vw,3.6rem)/1.1 Georgia,serif;color:var(--gold);margin:.5rem 0}.eyebrow{letter-spacing:.22em;text-transform:uppercase;color:var(--green);font-size:.75rem}.ribbon{height:8px;background:linear-gradient(90deg,#ff4165,#ffc85e,#36e5a2,#41c9ef,#6465f8,#a66cff);box-shadow:0 0 30px #488ff877}.shell{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(270px,.7fr);gap:1rem;max-width:1500px;margin:auto;padding:1.3rem}.panel{border:1px solid #425a78;border-radius:24px;background:#0d1728d9;padding:clamp(1rem,2vw,2rem);min-width:0;box-shadow:0 16px 45px #0005}h2{font:1.55rem Georgia,serif;color:#f6d99b;margin:.1rem 0 1rem}.muted{color:var(--muted)}.toolbar{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0}.toolbar input{flex:1;min-width:160px;background:#0a1424;border:1px solid #6c87a4;color:white;border-radius:12px;padding:.7rem}.stages{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.4rem}.stages button{font-size:.8rem;padding:.6rem .25rem;overflow-wrap:anywhere;border-top:5px solid var(--stage-color)}.stages button[aria-pressed=true]{background:#34425b}.sky{position:relative;min-height:370px;margin:1rem 0;border-radius:20px;overflow:hidden;border:1px solid #385572;background:radial-gradient(circle at 50% 45%,#2c3b66 0,transparent 45%),repeating-radial-gradient(circle at 50% 50%,transparent 0 44px,#8bb5ed19 45px 46px),#090f20}.sky:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(135deg,#ff557011,transparent 45%,#3ddba91b)}.orbit{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}.core{border:2px solid #e9bc71;border-radius:50%;width:100px;height:100px;display:grid;place-items:center;text-align:center;background:#251d36;box-shadow:0 0 60px #e5b66e55;font:1rem Georgia,serif}.stars{position:absolute;inset:0;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:1rem;padding:5rem 1rem 1rem}.star{position:relative;max-width:210px;min-width:120px;min-height:65px;border:1px solid var(--star);border-radius:18px;background:#101c31ec;color:white;text-align:left;box-shadow:0 0 22px color-mix(in srgb,var(--star) 25%,transparent);overflow-wrap:anywhere}.star small{display:block;color:#bfd2e6}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.7rem}.card{border:1px solid #415b77;border-radius:14px;padding:.9rem;background:#111f34}.card strong{display:block;color:#e8cb90}.card p{margin:.3rem 0}.trail{border-left:3px solid var(--green);padding-left:1rem}.mini{display:flex;gap:.3rem;flex-wrap:wrap}.mini button{font-size:.75rem;padding:.35rem .5rem}.status{padding:.65rem;border:1px solid #536f8c;border-radius:12px;background:#13263a}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}@media(max-width:800px){.shell{grid-template-columns:1fr}.stages{grid-template-columns:repeat(3,1fr)}.sky{min-height:330px}.stars{padding:5rem .6rem .6rem}.star{min-width:100px;max-width:150px}}@media(max-width:400px){.stages{grid-template-columns:repeat(2,1fr)}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+.lineage-lab{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--line)}.root-network{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:.8rem}.root-tile{display:flex;flex-direction:column;align-items:stretch;gap:.5rem;text-align:left;min-height:112px;background:linear-gradient(135deg,#301c32,#112b38);border-left:5px solid var(--red)}.root-tile[aria-pressed=true]{border-color:var(--gold);background:linear-gradient(135deg,#493524,#123b40)}.root-tile small{color:var(--muted)}.toolbar select{background:#0a1424;color:var(--ink);border:1px solid #6c87a4;border-radius:12px;padding:.7rem}.root-tile strong{overflow-wrap:anywhere}@media(max-width:600px){.root-network{grid-template-columns:1fr}.root-tile{min-height:72px}} 
+.evidence-ledger{margin-top:1.5rem;border-top:1px solid var(--line);padding-top:1rem}.ledger-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:.7rem}.ledger-stat{border:1px solid #4d6785;background:#101f34;border-radius:14px;padding:1rem}.ledger-stat strong{font-size:1.7rem;color:var(--gold);display:block}.ledger-stat small{color:var(--muted)}.ledger-detail{padding:1rem;background:#101b30;border-left:3px solid var(--blue);border-radius:8px;margin-top:.8rem}.ledger-detail summary{cursor:pointer;color:#f6d99b;font-weight:600}.ledger-detail a{overflow-wrap:anywhere}.ledger-detail ul{padding-left:1.2rem}@media(max-width:400px){.ledger-stat strong{font-size:1.35rem}}
+.comparison-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.comparison-pane{border:1px solid #557391;border-radius:18px;padding:1rem;background:linear-gradient(145deg,#1d2441,#0e2934);min-width:0;overflow-wrap:anywhere}.comparison-pane h3{color:var(--gold)}.comparison-pane dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.35rem .8rem}.comparison-pane dt{color:var(--muted)}.comparison-pane dd{margin:0}.comparison-grid .empty{border-style:dashed}@media(max-width:650px){.comparison-grid{grid-template-columns:1fr}.comparison-pane dl{grid-template-columns:1fr}} .journey{margin-top:1.5rem;border-top:1px solid var(--line);padding-top:1rem}.journey-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.65rem}.journey-step{min-width:0;text-align:left;border-top:5px solid var(--gold);background:#11243b}.journey-step strong{display:block;color:#f6d99b}.journey-step small{display:block;color:var(--muted)}.journey-step[aria-current=step]{background:#29415a;border-color:var(--green)}.journey-focus{border:1px solid #557391;border-radius:16px;padding:1rem;margin-top:1rem;background:radial-gradient(circle at 90% 0%,#234761,#101b30 60%)}.journey-focus h3{color:var(--gold);margin:.1rem 0}.journey-focus p{max-width:75ch}.journey-focus code{overflow-wrap:anywhere}.journey-focus a{overflow-wrap:anywhere}.journey-progress{height:7px;border-radius:20px;background:#354b65;overflow:hidden}.journey-progress span{display:block;height:100%;background:linear-gradient(90deg,var(--red),var(--gold),var(--green),var(--blue));transition:width .2s}.journey-actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.8rem}@media(max-width:650px){.journey-steps{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:360px){.journey-steps{grid-template-columns:1fr}}
+
+/* Observatory: spatial overview of observations, not a dependency graph. */
+.root-atlas{margin-top:1.5rem;border-top:1px solid var(--line);padding-top:1rem}.atlas-stage{position:relative;min-height:390px;border:1px solid #52718f;border-radius:22px;overflow:hidden;background:radial-gradient(circle at 50% 45%,#223958 0%,#0a1425 70%)}.atlas-stage svg{display:block;width:100%;height:390px;touch-action:pan-y}.atlas-controls{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin:.8rem 0}.atlas-controls output{color:var(--muted)}.atlas-node{cursor:pointer;outline:none}.atlas-node circle{fill:#291d35;stroke:var(--red);stroke-width:2}.atlas-node text{fill:#f1f5ff;font:12px system-ui,sans-serif;pointer-events:none}.atlas-node[aria-pressed=true] circle{stroke:var(--gold);stroke-width:4}.atlas-node:focus-visible circle{stroke:#fff;stroke-width:5}.atlas-ring{fill:none;stroke:#5e83ab;stroke-opacity:.28;stroke-dasharray:4 8}.atlas-guide{color:var(--muted);font-size:.9rem}.atlas-stage .atlas-empty{padding:2rem}.atlas-attribution{font-size:.85rem;color:var(--muted)}@media(max-width:600px){.atlas-stage,.atlas-stage svg{min-height:310px;height:310px}.atlas-controls button{min-height:44px}}@media(prefers-reduced-motion:reduce){.atlas-stage *{transition:none!important}}
+
+/* Evidence Passport: inspectable, non-scoring source-to-outcome preparation */
+.passport{margin-top:1.5rem;border-top:1px solid var(--line);padding-top:1.5rem}
+.passport-head{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.passport-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:1rem}
+.passport-track{display:grid;gap:.75rem}
+.passport-step{position:relative;border:1px solid #4a6684;border-left:5px solid var(--step-color,var(--blue));background:linear-gradient(110deg,#172943,#101b2c);border-radius:14px;padding:1rem}
+.passport-step strong{display:block;color:#f6d99b}
+.passport-step small{display:block;color:var(--muted)}
+.passport-step[data-evidence=observed]{border-left-color:var(--green)}
+.passport-step[data-evidence=missing]{border-left-color:var(--red)}
+.passport-focus{border:1px solid #526f8c;background:#101e32;border-radius:16px;padding:1rem;min-width:0}
+.passport-focus code{overflow-wrap:anywhere}
+.passport-actions{display:flex;flex-wrap:wrap;gap:.5rem}
+.passport-actions button{flex:1;min-width:120px}
+.passport-empty{padding:1rem;border:1px dashed #7188a5;border-radius:14px}
+@media(max-width:800px){.passport-grid{grid-template-columns:1fr}}
+
+.expedition-navigation{display:flex;gap:.65rem;flex-wrap:wrap;padding:1rem clamp(1rem,4vw,3rem);background:#0b1729;border-bottom:1px solid #496784}.expedition-navigation a{border:1px solid #526f90;border-radius:999px;padding:.5rem .8rem;text-decoration:none}.expedition-navigation a:focus-visible,.expedition-navigation a:hover{background:#23435d}.expedition-context{display:flex;align-items:center;flex-wrap:wrap;gap:.65rem;padding:1rem clamp(1rem,4vw,3rem);border-bottom:1px solid #425a78;background:#101e30}.expedition-context span:first-child{flex:1;min-width:min(100%,230px)}.expedition-context button{min-height:44px}@media(max-width:500px){.expedition-context button{width:100%}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.matrix-scroll{max-width:100%;overflow-x:auto;border:1px solid #52718f;border-radius:16px;background:#101e32}.matrix-table{border-collapse:collapse;width:100%;min-width:680px;text-align:center}.matrix-table th,.matrix-table td{padding:.75rem .55rem;border-bottom:1px solid #405978}.matrix-table th{color:#f4ca78;background:#172842}.matrix-table td:first-child,.matrix-table th:first-child{text-align:left;position:sticky;left:0;background:#172842;min-width:180px}.matrix-table td:first-child button{width:100%;text-align:left;overflow-wrap:anywhere}.matrix-mark{font-size:1.25rem;color:#46e5ae}.matrix-gap{color:#aec3d6}.matrix-table tr:focus-within{outline:2px solid #f4ca78;outline-offset:-2px}@media(max-width:600px){.matrix-table td:first-child,.matrix-table th:first-child{min-width:135px}.matrix-table th,.matrix-table td{padding:.55rem .35rem}}
+/* Evidence-bound quest board: no XP, fabricated achievements or simulated live verification. */
+.quest-board-head{display:flex;justify-content:space-between;align-items:start;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}.quest-board-head h3{margin:.1rem 0;color:var(--gold)}.quest-board-head p{max-width:62ch}.quest-filters{display:flex;flex-wrap:wrap;gap:.4rem}.quest-filters button{min-height:44px}.quest-board{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:.9rem}.quest-milestone{min-width:0;border:1px solid #536e8d;border-top:5px solid var(--quest-accent);border-radius:18px;background:linear-gradient(145deg,#1b2841,#0b2431);padding:1rem;box-shadow:0 14px 35px #0004}.quest-milestone h3{margin:.4rem 0;color:#f6d99b;font-size:1.1rem}.quest-milestone p{overflow-wrap:anywhere}.quest-milestone details{border-top:1px solid #536e8d;padding-top:.6rem}.quest-milestone summary{cursor:pointer}.quest-milestone button{min-height:44px}.quest-state{color:#cce3f9;font-weight:600}@media(max-width:600px){.quest-board-head{display:block}.quest-filters{margin:.75rem 0}.quest-board{grid-template-columns:1fr}}
+
+/* Evidence-bound cinematic tree: layout is conceptual; no unsupported source edges are drawn. */
+.emergence-theatre{grid-column:1/-1;position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 35%,#29465a 0%,#111b32 48%,#090f20 90%);isolation:isolate}
+.emergence-theatre:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.28;background:repeating-radial-gradient(circle at 50% 55%,transparent 0 58px,#b7d2e51c 59px 60px)}
+.theatre-head,.theatre-controls,.theatre-bottom{position:relative;z-index:1;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.8rem}
+.theatre-controls{margin:.8rem 0}.theatre-controls button[aria-pressed=true]{background:#324c60}
+.theatre-scene{position:relative;min-height:430px;border:1px solid #60718d;border-radius:22px;overflow:hidden;background:radial-gradient(ellipse at 50% 45%,#234d4d55,transparent 65%)}
+.theatre-scene svg{width:100%;height:auto;display:block;min-height:360px;max-height:600px}
+.theatre-node{cursor:pointer;outline:none}.theatre-node circle{fill:#16263a;stroke:#ff5378;stroke-width:2.5}.theatre-node[aria-pressed=true] circle,.theatre-node:focus-visible circle{stroke:#f4ca78;stroke-width:5}.theatre-node text{fill:#eaf3ff;font:13px system-ui,sans-serif;pointer-events:none}
+.theatre-node:focus-visible{filter:drop-shadow(0 0 8px #f4ca78)}
+.theatre-caption{max-width:75ch}.theatre-root-list{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem}.theatre-root-list button{font-size:.8rem}
+.theatre-detail{border:1px solid #7c806c;background:#182b35;padding:1rem;border-radius:15px;margin-top:1rem}
+.theatre-detail strong{color:#f4ca78}.theatre-empty{padding:3rem 1rem;text-align:center}
+@media(max-width:600px){.theatre-scene{min-height:300px}.theatre-scene svg{min-height:280px}.theatre-head{display:block}.theatre-root-list{max-height:220px;overflow:auto}}
+@media(prefers-reduced-motion:no-preference){.theatre-scene{transition:box-shadow .25s ease}.theatre-node circle{transition:stroke-width .2s ease,stroke .2s ease}}
+/* Semantic theatre viewport: exploration position is not evidence readiness. */
+.theatre-lens{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;margin:.8rem 0}.theatre-lens label{color:var(--muted)}.theatre-lens input{min-width:140px;flex:1;background:#0b192a;color:var(--ink);border:1px solid #6584a3;border-radius:10px;padding:.65rem}.theatre-lens output{min-width:4rem;text-align:center;color:var(--gold)}.theatre-minimap{width:min(100%,340px);height:72px;border:1px solid #68839d;border-radius:12px;background:#101d32;display:block}.theatre-minimap rect{fill:none;stroke:#f4ca78;stroke-width:2}.theatre-empty-filter{padding:1rem;color:var(--muted)}@media(max-width:600px){.theatre-lens button{min-height:44px}.theatre-lens input{flex-basis:100%}}
+
+/* Evidence Dossier: inspectable provenance boundary, no inferred attestations. */
+.dossier{grid-column:1/-1;background:radial-gradient(ellipse at 80% 0%,#1b4a56 0%,#10182a 60%);border-color:#65809a}
+.dossier-head{display:flex;align-items:start;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.dossier-rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.5rem;margin:1.1rem 0}
+.dossier-step{border:1px solid #617e98;border-top:5px solid var(--step-color);background:#102238;padding:.8rem;min-width:0;border-radius:12px}
+.dossier-step strong{display:block;font-size:.9rem}.dossier-step small{display:block;color:var(--muted);overflow-wrap:anywhere}
+.dossier-step[data-kind=observed]{background:#173b39}.dossier-step[data-kind=unknown]{border-style:dashed}
+.dossier-columns{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.dossier-sheet{padding:1.1rem;border:1px solid #506e8c;border-radius:16px;background:#101d31}
+.dossier-sheet h3{color:var(--gold);margin-top:0}.dossier-sheet dl{display:grid;grid-template-columns:8rem minmax(0,1fr);gap:.5rem}
+.dossier-sheet dt{color:var(--muted)}.dossier-sheet dd{margin:0;overflow-wrap:anywhere}
+.dossier-sheet a{overflow-wrap:anywhere}.dossier-sheet li{margin:.5rem 0}
+.dossier-actions{display:flex;flex-wrap:wrap;gap:.6rem}.dossier-actions button{min-height:44px}
+@media(max-width:850px){.dossier-rail{grid-template-columns:repeat(3,minmax(0,1fr))}.dossier-columns{grid-template-columns:1fr}}
+@media(max-width:420px){.dossier-rail{grid-template-columns:repeat(2,minmax(0,1fr))}.dossier-sheet dl{grid-template-columns:1fr}}
+
+/* Evidence constellation workbench: read-only and local-data-bound */
+.constellation-workbench{grid-column:1/-1}.constellation-layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(260px,1fr);gap:1rem}.constellation-map{min-height:380px;border:1px solid #536e8a;border-radius:20px;background:radial-gradient(circle at 50% 50%,#1c3d4a,#101c35 60%,#090f20);overflow:hidden}.constellation-map svg{display:block;width:100%;height:auto;min-height:330px}.constellation-map .node{cursor:pointer;outline:none}.constellation-map .node:focus-visible circle{stroke:#f4ca78;stroke-width:4}.constellation-map .node[aria-pressed=true] circle{stroke:#f4ca78;stroke-width:4}.constellation-map text{fill:#eaf3ff;font:12px system-ui,sans-serif;pointer-events:none}.constellation-inspector{padding:1rem;background:#13243a;border:1px solid #456281;border-radius:16px}.constellation-results{max-height:260px;overflow:auto}.constellation-results button{display:block;width:100%;text-align:left;margin:.35rem 0}.constellation-count{color:#f4ca78}.constellation-legend{display:flex;flex-wrap:wrap;gap:.6rem;margin:.6rem 0}.constellation-legend span{padding:.2rem .55rem;border:1px solid #56708e;border-radius:12px;font-size:.8rem}@media(max-width:800px){.constellation-layout{grid-template-columns:1fr}.constellation-map{min-height:260px}}
+
+/* Imported graph is deliberately visual-only evidence exploration, never a trust source. */
+.portable-atlas{margin:1.5rem 0;border:1px solid #58749a;border-radius:22px;padding:clamp(.8rem,2vw,1.5rem);background:radial-gradient(ellipse at 20% 5%,#43243d88,transparent 55%),radial-gradient(ellipse at 90% 90%,#124e4c77,transparent 55%),#080e20}
+.portable-atlas-head{display:flex;justify-content:space-between;align-items:start;gap:1rem;flex-wrap:wrap}.portable-atlas h3{font:1.5rem Georgia,serif;color:var(--gold);margin:.2rem 0}.portable-atlas-head .toolbar{align-items:center}
+.portable-map-wrap{position:relative;overflow:hidden;border:1px solid #4d6486;border-radius:18px;background:repeating-radial-gradient(circle at 50% 50%,transparent 0 64px,#6b91b51c 65px 66px),linear-gradient(135deg,#151329,#0a2231);min-height:300px}
+#portable-map{display:block;width:100%;height:auto;min-height:300px;max-height:580px;touch-action:pan-y}
+.portable-map-minimap{position:absolute;right:.6rem;bottom:.6rem;border:1px solid #738aaa;background:#081223ee;border-radius:8px;padding:.35rem .55rem;font-size:.72rem;color:#d7e7fa;pointer-events:none}
+.portable-atlas .atlas-node{cursor:pointer;outline:none}.portable-atlas .atlas-node:focus-visible circle{stroke:#fff;stroke-width:5}.portable-atlas .atlas-node text{font:12px system-ui,sans-serif;fill:#f4f7ff;paint-order:stroke;stroke:#09101f;stroke-width:4px;stroke-linejoin:round;pointer-events:none}
+.portable-atlas .atlas-edge{stroke:#88afcf;stroke-opacity:.5;stroke-width:1.7;fill:none}.portable-atlas .atlas-edge.is-focused{stroke:#f4ca78;stroke-opacity:1;stroke-width:3}
+@media(max-width:600px){.portable-atlas-head{display:block}.portable-map-minimap{font-size:.65rem}#portable-map{min-height:240px}}
+
+/* Source-backed expedition milestones: read-only review, never a reward ledger. */
+.quest-workbench{margin-top:1.4rem;border:1px solid #6884a2;border-radius:22px;padding:clamp(1rem,2vw,1.6rem);background:linear-gradient(135deg,#1b2342,#102c32 62%,#171b35)}
+.quest-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:1rem}
+.quest-card{border:1px solid #607895;border-radius:16px;padding:1rem;background:#101b2de8;min-width:0}
+.quest-card h4{margin:.4rem 0;color:#f4ca78}.quest-card p{overflow-wrap:anywhere}.quest-meter{height:9px;background:#34485e;border-radius:10px;overflow:hidden;margin:.8rem 0}.quest-meter span{display:block;height:100%;background:linear-gradient(90deg,#ff5378,#46e5ae,#66b6ff)}
+.quest-eyebrow{color:#b9dcff;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase}
+@media(prefers-reduced-motion:reduce){.quest-meter span{transition:none!important}}
+.atlas-viewport-tools{display:flex;gap:.45rem;flex-wrap:wrap;align-items:center;margin:.65rem 0}.atlas-viewport-tools button{padding:.4rem .65rem;font-size:.82rem}.atlas-viewport-tools output{min-width:5rem;font-variant-numeric:tabular-nums}@media(prefers-reduced-motion:reduce){.atlas-viewport-tools *{transition:none!important}}\n
+/* Semantic-depth journey: progressive source-to-outcome reveal with high-contrast focus. */
+.semantic-depth{margin:1rem 0;padding:clamp(.8rem,2vw,1.3rem);border:1px solid #8d7458;border-radius:20px;background:radial-gradient(ellipse at 10% 5%,#8f344433,transparent 55%),radial-gradient(ellipse at 85% 100%,#276c7133,transparent 55%),#10192d;box-shadow:inset 0 1px #ffffff18,0 18px 38px #0005}
+.semantic-depth-heading{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.5rem 1rem;margin-bottom:.9rem}
+.semantic-depth-heading strong{font:1.2rem Georgia,serif;color:#f4ca78}
+.semantic-depth-heading output{font-size:.85rem;color:#c4d8e9;max-width:65ch}
+.semantic-depth-controls{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.4rem}
+.semantic-depth-controls button{min-width:0;padding:.75rem .35rem;overflow-wrap:anywhere;border-top:4px solid #f4ca78;background:linear-gradient(180deg,#20324c,#0d1a2c);font-size:.78rem;transition:transform .2s ease,box-shadow .2s ease}
+.semantic-depth-controls button:nth-child(1){border-top-color:#ff5378}.semantic-depth-controls button:nth-child(3){border-top-color:#46e5ae}.semantic-depth-controls button:nth-child(4){border-top-color:#66b6ff}.semantic-depth-controls button:nth-child(5){border-top-color:#c18cff}.semantic-depth-controls button:nth-child(6){border-top-color:#ffad70}
+.semantic-depth-controls button[aria-pressed=true]{background:#3a3451;box-shadow:inset 0 0 0 1px #f4ca78,0 0 22px #e0b96944}
+@media(hover:hover){.semantic-depth-controls button:hover{transform:translateY(-3px)}}
+@media(max-width:760px){.semantic-depth-controls{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:390px){.semantic-depth-controls{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.semantic-depth-controls button{transition:none}.semantic-depth-controls button:hover{transform:none}}
+</style><style>
+/* Evidence journey: a responsive, reversible local inspection surface. */
+.ej-shell{grid-column:1/-1;border:1px solid #6482a4;border-radius:24px;padding:clamp(1rem,3vw,2rem);background:radial-gradient(circle at 85% 0%,#213e59,#10182b 60%);box-shadow:0 20px 60px #0006}
+.ej-rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.45rem;margin:1rem 0}
+.ej-step{min-width:0;text-align:left;border-top:5px solid var(--ej-color);padding:.75rem .45rem;overflow-wrap:anywhere}
+.ej-step[aria-current=step]{background:#35425b;border-color:var(--gold)}
+.ej-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(250px,1fr);gap:1rem}
+.ej-panel{background:#101d31;border:1px solid #496785;border-radius:18px;padding:1rem;min-width:0}
+.ej-panel h3{color:var(--gold)}.ej-actions{display:flex;flex-wrap:wrap;gap:.6rem}
+.ej-list{margin:.5rem 0;padding-left:1.4rem}.ej-list li{margin:.4rem 0}
+.ej-state{font-weight:650;color:#f5ce89}.ej-meta{overflow-wrap:anywhere}
+@media(max-width:850px){.ej-rail{grid-template-columns:repeat(3,minmax(0,1fr))}.ej-grid{grid-template-columns:1fr}}
+@media(max-width:430px){.ej-rail{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style></head><body><a class="skip" href="#main">Skip to expedition</a><div class="ribbon"></div><header><div class="eyebrow">AIFT · Local-first exploration</div><h1>Living Federation Expedition</h1><p class="muted">Repository roots nourish the federation. Observed capabilities are leaves. Finished fruits require independently attested product evidence.</p><a href="/">Return to MoBox console</a> · <a href="/tree">Existing Tree</a> · <a href="/world">Existing World</a></header>
+<nav class="expedition-navigation" aria-label="Expedition workspaces"><a href="#atlas-title">Spatial atlas</a><a href="#lab-title">Root observatory</a><a href="#compare-title">Source comparison</a><a href="#passport-title">Evidence passport</a><a href="#ledger-title">Readiness</a><a href="#quests-title">Quests</a></nav><div class="expedition-context" role="region" aria-label="Shareable expedition context"><span id="context-description">Choose a repository root to create a shareable inspection link.</span><button type="button" id="copy-context" disabled>Copy root inspection link</button><button type="button" id="clear-context">Clear shared context</button><span id="context-feedback" role="status" aria-live="polite"></span></div><main class="shell" id="main"><section class="panel constellation-workbench" id="constellation-workbench" aria-labelledby="constellation-title"><p class="eyebrow">Source-backed spatial navigation</p><h2 id="constellation-title">Federation Root Constellation Workbench</h2><p class="muted">Explore locally observed repository roots around the conceptual federation trunk. The radial placement is a navigation aid, not an attested integration edge. Unverified capabilities and fruits are intentionally absent.</p><div class="toolbar"><label for="constellation-search">Search source roots</label><input id="constellation-search" type="search" placeholder="Filter observed repositories" autocomplete="off"><button id="constellation-clear" type="button">Clear selection and filter</button></div><p id="constellation-status" role="status" aria-live="polite"></p><div class="constellation-legend"><span>Red: observed repository roots</span><span>Gold: conceptual federation trunk</span><span>Green/blue: reserved for attested capabilities and outcomes</span></div><div class="constellation-layout"><div class="constellation-map" id="constellation-map" role="group" aria-label="Keyboard-accessible repository constellation"></div><aside class="constellation-inspector" aria-labelledby="constellation-inspector-title"><h3 id="constellation-inspector-title">Evidence inspector</h3><div id="constellation-inspection" aria-live="polite"></div><h3>Accessible root directory</h3><div id="constellation-results" class="constellation-results"></div></aside></div><p class="muted">Use Tab and Enter to select a root; use the directory when spatial navigation is inconvenient. No inferred products, dependencies, XP or achievements.</p></section><section class="panel dossier" id="evidence-dossier" aria-labelledby="dossier-title"><div class="dossier-head"><div><p class="eyebrow">Evidence-bound exploration · portable inspection</p><h2 id="dossier-title">Source Lineage Dossier</h2><p class="muted">A complete six-stage provenance boundary for the selected root. This report distinguishes local observation, conceptual structure, and missing independent attestation. It does not award a fruit or achievement.</p></div><div class="dossier-actions"><button id="dossier-copy" type="button" disabled>Copy evidence report</button><button id="dossier-reset" type="button">Inspect all roots</button></div></div><div id="dossier-rail" class="dossier-rail" aria-label="Biological evidence stages"></div><div class="dossier-columns"><div class="dossier-sheet" id="dossier-source" aria-live="polite"></div><div class="dossier-sheet" id="dossier-gaps" aria-live="polite"></div></div><p id="dossier-feedback" class="muted" role="status" aria-live="polite"></p></section><section class="panel emergence-theatre" aria-labelledby="theatre-title"><div class="theatre-head"><div><p class="eyebrow">Living universe · evidence-first</p><h2 id="theatre-title">Tree of Emergence · Immersive Lineage Theatre</h2><p class="muted theatre-caption">A biological navigation experience grounded in locally observed source roots. The luminous trunk and canopy are conceptual; unverified edges, capabilities and products are never drawn as real.</p></div><div class="theatre-controls" role="group" aria-label="Tree view"><button type="button" id="theatre-roots" aria-pressed="true">Root network</button><button type="button" id="theatre-canopy" aria-pressed="false">Canopy &amp; evidence gaps</button><button type="button" id="theatre-reset">Reset view</button></div></div><div class="theatre-lens" role="group" aria-label="Theatre semantic viewport"><label for="theatre-search">Find source roots</label><input type="search" id="theatre-search" placeholder="Search observed repositories"><button type="button" id="theatre-zoom-out">− Zoom out</button><output id="theatre-zoom-label" aria-live="polite">100%</output><button type="button" id="theatre-zoom-in">+ Zoom in</button><button type="button" id="theatre-focus">Focus selected root</button><button type="button" id="theatre-view-reset">Reset viewport</button></div><svg id="theatre-minimap" class="theatre-minimap" viewBox="0 0 340 72" role="img" aria-label="Theatre viewport minimap"><rect x="1" y="1" width="338" height="70" rx="8" stroke="#68839d" stroke-width="1"/><rect id="theatre-minimap-window" x="1" y="1" width="338" height="70" rx="8"/></svg><div class="theatre-scene" id="theatre-scene" role="region" aria-label="Interactive tree of emergence"></div><div class="theatre-bottom"><p class="muted theatre-caption" id="theatre-caption" aria-live="polite">Waiting for local source observations.</p><p class="muted">Use Tab to inspect roots, or use the accessible list below.</p></div><div id="theatre-root-list" class="theatre-root-list" aria-label="Accessible repository root list"></div><div id="theatre-detail" class="theatre-detail" role="status" aria-live="polite">Select an observed root to inspect its identity and evidence boundary.</div></section><section class="panel" aria-label="Spatial expedition"><h2>Tree of Emergence</h2><div class="toolbar"><label class="sr-only" for="search">Search observed entities</label><input id="search" type="search" placeholder="Search observed roots and capabilities"><button id="prev">Previous stage</button><button id="next">Next stage</button></div><nav class="stages" id="stages" aria-label="Biological stages"></nav><div class="sky" role="region" aria-label="Accessible constellation of observed entities"><div class="orbit"><div class="core">Shared<br>Federation<br>Trunk</div></div><div class="stars" id="stars"></div></div><div class="mini" id="minimap" aria-label="Spatial minimap"></div><p id="summary" class="muted" aria-live="polite"></p><h2>Documented entities</h2><div class="cards" id="entities"></div><section class="evidence-ledger" aria-labelledby="ledger-title"><h2 id="ledger-title">Evidence Readiness Observatory</h2><p class="muted">A transparent inventory of what this local projection can actually establish. Unknown evidence is never scored as failed or complete.</p><div id="ledger-grid" class="ledger-grid" aria-live="polite"></div><details class="ledger-detail"><summary>What would verify a fruit?</summary><p>A finished outcome requires a real product destination, explicit contribution edges, and independently inspectable source evidence. Local repository observations alone cannot prove those relationships.</p><ul><li>Identify the user-facing deliverable and its accessible destination.</li><li>Trace each claimed system relationship to verifiable source records.</li><li>Confirm the outcome and its evidence against the curated public provenance contract.</li></ul><p>Source context: <a href="/tree">MoBox Tree</a>. This local observatory does not contact the public portal or confer trust.</p></details></section><section class="passport" aria-labelledby="passport-title"><div class="passport-head"><div><h2 id="passport-title">Evidence Passport · Source to Outcome</h2><p class="muted">A six-stage evidence itinerary for the selected repository root. Navigation is not a score, and an observed root is not an attested product.</p></div><button id="passport-reset" type="button">Reset passport view</button></div><div class="passport-grid"><div id="passport-track" class="passport-track" aria-label="Evidence requirements by biological stage"></div><div class="passport-focus" id="passport-focus" aria-live="polite"></div></div><p id="passport-caption" class="muted"></p></section><section class="journey" aria-labelledby="journey-title"><h2 id="journey-title">Evidence Journey · Root to Outcome</h2><p class="muted">Follow a source-backed exploration without mistaking the shared federation trunk for a proven dependency. Stages beyond local observation remain evidence gaps.</p><div id="journey-steps" class="journey-steps" role="group" aria-label="Evidence journey steps"></div><div id="journey-focus" class="journey-focus" aria-live="polite"></div><div class="journey-actions"><button id="journey-back">Previous evidence step</button><button id="journey-next">Next evidence step</button><button id="journey-reset">Restart journey</button></div></section><section class="root-atlas" aria-labelledby="atlas-title"><h2 id="atlas-title">Living Root Atlas</h2><p class="atlas-guide">A navigable spatial overview of locally observed repositories. Positions are illustrative, not source-to-source links or verified system dependencies. Use the Root Network Observatory below for a complete accessible list.</p><div class="atlas-controls"><button id="atlas-zoom-out" type="button" aria-label="Zoom root atlas out">− Zoom out</button><button id="atlas-zoom-in" type="button" aria-label="Zoom root atlas in">+ Zoom in</button><button id="atlas-reset" type="button">Reset atlas</button><output id="atlas-scale" aria-live="polite">100% view</output></div><div class="atlas-stage" id="atlas-stage" role="region" aria-label="Spatial repository root atlas"></div><p class="atlas-attribution" id="atlas-caption" role="status">Waiting for local repository observations.</p></section><section class="lineage-lab" aria-labelledby="lab-title"><h2 id="lab-title">Root Network Observatory</h2><p class="muted">A second, list-first view of locally observed repository roots. Grouping is an inspection aid, never a verified dependency edge.</p><div class="toolbar"><label for="root-sort">Order roots</label><select id="root-sort"><option value="name">Name</option><option value="status">Observed status</option></select><button id="clear-selection">Clear selection</button></div><div id="root-network" class="root-network" role="group" aria-label="Repository root network"></div><p id="network-summary" class="muted" aria-live="polite"></p></section><section class="lineage-lab" aria-labelledby="matrix-title"><h2 id="matrix-title">Federation Evidence Matrix</h2><p class="muted">Compare every observed repository root across the six biological stages. Green indicates a local observation, not a verified contribution; an open circle means independent evidence is unavailable. No stage is awarded from visual proximity or repository presence.</p><div class="toolbar"><label for="matrix-search">Filter roots</label><input id="matrix-search" type="search" placeholder="Find a repository root"><button id="matrix-reset" type="button">Reset matrix</button></div><div class="matrix-scroll" role="region" tabindex="0" aria-label="Scrollable evidence matrix"><table class="matrix-table"><thead><tr><th scope="col">Repository root</th><th scope="col">Root</th><th scope="col">Trunk</th><th scope="col">Branch</th><th scope="col">Leaf</th><th scope="col">Flower</th><th scope="col">Fruit</th></tr></thead><tbody id="matrix-body"></tbody></table></div><p id="matrix-summary" role="status" class="muted"></p></section><section class="lineage-lab" aria-labelledby="compare-title"><h2 id="compare-title">Source Comparison Theatre</h2><p class="muted">Compare two observed repository roots side by side. This is an evidence inspection workspace, not a claim that either root depends on the other.</p><div class="toolbar"><label for="compare-a">Source A</label><select id="compare-a"><option value="">Choose a root</option></select><label for="compare-b">Source B</label><select id="compare-b"><option value="">Choose a root</option></select><button id="compare-clear">Reset comparison</button></div><div id="compare-panels" class="comparison-grid" aria-live="polite"></div><p id="compare-summary" class="muted" role="status"></p></section></section><aside class="panel" aria-label="Evidence and exploration"><h2>Evidence inspector</h2><div id="detail" class="trail" aria-live="polite">Choose an observed entity. This view never implies unverified lineage.</div><h2 id="quests-title" style="margin-top:2rem">Evidence quests</h2><div id="quests" class="cards"></div><h2 style="margin-top:2rem">Data boundary</h2><p class="muted">This page reads only the local MoBox federation tree. Observations are not independent product attestations, and no progress points or live deployment claims are inferred.</p><div id="status" class="status" role="status">Loading local evidence…</div></aside><section class="ej-shell" id="evidence-journey" aria-labelledby="ej-title">
+<p class="eyebrow">Reversible evidence exploration</p><h2 id="ej-title">Lineage Journey &amp; Review Packet</h2>
+<p class="muted">Travel from an observed source root toward a possible outcome without inventing connections. Every stage exposes its evidence threshold, and the review packet records what was actually observed versus what remains unknown.</p>
+<div class="ej-rail" id="ej-rail" role="group" aria-label="Six evidence journey stages"></div>
+<div class="ej-grid"><div class="ej-panel"><h3 id="ej-heading" tabindex="-1">Select a root</h3><p class="ej-state" id="ej-state"></p><p id="ej-description"></p><ul class="ej-list" id="ej-requirements"></ul>
+<div class="ej-actions"><button id="ej-prev" type="button">Previous stage</button><button id="ej-next" type="button">Next stage</button><button id="ej-reset" type="button">Return to roots</button></div></div>
+<aside class="ej-panel" aria-label="Evidence review packet"><h3>Review packet</h3><p class="muted">Local observation only. This is not an independently verified product certificate.</p><pre class="ej-meta" id="ej-packet"></pre><button id="ej-copy" type="button">Copy review packet</button><p id="ej-feedback" role="status" aria-live="polite"></p></aside></div></section><section class="panel" id="portable-lineage" style="grid-column:1/-1" aria-labelledby="portable-lineage-title"><p class="eyebrow">Cross-surface provenance · read-only</p><h2 id="portable-lineage-title">Portable Lineage Observatory</h2><p class="muted">Inspect a curated public-portal lineage packet without fetching external services or elevating source claims to independent verification. Paste JSON exported from the portal's aift.lineage.interchange/1 module. Repository roots are never fruits; source-backed edges are claims to inspect, not certified dependencies.</p><div class="toolbar"><label for="portable-input">Lineage interchange JSON</label><textarea id="portable-input" rows="5" maxlength="500000" style="width:100%;background:#0a1424;color:#eaf3ff;border:1px solid #6c87a4;border-radius:12px;padding:.8rem" placeholder='{"schema":"aift.lineage.interchange/1","nodes":[],"edges":[]}'></textarea><button type="button" id="portable-inspect">Inspect imported lineage</button><button type="button" id="portable-clear">Clear imported packet</button></div><p id="portable-status" role="status" aria-live="polite">No imported packet. Local evidence remains unchanged.</p><div id="portable-summary" class="ledger-grid"></div><nav id="portable-trail" aria-label="Imported lineage breadcrumbs" class="toolbar"></nav><div class="toolbar"><label for="portable-find">Find imported nodes</label><input id="portable-find" type="search" placeholder="Search imported roots, capabilities or outcomes" autocomplete="off"/><button type="button" id="portable-back" disabled>Previous lineage node</button><button type="button" id="portable-all">All nodes</button></div><p id="portable-focus-status" role="status" aria-live="polite">Import a packet to explore its source-backed relationships.</p><div class="portable-atlas"><div class="portable-atlas-head"><div><p class="eyebrow">Evidence-bound spatial atlas</p><h3>Living lineage constellation</h3><p class="muted">Only explicit imported contribution edges are drawn. All nodes remain curated claims, not independently attested outcomes.</p></div><div class="toolbar"><label for="portable-layer">Biological layer</label><select id="portable-layer"><option value="all">All six stages</option><option value="root">Roots</option><option value="trunk">Trunk</option><option value="branch">Branches</option><option value="leaf">Leaves</option><option value="flower">Flowers</option><option value="fruit">Fruits · candidates</option></select><button id="portable-map-reset" type="button">Reset atlas</button></div></div><div class="portable-map-wrap"><svg id="portable-map" viewBox="0 0 1000 530" role="img" aria-labelledby="portable-map-title portable-map-desc"><title id="portable-map-title">Imported federation lineage constellation</title><desc id="portable-map-desc">Import a packet to explore source-backed nodes and edges. Use the accessible directory below as an alternative.</desc></svg><div id="portable-map-minimap" class="portable-map-minimap" aria-hidden="true">No graph imported</div></div><p id="portable-map-caption" class="muted">No imported source graph. The accessible directory below remains available.</p></div><section class="quest-workbench" aria-labelledby="quest-heading"><p class="eyebrow">Evidence expedition · no synthetic rewards</p><h3 id="quest-heading">Lineage readiness quests</h3><p class="muted">Milestones are derived only from the imported packet. Source links are claims, not independent proof; completing a checklist here cannot award an achievement or change federation readiness.</p><div id="quest-status" role="status" aria-live="polite">Import a packet to inspect evidence gaps.</div><div id="quest-grid" class="quest-grid" aria-label="Evidence milestone review"></div></section><div id="portable-results" class="root-network" aria-label="Imported lineage text directory"></div><p class="muted">Imported records are isolated from local observation, evidence quests, and readiness. No external links are opened automatically. Review each source URL before navigating.</p></section></main>
+<script>
+"use strict";
+const stages=[["roots","#ff5378"],["trunk","#f4ca78"],["branches","#46e5ae"],["leaves","#66b6ff"],["flowers","#c18cff"],["fruits","#ffad70"]];
+const state={stage:0,query:"",items:[],selected:null,loadState:"loading",journeyStep:0};
+const $=id=>document.getElementById(id);
+function el(tag,text,cls){const n=document.createElement(tag);if(text!==undefined)n.textContent=String(text);if(cls)n.className=cls;return n}
+function add(parent,child){parent.appendChild(child);return child}
+// Shareable, local-only inspection state. The URL carries only an observed repository ID.
+const requestedRoot=new URLSearchParams(location.search).get("root");
+function rootLink(id){const u=new URL(location.href);u.searchParams.set("root",id);u.hash="passport-title";return u.href}
+function syncContext(){
+ const root=state.selected,description=$("context-description"),copy=$("copy-context");
+ description.textContent=root?"Inspecting observed root: "+root.name+". This link is not a product attestation.":"Choose a repository root to create a shareable inspection link.";
+ copy.disabled=!root;
+ if(root){const u=new URL(location.href);u.searchParams.set("root",root.id);history.replaceState(null,"",u.pathname+u.search+u.hash)}
+ else if(new URLSearchParams(location.search).has("root")){const u=new URL(location.href);u.searchParams.delete("root");history.replaceState(null,"",u.pathname+u.search+u.hash)}
+}
+$("copy-context").onclick=async()=>{
+ if(!state.selected)return;
+ const link=rootLink(state.selected.id);
+ try{await navigator.clipboard.writeText(link);$("context-feedback").textContent="Inspection link copied."}
+ catch{$("context-feedback").textContent="Clipboard unavailable. Link: "+link}
+};
+$("clear-context").onclick=()=>{state.selected=null;passportIndex=0;render();$("context-feedback").textContent="Inspection context cleared."};
+function normalized(tree){const nodes=Array.isArray(tree?.nodes)?tree.nodes:[];const seen=new Set();const result=[];for(const n of nodes){if(n?.kind!=="repository")continue;const name=String(n.name||n.label||n.id||"").trim();if(!name||seen.has(name))continue;seen.add(name);result.push({id:String(n.id||name),name,stage:0,kind:"repository",status:String(n.status||"observed"),source:n});}return result}
+
+const passportStages=[
+ ["Root identity","A repository identity was observed in the local federation tree. This is source presence, not proof of contribution."],
+ ["Shared trunk","Requires an independently supported integration relationship; the visual federation trunk is conceptual."],
+ ["System branch","Requires a documented system and an inspectable repository-to-system contribution edge."],
+ ["Capability leaf","Requires documented feature behavior and evidence linking it to a real system."],
+ ["Emerging flower","Requires a verifiable work-in-progress artifact, such as a specific reviewable PR; none is attested by this local projection."],
+ ["Product fruit","Requires an accessible finished user-facing destination and a fully supported root-to-outcome provenance path."]
+];
+let passportIndex=0;
+function setPassportStage(i){passportIndex=Math.max(0,Math.min(passportStages.length-1,i));renderPassport()}
+function renderPassport(){
+ const track=$("passport-track"),focus=$("passport-focus");track.replaceChildren();focus.replaceChildren();
+ const root=state.selected;
+ passportStages.forEach(([name,requirement],i)=>{
+  const observed=i===0&&!!root&&state.items.some(n=>n.id===root.id);
+  const card=add(track,el("button",undefined,"passport-step"));card.type="button";card.style.setProperty("--step-color",stages[i][1]);
+  card.dataset.evidence=observed?"observed":"missing";card.setAttribute("aria-pressed",String(i===passportIndex));
+  add(card,el("strong",(i+1)+". "+name));add(card,el("small",observed?"Locally observed · not a completed quest":"Evidence not established by local API"));
+  card.onclick=()=>setPassportStage(i);
+ });
+ const [name,requirement]=passportStages[passportIndex],observed=passportIndex===0&&!!root&&state.items.some(n=>n.id===root.id);
+ add(focus,el("h3",name));add(focus,el("p",requirement));
+ add(focus,el("p",root?"Selected repository root: "+root.name:"No repository root selected. Select a root in the atlas, observatory or constellation to inspect its passport."));
+ add(focus,el("p",observed?"Evidence available: local /v1/federation/tree observation.":"Evidence gap: this local projection does not establish this stage for the selected root."));
+ if(root){const id=add(focus,el("code",root.id));id.setAttribute("aria-label","Observed repository identifier")}
+ const actions=add(focus,el("div",undefined,"passport-actions"));
+ const previous=add(actions,el("button","Previous evidence stage"));previous.type="button";previous.disabled=passportIndex===0;previous.onclick=()=>setPassportStage(passportIndex-1);
+ const next=add(actions,el("button","Next evidence stage"));next.type="button";next.disabled=passportIndex===5;next.onclick=()=>setPassportStage(passportIndex+1);
+ const inspectButton=add(actions,el("button","Inspect root in observatory"));inspectButton.type="button";inspectButton.disabled=!root;inspectButton.onclick=()=>{$("detail").scrollIntoView({block:"start",behavior:"auto"});$("detail").setAttribute("tabindex","-1");$("detail").focus()};
+ $("passport-caption").textContent=(root?"Passport for "+root.name+". ":"No root selected. ")+"Stage "+(passportIndex+1)+" of 6. No verified outcome, contribution edge, quest completion or XP is inferred.";
+}
+$("passport-reset").onclick=()=>setPassportStage(0);
+
+
+// Matrix is an evidence coverage view, not a scoring or achievement system.
+function renderMatrix(){
+ const body=$("matrix-body"),summary=$("matrix-summary"),filter=$("matrix-search").value.trim().toLowerCase();
+ body.replaceChildren();
+ const roots=state.items.filter(n=>n.stage===0&&n.name.toLowerCase().includes(filter)).slice().sort((a,b)=>a.name.localeCompare(b.name));
+ for(const root of roots){
+  const row=add(body,el("tr"));
+  const identity=add(row,el("td"));const button=add(identity,el("button",root.name));button.type="button";
+  button.setAttribute("aria-label","Inspect repository root "+root.name);button.onclick=()=>{inspect(root);$("detail").scrollIntoView({block:"start",behavior:"auto"})};
+  for(let i=0;i<6;i++){
+   const cell=add(row,el("td"));const observed=i===0;
+   const marker=add(cell,el("span",observed?"●":"○",observed?"matrix-mark":"matrix-gap"));
+   marker.setAttribute("aria-label",observed?"Locally observed repository root":"Independent evidence unavailable");
+   cell.title=observed?"Local repository observation only":"No independently attested stage in this projection";
+  }
+ }
+ if(!roots.length){const row=add(body,el("tr"));const cell=add(row,el("td",state.loadState==="loading"?"Waiting for local evidence.":"No matching observed repository roots."));cell.colSpan=7}
+ summary.textContent=roots.length+" observed repository roots shown. No downstream contribution edges or product outcomes attested by the local projection.";
+}
+$("matrix-search").addEventListener("input",renderMatrix);
+$("matrix-reset").onclick=()=>{$("matrix-search").value="";renderMatrix()};
+function renderStages(){const nav=$("stages");nav.replaceChildren();stages.forEach(([name,color],i)=>{const b=add(nav,el("button",name));b.style.setProperty("--stage-color",color);b.setAttribute("aria-pressed",String(i===state.stage));b.onclick=()=>selectStage(i)});$("prev").disabled=state.stage===0;$("next").disabled=state.stage===5;$("minimap").replaceChildren();stages.forEach(([name],i)=>{const b=add($("minimap"),el("button",name));b.setAttribute("aria-pressed",String(i===state.stage));b.onclick=()=>selectStage(i)})}
+function selectStage(i){state.stage=Math.max(0,Math.min(5,i));state.selected=null;render()}
+function inspect(item){state.selected=item;renderDossier();syncContext();passportIndex=0;renderPassport();state.journeyStep=0;renderDetail();renderEntities();renderNetwork();renderJourney();renderAtlas()}
+function renderDetail(){const root=$("detail");root.replaceChildren();if(!state.selected){root.append("Select a repository root to inspect its observed identity. No cross-system relationship is assumed.");return}const n=state.selected;add(root,el("h3",n.name));add(root,el("p","Biological role: repository root"));add(root,el("p","Observed status: "+n.status));add(root,el("p","Evidence: local /v1/federation/tree observation. This does not attest deployment, contribution edges or finished products."));const code=add(root,el("code",n.id));code.style.overflowWrap="anywhere"}
+function renderEntities(){const list=$("entities");list.replaceChildren();const filtered=state.items.filter(n=>n.stage===state.stage&&n.name.toLowerCase().includes(state.query));$("stars").replaceChildren();for(const n of filtered){const b=add($("stars"),el("button",n.name,"star"));b.style.setProperty("--star",stages[n.stage][1]);add(b,el("small","Observed repository root"));b.setAttribute("aria-pressed",String(state.selected?.id===n.id));b.onclick=()=>inspect(n);const card=add(list,el("article",undefined,"card"));add(card,el("strong",n.name));add(card,el("p","Observed source · "+n.status));const action=add(card,el("button","Inspect evidence"));action.onclick=()=>inspect(n)}if(!filtered.length){add(list,el("p",state.stage===5?"No independently verified product fruits in this local data.":"No attested entities at this stage in the current local projection.","muted"))} $("summary").textContent=filtered.length+" observed entities in "+stages[state.stage][0]+". Stage navigation is contextual, not an attested relationship."}
+const questDefinitions=[
+ {id:"source",name:"Discover a source root",stage:"Roots",requires:"A repository identity observed by the local tree endpoint",check:()=>state.items.length>0,explain:"A source observation is available for inspection; it is not a completed quest or verified contribution."},
+ {id:"integration",name:"Trace federation integration",stage:"Trunk",requires:"A signed or independently inspectable source-to-federation relationship",check:()=>false,explain:"The local tree projection contains no independently attested integration edge."},
+ {id:"system",name:"Map a real system branch",stage:"Branches",requires:"A documented system identity and a source-backed repository-to-system edge",check:()=>false,explain:"Repository identity alone cannot establish system lineage."},
+ {id:"capability",name:"Verify a capability leaf",stage:"Leaves",requires:"A feature record, linked source and reproducible verification evidence",check:()=>false,explain:"Feature claims are not independently attested by this endpoint."},
+ {id:"flower",name:"Inspect an emerging integration",stage:"Flowers",requires:"A real open work item with an inspectable branch, PR and test evidence",check:()=>false,explain:"Work-in-progress must be linked to real change evidence, not inferred from repository presence."},
+ {id:"fruit",name:"Reach a verified product",stage:"Fruits",requires:"A working user-facing destination, contributing source edges and outcome verification",check:()=>false,explain:"No product fruit can be certified from repository observations alone."}
+];
+let questFilter="all";
+function renderQuests(){
+ const host=$("quests");host.replaceChildren();
+ const heading=add(host,el("div",undefined,"quest-board-head"));
+ const intro=add(heading,el("div"));add(intro,el("h3","Evidence expeditions"));add(intro,el("p","Six inspectable milestones, zero invented achievements. Readiness means evidence can be inspected, not that a quest was completed.","muted"));
+ const controls=add(heading,el("div",undefined,"quest-filters"));controls.setAttribute("role","group");controls.setAttribute("aria-label","Filter evidence expeditions");
+ for(const [value,label] of [["all","All stages"],["available","Inspectable"],["missing","Evidence gaps"]]){
+  const button=add(controls,el("button",label));button.type="button";button.setAttribute("aria-pressed",String(questFilter===value));button.onclick=()=>{questFilter=value;renderQuests()}
+ }
+ const grid=add(host,el("div",undefined,"quest-board"));
+ let visible=0;
+ questDefinitions.forEach((quest,index)=>{
+  const ready=quest.check();if(questFilter==="available"&&!ready||questFilter==="missing"&&ready)return;visible++;
+  const card=add(grid,el("article",undefined,"quest-milestone"));card.style.setProperty("--quest-accent",stages[index][1]);
+  const label=add(card,el("small",quest.stage+" · "+(ready?"Source inspectable":"Evidence not established"),"quest-state"));
+  add(card,el("h3",quest.name));add(card,el("p",quest.explain));
+  const details=add(card,el("details"));add(details,el("summary","Evidence needed"));add(details,el("p",quest.requires,"muted"));
+  if(index===0&&ready){const action=add(card,el("button","Explore observed roots"));action.onclick=()=>{$("root-network").scrollIntoView({block:"start",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"instant":"smooth"})}}
+  else{add(card,el("small","No completion or achievement issued","muted"))}
+ });
+ const footer=add(host,el("p",visible+" milestone"+(visible===1?"":"s")+" shown · evidence is read-only; readiness is not completion.","muted"));footer.setAttribute("role","status");
+}
+
+function renderLedger(){const host=$("ledger-grid");host.replaceChildren();const stats=[["Observed roots",state.items.length,"Locally reported repository identities"],["Verified products",0,"Not established by this API; zero means none attested here"],["Attested edges",0,"No independently attested contribution edges in this projection"],["Evidence state",state.items.length?"Partial":"Unavailable","Read-only local observations only"]];for(const [label,value,description] of stats){const card=add(host,el("div",undefined,"ledger-stat"));add(card,el("strong",value));add(card,el("span",label));add(card,el("small",description))}}
+function renderNetwork(){const host=$("root-network");host.replaceChildren();const ordered=state.items.filter(n=>n.name.toLowerCase().includes(state.query)).slice();const sort=$("root-sort").value;ordered.sort((a,b)=>String(a[sort]).localeCompare(String(b[sort]))||a.name.localeCompare(b.name));for(const n of ordered){const tile=add(host,el("button",undefined,"root-tile"));tile.type="button";tile.setAttribute("aria-pressed",String(state.selected?.id===n.id));add(tile,el("strong",n.name));add(tile,el("small","Observed root · "+n.status));tile.onclick=()=>{state.stage=0;inspect(n);renderStages();renderNetwork();$("detail").scrollIntoView({block:"nearest",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"instant":"smooth"})}}$("network-summary").textContent=ordered.length+" repository roots shown. No source-to-product edges inferred."}
+function renderComparison(){
+ const a=$("compare-a"),b=$("compare-b"),host=$("compare-panels");
+ for(const control of [a,b]){const value=control.value;control.replaceChildren();const empty=add(control,el("option","Choose a root"));empty.value="";for(const root of state.items){const option=add(control,el("option",root.name));option.value=root.id}control.value=state.items.some(n=>n.id===value)?value:""}
+ host.replaceChildren();
+ const chosen=[a.value,b.value].map(id=>state.items.find(n=>n.id===id));
+ for(let i=0;i<2;i++){const n=chosen[i],panel=add(host,el("article",undefined,"comparison-pane"+(n?"":" empty")));add(panel,el("h3",n?n.name:"Source "+(i?"B":"A")+" not selected"));if(!n){add(panel,el("p","Choose an observed root to inspect its local evidence.","muted"));continue}const dl=add(panel,el("dl"));for(const [term,value] of [["Biological classification","Root · repository"],["Local identity",n.id],["Reported status",n.status],["Source","/v1/federation/tree"],["Contribution edges","Not attested by this projection"],["Finished products","Not attested by this projection"]]){add(dl,el("dt",term));add(dl,el("dd",value))}const button=add(panel,el("button","Inspect this root"));button.onclick=()=>{state.stage=0;inspect(n);renderStages()}}
+ $("compare-summary").textContent=chosen[0]&&chosen[1]?(chosen[0].id===chosen[1].id?"Both panels show the same observed root.":"Two distinct roots inspected. No relationship, dependency, product or achievement is inferred."):"Choose two roots to compare local observations; missing evidence is not a failed check.";
+}
+const journeyStages=[["Source root","Observed repository identity"],["Federation trunk","Conceptual shared integration, not a verified edge"],["Capabilities","Requires documented system and feature evidence"],["Product outcome","Requires an attested destination and full provenance"]];
+function setJourneyStep(i){state.journeyStep=Math.max(0,Math.min(journeyStages.length-1,i));renderJourney()}
+function renderJourney(){
+ const steps=$("journey-steps");steps.replaceChildren();journeyStages.forEach(([name,description],i)=>{const b=add(steps,el("button",undefined,"journey-step"));b.type="button";add(b,el("strong",String(i+1)+". "+name));add(b,el("small",description));if(i===state.journeyStep)b.setAttribute("aria-current","step");b.onclick=()=>setJourneyStep(i)});
+ const focus=$("journey-focus");focus.replaceChildren();const i=state.journeyStep,root=state.selected;const progress=add(focus,el("div",undefined,"journey-progress"));progress.setAttribute("role","progressbar");progress.setAttribute("aria-label","Exploration position, not verified completion");progress.setAttribute("aria-valuemin","1");progress.setAttribute("aria-valuemax","4");progress.setAttribute("aria-valuenow",String(i+1));const fill=add(progress,el("span"));fill.style.width=((i+1)/4*100)+"%";
+ add(focus,el("h3",journeyStages[i][0]));
+ if(i===0){add(focus,el("p",root?"Selected observed root: "+root.name:"Select a repository in the constellation or Root Network Observatory to begin.","muted"));if(root){add(focus,el("code",root.id));add(focus,el("p","Evidence: local /v1/federation/tree observation. Status: "+root.status+". This does not verify a contribution edge."))}}
+ if(i===1){add(focus,el("p","The federation trunk is a navigational model connecting source exploration to system inspection. No edge from "+(root?root.name:"an unselected repository")+" to a system is attested by the local tree."));add(focus,el("p","Evidence gap: a source-backed relationship record is needed before a root-to-branch lineage can be verified.","muted"))}
+ if(i===2){add(focus,el("p","No documented capability-to-source lineage is independently attested by this local projection. Features may be explored in the existing Tree and World without claiming verification."));const link=add(focus,el("a","Inspect existing Tree"));link.href="/tree"}
+ if(i===3){add(focus,el("p","No finished product fruit can be certified from local repository observations. A fruit requires a real user-facing destination, verified contribution edges and independently inspectable provenance."));add(focus,el("p","Evidence gap · no achievement or product status issued.","muted"))}
+ $("journey-back").disabled=i===0;$("journey-next").disabled=i===journeyStages.length-1;
+}
+
+const atlas={zoom:1};
+const svgNS="http://www.w3.org/2000/svg";
+function svgEl(tag,attrs,parent){const node=document.createElementNS(svgNS,tag);for(const [key,value] of Object.entries(attrs||{}))node.setAttribute(key,String(value));if(parent)parent.appendChild(node);return node}
+function renderAtlas(){
+ const host=$("atlas-stage");host.replaceChildren();const roots=state.items.filter(n=>n.name.toLowerCase().includes(state.query));
+ $("atlas-scale").textContent=Math.round(atlas.zoom*100)+"% view";$("atlas-zoom-out").disabled=atlas.zoom<=0.65;$("atlas-zoom-in").disabled=atlas.zoom>=2.2;
+ if(!roots.length){add(host,el("p",state.loadState==="error"?"Local evidence unavailable. Spatial overview cannot be populated.":"No matching observed roots. Try another search.","atlas-empty muted"));$("atlas-caption").textContent="No roots plotted; no provenance inferred.";return}
+ const width=900,height=390,cx=450,cy=195,svg=svgEl("svg",{viewBox:"0 0 900 390",role:"img","aria-label":roots.length+" observed repository roots arranged around a conceptual federation trunk"},host);
+ const scene=svgEl("g",{transform:"translate("+cx+" "+cy+") scale("+atlas.zoom+") translate("+(-cx)+" "+(-cy)+")"},svg);
+ for(const radius of [78,135,190])svgEl("ellipse",{cx,cy,rx:radius*1.8,ry:radius*.85,class:"atlas-ring"},scene);
+ const core=svgEl("g",{},scene);svgEl("circle",{cx,cy,r:48,fill:"#2b233e",stroke:"#f4ca78","stroke-width":3},core);const title=svgEl("text",{x:cx,y:cy-5,"text-anchor":"middle",fill:"#f4ca78","font-size":15},core);title.textContent="Federation";const subtitle=svgEl("text",{x:cx,y:cy+15,"text-anchor":"middle",fill:"#eaf3ff","font-size":11},core);subtitle.textContent="conceptual trunk";
+ const count=roots.length;for(let i=0;i<count;i++){
+  const n=roots[i],angle=-Math.PI/2+2*Math.PI*i/count,ring=Math.floor(i/18),slot=i%18,spread=Math.min(count,18),a=count>18?-Math.PI/2+2*Math.PI*slot/spread+ring*.18:angle;
+  const r= count===1?150:145+ring*50;const x=cx+Math.cos(a)*r*2.1,y=cy+Math.sin(a)*r*.84;
+  const node=svgEl("g",{class:"atlas-node",role:"button",tabindex:"0","aria-label":"Inspect repository root "+n.name,"aria-pressed":String(state.selected?.id===n.id),transform:"translate("+x+" "+y+")"},scene);
+  svgEl("circle",{r:count>35?13:18},node);const label=svgEl("text",{x:0,y:count>35?26:32,"text-anchor":"middle"},node);label.textContent=n.name.length>22?n.name.slice(0,19)+"…":n.name;
+  const activate=()=>{state.stage=0;inspect(n);renderStages();renderAtlas()};node.addEventListener("click",activate);node.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();activate()}});
+ }
+ $("atlas-caption").textContent=roots.length+" observed repository roots shown. Spatial proximity and the central trunk are visual navigation only, not verified contribution edges.";
+}
+function setAtlasZoom(next){atlas.zoom=Math.max(.65,Math.min(2.2,Math.round(next*100)/100));renderAtlas()}
+$("atlas-zoom-in").onclick=()=>setAtlasZoom(atlas.zoom+.2);$("atlas-zoom-out").onclick=()=>setAtlasZoom(atlas.zoom-.2);$("atlas-reset").onclick=()=>setAtlasZoom(1);
+
+/* Theatre consumes only normalized local repository observations. No inferred edges. */
+let theatreMode="roots";
+const theatreViewport={zoom:1,cx:500,cy:270,query:""};
+function theatreSetZoom(value){theatreViewport.zoom=Math.max(1,Math.min(3,Math.round(value*10)/10));renderTheatre()}
+function theatreResetViewport(){theatreViewport.zoom=1;theatreViewport.cx=500;theatreViewport.cy=270;theatreViewport.query="";$("theatre-search").value="";renderTheatre()}
+function theatreFocusSelected(){const roots=state.items.slice().sort((a,b)=>a.name.localeCompare(b.name));const i=roots.findIndex(n=>n.id===state.selected?.id);if(i<0)return;const cols=Math.min(12,Math.max(1,Math.ceil(Math.sqrt(roots.length*2))));const col=i%cols,row=Math.floor(i/cols);theatreViewport.cx=80+(cols===1?420:840*col/(cols-1));theatreViewport.cy=455+row*45;theatreViewport.zoom=2;theatreViewport.query="";$("theatre-search").value="";theatreMode="roots";renderTheatre()}
+
+function theatreSelect(root){state.stage=0;inspect(root);renderStages();renderTheatre();renderNetwork();renderAtlas();renderPassport();renderJourney()}
+function renderTheatre(){
+ const host=$("theatre-scene"),list=$("theatre-root-list"),detail=$("theatre-detail");host.replaceChildren();list.replaceChildren();
+ $("theatre-roots").setAttribute("aria-pressed",String(theatreMode==="roots"));
+ $("theatre-canopy").setAttribute("aria-pressed",String(theatreMode==="canopy"));
+ const allRoots=state.items.slice().sort((a,b)=>a.name.localeCompare(b.name));
+ const roots=allRoots.filter(n=>n.name.toLowerCase().includes(theatreViewport.query));
+ const selected=state.selected;
+ $("theatre-zoom-label").textContent=Math.round(theatreViewport.zoom*100)+"%";$("theatre-zoom-out").disabled=theatreViewport.zoom<=1;$("theatre-zoom-in").disabled=theatreViewport.zoom>=3;$("theatre-focus").disabled=!selected;
+ const mini=$("theatre-minimap-window"),z=theatreViewport.zoom;mini.setAttribute("width",String(338/z));mini.setAttribute("height",String(70/z));mini.setAttribute("x",String(1+Math.max(0,Math.min(338-338/z,(theatreViewport.cx-500)/1000*338+169-169/z))));mini.setAttribute("y",String(1+Math.max(0,Math.min(70-70/z,(theatreViewport.cy-270)/Math.max(540,490+Math.ceil(allRoots.length/12)*45)*70+35-35/z))));
+ detail.replaceChildren();
+ if(selected){add(detail,el("strong","Observed source root: "+selected.name));add(detail,el("p","Local status: "+selected.status+". Evidence: /v1/federation/tree. No verified source-to-product lineage is established."));const inspectButton=add(detail,el("button","Open evidence inspector"));inspectButton.onclick=()=>{$("detail").scrollIntoView({block:"start",behavior:"auto"})}}
+ else add(detail,el("p","Choose an observed repository root. The tree never awards achievements for observation alone."));
+ if(!roots.length){add(host,el("p",state.loadState==="error"?"Local evidence unavailable. The theatre cannot establish source identities.":"No repository roots available in the current local projection.","theatre-empty"));$("theatre-caption").textContent="No roots plotted; no relationships or products inferred.";return}
+ const theatreRows=Math.ceil(allRoots.length/Math.min(12,Math.max(1,Math.ceil(Math.sqrt(allRoots.length*2)))));const theatreHeight=Math.max(540,490+theatreRows*45);const vw=1000/theatreViewport.zoom,vh=theatreHeight/theatreViewport.zoom;const vx=Math.max(0,Math.min(1000-vw,theatreViewport.cx-vw/2)),vy=Math.max(0,Math.min(theatreHeight-vh,theatreViewport.cy-vh/2));const svg=svgEl("svg",{viewBox:vx+" "+vy+" "+vw+" "+vh,role:"group","aria-label":"Conceptual tree with "+roots.length+" filtered observed repository roots"},host);
+ const defs=svgEl("defs",{},svg);const grad=svgEl("linearGradient",{id:"theatre-spectrum",x1:"0%",y1:"100%",x2:"100%",y2:"0%"},defs);
+ for(const [offset,color] of [["0%","#ff5378"],["45%","#46e5ae"],["100%","#66b6ff"]])svgEl("stop",{offset,"stop-color":color},grad);
+ // Sacred geometric rings and branching silhouette are explicitly non-evidentiary.
+ for(const r of [85,155,235])svgEl("circle",{cx:500,cy:275,r,fill:"none",stroke:"#b6ccdf","stroke-opacity":".12","stroke-width":1},svg);
+ svgEl("path",{d:"M500 445 C493 352 505 275 500 198 M500 286 C430 220 360 190 270 165 M500 286 C570 220 650 190 730 165 M500 225 C465 155 440 120 385 93 M500 225 C535 155 560 120 615 93",fill:"none",stroke:"url(#theatre-spectrum)","stroke-width":13,"stroke-linecap":"round",opacity:".65"},svg);
+ const trunk=svgEl("text",{x:500,y:325,"text-anchor":"middle",fill:"#f4ca78","font-size":18},svg);trunk.textContent="Federation trunk";
+ if(theatreMode==="canopy"){
+  for(const [label,x,y,color] of [["Branches · evidence required",250,118,"#46e5ae"],["Leaves · evidence required",750,118,"#66b6ff"],["Flowers · evidence required",260,70,"#c18cff"],["Fruits · no attestation",745,70,"#ffad70"]]){const t=svgEl("text",{x,y,"text-anchor":"middle",fill:color,"font-size":15},svg);t.textContent=label}
+ }else{
+  const count=allRoots.length,columns=Math.min(12,Math.max(1,Math.ceil(Math.sqrt(count*2)))),rows=Math.ceil(count/columns);
+  allRoots.forEach((root,i)=>{if(!root.name.toLowerCase().includes(theatreViewport.query))return;
+   const col=i%columns,row=Math.floor(i/columns),x=80+(columns===1?420:840*col/(columns-1)),y=455+row*45;
+   // All roots are independent observed identities; do not draw edges to trunk.
+   const node=svgEl("g",{class:"theatre-node",role:"button",tabindex:"0","aria-label":"Inspect source root "+root.name,"aria-pressed":String(selected?.id===root.id),transform:"translate("+x+" "+y+")"},svg);
+   svgEl("circle",{r:9},node);const label=svgEl("text",{x:0,y:-14,"text-anchor":"middle"},node);label.textContent=root.name.length>15?root.name.slice(0,13)+"…":root.name;
+   const activate=()=>theatreSelect(root);node.addEventListener("click",activate);node.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();activate()}});
+  });
+ }
+ roots.forEach(root=>{const b=add(list,el("button",root.name));b.type="button";b.setAttribute("aria-pressed",String(selected?.id===root.id));b.onclick=()=>theatreSelect(root)});
+ if(!roots.length)add(list,el("p","No matching observed roots. Clear the theatre search to restore the full root network.","theatre-empty-filter"));
+ $("theatre-caption").textContent=theatreMode==="roots"?roots.length+" of "+allRoots.length+" locally observed roots shown at "+Math.round(theatreViewport.zoom*100)+"% exploration zoom. No root-to-trunk lines are asserted without evidence.":"The canopy is an explanatory map of missing attestations, not a claim of deployed capabilities or finished products.";
+}
+$("theatre-roots").onclick=()=>{theatreMode="roots";renderTheatre()};
+$("theatre-canopy").onclick=()=>{theatreMode="canopy";renderTheatre()};
+$("theatre-reset").onclick=()=>{theatreMode="roots";theatreResetViewport()};
+$("theatre-search").oninput=e=>{theatreViewport.query=e.target.value.toLowerCase().trim();renderTheatre()};
+$("theatre-zoom-in").onclick=()=>theatreSetZoom(theatreViewport.zoom+.5);
+$("theatre-zoom-out").onclick=()=>theatreSetZoom(theatreViewport.zoom-.5);
+$("theatre-focus").onclick=theatreFocusSelected;
+$("theatre-view-reset").onclick=theatreResetViewport;
+
+
+/* Source Lineage Dossier: report derives solely from normalized same-origin observations. */
+const dossierStages=[
+ ["Root","Observed identity","#ff5378"],["Trunk","Integration edge","#f4ca78"],
+ ["Branch","System relationship","#46e5ae"],["Leaf","Capability provenance","#66b6ff"],
+ ["Flower","Work-in-progress proof","#c18cff"],["Fruit","Finished outcome and lineage","#ffad70"]
+];
+function dossierReport(){
+ const root=state.selected,observed=Boolean(root&&state.items.some(n=>n.id===root.id));
+ const lines=["AIFT MoBox · Source Lineage Dossier","Evidence source: same-origin /v1/federation/tree",
+  "Source: "+(observed?root.name:"No repository selected"),"Local observation: "+(observed?root.status:"Not selected"),
+  "Root: "+(observed?"Identity observed locally; contribution not attested":"Not established"),
+  "Trunk: no independent integration edge established by this projection",
+  "Branch: no independently attested system relationship",
+  "Leaf: no independently attested capability provenance",
+  "Flower: no independently verified work-in-progress relationship",
+  "Fruit: no verified finished product and complete lineage",
+  "Evidence boundary: observations are not attestations. No product, XP, achievement or trust decision issued."];
+ return lines.join("\n");
+}
+function renderDossier(){
+ const rail=$("dossier-rail"),source=$("dossier-source"),gaps=$("dossier-gaps");
+ if(!rail||!source||!gaps)return;
+ rail.replaceChildren();source.replaceChildren();gaps.replaceChildren();
+ const root=state.selected,observed=Boolean(root&&state.items.some(n=>n.id===root.id));
+ dossierStages.forEach(([name,requirement,color],i)=>{
+  const step=add(rail,el("div","","dossier-step"));step.style.setProperty("--step-color",color);
+  step.dataset.kind=i===0&&observed?"observed":"unknown";
+  add(step,el("strong",name));add(step,el("small",i===0&&observed?"Identity observed":requirement+" · not attested"));
+ });
+ add(source,el("h3",observed?"Selected repository root":"Source selection"));
+ const dl=add(source,el("dl"));
+ function entry(term,value){add(dl,el("dt",term));add(dl,el("dd",value))}
+ entry("Identity",observed?root.name:"No root selected");
+ entry("Local status",observed?root.status:"Not available");
+ entry("Evidence origin","GET /v1/federation/tree · same origin");
+ entry("Relationship","No independently attested contribution edges");
+ if(!observed)add(source,el("p",state.loadState==="error"?"Local source API unavailable. No identity can be established.":"Select a repository root in the atlas, matrix or observatory to inspect its local evidence.","muted"));
+ const inspect=add(source,el("button","Go to root inspector"));inspect.type="button";inspect.disabled=!observed;inspect.onclick=()=>{$("detail").scrollIntoView({block:"start",behavior:"auto"})};
+ add(gaps,el("h3","Evidence needed to reach a fruit"));
+ const list=add(gaps,el("ol"));
+ for(const requirement of ["Independent root-to-system integration evidence","Documented system-to-capability provenance","Verified work-in-progress records when a flower is shown","A real user-facing destination and reproducible finished-outcome evidence","An inspectable, complete source-to-product lineage"])add(list,el("li",requirement));
+ add(gaps,el("p","No repository is classified as a fruit. Missing records remain unknown, not failed or completed.","muted"));
+ $("dossier-copy").disabled=!observed;
+ $("dossier-feedback").textContent=observed?"Source dossier ready. No product or achievement attestation inferred.":"Choose a locally observed root to create an evidence report.";
+}
+$("dossier-copy").onclick=async()=>{
+ try{await navigator.clipboard.writeText(dossierReport());$("dossier-feedback").textContent="Evidence report copied. No verification status was changed."}
+ catch(e){$("dossier-feedback").textContent="Clipboard unavailable. Select a root and inspect the report on screen."}
+};
+$("dossier-reset").onclick=()=>{state.selected=null;render();$("evidence-dossier").scrollIntoView({block:"start",behavior:"auto"})};
+
+
+const constellation={filter:""};
+function renderConstellation(){
+ const map=$("constellation-map"),directory=$("constellation-results"),info=$("constellation-inspection");
+ if(!map||!directory||!info)return;
+ map.replaceChildren();directory.replaceChildren();info.replaceChildren();
+ const roots=state.items.slice().sort((a,b)=>a.name.localeCompare(b.name)).filter(n=>n.name.toLowerCase().includes(constellation.filter));
+ $("constellation-status").textContent=state.loadState==="error"?"Local source API unavailable; no source roots can be verified.":roots.length+" of "+state.items.length+" locally observed roots shown. No integration edges attested.";
+ const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+ svg.setAttribute("viewBox","0 0 800 520");svg.setAttribute("role","img");svg.setAttribute("aria-label","Repository roots surrounding a conceptual federation trunk; no connecting edges");
+ const ns="http://www.w3.org/2000/svg";
+ function shape(tag,attrs,parent=svg){const n=document.createElementNS(ns,tag);Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,String(v)));parent.appendChild(n);return n}
+ [95,170,235].forEach(r=>shape("circle",{cx:400,cy:260,r,fill:"none",stroke:"#6483a1","stroke-opacity":".35","stroke-dasharray":"4 9"}));
+ shape("circle",{cx:400,cy:260,r:66,fill:"#292239",stroke:"#f4ca78","stroke-width":3});
+ const center=shape("text",{x:400,y:254,"text-anchor":"middle",fill:"#f4ca78"});center.textContent="Federation";
+ const sub=shape("text",{x:400,y:275,"text-anchor":"middle"});sub.textContent="conceptual trunk";
+ const count=roots.length;
+ roots.forEach((root,i)=>{
+   const angle=2*Math.PI*i/Math.max(1,count)-Math.PI/2;
+   const ring=160+Math.floor(i/24)*35;
+   const x=400+Math.cos(angle)*Math.min(235,ring),y=260+Math.sin(angle)*Math.min(225,ring);
+   const g=shape("g",{class:"node",tabindex:"0",role:"button","aria-label":"Inspect repository root "+root.name,"aria-pressed":String(state.selected?.id===root.id)});
+   shape("circle",{cx:x,cy:y,r:10,fill:"#ff5378",stroke:"#e8a2b2","stroke-width":1.5},g);
+   const label=shape("title",{},g);label.textContent=root.name;
+   g.addEventListener("click",()=>chooseConstellationRoot(root));
+   g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();chooseConstellationRoot(root)}});
+   const b=add(directory,el("button",root.name));b.type="button";b.setAttribute("aria-pressed",String(state.selected?.id===root.id));b.onclick=()=>chooseConstellationRoot(root);
+ });
+ map.appendChild(svg);
+ if(!roots.length)add(directory,el("p",state.loadState==="loaded"?"No roots match this search.":"No source roots available.","muted"));
+ if(state.selected){
+   add(info,el("strong",state.selected.name));
+   add(info,el("p","Observed identity: "+state.selected.status+". Source: same-origin /v1/federation/tree."));
+   add(info,el("p","Evidence gap: no independently attested root-to-system, capability or finished-product path."));
+   const inspect=add(info,el("button","Open Source Lineage Dossier"));inspect.onclick=()=>{$("evidence-dossier").scrollIntoView({block:"start",behavior:"auto"})};
+ }else add(info,el("p","Choose a root to inspect its observed identity and missing provenance evidence."));
+}
+function chooseConstellationRoot(root){state.selected=root;render();$("constellation-inspection").scrollIntoView({block:"nearest",behavior:"auto"})}
+$("constellation-search").addEventListener("input",e=>{constellation.filter=e.target.value.toLowerCase().trim();renderConstellation()});
+$("constellation-clear").onclick=()=>{constellation.filter="";$("constellation-search").value="";state.selected=null;render()};
+
+
+// Six-stage review packet: no synthetic contribution edges or achievements.
+const ejStages=[
+ ["Roots","Repository identity observed by the same-origin federation tree.","Inspect source identity and the local API response."],
+ ["Trunk","Federation membership or integration has not been independently attested.","Supply a verifiable integration contract and supporting evidence."],
+ ["Branches","A source-to-system relationship has not been independently attested.","Supply documented system boundaries and a source-backed contribution edge."],
+ ["Leaves","Feature-to-source provenance has not been independently attested.","Supply reproducible capability evidence and linked implementation."],
+ ["Flowers","Work-in-progress lineage has not been independently attested.","Supply a specific reviewable PR, checks and linked source."],
+ ["Fruits","No finished outcome is attested by this local repository projection.","Supply an accessible product destination and independently verified full lineage."]
+];
+let ejIndex=0;
+function evidencePacket(){
+ const root=state.selected&&state.items.find(n=>n.id===state.selected.id);
+ return {schema:"aift-local-review-packet/v1",origin:"same-origin /v1/federation/tree",loadState:state.loadState,root:root?{id:root.id,name:root.name,status:root.status}:null,stage:ejStages[ejIndex][0],stageEvidence:ejIndex===0&&root?"observed identity only":"not independently attested",integrationEdges:[],verifiedProducts:[],note:"Local review aid, not a trust assertion or product certificate."};
+}
+function renderEvidenceJourney(){
+ const rail=$("ej-rail");rail.replaceChildren();
+ ejStages.forEach(([name],i)=>{
+  const b=add(rail,el("button",(i+1)+". "+name,"ej-step"));
+  b.type="button";b.style.setProperty("--ej-color",stages[i][1]);
+  if(i===ejIndex)b.setAttribute("aria-current","step");
+  b.onclick=()=>{ejIndex=i;renderEvidenceJourney();};
+ });
+ const packet=evidencePacket(),root=packet.root;
+ $("ej-heading").textContent=ejStages[ejIndex][0]+(root?" · "+root.name:"");
+ $("ej-state").textContent=packet.stageEvidence;
+ $("ej-description").textContent=ejStages[ejIndex][1];
+ const list=$("ej-requirements");list.replaceChildren();
+ add(list,el("li",ejStages[ejIndex][2]));
+ add(list,el("li",root?"Selected local source: "+root.name:"Select a repository root in the constellation, atlas or directory."));
+ add(list,el("li","No inferred source-to-product edges; no fabricated achievements."));
+ $("ej-packet").textContent=JSON.stringify(packet,null,2);
+ $("ej-prev").disabled=ejIndex===0;$("ej-next").disabled=ejIndex===ejStages.length-1;
+}
+$("ej-prev").onclick=()=>{ejIndex=Math.max(0,ejIndex-1);renderEvidenceJourney()};
+$("ej-next").onclick=()=>{ejIndex=Math.min(ejStages.length-1,ejIndex+1);renderEvidenceJourney()};
+$("ej-reset").onclick=()=>{ejIndex=0;renderEvidenceJourney()};
+$("ej-copy").onclick=async()=>{
+ try{await navigator.clipboard.writeText(JSON.stringify(evidencePacket(),null,2));$("ej-feedback").textContent="Local review packet copied."}
+ catch{$("ej-feedback").textContent="Clipboard unavailable; select the visible review packet text to copy it."}
+};
+
+function render(){renderEvidenceJourney();renderConstellation();renderDossier();renderMatrix();renderTheatre();syncContext();renderPassport();renderAtlas();renderJourney();renderStages();renderEntities();renderDetail();renderQuests();renderNetwork();renderLedger();renderComparison()}
+$("journey-back").onclick=()=>setJourneyStep(state.journeyStep-1);$("journey-next").onclick=()=>setJourneyStep(state.journeyStep+1);$("journey-reset").onclick=()=>setJourneyStep(0);$("prev").onclick=()=>selectStage(state.stage-1);$("next").onclick=()=>selectStage(state.stage+1);$("search").oninput=e=>{state.query=e.target.value.toLowerCase().trim();renderEntities();renderNetwork();renderAtlas()};
+$("root-sort").onchange=renderNetwork;$("compare-a").onchange=renderComparison;$("compare-b").onchange=renderComparison;$("compare-clear").onclick=()=>{$("compare-a").value="";$("compare-b").value="";renderComparison()};$("clear-selection").onclick=()=>{state.selected=null;passportIndex=0;renderDossier();syncContext();renderPassport();renderDetail();renderEntities();renderNetwork()};
+fetch("/v1/federation/tree",{cache:"no-store"}).then(r=>{if(!r.ok)throw Error("Tree API HTTP "+r.status);return r.json()}).then(data=>{state.items=normalized(data);if(requestedRoot){state.selected=state.items.find(n=>n.id===requestedRoot)||null;if(!state.selected)$("context-feedback").textContent="Shared root was not found in current local observations."}state.loadState="loaded";$("status").textContent="Local tree loaded: "+state.items.length+" distinct repository roots. No product attestation inferred.";render()}).catch(e=>{state.loadState="error";$("status").textContent="Local evidence unavailable: "+e.message;render()});
+
+/* Portable portal interchange inspection: untrusted, offline, and never merged into local state. */
+const portableSchema="aift.lineage.interchange/1";
+const portableKinds=new Set(["root","trunk","branch","leaf","flower","fruit"]);
+function portableUrl(value){try{const u=new URL(value);return u.protocol==="https:"&&!u.username&&!u.password&&!!u.hostname}catch{return false}}
+function inspectPortablePacket(packet){
+ if(!packet||packet.schema!==portableSchema||!Array.isArray(packet.nodes)||!Array.isArray(packet.edges)||packet.nodes.length>2000||packet.edges.length>5000)throw Error("Unsupported schema or oversized lineage graph.");
+ const ids=new Set(),nodes=[];
+ for(const n of packet.nodes){
+  if(!n||typeof n.id!=="string"||!/^[a-zA-Z0-9][a-zA-Z0-9._:-]*$/.test(n.id)||ids.has(n.id)||!portableKinds.has(n.kind)||typeof n.label!=="string"||n.label.length>300)throw Error("Invalid or duplicate lineage node.");
+  ids.add(n.id);nodes.push({id:n.id,kind:n.kind,label:n.label,url:portableUrl(n.url)?n.url:null});
+ }
+ const edges=[];
+ for(const e of packet.edges){
+  if(!e||!ids.has(e.from)||!ids.has(e.to)||e.relation!=="contributes-to"||!portableUrl(e.evidenceUrl))throw Error("Invalid contribution edge or missing source evidence URL.");
+  edges.push({from:e.from,to:e.to,evidenceUrl:e.evidenceUrl});
+ }
+ return {nodes,edges};
+}
+// Read-only, reversible traversal of explicitly supplied contribution edges.
+let portableGraph=null,portableFocus=null,portableHistory=[],portableFilter="";
+function portableNavigate(id){
+ if(!portableGraph||!portableGraph.nodes.some(n=>n.id===id))return;
+ if(portableFocus!==null&&portableFocus!==id)portableHistory.push(portableFocus);
+ portableFocus=id;renderPortable(portableGraph);
+}
+function renderPortable(packet){
+ portableGraph=packet;
+ const summary=$("portable-summary"),results=$("portable-results"),trail=$("portable-trail");
+ summary.replaceChildren();results.replaceChildren();trail.replaceChildren();
+ renderPortableAtlas(packet);
+ renderPortableQuests(packet);
+ renderLineageJourney(packet);
+ $("portable-back").disabled=!portableHistory.length;
+ if(!packet){$("portable-focus-status").textContent="Import a packet to explore its source-backed relationships.";return}
+ const byId=new Map(packet.nodes.map(n=>[n.id,n]));
+ const roots=packet.nodes.filter(n=>n.kind==="root"),fruits=packet.nodes.filter(n=>n.kind==="fruit");
+ for(const [label,count] of [["Repository roots",roots.length],["Curated source edges",packet.edges.length],["Product candidates (unverified)",fruits.length]]){
+  const tile=add(summary,el("div",undefined,"ledger-stat"));add(tile,el("strong",count));add(tile,el("small",label));
+ }
+ const focus=byId.get(portableFocus);
+ const crumb=add(trail,el("button","All imported nodes"));crumb.type="button";crumb.onclick=()=>{portableFocus=null;portableHistory=[];renderPortable(packet)};
+ for(const id of [...portableHistory,portableFocus].filter(Boolean)){
+  const n=byId.get(id);if(!n)continue;
+  add(trail,el("span"," / ","muted"));
+  const b=add(trail,el("button",n.label));b.type="button";b.onclick=()=>portableNavigate(id);
+ }
+ const related=new Set();
+ if(focus){related.add(focus.id);for(const e of packet.edges){if(e.from===focus.id)related.add(e.to);if(e.to===focus.id)related.add(e.from)}}
+ const visible=packet.nodes.filter(n=>(!focus||related.has(n.id))&&(!portableFilter||(n.label+" "+n.id+" "+n.kind).toLowerCase().includes(portableFilter)));
+ $("portable-focus-status").textContent=focus?"Inspecting "+focus.kind+" "+focus.label+" and "+(related.size-1)+" directly connected nodes from curated claims. No independent attestation.":visible.length+" imported nodes shown. Select a node to explore only explicit source-backed edges.";
+ if(!visible.length)add(results,el("p","No imported nodes match this view or search.","muted"));
+ for(const node of visible){
+  const tile=add(results,el("article",undefined,"card"));
+  add(tile,el("strong",node.kind.toUpperCase()+" · "+node.label));
+  add(tile,el("small",node.id));
+  const b=add(tile,el("button","Explore lineage"));b.type="button";b.setAttribute("aria-label","Explore lineage of "+node.label);b.onclick=()=>portableNavigate(node.id);
+  if(node.kind==="fruit")add(tile,el("p","Candidate outcome only; independent verification not established.","muted"));
+  if(node.url){const a=add(tile,el("a","Inspect source or destination"));a.href=node.url;a.target="_blank";a.rel="noopener noreferrer";}
+  const incoming=packet.edges.filter(e=>e.to===node.id),outgoing=packet.edges.filter(e=>e.from===node.id);
+  for(const [label,edges,direction] of [["Contributors",incoming,"from"],["Contributes to",outgoing,"to"]]){
+   if(!edges.length)continue;
+   add(tile,el("p",label+" · curated claims, not verified attestations","muted"));
+   for(const edge of edges){
+    const linked=byId.get(edge[direction]);
+    const jump=add(tile,el("button",linked.label));jump.type="button";jump.onclick=()=>portableNavigate(linked.id);
+    const a=add(tile,el("a","Evidence"));a.href=edge.evidenceUrl;a.target="_blank";a.rel="noopener noreferrer";
+   }
+  }
+ }
+}
+
+const atlasNS="http://www.w3.org/2000/svg";
+let portableLayer="all";
+let atlasDepth=5; // Presentation-only semantic depth; never changes packet evidence.
+function atlasElement(tag,attrs){const n=document.createElementNS(atlasNS,tag);for(const [key,value] of Object.entries(attrs||{}))n.setAttribute(key,String(value));return n}
+function renderPortableAtlas(packet){
+ const svg=$("portable-map"),mini=$("portable-map-minimap"),caption=$("portable-map-caption");
+ // Preserve accessible SVG title/description and never render imported HTML.
+ while(svg.children.length>2)svg.lastChild.remove();
+ if(!packet){mini.textContent="No graph imported";caption.textContent="Import a source-backed graph to explore the constellation.";return}
+ const kinds=["root","trunk","branch","leaf","flower","fruit"],colors=["#ff5378","#f4ca78","#46e5ae","#66b6ff","#c18cff","#ffad70"];
+ const matches=packet.nodes.filter(n=>(portableLayer==="all"||n.kind===portableLayer)&&kinds.indexOf(n.kind)<=atlasDepth&&(!portableFilter||(n.label+" "+n.id+" "+n.kind).toLowerCase().includes(portableFilter)));
+ // Bounded rendering keeps imported 2,000-node packets responsive. The complete graph remains in the text directory.
+ const nodes=matches.slice(0,96),ids=new Set(nodes.map(n=>n.id)),positions=new Map();
+ const counts=new Map();
+ for(const n of nodes){const layer=kinds.indexOf(n.kind),index=counts.get(n.kind)||0;counts.set(n.kind,index+1);const total=nodes.filter(x=>x.kind===n.kind).length;positions.set(n.id,{x:90+layer*164,y:48+(index+1)*434/(total+1)});}
+ const edges=packet.edges.filter(e=>ids.has(e.from)&&ids.has(e.to)).slice(0,240);
+ for(const e of edges){const a=positions.get(e.from),b=positions.get(e.to);const path=atlasElement("path",{d:"M"+a.x+","+a.y+" C"+(a.x+75)+","+a.y+" "+(b.x-75)+","+b.y+" "+b.x+","+b.y,class:"atlas-edge"+(portableFocus&&(e.from===portableFocus||e.to===portableFocus)?" is-focused":"")});svg.appendChild(path)}
+ for(const n of nodes){const p=positions.get(n.id),color=colors[kinds.indexOf(n.kind)],g=atlasElement("g",{class:"atlas-node",role:"button",tabindex:"0","aria-label":"Explore "+n.kind+" "+n.label,"aria-pressed":String(portableFocus===n.id)});
+  g.appendChild(atlasElement("circle",{cx:p.x,cy:p.y,r:portableFocus===n.id?13:9,fill:color,stroke:portableFocus===n.id?"#fff":"#14253a","stroke-width":portableFocus===n.id?3:2}));
+  const label=atlasElement("text",{x:p.x,y:p.y-16,"text-anchor":"middle"});label.textContent=n.label.length>19?n.label.slice(0,18)+"…":n.label;g.appendChild(label);
+  const title=atlasElement("title");title.textContent=n.kind+": "+n.label+" — curated source claim";g.appendChild(title);
+  g.addEventListener("click",()=>portableNavigate(n.id));g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();portableNavigate(n.id)}});svg.appendChild(g);
+ }
+ mini.textContent=nodes.length+" nodes · "+edges.length+" edges";
+ caption.textContent="Showing "+nodes.length+" of "+matches.length+" matching nodes and "+edges.length+" explicit source edges. The atlas is capped at 96 nodes and 240 edges for performance. Use the directory for the full packet. All fruits are unverified candidates.";
+}
+
+// Spatial zoom is a presentation-only viewport: it never changes imported evidence.
+const atlasViewport={scale:1,panX:0,panY:0};
+const atlasSvg=$("portable-map");
+// Semantic zoom traverses the biological architecture without altering source data.
+const semanticStages=[
+ ["Roots","Repository provenance and source systems"],
+ ["Trunk","Shared federation integration"],
+ ["Branches","Documented systems and services"],
+ ["Leaves","Documented capabilities and interfaces"],
+ ["Flowers","Emerging integrations and work in progress"],
+ ["Fruits","Product candidates; independent verification required"]
+];
+const semanticNav=document.createElement("section");
+semanticNav.className="semantic-depth";
+semanticNav.setAttribute("aria-label","Biological semantic exploration depth");
+const semanticHeading=document.createElement("div");
+semanticHeading.className="semantic-depth-heading";
+const semanticTitle=document.createElement("strong");
+semanticTitle.textContent="Semantic depth · complete lineage";
+const semanticStatus=document.createElement("output");
+semanticStatus.setAttribute("role","status");
+semanticStatus.setAttribute("aria-live","polite");
+semanticHeading.append(semanticTitle,semanticStatus);
+const semanticControls=document.createElement("div");
+semanticControls.className="semantic-depth-controls";
+const semanticButtons=semanticStages.map(([name,description],index)=>{
+ const b=document.createElement("button");
+ b.type="button";
+ b.textContent=(index+1)+" · "+name;
+ b.title=description;
+ b.setAttribute("aria-pressed",String(index===atlasDepth));
+ b.addEventListener("click",()=>{
+  atlasDepth=index;
+  semanticButtons.forEach((button,i)=>button.setAttribute("aria-pressed",String(i===index)));
+  semanticStatus.textContent=description+". Showing stages 1–"+(index+1)+"; source claims remain unverified.";
+  renderPortableAtlas(portableGraph);
+ });
+ semanticControls.appendChild(b);
+ return b;
+});
+semanticStatus.textContent="All six stages visible. Product candidates are not certified.";
+semanticNav.append(semanticHeading,semanticControls);
+atlasSvg.closest(".portable-atlas").insertBefore(semanticNav,atlasSvg.closest(".portable-map-wrap"));
+
+const atlasTools=document.createElement("nav");
+atlasTools.className="atlas-viewport-tools";
+atlasTools.setAttribute("aria-label","Constellation viewport controls");
+const atlasZoomStatus=document.createElement("output");
+atlasZoomStatus.setAttribute("aria-live","polite");
+atlasZoomStatus.className="muted";
+function applyAtlasViewport(){
+ const width=1000/atlasViewport.scale,height=530/atlasViewport.scale;
+ atlasViewport.panX=Math.max(0,Math.min(1000-width,atlasViewport.panX));
+ atlasViewport.panY=Math.max(0,Math.min(530-height,atlasViewport.panY));
+ atlasSvg.setAttribute("viewBox",[atlasViewport.panX,atlasViewport.panY,width,height].join(" "));
+ atlasZoomStatus.textContent=Math.round(atlasViewport.scale*100)+"% zoom";
+}
+function atlasZoom(factor){
+ const oldW=1000/atlasViewport.scale,oldH=530/atlasViewport.scale;
+ const centerX=atlasViewport.panX+oldW/2,centerY=atlasViewport.panY+oldH/2;
+ atlasViewport.scale=Math.max(1,Math.min(4,atlasViewport.scale*factor));
+ atlasViewport.panX=centerX-1000/atlasViewport.scale/2;
+ atlasViewport.panY=centerY-530/atlasViewport.scale/2;
+ applyAtlasViewport();
+}
+for(const [label,action] of [
+ ["Zoom in",()=>atlasZoom(1.5)],["Zoom out",()=>atlasZoom(1/1.5)],
+ ["Fit constellation",()=>{atlasViewport.scale=1;atlasViewport.panX=0;atlasViewport.panY=0;applyAtlasViewport()}],
+ ["Previous region",()=>{atlasViewport.panX-=1000/atlasViewport.scale*.6;applyAtlasViewport()}],
+ ["Next region",()=>{atlasViewport.panX+=1000/atlasViewport.scale*.6;applyAtlasViewport()}],
+ ["Region above",()=>{atlasViewport.panY-=530/atlasViewport.scale*.6;applyAtlasViewport()}],
+ ["Region below",()=>{atlasViewport.panY+=530/atlasViewport.scale*.6;applyAtlasViewport()}]
+]){
+ const button=document.createElement("button");button.type="button";button.textContent=label;
+ button.setAttribute("aria-label",label+" in imported provenance constellation");
+ button.addEventListener("click",action);atlasTools.appendChild(button);
+}
+atlasTools.appendChild(atlasZoomStatus);
+atlasSvg.parentElement.insertBefore(atlasTools,atlasSvg);
+applyAtlasViewport();
+
+$("portable-layer").addEventListener("change",e=>{portableLayer=e.target.value;renderPortable(portableGraph)});
+$("portable-map-reset").addEventListener("click",()=>{portableLayer="all";$("portable-layer").value="all";portableFocus=null;portableHistory=[];portableFilter="";$("portable-find").value="";renderPortable(portableGraph)});
+
+$("portable-find").addEventListener("input",e=>{portableFilter=e.target.value.toLowerCase().trim();renderPortable(portableGraph)});
+$("portable-back").onclick=()=>{if(!portableHistory.length)return;portableFocus=portableHistory.pop();renderPortable(portableGraph)};
+$("portable-all").onclick=()=>{portableFocus=null;portableHistory=[];portableFilter="";$("portable-find").value="";renderPortable(portableGraph)};
+$("portable-inspect").onclick=()=>{
+ try{const raw=$("portable-input").value;if(raw.length>500000)throw Error("Packet exceeds size limit.");const graph=inspectPortablePacket(JSON.parse(raw));portableFocus=null;portableHistory=[];portableFilter="";$("portable-find").value="";renderPortable(graph);$("portable-status").textContent="Curated packet inspected: "+graph.nodes.length+" nodes, "+graph.edges.length+" source claims. No independent attestation or local state changes."}
+ catch(e){renderPortable(null);$("portable-status").textContent="Import rejected: "+e.message}
+};
+$("portable-clear").onclick=()=>{$("portable-input").value="";portableFocus=null;portableHistory=[];portableFilter="";$("portable-find").value="";renderPortable(null);$("portable-status").textContent="Imported packet cleared. Local evidence unchanged."};
+
+// Derived review quests never write to local evidence, achievements or federation state.
+function renderPortableQuests(packet){
+ const grid=$("quest-grid"),status=$("quest-status");grid.replaceChildren();
+ if(!packet){status.textContent="Import a packet to inspect evidence gaps.";return}
+ const roots=packet.nodes.filter(n=>n.kind==="root"),fruits=packet.nodes.filter(n=>n.kind==="fruit");
+ const linked=new Set(packet.edges.flatMap(e=>[e.from,e.to]));
+ const evidenced=packet.edges.filter(e=>Boolean(e.evidenceUrl));
+ const linkedRoots=roots.filter(n=>linked.has(n.id));
+ const linkedFruits=fruits.filter(n=>linked.has(n.id));
+ const milestones=[
+  {title:"Root provenance",done:linkedRoots.length,total:roots.length,detail:"Repository roots with at least one explicit contribution edge",kind:"root"},
+  {title:"Source evidence",done:evidenced.length,total:packet.edges.length,detail:"Contribution claims carrying a source URL; links have not been independently verified",kind:"all"},
+  {title:"Outcome lineage",done:linkedFruits.length,total:fruits.length,detail:"Candidate outcomes connected by an explicit edge; no fruit is certified",kind:"fruit"}
+ ];
+ status.textContent=packet.nodes.length+" curated nodes · "+packet.edges.length+" source claims · 0 independently verified achievements from this import.";
+ for(const m of milestones){
+  const card=add(grid,el("article",undefined,"quest-card"));
+  add(card,el("small","REVIEW MILESTONE · NOT AN ACHIEVEMENT","quest-eyebrow"));
+  add(card,el("h4",m.title));
+  add(card,el("p",m.detail,"muted"));
+  const count=add(card,el("strong",m.done+" / "+m.total+" linked or documented"));
+  const meter=add(card,el("div",undefined,"quest-meter"));meter.setAttribute("role","progressbar");meter.setAttribute("aria-label",m.title+" coverage");meter.setAttribute("aria-valuemin","0");meter.setAttribute("aria-valuemax","100");
+  const percent=m.total?Math.round(100*m.done/m.total):0;meter.setAttribute("aria-valuenow",String(percent));
+  const fill=add(meter,el("span"));fill.style.width=percent+"%";
+  const button=add(card,el("button",m.kind==="all"?"Inspect source claims":"Explore "+m.kind+" layer"));button.type="button";
+  button.onclick=()=>{portableLayer=m.kind;$("portable-layer").value=m.kind;portableFocus=null;portableHistory=[];renderPortable(packet);$("portable-map").scrollIntoView({behavior:"auto",block:"nearest"})};
+ }
+ if(!fruits.length){const note=add(grid,el("article",undefined,"quest-card"));add(note,el("h4","No attested outcomes"));add(note,el("p","This packet contains no fruit candidates. Do not fabricate outcomes to fill the tree.","muted"))}
+}
+
+/* Evidence route observatory: packet-local, directed and read-only. */
+const journeyPanel=document.createElement("section");
+journeyPanel.className="card";
+journeyPanel.setAttribute("aria-label","Root to outcome lineage journey");
+journeyPanel.innerHTML='<h3>Lineage Journey · evidence route observatory</h3><p class="muted">Trace actual directed source claims, inspect alternate routes, and export a human-readable review dossier. This is an offline review of imported claims, not an attestation.</p>';
+const journeyControls=document.createElement("div");journeyControls.className="atlas-viewport-tools";
+const journeyRoot=document.createElement("select"),journeyGoal=document.createElement("select");
+journeyRoot.setAttribute("aria-label","Starting repository root");
+journeyGoal.setAttribute("aria-label","Destination capability or outcome");
+const journeyRun=document.createElement("button");journeyRun.type="button";journeyRun.textContent="Trace evidence routes";
+const journeyClear=document.createElement("button");journeyClear.type="button";journeyClear.textContent="Clear journey";
+const journeyCopy=document.createElement("button");journeyCopy.type="button";journeyCopy.textContent="Copy evidence dossier";journeyCopy.disabled=true;
+journeyControls.append(journeyRoot,journeyGoal,journeyRun,journeyClear,journeyCopy);
+journeyPanel.appendChild(journeyControls);
+const journeyStatus=document.createElement("p");journeyStatus.className="muted";journeyStatus.setAttribute("role","status");journeyStatus.setAttribute("aria-live","polite");
+const journeyRoutes=document.createElement("div");journeyRoutes.setAttribute("aria-label","Directed evidence route alternatives");
+const journeySteps=document.createElement("ol");journeySteps.setAttribute("aria-label","Selected directed lineage path and evidence");
+const journeyDossier=document.createElement("pre");journeyDossier.className="status";journeyDossier.style.whiteSpace="pre-wrap";journeyDossier.style.overflowWrap="anywhere";journeyDossier.hidden=true;
+const journeyComparison=document.createElement("section");journeyComparison.setAttribute("aria-label","Alternative route evidence comparison");
+const journeyComparisonTitle=document.createElement("h3");journeyComparisonTitle.textContent="Compare evidence routes";
+const journeyComparisonSummary=document.createElement("p");journeyComparisonSummary.className="muted";
+const journeyComparisonTable=document.createElement("div");journeyComparisonTable.style.overflowX="auto";
+journeyComparison.append(journeyComparisonTitle,journeyComparisonSummary,journeyComparisonTable);
+journeyPanel.append(journeyStatus,journeyRoutes,journeyComparison,journeySteps,journeyDossier);
+$("portable-results").parentElement.insertBefore(journeyPanel,$("portable-results"));
+let journeySource="",journeyTarget="",journeySelected=-1,journeyAlternatives=[],journeyPacket=null;
+function lineageRoutes(packet,from,to,limit=3){
+ // Simple directed paths only. Deterministic shortest-first enumeration, bounded to avoid combinatorial explosion.
+ const adj=new Map(),routes=[],queue=[{id:from,path:[],seen:new Set([from])}];
+ for(const e of packet.edges){if(!adj.has(e.from))adj.set(e.from,[]);adj.get(e.from).push(e)}
+ for(const edges of adj.values())edges.sort((a,b)=>a.to.localeCompare(b.to)||a.evidenceUrl.localeCompare(b.evidenceUrl));
+ let inspected=0;
+ while(queue.length&&routes.length<limit&&inspected++<20000){
+  const current=queue.shift();
+  if(current.id===to){routes.push(current.path);continue}
+  if(current.path.length>=Math.min(packet.nodes.length,30))continue;
+  for(const edge of adj.get(current.id)||[]){
+   if(current.seen.has(edge.to))continue;
+   const seen=new Set(current.seen);seen.add(edge.to);
+   queue.push({id:edge.to,path:[...current.path,edge],seen});
+   if(queue.length>5000)break;
+  }
+ }
+ return routes;
+}
+function lineageShortestPath(packet,from,to){return lineageRoutes(packet,from,to,1)[0]||null}
+function resetJourney(message){
+ journeyAlternatives=[];journeySelected=-1;journeyPacket=null;
+ journeyRoutes.replaceChildren();journeySteps.replaceChildren();journeyComparison.hidden=true;journeyComparisonTable.replaceChildren();journeyDossier.hidden=true;journeyDossier.textContent="";journeyCopy.disabled=true;
+ if(message)journeyStatus.textContent=message;
+}
+function renderLineageJourney(packet){
+ const oldPacket=journeyPacket;
+ journeyRoot.replaceChildren();journeyGoal.replaceChildren();
+ if(!packet){journeySource="";journeyTarget="";resetJourney("Import a lineage packet to plan a source-backed journey.");journeyRun.disabled=true;return}
+ const roots=packet.nodes.filter(n=>n.kind==="root");
+ const targets=packet.nodes.filter(n=>n.kind!=="root");
+ journeyRun.disabled=!roots.length||!targets.length;
+ for(const [select,nodes,selected] of [[journeyRoot,roots,journeySource],[journeyGoal,targets,journeyTarget]]){
+  for(const node of nodes){const option=document.createElement("option");option.value=node.id;option.textContent=node.kind+" · "+node.label;select.appendChild(option)}
+  if(nodes.some(n=>n.id===selected))select.value=selected;
+ }
+ journeySource=journeyRoot.value;journeyTarget=journeyGoal.value;
+ // Focus navigation must not destroy an already traced route. A new import does.
+ if(oldPacket!==packet)resetJourney(roots.length+" repository roots and "+targets.length+" possible destinations. Choose a journey to inspect directed evidence.");
+}
+// Compare imported routes without ranking source claims as verified trust or product readiness.
+function renderJourneyComparison(packet,routes){
+ journeyComparisonTable.replaceChildren();
+ if(!packet||!routes.length){journeyComparison.hidden=true;return}
+ journeyComparison.hidden=false;
+ const byId=new Map(packet.nodes.map(n=>[n.id,n]));
+ const table=document.createElement("table");table.style.width="100%";table.style.borderCollapse="collapse";
+ const caption=document.createElement("caption");caption.textContent="Curated source claims only; shorter paths and more evidence links do not imply greater trust.";
+ table.appendChild(caption);
+ const head=document.createElement("thead"),header=document.createElement("tr");
+ for(const title of ["Route","Directed hops","Distinct evidence URLs","Intermediate capabilities","Inspect"]){
+  const th=document.createElement("th");th.scope="col";th.textContent=title;th.style.padding=".6rem";header.appendChild(th);
+ }
+ head.appendChild(header);table.appendChild(head);
+ const body=document.createElement("tbody");
+ const allEvidence=new Set(routes.flatMap(route=>route.map(edge=>edge.evidenceUrl)));
+ routes.forEach((route,index)=>{
+  const tr=document.createElement("tr");
+  const cells=[
+   "Route "+(index+1),
+   String(route.length),
+   String(new Set(route.map(edge=>edge.evidenceUrl)).size),
+   route.slice(0,-1).map(edge=>byId.get(edge.to)).filter(Boolean).map(n=>n.kind+" · "+n.label).join(" → ")||"Direct contribution"
+  ];
+  for(const value of cells){const td=document.createElement("td");td.textContent=value;td.style.padding=".6rem";td.style.borderTop="1px solid #425a78";tr.appendChild(td)}
+  const action=document.createElement("td"),button=document.createElement("button");button.type="button";button.textContent="Inspect route "+(index+1);
+  button.setAttribute("aria-pressed",String(index===journeySelected));
+  button.addEventListener("click",()=>showJourneyRoute(index));action.appendChild(button);tr.appendChild(action);body.appendChild(tr);
+ });
+ table.appendChild(body);journeyComparisonTable.appendChild(table);
+ journeyComparisonSummary.textContent=routes.length+" documented alternatives · "+allEvidence.size+" distinct cited URLs across routes. This is a comparison of imported claims, not a verification score.";
+}
+function showJourneyRoute(index){
+ if(!portableGraph||!journeyAlternatives[index])return;
+ journeySelected=index;journeySteps.replaceChildren();journeyRoutes.replaceChildren();renderJourneyComparison(portableGraph,journeyAlternatives);
+ const byId=new Map(portableGraph.nodes.map(n=>[n.id,n])),path=journeyAlternatives[index];
+ for(let i=0;i<journeyAlternatives.length;i++){
+  const b=document.createElement("button");b.type="button";b.textContent="Route "+(i+1)+" · "+journeyAlternatives[i].length+" hops";b.setAttribute("aria-pressed",String(i===index));b.addEventListener("click",()=>showJourneyRoute(i));journeyRoutes.appendChild(b);
+ }
+ const start=byId.get(journeySource),goal=byId.get(journeyTarget);
+ const dossier=["AIFT PORTABLE LINEAGE REVIEW — UNVERIFIED CLAIMS","Source: "+start.label+" ("+start.id+")","Destination: "+goal.label+" ("+goal.id+")","Route: "+(index+1)+" of "+journeyAlternatives.length,"Evidence hops: "+path.length,""];
+ for(let i=0;i<path.length;i++){
+  const edge=path[i],source=byId.get(edge.from),destination=byId.get(edge.to),item=document.createElement("li");
+  const button=document.createElement("button");button.type="button";button.textContent=destination.kind+" · "+destination.label;button.addEventListener("click",()=>portableNavigate(destination.id));
+  const evidence=document.createElement("a");evidence.href=edge.evidenceUrl;evidence.target="_blank";evidence.rel="noopener noreferrer";evidence.textContent="Inspect source evidence";
+  item.append(button,document.createTextNode(" · "),evidence);journeySteps.appendChild(item);
+  dossier.push((i+1)+". "+source.kind+" "+source.label+" -> "+destination.kind+" "+destination.label,"   "+edge.evidenceUrl);
+ }
+ dossier.push("","All links are curated contribution claims, not independent attestations.","No achievements, product certification or readiness changes result from this review.");
+ if(goal.kind==="fruit"){const note=document.createElement("li");note.textContent="Outcome candidate only. No independent product certification or achievement awarded.";journeySteps.appendChild(note)}
+ journeyDossier.textContent=dossier.join("\n");journeyDossier.hidden=false;journeyCopy.disabled=false;
+ journeyStatus.textContent="Showing route "+(index+1)+" of "+journeyAlternatives.length+" from "+start.label+" to "+goal.label+". Evidence URLs are source claims only.";
+}
+journeyRoot.addEventListener("change",()=>{journeySource=journeyRoot.value;resetJourney("Source changed. Trace routes to review its evidence.")});
+journeyGoal.addEventListener("change",()=>{journeyTarget=journeyGoal.value;resetJourney("Destination changed. Trace routes to review its evidence.")});
+journeyClear.addEventListener("click",()=>resetJourney("Journey cleared. Imported provenance remains unchanged."));
+journeyCopy.addEventListener("click",async()=>{
+ if(journeyCopy.disabled)return;
+ try{await navigator.clipboard.writeText(journeyDossier.textContent);journeyStatus.textContent="Evidence review dossier copied. Claims remain unverified."}
+ catch{journeyStatus.textContent="Clipboard unavailable. Select and copy the visible evidence dossier below."}
+});
+journeyRun.addEventListener("click",()=>{
+ resetJourney();
+ if(!portableGraph)return;
+ const byId=new Map(portableGraph.nodes.map(n=>[n.id,n]));
+ const start=byId.get(journeyRoot.value),goal=byId.get(journeyGoal.value);
+ if(!start||!goal||start.kind!=="root"){journeyStatus.textContent="Choose a repository root and destination.";return}
+ journeySource=start.id;journeyTarget=goal.id;
+ journeyAlternatives=lineageRoutes(portableGraph,start.id,goal.id,3);
+ if(!journeyAlternatives.length){journeyStatus.textContent="Evidence gap: no directed contribution route connects this root to the selected destination. No relationship is inferred.";return}
+ journeyPacket=portableGraph;showJourneyRoute(0);
+});
+
+</script></body></html>
