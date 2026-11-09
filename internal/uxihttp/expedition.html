@@ -85,7 +85,21 @@
 .quest-card h4{margin:.4rem 0;color:#f4ca78}.quest-card p{overflow-wrap:anywhere}.quest-meter{height:9px;background:#34485e;border-radius:10px;overflow:hidden;margin:.8rem 0}.quest-meter span{display:block;height:100%;background:linear-gradient(90deg,#ff5378,#46e5ae,#66b6ff)}
 .quest-eyebrow{color:#b9dcff;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase}
 @media(prefers-reduced-motion:reduce){.quest-meter span{transition:none!important}}
-.atlas-viewport-tools{display:flex;gap:.45rem;flex-wrap:wrap;align-items:center;margin:.65rem 0}.atlas-viewport-tools button{padding:.4rem .65rem;font-size:.82rem}.atlas-viewport-tools output{min-width:5rem;font-variant-numeric:tabular-nums}@media(prefers-reduced-motion:reduce){.atlas-viewport-tools *{transition:none!important}}\n</style><style>
+.atlas-viewport-tools{display:flex;gap:.45rem;flex-wrap:wrap;align-items:center;margin:.65rem 0}.atlas-viewport-tools button{padding:.4rem .65rem;font-size:.82rem}.atlas-viewport-tools output{min-width:5rem;font-variant-numeric:tabular-nums}@media(prefers-reduced-motion:reduce){.atlas-viewport-tools *{transition:none!important}}\n
+/* Semantic-depth journey: progressive source-to-outcome reveal with high-contrast focus. */
+.semantic-depth{margin:1rem 0;padding:clamp(.8rem,2vw,1.3rem);border:1px solid #8d7458;border-radius:20px;background:radial-gradient(ellipse at 10% 5%,#8f344433,transparent 55%),radial-gradient(ellipse at 85% 100%,#276c7133,transparent 55%),#10192d;box-shadow:inset 0 1px #ffffff18,0 18px 38px #0005}
+.semantic-depth-heading{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.5rem 1rem;margin-bottom:.9rem}
+.semantic-depth-heading strong{font:1.2rem Georgia,serif;color:#f4ca78}
+.semantic-depth-heading output{font-size:.85rem;color:#c4d8e9;max-width:65ch}
+.semantic-depth-controls{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.4rem}
+.semantic-depth-controls button{min-width:0;padding:.75rem .35rem;overflow-wrap:anywhere;border-top:4px solid #f4ca78;background:linear-gradient(180deg,#20324c,#0d1a2c);font-size:.78rem;transition:transform .2s ease,box-shadow .2s ease}
+.semantic-depth-controls button:nth-child(1){border-top-color:#ff5378}.semantic-depth-controls button:nth-child(3){border-top-color:#46e5ae}.semantic-depth-controls button:nth-child(4){border-top-color:#66b6ff}.semantic-depth-controls button:nth-child(5){border-top-color:#c18cff}.semantic-depth-controls button:nth-child(6){border-top-color:#ffad70}
+.semantic-depth-controls button[aria-pressed=true]{background:#3a3451;box-shadow:inset 0 0 0 1px #f4ca78,0 0 22px #e0b96944}
+@media(hover:hover){.semantic-depth-controls button:hover{transform:translateY(-3px)}}
+@media(max-width:760px){.semantic-depth-controls{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:390px){.semantic-depth-controls{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.semantic-depth-controls button{transition:none}.semantic-depth-controls button:hover{transform:none}}
+</style><style>
 /* Evidence journey: a responsive, reversible local inspection surface. */
 .ej-shell{grid-column:1/-1;border:1px solid #6482a4;border-radius:24px;padding:clamp(1rem,3vw,2rem);background:radial-gradient(circle at 85% 0%,#213e59,#10182b 60%);box-shadow:0 20px 60px #0006}
 .ej-rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.45rem;margin:1rem 0}
@@ -535,6 +549,7 @@ function renderPortable(packet){
 
 const atlasNS="http://www.w3.org/2000/svg";
 let portableLayer="all";
+let atlasDepth=5; // Presentation-only semantic depth; never changes packet evidence.
 function atlasElement(tag,attrs){const n=document.createElementNS(atlasNS,tag);for(const [key,value] of Object.entries(attrs||{}))n.setAttribute(key,String(value));return n}
 function renderPortableAtlas(packet){
  const svg=$("portable-map"),mini=$("portable-map-minimap"),caption=$("portable-map-caption");
@@ -542,7 +557,7 @@ function renderPortableAtlas(packet){
  while(svg.children.length>2)svg.lastChild.remove();
  if(!packet){mini.textContent="No graph imported";caption.textContent="Import a source-backed graph to explore the constellation.";return}
  const kinds=["root","trunk","branch","leaf","flower","fruit"],colors=["#ff5378","#f4ca78","#46e5ae","#66b6ff","#c18cff","#ffad70"];
- const matches=packet.nodes.filter(n=>(portableLayer==="all"||n.kind===portableLayer)&&(!portableFilter||(n.label+" "+n.id+" "+n.kind).toLowerCase().includes(portableFilter)));
+ const matches=packet.nodes.filter(n=>(portableLayer==="all"||n.kind===portableLayer)&&kinds.indexOf(n.kind)<=atlasDepth&&(!portableFilter||(n.label+" "+n.id+" "+n.kind).toLowerCase().includes(portableFilter)));
  // Bounded rendering keeps imported 2,000-node packets responsive. The complete graph remains in the text directory.
  const nodes=matches.slice(0,96),ids=new Set(nodes.map(n=>n.id)),positions=new Map();
  const counts=new Map();
@@ -562,6 +577,47 @@ function renderPortableAtlas(packet){
 // Spatial zoom is a presentation-only viewport: it never changes imported evidence.
 const atlasViewport={scale:1,panX:0,panY:0};
 const atlasSvg=$("portable-map");
+// Semantic zoom traverses the biological architecture without altering source data.
+const semanticStages=[
+ ["Roots","Repository provenance and source systems"],
+ ["Trunk","Shared federation integration"],
+ ["Branches","Documented systems and services"],
+ ["Leaves","Documented capabilities and interfaces"],
+ ["Flowers","Emerging integrations and work in progress"],
+ ["Fruits","Product candidates; independent verification required"]
+];
+const semanticNav=document.createElement("section");
+semanticNav.className="semantic-depth";
+semanticNav.setAttribute("aria-label","Biological semantic exploration depth");
+const semanticHeading=document.createElement("div");
+semanticHeading.className="semantic-depth-heading";
+const semanticTitle=document.createElement("strong");
+semanticTitle.textContent="Semantic depth · complete lineage";
+const semanticStatus=document.createElement("output");
+semanticStatus.setAttribute("role","status");
+semanticStatus.setAttribute("aria-live","polite");
+semanticHeading.append(semanticTitle,semanticStatus);
+const semanticControls=document.createElement("div");
+semanticControls.className="semantic-depth-controls";
+const semanticButtons=semanticStages.map(([name,description],index)=>{
+ const b=document.createElement("button");
+ b.type="button";
+ b.textContent=(index+1)+" · "+name;
+ b.title=description;
+ b.setAttribute("aria-pressed",String(index===atlasDepth));
+ b.addEventListener("click",()=>{
+  atlasDepth=index;
+  semanticButtons.forEach((button,i)=>button.setAttribute("aria-pressed",String(i===index)));
+  semanticStatus.textContent=description+". Showing stages 1–"+(index+1)+"; source claims remain unverified.";
+  renderPortableAtlas(portableGraph);
+ });
+ semanticControls.appendChild(b);
+ return b;
+});
+semanticStatus.textContent="All six stages visible. Product candidates are not certified.";
+semanticNav.append(semanticHeading,semanticControls);
+atlasSvg.closest(".portable-atlas").insertBefore(semanticNav,atlasSvg.closest(".portable-map-wrap"));
+
 const atlasTools=document.createElement("nav");
 atlasTools.className="atlas-viewport-tools";
 atlasTools.setAttribute("aria-label","Constellation viewport controls");
