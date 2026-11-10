@@ -562,15 +562,16 @@ function renderPortableAtlas(packet){
  const nodes=matches.slice(0,96),ids=new Set(nodes.map(n=>n.id)),positions=new Map();
  const counts=new Map();
  for(const n of nodes){const layer=kinds.indexOf(n.kind),index=counts.get(n.kind)||0;counts.set(n.kind,index+1);const total=nodes.filter(x=>x.kind===n.kind).length;positions.set(n.id,{x:90+layer*164,y:48+(index+1)*434/(total+1)});}
+ const routeEdges=new Set((journeyAlternatives[journeySelected]||[]).map(e=>e.from+"|"+e.to+"|"+e.evidenceUrl));
  const edges=packet.edges.filter(e=>ids.has(e.from)&&ids.has(e.to)).slice(0,240);
- for(const e of edges){const a=positions.get(e.from),b=positions.get(e.to);const path=atlasElement("path",{d:"M"+a.x+","+a.y+" C"+(a.x+75)+","+a.y+" "+(b.x-75)+","+b.y+" "+b.x+","+b.y,class:"atlas-edge"+(portableFocus&&(e.from===portableFocus||e.to===portableFocus)?" is-focused":"")});svg.appendChild(path)}
+ for(const e of edges){const a=positions.get(e.from),b=positions.get(e.to);const path=atlasElement("path",{d:"M"+a.x+","+a.y+" C"+(a.x+75)+","+a.y+" "+(b.x-75)+","+b.y+" "+b.x+","+b.y,class:"atlas-edge"+(routeEdges.has(e.from+"|"+e.to+"|"+e.evidenceUrl)||portableFocus&&(e.from===portableFocus||e.to===portableFocus)?" is-focused":"")});svg.appendChild(path)}
  for(const n of nodes){const p=positions.get(n.id),color=colors[kinds.indexOf(n.kind)],g=atlasElement("g",{class:"atlas-node",role:"button",tabindex:"0","aria-label":"Explore "+n.kind+" "+n.label,"aria-pressed":String(portableFocus===n.id)});
   g.appendChild(atlasElement("circle",{cx:p.x,cy:p.y,r:portableFocus===n.id?13:9,fill:color,stroke:portableFocus===n.id?"#fff":"#14253a","stroke-width":portableFocus===n.id?3:2}));
   const label=atlasElement("text",{x:p.x,y:p.y-16,"text-anchor":"middle"});label.textContent=n.label.length>19?n.label.slice(0,18)+"…":n.label;g.appendChild(label);
   const title=atlasElement("title");title.textContent=n.kind+": "+n.label+" — curated source claim";g.appendChild(title);
   g.addEventListener("click",()=>portableNavigate(n.id));g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();portableNavigate(n.id)}});svg.appendChild(g);
  }
- mini.textContent=nodes.length+" nodes · "+edges.length+" edges";
+ mini.textContent=nodes.length+" nodes · "+edges.length+" edges"+(journeySelected>=0?" · route "+(journeySelected+1)+" focused":"");
  caption.textContent="Showing "+nodes.length+" of "+matches.length+" matching nodes and "+edges.length+" explicit source edges. The atlas is capped at 96 nodes and 240 edges for performance. Use the directory for the full packet. All fruits are unverified candidates.";
 }
 
@@ -760,6 +761,7 @@ function lineageRoutes(packet,from,to,limit=3){
 function lineageShortestPath(packet,from,to){return lineageRoutes(packet,from,to,1)[0]||null}
 function resetJourney(message){
  journeyAlternatives=[];journeySelected=-1;journeyPacket=null;
+ if(portableGraph)renderPortableAtlas(portableGraph);
  journeyRoutes.replaceChildren();journeySteps.replaceChildren();journeyComparison.hidden=true;journeyComparisonTable.replaceChildren();journeyDossier.hidden=true;journeyDossier.textContent="";journeyCopy.disabled=true;
  if(message)journeyStatus.textContent=message;
 }
@@ -813,6 +815,10 @@ function renderJourneyComparison(packet,routes){
 function showJourneyRoute(index){
  if(!portableGraph||!journeyAlternatives[index])return;
  journeySelected=index;journeySteps.replaceChildren();journeyRoutes.replaceChildren();renderJourneyComparison(portableGraph,journeyAlternatives);
+ portableLayer="all";$("portable-layer").value="all";portableFilter="";$("portable-find").value="";atlasDepth=5;
+ semanticButtons.forEach((button,i)=>button.setAttribute("aria-pressed",String(i===atlasDepth)));
+ semanticStatus.textContent="All biological stages visible; selected directed route highlighted, not independently verified.";
+ renderPortableAtlas(portableGraph);
  const byId=new Map(portableGraph.nodes.map(n=>[n.id,n])),path=journeyAlternatives[index];
  for(let i=0;i<journeyAlternatives.length;i++){
   const b=document.createElement("button");b.type="button";b.textContent="Route "+(i+1)+" · "+journeyAlternatives[i].length+" hops";b.setAttribute("aria-pressed",String(i===index));b.addEventListener("click",()=>showJourneyRoute(i));journeyRoutes.appendChild(b);
@@ -824,6 +830,8 @@ function showJourneyRoute(index){
   const button=document.createElement("button");button.type="button";button.textContent=destination.kind+" · "+destination.label;button.addEventListener("click",()=>portableNavigate(destination.id));
   const evidence=document.createElement("a");evidence.href=edge.evidenceUrl;evidence.target="_blank";evidence.rel="noopener noreferrer";evidence.textContent="Inspect source evidence";
   item.append(button,document.createTextNode(" · "),evidence);journeySteps.appendChild(item);
+  const sourceButton=document.createElement("button");sourceButton.type="button";sourceButton.textContent="Focus contributor "+source.kind+" · "+source.label;
+  sourceButton.addEventListener("click",()=>portableNavigate(source.id));item.prepend(sourceButton,document.createTextNode(" → "));
   dossier.push((i+1)+". "+source.kind+" "+source.label+" -> "+destination.kind+" "+destination.label,"   "+edge.evidenceUrl);
  }
  dossier.push("","All links are curated contribution claims, not independent attestations.","No achievements, product certification or readiness changes result from this review.");
