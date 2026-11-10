@@ -179,6 +179,38 @@
       .tree-stage-wrap { overflow-x:auto; border-radius:18px; }
       .quest-grid { grid-template-columns:1fr; }
     }
+  
+    /* Living Universe shared spectral vocabulary: same source palette as portal expedition.
+       Presentation-only; local observation and evidence classification remain unchanged. */
+    :root { --aift-ruby:#ff5877;--aift-emerald:#43e5a7;--aift-azure:#64b4ff;--aift-aurum:#f3cd82;
+      --aift-ribbon:linear-gradient(105deg,var(--aift-ruby),var(--aift-aurum) 22%,var(--aift-emerald) 47%,var(--aift-azure) 74%,#b98cff);
+      --aift-atmosphere:radial-gradient(ellipse 70% 50% at 85% 0%,#1a355e88,transparent),radial-gradient(ellipse 65% 60% at 0% 100%,#10504466,transparent); }
+    body { background:var(--aift-atmosphere),var(--background); }
+    .topbar { position:relative;box-shadow:0 8px 36px #0006; }
+    .topbar::after { content:"";position:absolute;inset:auto 0 0;height:3px;background:var(--aift-ribbon);pointer-events:none; }
+    .brand { color:var(--aift-aurum);text-shadow:0 0 18px #f3cd8260; }
+    .universe-expedition { position:relative;overflow:hidden;border-color:#8cb9e466;border-radius:22px;
+      background:radial-gradient(circle at 90% 10%,#264a6977,transparent 48%),linear-gradient(145deg,#172e49,#101d35 65%,#0a1727);
+      box-shadow:inset 0 1px #ffffff16,0 22px 52px #0007; }
+    .universe-expedition::before { content:"";position:absolute;right:-80px;top:-100px;width:320px;height:320px;border:1px solid #f3cd8244;
+      border-radius:50%;box-shadow:0 0 0 40px #43e5a709,0 0 0 95px #64b4ff08;pointer-events:none; }
+    .universe-expedition h2 { color:var(--aift-aurum);position:relative; }
+    .universe-quests { position:relative; }
+    .universe-quest { min-width:0;min-height:155px;border-color:#6b9db077;border-top:3px solid var(--aift-emerald);
+      background:linear-gradient(150deg,#142f42,#0a192d);box-shadow:0 12px 30px #0005; }
+    .universe-quest:nth-child(3n+1) { border-top-color:var(--aift-ruby); }
+    .universe-quest:nth-child(3n+2) { border-top-color:var(--aift-emerald); }
+    .universe-quest:nth-child(3n) { border-top-color:var(--aift-azure); }
+    .universe-quest[data-visited="true"] { border-color:var(--aift-aurum); }
+    .universe-quest button { min-height:44px;border-color:var(--aift-emerald);background:#173d4c; }
+    .universe-quest button:hover { background:#235a67; }
+    .view-switch button.active,.nav-button.active { box-shadow:inset 0 -2px var(--aift-aurum); }
+    :where(.universe-quest button,.view-switch button,.nav-button,.palette-trigger):focus-visible { outline:3px solid var(--aift-aurum);outline-offset:3px; }
+    @media(max-width:700px) { .universe-expedition { margin:12px 0;padding:14px;border-radius:16px; }
+      .universe-quests { grid-template-columns:minmax(0,1fr); }.universe-quest { min-height:0; } }
+    @media(prefers-reduced-motion:reduce) { .universe-expedition,.universe-quest { scroll-behavior:auto;transition:none!important; } }
+    @media(forced-colors:active) { .universe-expedition,.universe-quest { border:2px solid CanvasText;box-shadow:none; }
+      .universe-quest[data-visited="true"] { border-style:double; } .topbar::after { display:none; } }
   </style>
 </head>
 <body>
