@@ -571,7 +571,27 @@ function renderPortableAtlas(packet){
   const title=atlasElement("title");title.textContent=n.kind+": "+n.label+" — curated source claim";g.appendChild(title);
   g.addEventListener("click",()=>portableNavigate(n.id));g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();portableNavigate(n.id)}});svg.appendChild(g);
  }
- mini.textContent=nodes.length+" nodes · "+edges.length+" edges"+(journeySelected>=0?" · route "+(journeySelected+1)+" focused":"");
+ // The minimap is a spatial overview of exactly the bounded graph rendered above.
+ // Imported labels never enter markup; all graphics use DOM construction.
+ mini.replaceChildren();
+ const overview=atlasElement("svg",{viewBox:"0 0 1000 530",preserveAspectRatio:"xMidYMid meet",role:"presentation"});
+ overview.style.cssText="display:block;width:100%;height:auto;max-height:120px;background:#071527;border:1px solid #45617c;border-radius:8px";
+ const activeRoute=new Set((journeyAlternatives[journeySelected]||[]).map(e=>e.from+"|"+e.to+"|"+e.evidenceUrl));
+ for(const edge of edges){
+  const a=positions.get(edge.from),b=positions.get(edge.to);
+  const active=activeRoute.has(edge.from+"|"+edge.to+"|"+edge.evidenceUrl);
+  overview.appendChild(atlasElement("path",{d:"M"+a.x+","+a.y+" L"+b.x+","+b.y,stroke:active?"#f4ca78":"#45617c","stroke-width":active?4:1.5,fill:"none"}));
+ }
+ for(const node of nodes){
+  const p=positions.get(node.id);
+  overview.appendChild(atlasElement("circle",{cx:p.x,cy:p.y,r:portableFocus===node.id?8:5,fill:colors[kinds.indexOf(node.kind)]}));
+ }
+ const windowRect=atlasElement("rect",{x:0,y:0,width:1000,height:530,fill:"none",stroke:"#ffffff","stroke-width":5,"stroke-dasharray":"12 8"});
+ windowRect.setAttribute("pointer-events","none");overview.appendChild(windowRect);
+ mini.appendChild(overview);
+ mini.title=nodes.length+" visible nodes, "+edges.length+" visible edges. White rectangle indicates zoomed viewport; use the adjacent accessible viewport controls.";
+ mini.dataset.spatialOverview="true";
+ updateAtlasMinimapViewport();
  caption.textContent="Showing "+nodes.length+" of "+matches.length+" matching nodes and "+edges.length+" explicit source edges. The atlas is capped at 96 nodes and 240 edges for performance. Use the directory for the full packet. All fruits are unverified candidates.";
 }
 
@@ -625,12 +645,23 @@ atlasTools.setAttribute("aria-label","Constellation viewport controls");
 const atlasZoomStatus=document.createElement("output");
 atlasZoomStatus.setAttribute("aria-live","polite");
 atlasZoomStatus.className="muted";
+function updateAtlasMinimapViewport(){
+ const mini=document.querySelector("#portable-map-minimap svg");
+ if(!mini)return;
+ const rect=mini.lastElementChild;
+ if(!rect||rect.tagName.toLowerCase()!=="rect")return;
+ rect.setAttribute("x",String(atlasViewport.panX));
+ rect.setAttribute("y",String(atlasViewport.panY));
+ rect.setAttribute("width",String(1000/atlasViewport.scale));
+ rect.setAttribute("height",String(530/atlasViewport.scale));
+}
 function applyAtlasViewport(){
  const width=1000/atlasViewport.scale,height=530/atlasViewport.scale;
  atlasViewport.panX=Math.max(0,Math.min(1000-width,atlasViewport.panX));
  atlasViewport.panY=Math.max(0,Math.min(530-height,atlasViewport.panY));
  atlasSvg.setAttribute("viewBox",[atlasViewport.panX,atlasViewport.panY,width,height].join(" "));
  atlasZoomStatus.textContent=Math.round(atlasViewport.scale*100)+"% zoom";
+ updateAtlasMinimapViewport();
 }
 function atlasZoom(factor){
  const oldW=1000/atlasViewport.scale,oldH=530/atlasViewport.scale;
