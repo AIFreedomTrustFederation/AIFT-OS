@@ -97,7 +97,7 @@ dl{display:grid;grid-template-columns:95px 1fr;gap:.6rem;overflow-wrap:anywhere}
 .canopy-directory small{display:block;color:#c1d3e8}
 @media(max-width:600px){.canopy-panel{padding:.75rem}#canopy-map{min-width:620px}}
 @media(prefers-reduced-motion:reduce){#canopy-map *{transition:none!important;animation:none!important}}
-.canopy-lineage-journey{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:.65rem;margin:.8rem 0}.canopy-lineage-journey article{padding:.8rem;border:1px solid #7394ac;border-top:3px solid var(--green);border-radius:12px;background:#0b2335}.canopy-lineage-journey article.anomaly{border-top-color:var(--red)}.canopy-lineage-journey h4{margin:.1rem 0 .45rem;color:var(--gold)}.canopy-lineage-journey button{display:block;width:100%;text-align:left;overflow-wrap:anywhere}.canopy-lineage-journey p{font-size:.86rem;color:var(--muted)}.canopy-route{border-top:1px solid #56738c;padding:.5rem 0}.canopy-route ol{margin:.3rem 0 .6rem;padding-left:1.3rem}.canopy-route li{margin:.2rem 0}.canopy-route button[aria-pressed="true"]{border-color:#f5cd83;background:#294c50}#canopy-map .canopy-edge[data-route="true"]{stroke:#f5cd83;stroke-width:5;filter:drop-shadow(0 0 7px #f5cd83)}#canopy-map .canopy-node[data-route="true"] circle{stroke:#f5cd83;stroke-width:5} @media(prefers-reduced-motion:reduce){#canopy-map .canopy-edge[data-route="true"]{filter:none}}</style></head><body>
+.canopy-lineage-journey{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:.65rem;margin:.8rem 0}.canopy-lineage-journey article{padding:.8rem;border:1px solid #7394ac;border-top:3px solid var(--green);border-radius:12px;background:#0b2335}.canopy-lineage-journey article.anomaly{border-top-color:var(--red)}.canopy-lineage-journey h4{margin:.1rem 0 .45rem;color:var(--gold)}.canopy-lineage-journey button{display:block;width:100%;text-align:left;overflow-wrap:anywhere}.canopy-lineage-journey p{font-size:.86rem;color:var(--muted)}.canopy-route{border-top:1px solid #56738c;padding:.5rem 0}.canopy-route ol{margin:.3rem 0 .6rem;padding-left:1.3rem}.canopy-route li{margin:.2rem 0}.canopy-route button[aria-pressed="true"]{border-color:#f5cd83;background:#294c50}#canopy-map .canopy-edge[data-route="true"]{stroke:#f5cd83;stroke-width:5;filter:drop-shadow(0 0 7px #f5cd83)}#canopy-map .canopy-node[data-route="true"] circle{stroke:#f5cd83;stroke-width:5} @media(prefers-reduced-motion:reduce){#canopy-map .canopy-edge[data-route="true"]{filter:none}}.canopy-stage-nav{display:flex;gap:.45rem;overflow-x:auto;padding:.55rem 0}.canopy-stage-nav button{flex:0 0 auto;min-width:95px;border-top:3px solid var(--stage-color,#f5cd83);background:#102b43;color:#edf6ff}.canopy-stage-nav button[aria-pressed="true"]{background:#294c50;box-shadow:inset 0 0 0 2px #f5cd83}.canopy-viewport{display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:.65rem;align-items:start}.canopy-minimap{border:1px solid #7294af;border-radius:14px;padding:.5rem;background:#0b2335}#canopy-mini{display:block;width:100%;height:auto;background:#091a2a;border-radius:8px}.canopy-minimap button{width:100%;margin-top:.45rem}@media(max-width:700px){.canopy-viewport{grid-template-columns:1fr}.canopy-minimap{display:flex;align-items:center;gap:.6rem}#canopy-mini{width:110px;flex:0 0 110px}.canopy-minimap button{margin:0;flex:1}}@media(prefers-reduced-motion:reduce){.canopy-stage-nav *,#canopy-mini *{animation:none!important;transition:none!important}}</style></head><body>
 <a class="skip" href="#content">Skip to exploration</a><div class="ribbon" aria-hidden="true"></div>
 <header><div><div class="eyebrow">AIFT · Living Universe 2.0</div><h1>Evidence Observatory</h1><p class="lede">An inspectable, local-first constellation. Repositories are roots; outcomes are fruits only when the imported evidence declares a real deliverable. Nothing here claims live CI or completed work without source evidence.</p></div>
 <nav aria-label="Federation navigation"><a href="https://www.aifreedomtrust.com/living-universe-explorer.html">Living Tree</a><a href="https://www.aifreedomtrust.com/evidence-expedition.html">Evidence Expedition</a><a href="https://github.com/AIFreedomTrustFederation/AIFT-OS">MoBox source</a></nav></header>
@@ -122,7 +122,7 @@ dl{display:grid;grid-template-columns:95px 1fr;gap:.6rem;overflow-wrap:anywhere}
 <h2 id="canopy-heading">Living Canopy · Source-to-Outcome Atlas</h2><p class="lede">A spectral map of imported evidence. Roots are repositories, never products. The canopy shows only declared biological records; connections are restricted to explicitly declared adjacent-stage ancestry.</p>
 <div class="canopy-legend" aria-label="Declared relationship legend"><span>Solid blue: adjacent direct edge</span><span>Dashed gold: direct stage gap</span><span>Dotted red: nonprogressive direct edge</span><span>Green: inspected lineage</span></div>
 <div id="canopy-inspector" class="canopy-inspector" role="region" aria-label="Canopy provenance inspection"><p id="canopy-inspector-text">Select a declared record to trace its source ancestry. No independent verification is implied.</p><div id="canopy-lineage-journey" class="canopy-lineage-journey" aria-label="Directed source ancestry and evidence gaps"></div><button type="button" id="canopy-reset">Show full canopy</button></div>
-<div class="canopy-shell"><svg id="canopy-map" viewBox="0 0 960 480" role="img" aria-label="Spatial evidence canopy; the accessible record directory follows"></svg></div>
+<nav id="canopy-stage-nav" class="canopy-stage-nav" aria-label="Semantic stage zoom"></nav><div class="canopy-viewport"><div class="canopy-shell"><svg id="canopy-map" viewBox="0 0 960 480" role="img" aria-label="Spatial evidence canopy; the accessible record directory follows"></svg></div><aside class="canopy-minimap" aria-label="Spatial minimap"><svg id="canopy-mini" viewBox="0 0 960 480" role="img" aria-label="Overview of declared nodes and current zoom region"></svg><button type="button" id="canopy-zoom-reset">Fit all stages</button></aside></div>
 <p id="canopy-announcement" role="status" aria-live="polite">Import evidence to illuminate the canopy.</p>
 <div id="canopy-directory" class="canopy-directory" aria-label="Accessible canopy directory"></div>
 </section>
@@ -284,10 +284,25 @@ import {canopyLayout,canopyLineage,canopyRoutes,SPECTRUM,STAGES} from './living-
 let current=null;const byId=id=>document.getElementById(id);
 const ns='http://www.w3.org/2000/svg';
 const svg=(name,attrs={})=>{const e=document.createElementNS(ns,name);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));return e};
+// Viewport-only semantic zoom: never mutates the declared provenance graph.
+let zoomStage='all';
+const setZoom=stage=>{zoomStage=stage;renderCanopy()};
+const paintNavigation=(layout,sky)=>{
+ const nav=byId('canopy-stage-nav'),mini=byId('canopy-mini');nav.replaceChildren();mini.replaceChildren();
+ for(const [stage,label] of [['all','Whole federation'],...STAGES.map(s=>[s,s[0].toUpperCase()+s.slice(1)])]){
+  const button=document.createElement('button');button.type='button';button.textContent=label+' · '+(stage==='all'?layout.nodes.length:layout.nodes.filter(n=>n.stage===stage).length);
+  button.setAttribute('aria-pressed',String(stage===zoomStage));button.style.setProperty('--stage-color',stage==='all'?'#f5cd83':SPECTRUM[STAGES.indexOf(stage)]);button.onclick=()=>setZoom(stage);nav.append(button);
+ }
+ const idx=STAGES.indexOf(zoomStage),view=idx<0?[0,0,960,480]:[Math.max(0,75+idx*162-100),0,200,480];sky.setAttribute('viewBox',view.join(' '));
+ for(const n of layout.nodes)mini.append(svg('circle',{cx:n.x,cy:n.y,r:5,fill:SPECTRUM[STAGES.indexOf(n.stage)]}));
+ mini.append(svg('rect',{x:view[0],y:view[1],width:view[2],height:view[3],fill:'none',stroke:'#f5cd83','stroke-width':5,'pointer-events':'none'}));
+ byId('canopy-zoom-reset').onclick=()=>setZoom('all');
+};
 const renderCanopy=()=>{
  const sky=byId('canopy-map'),directory=byId('canopy-directory'),announce=byId('canopy-announcement');sky.replaceChildren();directory.replaceChildren();
- if(!current){announce.textContent='Import evidence to illuminate the canopy.';return}
+ if(!current){paintNavigation({nodes:[]},sky);announce.textContent='Import evidence to illuminate the canopy.';return}
  const layout=canopyLayout(current),points=new Map(layout.nodes.map(n=>[n.id,n]));
+ paintNavigation(layout,sky);
  const focusId=sky.dataset.focusId||'',lineage=focusId?canopyLineage(layout,focusId):null;
  const activeRoute=(sky.dataset.routeIds||'').split('|').filter(Boolean);
  if(activeRoute.length&&(activeRoute.at(-1)!==focusId||activeRoute.some(id=>!points.has(id)))){sky.dataset.routeIds='';activeRoute.length=0}
