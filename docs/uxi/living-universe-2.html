@@ -27,20 +27,21 @@ dl{display:grid;grid-template-columns:95px 1fr;gap:.6rem;overflow-wrap:anywhere}
 @media(max-width:480px){.stages{grid-template-columns:repeat(2,minmax(0,1fr))}.universe,.universe svg{min-height:330px;height:330px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 .mission-board{margin-top:1rem;border-top:1px solid #6987a4;padding-top:1rem}.mission-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:.7rem}.mission{border:1px solid #6687a3;border-top:4px solid var(--green);border-radius:14px;padding:1rem;background:linear-gradient(145deg,#162f48,#101c31)}.mission h3{font-size:1rem;color:var(--gold);margin:.2rem 0}.mission p{font-size:.85rem;color:var(--muted)}.mission button{width:100%;text-align:left}.mission .gap{color:#ffcf93}.route-preview{border:1px solid #6888a4;border-radius:12px;padding:.8rem;margin-top:.8rem;overflow-wrap:anywhere}.route-preview ol{padding-left:1.4rem}.route-preview li{margin:.3rem 0}.route-preview button{margin:.2rem}
+.navigation-deck{margin-top:1rem;background:radial-gradient(ellipse at 20% 10%,#4b2c4c88,transparent 55%),radial-gradient(ellipse at 85% 70%,#155a5788,transparent 60%),#0b192d}.nav-actions{display:flex;flex-wrap:wrap;gap:.6rem}.nav-actions button{border-top:4px solid var(--gold);flex:1;min-width:130px}.nav-actions button:disabled{opacity:.5;cursor:not-allowed}#nav-position{color:var(--muted);overflow-wrap:anywhere}@media(max-width:500px){.nav-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.nav-actions button{min-width:0}}
 </style></head><body>
 <a class="skip" href="#content">Skip to exploration</a><div class="ribbon" aria-hidden="true"></div>
 <header><div><div class="eyebrow">AIFT · Living Universe 2.0</div><h1>Evidence Observatory</h1><p class="lede">An inspectable, local-first constellation. Repositories are roots; outcomes are fruits only when the imported evidence declares a real deliverable. Nothing here claims live CI or completed work without source evidence.</p></div>
 <nav aria-label="Federation navigation"><a href="https://www.aifreedomtrust.com/living-universe-explorer.html">Living Tree</a><a href="https://www.aifreedomtrust.com/evidence-expedition.html">Evidence Expedition</a><a href="https://github.com/AIFreedomTrustFederation/AIFT-OS">MoBox source</a></nav></header>
 <main id="content"><section class="panel"><h2>Open a federation evidence packet</h2><p class="lede">Import a local JSON packet from the portal or operator console, or the canonical AIFT-Genesis tree.manifest.json. No upload, network submission, telemetry, or local service exposure occurs. Unsupported formats are rejected rather than guessed.</p>
 <div class="toolbar"><label>Evidence packet (JSON, up to 2 MB)<input id="file" type="file" accept=".json,application/json"></label><label>Search declared nodes<input id="search" type="search" placeholder="Find a source, capability, outcome"></label><button id="export" disabled title="Select an imported node to export its declared ancestor lineage">Export selected lineage dossier</button><button id="clear">Clear local view</button></div><p id="status" class="status" role="status" aria-live="polite">No packet loaded. Import evidence to begin; the scene does not invent federation data.</p></section>
-<div class="grid" style="margin-top:1rem"><section class="panel"><h2>Tree of Emergence</h2><div id="stages" class="stages" role="group" aria-label="Biological stage filter"></div><div class="universe"><svg id="sky" viewBox="0 0 900 430" role="group" aria-label="Evidence constellation; use the accessible node directory below"></svg></div><p class="legend">Red → gold → green → blue → violet → gold. Connections represent only declared directed relationships.</p><svg id="minimap" class="map" viewBox="0 0 900 92" role="img" aria-label="Spatial overview of visible nodes"></svg><h2>Accessible constellation directory</h2><div id="directory" class="list"></div></section>
+<section class="panel navigation-deck" aria-label="Semantic exploration navigation"><h2>Explore the living lineage</h2><p class="lede">Move between declared nodes and return through your local exploration history. Navigation never changes evidence or readiness.</p><div class="nav-actions"><button id="nav-back" disabled aria-label="Previous explored node">← Back</button><button id="nav-forward" disabled aria-label="Next explored node">Forward →</button><button id="nav-roots" disabled>Explore declared roots</button><button id="nav-next" disabled>Follow directed branch →</button></div><p id="nav-position" role="status" aria-live="polite">Import evidence to begin semantic exploration.</p></section>\n<div class="grid" style="margin-top:1rem"><section class="panel"><h2>Tree of Emergence</h2><div id="stages" class="stages" role="group" aria-label="Biological stage filter"></div><div class="universe"><svg id="sky" viewBox="0 0 900 430" role="group" aria-label="Evidence constellation; use the accessible node directory below"></svg></div><p class="legend">Red → gold → green → blue → violet → gold. Connections represent only declared directed relationships.</p><svg id="minimap" class="map" viewBox="0 0 900 92" role="img" aria-label="Spatial overview of visible nodes"></svg><h2>Accessible constellation directory</h2><div id="directory" class="list"></div></section>
 <aside class="panel"><h2>Provenance inspector</h2><div id="detail" class="notice">Select an imported node to inspect its biological role, source links and declared lineage.</div><h2>Source lineage audit</h2><div id="lineage-audit" class="notice" aria-live="polite">Select a node to review its declared source roots and evidence gaps.</div><h2>Reversible lineage</h2><div id="route" class="route" aria-label="Declared lineage breadcrumbs"></div><p class="legend">No achievements, progress percentages or product readiness are inferred from browsing. Unlinked outcomes remain evidence gaps.</p><section class="mission-board" aria-label="Evidence exploration missions"><h2>Evidence missions</h2><p class="lede">Review opportunities generated from imported graph evidence. These are not earned achievements, live checks, or XP.</p><div id="mission-count" role="status" aria-live="polite"></div><div id="missions" class="mission-grid"></div><div id="route-preview" class="route-preview" aria-live="polite">Choose a lineage mission to inspect its directed source route.</div></section></aside></div></main>
 <footer class="lede">Review surface only · No merge, deploy, status mutation, telemetry, or governance authority.</footer>
 <script type="module">
 import {adaptGenesisManifest} from './genesis-adapter.mjs';
 import {planJourneys,lineageFor} from './journey-planner.mjs';
 import {createDossier,validateDossier,DOSSIER_KIND} from './living-universe-dossier.mjs';
-import {auditLineage,auditGraph} from './living-universe-lineage-audit.mjs';
+import {auditLineage,auditGraph} from './living-universe-lineage-audit.mjs';\nimport {createNavigation} from './living-universe-navigation.mjs';
 (()=>{'use strict';
 const stages=['root','trunk','branch','leaf','flower','fruit'],labels=['Roots','Trunk','Branches','Leaves','Flowers','Fruits'],colors=['#ff547b','#f5cd83','#42e6aa','#69baff','#b49cff','#f5cd83'];
 const el=id=>document.getElementById(id);let nodes=[],edges=[],selected='',stage='',query='';
@@ -58,10 +59,10 @@ function importPacket(raw){
  const ids=new Set();
  const parsed=list.map((n,i)=>{if(!n||typeof n!=='object'||typeof n.id!=='string'||!n.id||ids.has(n.id))throw Error('Node '+i+' needs a unique string id.');ids.add(n.id);const s=stageOf(n);if(!s)throw Error('Node '+n.id+' has no recognized biological stage.');return {...n,_stage:s,_name:clean(n.label||n.name||n.title||n.id)}});
  const parsedEdges=links.map((e,i)=>{const from=typeof e.source==='string'?e.source:e.from;const to=typeof e.target==='string'?e.target:e.to;if(!ids.has(from)||!ids.has(to))throw Error('Edge '+i+' references an unknown node.');return {from,to}});
- nodes=parsed;edges=parsedEdges;selected=raw?.kind===DOSSIER_KIND&&ids.has(raw.focusId)?raw.focusId:'';stage='';query='';el('search').value='';say('Imported '+nodes.length+' declared nodes and '+edges.length+' declared relationships. Local review only; verification status is not inferred.');render();
+ nodes=parsed;edges=parsedEdges;navigation=createNavigation(nodes,edges);selected=raw?.kind===DOSSIER_KIND&&ids.has(raw.focusId)?raw.focusId:'';if(selected)navigation.inspect(selected);stage='';query='';el('search').value='';say('Imported '+nodes.length+' declared nodes and '+edges.length+' declared relationships. Local review only; verification status is not inferred.');render();
 }
 function visible(){return nodes.filter(n=>(!stage||n._stage===stage)&&(!query||[n._name,n.id,n._stage].join(' ').toLowerCase().includes(query)))}
-function select(id){selected=id;render();el('detail').focus?.()}
+let navigation=createNavigation();\nfunction select(id,{record=true}={}){if(!nodes.some(n=>n.id===id))return;selected=id;if(record)navigation.inspect(id);stage='';query='';el('search').value='';render();}
 function updateExport(){el('export').disabled=!nodes.some(n=>n.id===selected)}
 function render(){
  updateExport();
@@ -92,6 +93,10 @@ function renderMissions(){
  if(!nodes.length)preview.textContent='Choose a lineage mission to inspect its directed source route.';
 }
 function byLabel(id){const n=nodes.find(n=>n.id===id);return n?.label||n?.name||id}
+el('nav-back').onclick=()=>{const n=navigation.back();if(n)select(n.id,{record:false})};
+el('nav-forward').onclick=()=>{const n=navigation.forward();if(n)select(n.id,{record:false})};
+el('nav-roots').onclick=()=>{const roots=nodes.filter(n=>n._stage==='root');if(roots.length)select(roots[0].id)};
+el('nav-next').onclick=()=>{const ids=navigation.neighbors(selected);if(ids.length)select(ids[0])};
 el('export').onclick=()=>{try{
  const packet=createDossier(nodes,edges,selected);
  const data=new Blob([JSON.stringify(packet,null,2)+'\n'],{type:'application/json'});
@@ -100,9 +105,9 @@ el('export').onclick=()=>{try{
  setTimeout(()=>URL.revokeObjectURL(url),1500);
  say('Exported '+packet.nodes.length+' declared nodes and '+packet.edges.length+' edges. This is an unverified local evidence dossier.');
  }catch(err){say('Export unavailable: '+clean(err.message))}};
-el('file').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;if(file.size>2*1024*1024){say('File exceeds 2 MB limit.');return}try{importPacket((raw=>raw?.kind===DOSSIER_KIND?validateDossier(raw):raw?.kind==='tree-manifest'?adaptGenesisManifest(raw):raw)(JSON.parse(await file.text())))}catch(err){nodes=[];edges=[];selected='';say('Import rejected: '+clean(err.message));render()}};
+el('file').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;if(file.size>2*1024*1024){say('File exceeds 2 MB limit.');return}try{importPacket((raw=>raw?.kind===DOSSIER_KIND?validateDossier(raw):raw?.kind==='tree-manifest'?adaptGenesisManifest(raw):raw)(JSON.parse(await file.text())))}catch(err){nodes=[];edges=[];selected='';navigation.reset();say('Import rejected: '+clean(err.message));render()}};
 el('search').oninput=e=>{query=e.target.value.toLowerCase().trim();render()};
-el('clear').onclick=()=>{nodes=[];edges=[];selected='';stage='';query='';el('file').value='';el('search').value='';say('Local evidence cleared.');render()};
+el('clear').onclick=()=>{nodes=[];edges=[];selected='';navigation.reset();stage='';query='';el('file').value='';el('search').value='';say('Local evidence cleared.');render()};
 render();
 })();
 </script></body></html>
