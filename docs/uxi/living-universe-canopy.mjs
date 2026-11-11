@@ -7,8 +7,8 @@ export function canopyLayout(atlas,{width=960,height=480}={}){
  const positions=new Map();
  groups.forEach((group,i)=>group.forEach((m,j)=>positions.set(m.id,{id:m.id,x:75+i*(width-150)/5,y:60+(j+1)*(height-120)/(group.length+1),stage:m.stage,label:m.label,issues:m.issues.length,roots:m.roots.length,status:m.status})));
  const connections=[];
- for(const m of atlas.missions)for(const ancestor of m.ancestors){if(!positions.has(ancestor)||!positions.has(m.id))continue;
- // Only draw adjacent biological stage relations, never invent a shortcut to an ancestor.
+ for(const m of atlas.missions)for(const ancestor of (m.directParents||[])){if(!positions.has(ancestor)||!positions.has(m.id))continue;
+ // Draw only explicitly declared direct edges between adjacent biological stages. Transitive ancestry is not an edge.
  const a=positions.get(ancestor),b=positions.get(m.id);
  if(STAGES.indexOf(b.stage)-STAGES.indexOf(a.stage)===1)connections.push({from:ancestor,to:m.id});
  }
