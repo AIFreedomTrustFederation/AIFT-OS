@@ -81,7 +81,7 @@ test('route theatre offers selectable full-path highlighting and accessible step
  assert.match(html,/dataset\.routeIds=route\.ids\.join/);
  assert.match(html,/routeEdges\.has\(key\)/);
  assert.match(html,/routeIds\.has\(n\.id\)/);
- assert.match(html,/button\.setAttribute\('aria-pressed'/);
+ assert.match(html,/activate\.setAttribute\('aria-pressed'/);
  assert.match(html,/const steps=document\.createElement\('ol'\)/);
  assert.match(html,/prefers-reduced-motion:reduce/);
 });
