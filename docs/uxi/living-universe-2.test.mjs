@@ -38,3 +38,15 @@ test('lineage focus uses declared ancestry rather than federation membership',()
  assert.match(html,/focusLineage&&trace\.has\(e\.from\)&&trace\.has\(e\.to\)/);
  assert.match(html,/focusLineage&&trace\.has\(n\.id\)/);
 });
+
+test('cinematic journey theatre is source-backed, accessible and shared',()=>{
+ assert.match(html,/id="theatre-rail"/);
+ assert.match(html,/id="theatre-spotlight"/);
+ assert.match(html,/function renderTheatre\(\)/);
+ assert.match(html,/No declared nodes at this stage/);
+ assert.match(html,/No repository becomes a fruit|no repository becomes a fruit/i);
+ assert.match(html,/prefers-reduced-motion:reduce/);
+ assert.match(html,/aria-current/);
+ assert.doesNotMatch(html,/\\nimport \{/);
+ assert.doesNotMatch(html,/\\nfunction renderMissions/);
+});
