@@ -85,3 +85,16 @@ test('route theatre offers selectable full-path highlighting and accessible step
  assert.match(html,/const steps=document\.createElement\('ol'\)/);
  assert.match(html,/prefers-reduced-motion:reduce/);
 });
+
+test('semantic zoom and minimap remain accessible and evidence-only',async()=>{
+ const {readFileSync}=await import('node:fs');
+ const {fileURLToPath}=await import('node:url');
+ const {dirname,join}=await import('node:path');
+ const html=readFileSync(join(dirname(fileURLToPath(import.meta.url)),'living-universe-2.html'),'utf8');
+ for(const id of ['canopy-stage-nav','canopy-mini','canopy-zoom-reset','canopy-directory'])assert.match(html,new RegExp('id="'+id+'"'));
+ assert.match(html,/aria-pressed/);
+ assert.match(html,/sky\.setAttribute\('viewBox',view\.join\(' '\)\)/);
+ assert.match(html,/prefers-reduced-motion:reduce/);
+ assert.match(html,/paintNavigation\(layout,sky\)/);
+ assert.match(html,/Viewport-only semantic zoom: never mutates the declared provenance graph/);
+});
