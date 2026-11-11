@@ -20,7 +20,7 @@ export function analyzeAtlas(nodes,edges){
  const evidence=n.evidence||n.verification||n.ci;
  // Never infer a verified achievement from an arbitrary evidence string or URL.
  return {id:n.id,label:String(n.label||n.name||n.title||n.id),stage:s,roots,destination,issues,
-  status:issues.length?'evidence-gap':evidence?'evidence-declared':'unverified',ancestors:parents};
+  status:issues.length?'evidence-gap':evidence?'evidence-declared':'unverified',ancestors:parents,directParents:[...new Set(inbound.get(n.id))]};
  });
  return {missions,summary:{nodes:nodes.length,roots:nodes.filter(isRoot).length,declaredOutcomes:missions.filter(m=>m.stage==='fruit').length,gaps:missions.filter(m=>m.issues.length).length,verifiedAchievements:0}};
 }
