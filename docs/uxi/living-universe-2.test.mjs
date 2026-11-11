@@ -24,3 +24,17 @@ test('explicit source URL protocol allowlist and no unverified CI claims',()=>{
  assert.match(html,/\['https:','http:'\]/);
  assert.match(html,/No achievements, progress percentages or product readiness/);
 });
+test('cinematic semantic zoom remains bounded, reversible and accessible',()=>{
+ assert.match(html,/id="focus-zoom"[^>]*min="1" max="3" step="1"/);
+ assert.match(html,/id="focus-reset"/);
+ assert.match(html,/id="focus-lineage" aria-pressed="false"/);
+ assert.match(html,/viewWidth=900\/zoomLevel,viewHeight=430\/zoomLevel/);
+ assert.match(html,/Math\.max\(0,Math\.min\(900-viewWidth/);
+ assert.match(html,/prefers-reduced-motion:reduce/);
+});
+test('lineage focus uses declared ancestry rather than federation membership',()=>{
+ assert.match(html,/auditLineage\(nodes,edges,selected\)\.roots/);
+ assert.match(html,/lineageFor\(selected,nodes,edges\)/);
+ assert.match(html,/focusLineage&&trace\.has\(e\.from\)&&trace\.has\(e\.to\)/);
+ assert.match(html,/focusLineage&&trace\.has\(n\.id\)/);
+});
