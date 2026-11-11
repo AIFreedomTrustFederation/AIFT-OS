@@ -74,3 +74,14 @@ test('journeys are cycle-safe, bounded, deterministic and report absent provenan
  assert.equal(canopyRoutes(l,'unknown').unreachable,true);
  assert.throws(()=>canopyRoutes(l,'f',{maxRoutes:0}));
 });
+
+test('route theatre offers selectable full-path highlighting and accessible step navigation',async()=>{
+ const {readFileSync}=await import('node:fs');const {fileURLToPath}=await import('node:url');const {dirname,join}=await import('node:path');
+ const html=readFileSync(join(dirname(fileURLToPath(import.meta.url)),'living-universe-2.html'),'utf8');
+ assert.match(html,/dataset\.routeIds=route\.ids\.join/);
+ assert.match(html,/routeEdges\.has\(key\)/);
+ assert.match(html,/routeIds\.has\(n\.id\)/);
+ assert.match(html,/button\.setAttribute\('aria-pressed'/);
+ assert.match(html,/const steps=document\.createElement\('ol'\)/);
+ assert.match(html,/prefers-reduced-motion:reduce/);
+});
