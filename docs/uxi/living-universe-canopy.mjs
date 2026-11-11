@@ -52,3 +52,35 @@ export function canopyLineage(layout,id){
   rootIds:[...visited].filter(key=>index.get(key)?.stage==='root'),
   gaps:[...used.values()].filter(edge=>edge.kind==='stage-gap'||edge.kind==='nonprogressive')};
 }
+
+// Evidence-only shortest declared routes from repository roots to a selected record.
+// Never invents missing nodes, implied links, or verification receipts.
+export function canopyRoutes(layout,id,{maxRoutes=12}={}){
+ if(!Number.isInteger(maxRoutes)||maxRoutes<1||maxRoutes>50)throw Error('Invalid route limit');
+ const index=new Map(layout.nodes.map(n=>[n.id,n]));
+ if(!index.has(id))return {routes:[],truncated:false,unreachable:true};
+ const outgoing=new Map();
+ for(const edge of layout.connections){
+  if(!index.has(edge.from)||!index.has(edge.to))continue;
+  if(!outgoing.has(edge.from))outgoing.set(edge.from,[]);
+  outgoing.get(edge.from).push(edge.to);
+ }
+ for(const values of outgoing.values())values.sort();
+ const routes=[];
+ const roots=layout.nodes.filter(n=>n.stage==='root').map(n=>n.id).sort();
+ for(const root of roots){
+  const queue=[[root]],visited=new Set([root]);let found=null;
+  while(queue.length){
+   const path=queue.shift(),last=path[path.length-1];
+   if(last===id){found=path;break}
+   for(const next of outgoing.get(last)||[]){
+    if(!visited.has(next)){visited.add(next);queue.push([...path,next])}
+   }
+  }
+  if(found)routes.push({rootId:root,ids:found,stageGaps:found.slice(1).filter((to,i)=>{
+   const from=found[i];
+   return layout.connections.some(e=>e.from===from&&e.to===to&&e.kind&&e.kind!=='adjacent');
+  }).length});
+ }
+ return {routes:routes.slice(0,maxRoutes),truncated:routes.length>maxRoutes,unreachable:routes.length===0};
+}
