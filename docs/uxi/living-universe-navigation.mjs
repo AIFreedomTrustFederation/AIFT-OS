@@ -12,7 +12,7 @@ export function createNavigation(nodes=[],edges=[]){
   return byId.get(id);
  }
  function step(direction){const next=cursor+direction;if(next<0||next>=visited.length)return null;cursor=next;return byId.get(visited[cursor])}
- function neighbors(id){return [...new Set(adjacent.get(id)||[])].filter(byId.has)}
+ function neighbors(id){return [...new Set(adjacent.get(id)||[])].filter(id=>byId.has(id))}
  function snapshot(){return {selected:visited[cursor]||null,back:cursor>0,forward:cursor<visited.length-1,visited:visited.slice(),cursor}}
  function reset(){visited.length=0;cursor=-1}
  return {inspect,back:()=>step(-1),forward:()=>step(1),neighbors,snapshot,reset}
