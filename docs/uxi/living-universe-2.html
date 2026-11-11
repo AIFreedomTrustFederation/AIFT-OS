@@ -32,13 +32,14 @@ dl{display:grid;grid-template-columns:95px 1fr;gap:.6rem;overflow-wrap:anywhere}
 <header><div><div class="eyebrow">AIFT · Living Universe 2.0</div><h1>Evidence Observatory</h1><p class="lede">An inspectable, local-first constellation. Repositories are roots; outcomes are fruits only when the imported evidence declares a real deliverable. Nothing here claims live CI or completed work without source evidence.</p></div>
 <nav aria-label="Federation navigation"><a href="https://www.aifreedomtrust.com/living-universe-explorer.html">Living Tree</a><a href="https://www.aifreedomtrust.com/evidence-expedition.html">Evidence Expedition</a><a href="https://github.com/AIFreedomTrustFederation/AIFT-OS">MoBox source</a></nav></header>
 <main id="content"><section class="panel"><h2>Open a federation evidence packet</h2><p class="lede">Import a local JSON packet from the portal or operator console, or the canonical AIFT-Genesis tree.manifest.json. No upload, network submission, telemetry, or local service exposure occurs. Unsupported formats are rejected rather than guessed.</p>
-<div class="toolbar"><label>Evidence packet (JSON, up to 2 MB)<input id="file" type="file" accept=".json,application/json"></label><label>Search declared nodes<input id="search" type="search" placeholder="Find a source, capability, outcome"></label><button id="clear">Clear local view</button></div><p id="status" class="status" role="status" aria-live="polite">No packet loaded. Import evidence to begin; the scene does not invent federation data.</p></section>
+<div class="toolbar"><label>Evidence packet (JSON, up to 2 MB)<input id="file" type="file" accept=".json,application/json"></label><label>Search declared nodes<input id="search" type="search" placeholder="Find a source, capability, outcome"></label><button id="export" disabled title="Select an imported node to export its declared ancestor lineage">Export selected lineage dossier</button><button id="clear">Clear local view</button></div><p id="status" class="status" role="status" aria-live="polite">No packet loaded. Import evidence to begin; the scene does not invent federation data.</p></section>
 <div class="grid" style="margin-top:1rem"><section class="panel"><h2>Tree of Emergence</h2><div id="stages" class="stages" role="group" aria-label="Biological stage filter"></div><div class="universe"><svg id="sky" viewBox="0 0 900 430" role="group" aria-label="Evidence constellation; use the accessible node directory below"></svg></div><p class="legend">Red → gold → green → blue → violet → gold. Connections represent only declared directed relationships.</p><svg id="minimap" class="map" viewBox="0 0 900 92" role="img" aria-label="Spatial overview of visible nodes"></svg><h2>Accessible constellation directory</h2><div id="directory" class="list"></div></section>
 <aside class="panel"><h2>Provenance inspector</h2><div id="detail" class="notice">Select an imported node to inspect its biological role, source links and declared lineage.</div><h2>Reversible lineage</h2><div id="route" class="route" aria-label="Declared lineage breadcrumbs"></div><p class="legend">No achievements, progress percentages or product readiness are inferred from browsing. Unlinked outcomes remain evidence gaps.</p><section class="mission-board" aria-label="Evidence exploration missions"><h2>Evidence missions</h2><p class="lede">Review opportunities generated from imported graph evidence. These are not earned achievements, live checks, or XP.</p><div id="mission-count" role="status" aria-live="polite"></div><div id="missions" class="mission-grid"></div><div id="route-preview" class="route-preview" aria-live="polite">Choose a lineage mission to inspect its directed source route.</div></section></aside></div></main>
 <footer class="lede">Review surface only · No merge, deploy, status mutation, telemetry, or governance authority.</footer>
 <script type="module">
 import {adaptGenesisManifest} from './genesis-adapter.mjs';
 import {planJourneys,lineageFor} from './journey-planner.mjs';
+import {createDossier,validateDossier,DOSSIER_KIND} from './living-universe-dossier.mjs';
 (()=>{'use strict';
 const stages=['root','trunk','branch','leaf','flower','fruit'],labels=['Roots','Trunk','Branches','Leaves','Flowers','Fruits'],colors=['#ff547b','#f5cd83','#42e6aa','#69baff','#b49cff','#f5cd83'];
 const el=id=>document.getElementById(id);let nodes=[],edges=[],selected='',stage='',query='';
@@ -56,11 +57,13 @@ function importPacket(raw){
  const ids=new Set();
  const parsed=list.map((n,i)=>{if(!n||typeof n!=='object'||typeof n.id!=='string'||!n.id||ids.has(n.id))throw Error('Node '+i+' needs a unique string id.');ids.add(n.id);const s=stageOf(n);if(!s)throw Error('Node '+n.id+' has no recognized biological stage.');return {...n,_stage:s,_name:clean(n.label||n.name||n.title||n.id)}});
  const parsedEdges=links.map((e,i)=>{const from=typeof e.source==='string'?e.source:e.from;const to=typeof e.target==='string'?e.target:e.to;if(!ids.has(from)||!ids.has(to))throw Error('Edge '+i+' references an unknown node.');return {from,to}});
- nodes=parsed;edges=parsedEdges;selected='';stage='';query='';el('search').value='';say('Imported '+nodes.length+' declared nodes and '+edges.length+' declared relationships. Local review only; verification status is not inferred.');render();
+ nodes=parsed;edges=parsedEdges;selected=raw?.kind===DOSSIER_KIND&&ids.has(raw.focusId)?raw.focusId:'';stage='';query='';el('search').value='';say('Imported '+nodes.length+' declared nodes and '+edges.length+' declared relationships. Local review only; verification status is not inferred.');render();
 }
 function visible(){return nodes.filter(n=>(!stage||n._stage===stage)&&(!query||[n._name,n.id,n._stage].join(' ').toLowerCase().includes(query)))}
 function select(id){selected=id;render();el('detail').focus?.()}
+function updateExport(){el('export').disabled=!nodes.some(n=>n.id===selected)}
 function render(){
+ updateExport();
  const v=visible(),byId=new Map(nodes.map(n=>[n.id,n])),positions=new Map();
  renderMissions();
  const counts=stages.map(s=>nodes.filter(n=>n._stage===s).length);
@@ -87,7 +90,15 @@ function renderMissions(){
  if(!nodes.length)preview.textContent='Choose a lineage mission to inspect its directed source route.';
 }
 function byLabel(id){const n=nodes.find(n=>n.id===id);return n?.label||n?.name||id}
-el('file').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;if(file.size>2*1024*1024){say('File exceeds 2 MB limit.');return}try{importPacket((raw=>raw?.kind==='tree-manifest'?adaptGenesisManifest(raw):raw)(JSON.parse(await file.text())))}catch(err){nodes=[];edges=[];selected='';say('Import rejected: '+clean(err.message));render()}};
+el('export').onclick=()=>{try{
+ const packet=createDossier(nodes,edges,selected);
+ const data=new Blob([JSON.stringify(packet,null,2)+'\n'],{type:'application/json'});
+ const url=URL.createObjectURL(data),a=document.createElement('a');
+ a.href=url;a.download='aift-lineage-dossier.json';a.click();
+ setTimeout(()=>URL.revokeObjectURL(url),1500);
+ say('Exported '+packet.nodes.length+' declared nodes and '+packet.edges.length+' edges. This is an unverified local evidence dossier.');
+ }catch(err){say('Export unavailable: '+clean(err.message))}};
+el('file').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;if(file.size>2*1024*1024){say('File exceeds 2 MB limit.');return}try{importPacket((raw=>raw?.kind===DOSSIER_KIND?validateDossier(raw):raw?.kind==='tree-manifest'?adaptGenesisManifest(raw):raw)(JSON.parse(await file.text())))}catch(err){nodes=[];edges=[];selected='';say('Import rejected: '+clean(err.message));render()}};
 el('search').oninput=e=>{query=e.target.value.toLowerCase().trim();render()};
 el('clear').onclick=()=>{nodes=[];edges=[];selected='';stage='';query='';el('file').value='';el('search').value='';say('Local evidence cleared.');render()};
 render();
