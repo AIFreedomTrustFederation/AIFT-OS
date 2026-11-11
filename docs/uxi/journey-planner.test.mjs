@@ -5,7 +5,7 @@ test('only directed root paths are recognized',()=>{
  const nodes=[{id:'repo',stage:'root'},{id:'system',stage:'branch'},{id:'app',stage:'fruit',url:'https://example.org',productEvidence:{verified:true,sourceUrl:'https://example.org/evidence'}}];
  const edges=[{from:'repo',to:'system'},{from:'system',to:'app'}];
  const p=planJourneys(nodes,edges);
- assert.equal(p.routes[0].classification,'evidence-linked-outcome');
+ assert.equal(p.routes[0].classification,'declared-evidence-route');
  assert.deepEqual(p.routes[0].path,['repo','system','app']);
  assert.deepEqual(lineageFor('app',nodes,edges),['repo','system','app']);
  assert.equal(planJourneys(nodes,[{from:'app',to:'repo'}]).routes[0].classification,'evidence-gap');
