@@ -282,6 +282,30 @@ render();
 import {analyzeAtlas,filterAtlas} from './living-universe-skill-atlas.mjs';
 import {canopyLayout,canopyLineage,canopyRoutes,SPECTRUM,STAGES} from './living-universe-canopy.mjs';
 let current=null;const byId=id=>document.getElementById(id);
+// Shared keyboard journey: roving focus follows the biological columns without losing focus on rerender.
+let keyboardFocusId='';
+const focusCanopyRecord=(id,source='svg')=>{
+ keyboardFocusId=id;
+ const sky=byId('canopy-map');
+ sky.dataset.focusId=id;
+ renderCanopy();
+ const target=source==='directory'
+  ? [...byId('canopy-directory').querySelectorAll('[data-canopy-id]')].find(e=>e.dataset.canopyId===id)
+  : [...sky.querySelectorAll('[data-canopy-id]')].find(e=>e.dataset.canopyId===id);
+ target?.focus({preventScroll:true});
+};
+const canopyKeyboardMove=(layout,id,key)=>{
+ const nodes=layout.nodes,here=nodes.find(n=>n.id===id);if(!here)return null;
+ const direction={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[key];
+ if(!direction)return null;
+ const [dx,dy]=direction;
+ const candidates=nodes.filter(n=>n.id!==id&&(dx?(n.x-here.x)*dx>0:(n.y-here.y)*dy>0));
+ candidates.sort((a,b)=>{
+  const cost=n=>dx?Math.abs(n.x-here.x)*2+Math.abs(n.y-here.y):Math.abs(n.y-here.y)*2+Math.abs(n.x-here.x);
+  return cost(a)-cost(b)||a.id.localeCompare(b.id);
+ });
+ return candidates[0]?.id||null;
+};
 const ns='http://www.w3.org/2000/svg';
 const svg=(name,attrs={})=>{const e=document.createElementNS(ns,name);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));return e};
 // Viewport-only semantic zoom: never mutates the declared provenance graph.
@@ -315,7 +339,7 @@ const renderCanopy=()=>{
   const routeReport=canopyRoutes(layout,focusId);
   const routeCard=document.createElement('article');const routeTitle=document.createElement('h4');routeTitle.textContent='Directed root-to-record journeys';routeCard.append(routeTitle);
   if(!routeReport.routes.length){const p=document.createElement('p');p.textContent='No directed route from a declared repository root. Evidence remains incomplete.';routeCard.append(p)}
-  for(const route of routeReport.routes){const group=document.createElement('div');group.className='canopy-route';const activate=document.createElement('button');activate.type='button';activate.textContent='Trace '+(points.get(route.rootId)?.label||route.rootId)+(route.stageGaps?' · '+route.stageGaps+' stage anomalies':'');activate.setAttribute('aria-pressed',String(activeRoute.join('|')===route.ids.join('|')));activate.onclick=()=>{sky.dataset.routeIds=route.ids.join('|');renderCanopy()};group.append(activate);
+  for(const route of routeReport.routes){const group=document.createElement('div');group.className='canopy-route';const activate=document.createElement('button');activate.type='button';activate.textContent='Trace '+(points.get(route.rootId)?.label||route.rootId)+(route.stageGaps?' · '+route.stageGaps+' stage anomalies':'');activate.setAttribute('aria-pressed',String(activeRoute.join('|')===route.ids.join('|')));activate.onclick=()=>{sky.dataset.routeIds=route.ids.join('|');renderCanopy();const match=[...byId('canopy-lineage-journey').querySelectorAll('.canopy-route > button')].find(b=>b.textContent===activate.textContent);match?.focus({preventScroll:true})};group.append(activate);
    const steps=document.createElement('ol');for(const id of route.ids){const li=document.createElement('li');const button=document.createElement('button');button.type='button';button.textContent=(points.get(id)?.stage||'record')+' · '+(points.get(id)?.label||id);button.onclick=()=>{sky.dataset.routeIds='';sky.dataset.focusId=id;open(id);renderCanopy()};li.append(button);steps.append(li)}group.append(steps);routeCard.append(group)}journey.append(routeCard);
   if(routeReport.truncated){const note=document.createElement('p');note.textContent='Additional declared routes omitted by display limit.';journey.append(note)}
 
@@ -327,8 +351,8 @@ const renderCanopy=()=>{
  inspector.textContent=lineage?'Declared ancestry for '+(points.get(focusId)?.label||focusId)+': '+lineage.rootIds.length+' contributing repository roots, '+lineage.connections.length+' direct relationships, '+lineage.gaps.length+' stage anomalies. These declarations are not independently verified.': 'Select a declared record to trace its source ancestry. No independent verification is implied.';
  for(const edge of layout.connections){const a=points.get(edge.from),b=points.get(edge.to),key=JSON.stringify([edge.from,edge.to]);sky.append(svg('line',{class:'canopy-edge','data-kind':edge.kind||'adjacent','data-lineage':String(lineageEdges.has(key)),'data-route':String(routeEdges.has(key)),'data-dimmed':String(!!lineage&&!lineageEdges.has(key)),x1:a.x,y1:a.y,x2:b.x,y2:b.y}))}
  const open=id=>{window.dispatchEvent(new CustomEvent('aift:explore-node',{detail:{id}}));announce.textContent='Requested source-backed inspection of '+points.get(id).label+'.';};
- for(const n of layout.nodes){const color=SPECTRUM[STAGES.indexOf(n.stage)],g=svg('g',{class:'canopy-node','data-dimmed':String(!!lineage&&!lineageIds.has(n.id)),'data-route':String(routeIds.has(n.id)),role:'button',tabindex:0,'aria-label':n.label+' · '+n.stage+(n.issues?' · evidence gap':''),'data-gap':String(n.issues>0),style:'--canopy-color:'+color});g.append(svg('circle',{cx:n.x,cy:n.y,r:20}));const t=svg('text',{x:n.x,y:n.y+35});t.textContent=n.label.slice(0,17);g.append(t);g.addEventListener('click',()=>{sky.dataset.focusId=n.id;open(n.id);renderCanopy()});g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();sky.dataset.focusId=n.id;open(n.id);renderCanopy()}});sky.append(g);
- const b=document.createElement('button');b.style.setProperty('--canopy-color',color);const name=document.createElement('strong');name.textContent=n.label;const detail=document.createElement('small');detail.textContent=n.stage+' · '+(n.issues?'evidence gap':'declared record')+' · '+n.roots+' contributing roots';b.append(name,detail);b.dataset.canopyId=n.id;b.onclick=()=>{sky.dataset.focusId=n.id;open(n.id);renderCanopy()};directory.append(b)}
+ for(const n of layout.nodes){const color=SPECTRUM[STAGES.indexOf(n.stage)],g=svg('g',{class:'canopy-node','data-canopy-id':n.id,'data-dimmed':String(!!lineage&&!lineageIds.has(n.id)),'data-route':String(routeIds.has(n.id)),role:'button',tabindex:0,'aria-label':n.label+' · '+n.stage+(n.issues?' · evidence gap':''),'data-gap':String(n.issues>0),style:'--canopy-color:'+color});g.append(svg('circle',{cx:n.x,cy:n.y,r:20}));const t=svg('text',{x:n.x,y:n.y+35});t.textContent=n.label.slice(0,17);g.append(t);g.addEventListener('click',()=>{sky.dataset.focusId=n.id;open(n.id);renderCanopy()});g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open(n.id);focusCanopyRecord(n.id)}else if(e.key.startsWith('Arrow')){const next=canopyKeyboardMove(layout,n.id,e.key);if(next){e.preventDefault();focusCanopyRecord(next)}}});sky.append(g);
+ const b=document.createElement('button');b.style.setProperty('--canopy-color',color);const name=document.createElement('strong');name.textContent=n.label;const detail=document.createElement('small');detail.textContent=n.stage+' · '+(n.issues?'evidence gap':'declared record')+' · '+n.roots+' contributing roots';b.append(name,detail);b.dataset.canopyId=n.id;b.onclick=()=>{open(n.id);focusCanopyRecord(n.id,'directory')};b.addEventListener('keydown',e=>{const next=canopyKeyboardMove(layout,n.id,e.key);if(next){e.preventDefault();focusCanopyRecord(next,'directory')}});directory.append(b)}
  announce.textContent=layout.nodes.length+' declared records · '+layout.connections.length+' direct declared connections · no independently verified achievements.';
 };
 const render=()=>{
