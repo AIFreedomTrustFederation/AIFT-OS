@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Living Universe 2.0 | Evidence Observatory</title>
+<style>
+:root{color-scheme:dark;--red:#ff547b;--gold:#f5cd83;--green:#42e6aa;--blue:#69baff;--ink:#eaf4ff;--muted:#c1d3e8;background:#060b19;color:var(--ink);font:16px/1.5 system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 20% 15%,#3b1b3b 0,transparent 48%),radial-gradient(ellipse at 75% 45%,#103f45 0,transparent 45%),#060b19;min-height:100vh}
+a{color:#aee8ff}button,input{font:inherit}button{cursor:pointer;color:var(--ink);border:1px solid #7195b2;background:#14263f;padding:.7rem;border-radius:12px;min-height:44px}button[aria-pressed=true]{border-color:var(--gold);background:#30435c}:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.skip{position:absolute;left:-10000px}.skip:focus{left:1rem;top:1rem;z-index:9;background:#10263b;padding:1rem}
+.ribbon{height:10px;background:linear-gradient(90deg,var(--red),#ffb56e,var(--gold),var(--green),var(--blue),#a587f9);box-shadow:0 0 38px #71c5ff55}
+header,main,footer{max-width:1600px;margin:auto;padding:clamp(1rem,3vw,2.4rem)}header{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;align-items:center}
+h1{font:clamp(2.2rem,6vw,5rem)/1.04 Georgia,serif;color:var(--gold);margin:.4rem 0}.eyebrow{letter-spacing:.2em;text-transform:uppercase;color:var(--green);font-size:.8rem}
+header nav{display:flex;gap:1rem;flex-wrap:wrap}.lede{color:var(--muted);max-width:80ch}
+.toolbar{display:flex;gap:.7rem;align-items:end;flex-wrap:wrap;margin:1rem 0}.toolbar label{display:grid;gap:.35rem;flex:1;min-width:190px}
+input{width:100%;background:#0e1e32;border:1px solid #7795b5;border-radius:10px;color:white;padding:.7rem;min-height:44px}
+.grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(300px,.8fr);gap:1rem}
+.panel{min-width:0;border:1px solid #6284a3;border-radius:22px;padding:clamp(1rem,2vw,1.5rem);background:#0b192ddb;box-shadow:0 24px 75px #0007}
+h2{font:1.65rem Georgia,serif;color:var(--gold);margin:.2rem 0 .8rem}
+.stages{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.4rem;margin:.8rem 0}.stages button{font-size:.8rem;min-width:0;border-top:5px solid var(--c)}
+.universe{position:relative;min-height:430px;overflow:hidden;border:1px solid #6887a6;border-radius:20px;background:repeating-radial-gradient(circle at 50% 50%,transparent 0 54px,#a4dbff14 55px 56px),radial-gradient(ellipse at center,#24405c,#0a1426 72%)}
+.universe svg{width:100%;height:430px;display:block}.universe line{stroke:#8cafd1;stroke-width:1.5;opacity:.45}.universe line.focus{stroke:var(--gold);stroke-width:4;opacity:1}
+.orb{cursor:pointer;outline:none}.orb circle{fill:#0e1f34;stroke:var(--c);stroke-width:3}.orb[aria-pressed=true] circle,.orb:focus circle{stroke:white;stroke-width:5}.orb text{fill:#fff;font:12px system-ui,sans-serif;text-anchor:middle;pointer-events:none;paint-order:stroke;stroke:#091321;stroke-width:4px}
+.list{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.5rem;margin-top:1rem;max-height:330px;overflow:auto}.list button{text-align:left;border-left:4px solid var(--c)}.list small{display:block;color:var(--muted)}
+dl{display:grid;grid-template-columns:95px 1fr;gap:.6rem;overflow-wrap:anywhere}dt{color:var(--muted)}dd{margin:0}.notice{border-left:4px solid var(--gold);padding:.8rem;background:#293046;border-radius:8px}.legend{color:var(--muted);font-size:.9rem}
+.route{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0}.route button{font-size:.85rem}
+.map{height:92px;width:100%;border:1px solid #557b98;border-radius:12px;background:#091625}.status{color:var(--muted)}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.stages{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:480px){.stages{grid-template-columns:repeat(2,minmax(0,1fr))}.universe,.universe svg{min-height:330px;height:330px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+.mission-board{margin-top:1rem;border-top:1px solid #6987a4;padding-top:1rem}.mission-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:.7rem}.mission{border:1px solid #6687a3;border-top:4px solid var(--green);border-radius:14px;padding:1rem;background:linear-gradient(145deg,#162f48,#101c31)}.mission h3{font-size:1rem;color:var(--gold);margin:.2rem 0}.mission p{font-size:.85rem;color:var(--muted)}.mission button{width:100%;text-align:left}.mission .gap{color:#ffcf93}.route-preview{border:1px solid #6888a4;border-radius:12px;padding:.8rem;margin-top:.8rem;overflow-wrap:anywhere}.route-preview ol{padding-left:1.4rem}.route-preview li{margin:.3rem 0}.route-preview button{margin:.2rem}
+.navigation-deck{margin-top:1rem;background:radial-gradient(ellipse at 20% 10%,#4b2c4c88,transparent 55%),radial-gradient(ellipse at 85% 70%,#155a5788,transparent 60%),#0b192d}.nav-actions{display:flex;flex-wrap:wrap;gap:.6rem}.nav-actions button{border-top:4px solid var(--gold);flex:1;min-width:130px}.nav-actions button:disabled{opacity:.5;cursor:not-allowed}#nav-position{color:var(--muted);overflow-wrap:anywhere}@media(max-width:500px){.nav-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.nav-actions button{min-width:0}}
+
+/* Cinematic evidence focus: additive, keyboard and motion-safe */
+.focus-deck{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;margin:.7rem 0;padding:.85rem;border:1px solid #b6a06b;border-radius:16px;background:linear-gradient(110deg,#291d38d9,#0c3540d9,#122648d9);box-shadow:inset 0 0 30px #f5cd8310}
+.focus-deck label{display:flex;align-items:center;gap:.6rem;flex:1;min-width:180px}.focus-deck input[type=range]{min-width:90px;flex:1;accent-color:var(--gold)}
+.focus-deck output{min-width:3ch;font-variant-numeric:tabular-nums;color:var(--gold)}
+.focus-deck button{background:#183c4a;border-color:#88b3c1}
+.universe:before{content:"";position:absolute;inset:4%;pointer-events:none;border:1px solid #f5cd8330;border-radius:50%;box-shadow:0 0 70px #69baff18,inset 0 0 90px #42e6aa12}
+.universe:after{content:"";position:absolute;inset:14%;pointer-events:none;border:1px dashed #f5cd8330;border-radius:50%;transform:rotate(-22deg)}
+.universe svg{position:relative;z-index:1;transition:view-box .35s ease}
+.universe .orb circle{filter:drop-shadow(0 0 7px var(--c));transition:stroke-width .18s ease,filter .18s ease}
+.universe .orb.path circle{filter:drop-shadow(0 0 14px var(--gold));stroke:var(--gold);stroke-width:4}
+.universe .orb.outside{opacity:.28}.universe line.path{stroke:var(--gold);opacity:1;stroke-width:3.5;filter:drop-shadow(0 0 5px var(--gold))}
+.focus-readout{margin:.5rem 0;color:var(--muted);font-size:.9rem}
+@media(max-width:600px){.focus-deck{display:grid;grid-template-columns:1fr 1fr}.focus-deck label{grid-column:1/-1}.focus-deck button{min-width:0}}
+@media(prefers-reduced-motion:reduce){.universe svg,.universe .orb circle{transition:none!important}}
+
+/* Readiness theatre: visual hierarchy follows biological lineage, never fabricated CI. */
+.readiness-theatre{margin:1rem 0;background:radial-gradient(ellipse at 12% 0%,#68253c66,transparent 55%),radial-gradient(ellipse at 88% 90%,#105d6266,transparent 55%),#101c32}
+.readiness-theatre .theatre-head{display:flex;justify-content:space-between;align-items:start;gap:1rem;flex-wrap:wrap}
+.readiness-theatre .theatre-head p{max-width:70ch;color:var(--muted)}
+.readiness-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.7rem;margin:1rem 0}
+.readiness-metrics article{padding:1rem;border:1px solid #6b8ba9;border-top:4px solid var(--accent);border-radius:16px;background:#10283b;min-width:0}
+.readiness-metrics strong{display:block;font:clamp(1.4rem,3vw,2.2rem) Georgia,serif;color:var(--gold)}
+.readiness-metrics span{font-size:.8rem;color:var(--muted)}
+.readiness-flow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.5rem;margin:1rem 0}
+.readiness-flow button{border-top:5px solid var(--accent);min-width:0;overflow-wrap:anywhere}
+.readiness-review{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:.7rem}
+.readiness-review article{padding:1rem;border:1px solid #a68c68;border-radius:14px;background:#251f30}
+.readiness-review h3{font-size:1rem;margin:.2rem 0;color:var(--gold)}
+.readiness-review p{font-size:.85rem;color:var(--muted)}
+.readiness-review button{width:100%}
+@media(max-width:750px){.readiness-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.readiness-flow{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:420px){.readiness-flow{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+.journey-theatre{margin:1rem 0;padding:clamp(1rem,2vw,1.7rem);border:1px solid #a5b8d078;border-radius:24px;background:radial-gradient(ellipse at 50% 0%,#39526d99,transparent 65%),linear-gradient(145deg,#151e36,#081727);box-shadow:0 20px 70px #0009;overflow:hidden;position:relative}
+.journey-theatre:before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-radial-gradient(circle at 50% 50%,transparent 0 65px,#b9cde014 66px 67px)}
+.journey-theatre>*{position:relative}.journey-theatre h2{margin:.2rem 0}.journey-theatre .theatre-header{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.theatre-rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.5rem;margin:1rem 0}.theatre-rail button{min-width:0;padding:.8rem .25rem;border-top:5px solid var(--c);background:linear-gradient(160deg,#233950,#0b1a2c);display:grid;justify-items:center;gap:.2rem}
+.theatre-rail button[aria-current=step]{outline:2px solid var(--gold);box-shadow:0 0 22px #f5cd8355}.theatre-rail .glyph{font:1.4rem Georgia,serif;color:var(--c)}.theatre-rail small{color:var(--muted);font-size:.73rem}
+.theatre-body{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(230px,.7fr);gap:1rem}.theatre-spotlight{padding:1rem;border:1px solid #829db3;border-radius:16px;background:#0d2238b8}.theatre-spotlight h3{font:1.5rem Georgia,serif;color:var(--gold);margin:.2rem 0}.theatre-spotlight p{max-width:70ch}
+.theatre-links{display:flex;gap:.5rem;flex-wrap:wrap}.theatre-links button{flex:1;text-align:left;min-width:135px}.theatre-links small{display:block;color:var(--muted)}
+.theatre-evidence{border-left:3px solid var(--green);padding:1rem;background:#10293b;border-radius:12px}.theatre-evidence strong{color:var(--gold)}.theatre-evidence p{color:var(--muted)}
+@media(max-width:800px){.theatre-body{grid-template-columns:1fr}}@media(max-width:540px){.theatre-rail{grid-template-columns:repeat(3,minmax(0,1fr))}.theatre-rail button{min-height:70px}}
+@media(prefers-reduced-motion:reduce){.journey-theatre *{animation:none!important;transition:none!important}}
+</style></head><body>
+<a class="skip" href="#content">Skip to exploration</a><div class="ribbon" aria-hidden="true"></div>
+<header><div><div class="eyebrow">AIFT · Living Universe 2.0</div><h1>Evidence Observatory</h1><p class="lede">An inspectable, local-first constellation. Repositories are roots; outcomes are fruits only when the imported evidence declares a real deliverable. Nothing here claims live CI or completed work without source evidence.</p></div>
+<nav aria-label="Federation navigation"><a href="https://www.aifreedomtrust.com/living-universe-explorer.html">Living Tree</a><a href="https://www.aifreedomtrust.com/evidence-expedition.html">Evidence Expedition</a><a href="https://github.com/AIFreedomTrustFederation/AIFT-OS">MoBox source</a></nav></header>
+<main id="content"><section class="panel"><h2>Open a federation evidence packet</h2><p class="lede">Import a local JSON packet from the portal or operator console, or the canonical AIFT-Genesis tree.manifest.json. No upload, network submission, telemetry, or local service exposure occurs. Unsupported formats are rejected rather than guessed.</p>
+<div class="toolbar"><label>Evidence packet (JSON, up to 2 MB)<input id="file" type="file" accept=".json,application/json"></label><label>Search declared nodes<input id="search" type="search" placeholder="Find a source, capability, outcome"></label><button id="export" disabled title="Select an imported node to export its declared ancestor lineage">Export selected lineage dossier</button><button id="clear">Clear local view</button></div><p id="status" class="status" role="status" aria-live="polite">No packet loaded. Import evidence to begin; the scene does not invent federation data.</p></section>
+<section class="panel navigation-deck" aria-label="Semantic exploration navigation"><h2>Explore the living lineage</h2><p class="lede">Move between declared nodes and return through your local exploration history. Navigation never changes evidence or readiness.</p><div class="nav-actions"><button id="nav-back" disabled aria-label="Previous explored node">← Back</button><button id="nav-forward" disabled aria-label="Next explored node">Forward →</button><button id="nav-roots" disabled>Explore declared roots</button><button id="nav-next" disabled>Follow directed branch →</button></div><p id="nav-position" role="status" aria-live="polite">Import evidence to begin semantic exploration.</p></section>
+<section class="panel readiness-theatre" aria-label="Evidence readiness theatre"><div class="theatre-head"><div><div class="eyebrow">Root-fed systems · review workspace</div><h2>Federation Readiness Theatre</h2><p>Explore declared source ancestry and unresolved outcome evidence. Counts reflect only the locally imported packet, never live CI or independently verified product status.</p></div><button id="readiness-clear-filter">Show entire lineage</button></div><div id="readiness-metrics" class="readiness-metrics" aria-live="polite"></div><div id="readiness-flow" class="readiness-flow" role="group" aria-label="Explore biological stages"></div><h2>Evidence review missions</h2><div id="readiness-review" class="readiness-review"></div><p class="legend" id="readiness-disclaimer">Import evidence to populate this review workspace. No achievement or readiness claim is inferred.</p></section>
+<section class="journey-theatre" aria-labelledby="theatre-title">
+<div class="theatre-header"><div><div class="eyebrow">Directed evidence journey</div><h2 id="theatre-title">The Living Tree · Journey Theatre</h2></div><span class="legend" id="theatre-state" role="status" aria-live="polite">Import evidence to begin</span></div>
+<p class="lede">Explore source roots, the shared federation trunk, real systems, documented capabilities, emerging integrations and evidenced outcomes. Each station opens the actual imported record; no repository becomes a fruit.</p>
+<div class="theatre-rail" id="theatre-rail" role="group" aria-label="Explore biological stages"></div>
+<div class="theatre-body"><div class="theatre-spotlight" id="theatre-spotlight"><h3>Awaiting evidence</h3><p>Load a canonical Genesis manifest or portable dossier to illuminate the declared constellation.</p></div><aside class="theatre-evidence" id="theatre-evidence"><strong>Evidence boundary</strong><p>Exploration is not independent verification. Unlinked products remain evidence gaps.</p></aside></div></section><div class="grid" style="margin-top:1rem"><section class="panel"><h2>Tree of Emergence</h2><div id="stages" class="stages" role="group" aria-label="Biological stage filter"></div><div class="focus-deck" role="group" aria-label="Cinematic evidence focus"><label for="focus-zoom">Semantic zoom <input id="focus-zoom" type="range" min="1" max="3" step="1" value="1"><output id="zoom-level" for="focus-zoom">1×</output></label><button id="focus-lineage" aria-pressed="false">Trace lineage</button><button id="focus-reset">Full constellation</button></div><p class="focus-readout" id="focus-readout" role="status" aria-live="polite">Overview · select an evidence node to trace its declared ancestry.</p><div class="universe"><svg id="sky" viewBox="0 0 900 430" role="group" aria-label="Evidence constellation; use the accessible node directory below"></svg></div><p class="legend">Red → gold → green → blue → violet → gold. Connections represent only declared directed relationships.</p><svg id="minimap" class="map" viewBox="0 0 900 92" role="img" aria-label="Spatial overview of visible nodes"></svg><h2>Accessible constellation directory</h2><div id="directory" class="list"></div></section>
+<aside class="panel"><h2>Provenance inspector</h2><div id="detail" class="notice">Select an imported node to inspect its biological role, source links and declared lineage.</div><h2>Source lineage audit</h2><div id="lineage-audit" class="notice" aria-live="polite">Select a node to review its declared source roots and evidence gaps.</div><h2>Reversible lineage</h2><div id="route" class="route" aria-label="Declared lineage breadcrumbs"></div><p class="legend">No achievements, progress percentages or product readiness are inferred from browsing. Unlinked outcomes remain evidence gaps.</p><section class="mission-board" aria-label="Evidence exploration missions"><h2>Evidence missions</h2><p class="lede">Review opportunities generated from imported graph evidence. These are not earned achievements, live checks, or XP.</p><div id="mission-count" role="status" aria-live="polite"></div><div id="missions" class="mission-grid"></div><div id="route-preview" class="route-preview" aria-live="polite">Choose a lineage mission to inspect its directed source route.</div></section></aside></div></main>
+<footer class="lede">Review surface only · No merge, deploy, status mutation, telemetry, or governance authority.</footer>
+<script type="module">
+import {buildReadinessAtlas,readinessMissions} from './living-universe-readiness.mjs';
+import {adaptGenesisManifest} from './genesis-adapter.mjs';
+import {planJourneys,lineageFor} from './journey-planner.mjs';
+import {createDossier,validateDossier,DOSSIER_KIND} from './living-universe-dossier.mjs';
+import {auditLineage,auditGraph} from './living-universe-lineage-audit.mjs';
+import {createNavigation} from './living-universe-navigation.mjs';
+(()=>{'use strict';
+const stages=['root','trunk','branch','leaf','flower','fruit'],labels=['Roots','Trunk','Branches','Leaves','Flowers','Fruits'],colors=['#ff547b','#f5cd83','#42e6aa','#69baff','#b49cff','#f5cd83'];
+const el=id=>document.getElementById(id);let nodes=[],edges=[],selected='',stage='',query='';
+const safeUrl=value=>{try{const u=new URL(value);return ['https:','http:'].includes(u.protocol)?u.href:null}catch{return null}};
+const kind=n=>String(n.stage||n.kind||n.type||'').toLowerCase().replace(/s$/,'');
+const say=t=>el('status').textContent=t;
+const svg=(tag,attrs)=>{const e=document.createElementNS('http://www.w3.org/2000/svg',tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,String(v)));return e};
+const clean=t=>String(t??'').slice(0,180);
+const stageOf=n=>stages.includes(kind(n))?kind(n):null;
+function importPacket(raw){
+ const source=raw&&typeof raw==='object'?(raw.manifest||raw):null;
+ const list=source?.nodes;const links=source?.edges;
+ if(!Array.isArray(list)||!Array.isArray(links))throw Error('Expected a JSON object with nodes[] and edges[] or a canonical Genesis tree-manifest; unsupported schemas are rejected.');
+ if(list.length>350||links.length>1200)throw Error('Packet exceeds bounded visualization limits (350 nodes, 1200 edges).');
+ const ids=new Set();
+ const parsed=list.map((n,i)=>{if(!n||typeof n!=='object'||typeof n.id!=='string'||!n.id||ids.has(n.id))throw Error('Node '+i+' needs a unique string id.');ids.add(n.id);const s=stageOf(n);if(!s)throw Error('Node '+n.id+' has no recognized biological stage.');return {...n,_stage:s,_name:clean(n.label||n.name||n.title||n.id)}});
+ const parsedEdges=links.map((e,i)=>{const from=typeof e.source==='string'?e.source:e.from;const to=typeof e.target==='string'?e.target:e.to;if(!ids.has(from)||!ids.has(to))throw Error('Edge '+i+' references an unknown node.');return {from,to}});
+ nodes=parsed;edges=parsedEdges;navigation=createNavigation(nodes,edges);selected=raw?.kind===DOSSIER_KIND&&ids.has(raw.focusId)?raw.focusId:'';if(selected)navigation.inspect(selected);stage='';query='';el('search').value='';say('Imported '+nodes.length+' declared nodes and '+edges.length+' declared relationships. Local review only; verification status is not inferred.');render();
+}
+function visible(){return nodes.filter(n=>(!stage||n._stage===stage)&&(!query||[n._name,n.id,n._stage].join(' ').toLowerCase().includes(query)))}
+let zoomLevel=1,focusLineage=false;
+el('focus-zoom').oninput=e=>{zoomLevel=Number(e.target.value);render()};
+el('focus-lineage').onclick=()=>{focusLineage=!focusLineage;render()};
+el('focus-reset').onclick=()=>{zoomLevel=1;focusLineage=false;stage='';query='';el('search').value='';el('focus-zoom').value='1';render()};
+let navigation=createNavigation();
+function select(id,{record=true}={}){if(!nodes.some(n=>n.id===id))return;selected=id;if(record)navigation.inspect(id);stage='';query='';el('search').value='';render();}
+function updateExport(){el('export').disabled=!nodes.some(n=>n.id===selected)}
+function render(){
+ renderTheatre();
+ updateExport();
+ const v=visible(),byId=new Map(nodes.map(n=>[n.id,n])),positions=new Map();
+ renderMissions();
+ renderReadiness();
+ const counts=stages.map(s=>nodes.filter(n=>n._stage===s).length);
+ el('stages').replaceChildren(...stages.map((s,i)=>{const b=document.createElement('button');b.textContent=labels[i]+' · '+counts[i];b.style.setProperty('--c',colors[i]);b.setAttribute('aria-pressed',String(stage===s));b.onclick=()=>{stage=stage===s?'':s;render()};return b}));
+ const sky=el('sky');sky.replaceChildren();const mm=el('minimap');mm.replaceChildren();
+ const focusNode=nodes.find(n=>n.id===selected);
+ const trace=focusLineage&&focusNode?new Set(auditLineage(nodes,edges,selected).roots.concat([selected],lineageFor(selected,nodes,edges))):new Set();
+ el('focus-lineage').setAttribute('aria-pressed',String(focusLineage));
+ el('zoom-level').textContent=zoomLevel+'×';
+ el('focus-readout').textContent=focusNode?(focusLineage?'Declared ancestry focus · ':'Selected evidence · ')+focusNode._name+' · zoom '+zoomLevel+'×':'Overview · zoom '+zoomLevel+'× · no node selected';
+ const viewWidth=900/zoomLevel,viewHeight=430/zoomLevel;
+ const centerX=focusNode?75+stages.indexOf(focusNode._stage)*150:450;
+ const centerY=215;
+ sky.setAttribute('viewBox',[Math.max(0,Math.min(900-viewWidth,centerX-viewWidth/2)),Math.max(0,Math.min(430-viewHeight,centerY-viewHeight/2)),viewWidth,viewHeight].join(' '));
+ const groups=stages.map(s=>v.filter(n=>n._stage===s));groups.forEach((group,i)=>group.forEach((n,j)=>positions.set(n.id,{x:75+i*150,y:55+(j+1)*320/(group.length+1)})));
+ edges.forEach(e=>{const a=positions.get(e.from),b=positions.get(e.to);if(!a||!b)return;const line=svg('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y,class:focusLineage&&trace.has(e.from)&&trace.has(e.to)?'path':selected&&(e.from===selected||e.to===selected)?'focus':''});sky.append(line);mm.append(svg('line',{x1:a.x,y1:a.y/5,x2:b.x,y2:b.y/5,stroke:'#7ca8b9','stroke-opacity':'.45'}))});
+ v.forEach(n=>{const p=positions.get(n.id),i=stages.indexOf(n._stage),g=svg('g',{class:'orb'+(focusLineage&&trace.has(n.id)?' path':focusLineage?' outside':''),role:'button',tabindex:'0','aria-label':n._name+' · '+labels[i],'aria-pressed':String(n.id===selected),style:'--c:'+colors[i]});g.append(svg('circle',{cx:p.x,cy:p.y,r:19}));const t=svg('text',{x:p.x,y:p.y+34});t.textContent=n._name.slice(0,16);g.append(t);g.onclick=()=>select(n.id);g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select(n.id)}};sky.append(g);mm.append(svg('circle',{cx:p.x,cy:p.y/5,r:n.id===selected?6:3,fill:n.id===selected?'#f5cd83':colors[i]}))});
+ const directory=el('directory');directory.replaceChildren(...v.map(n=>{const b=document.createElement('button');b.style.setProperty('--c',colors[stages.indexOf(n._stage)]);b.setAttribute('aria-pressed',String(n.id===selected));const strong=document.createElement('strong');strong.textContent=n._name;const small=document.createElement('small');small.textContent=n._stage+' · '+n.id;b.append(strong,small);b.onclick=()=>select(n.id);return b}));
+ const detail=el('detail'),route=el('route'),auditBox=el('lineage-audit');detail.replaceChildren();route.replaceChildren();auditBox.replaceChildren();const n=byId.get(selected);
+ if(!n){detail.textContent=nodes.length?'Select a node to inspect its declared evidence.':'No evidence packet loaded.';auditBox.textContent=nodes.length?'Select a node to audit declared root ancestry.':'No imported evidence to audit.';return}
+ const audit=auditLineage(nodes,edges,selected);const title=document.createElement('strong');title.textContent=audit.roots.length?audit.roots.length+' declared repository roots':'No declared repository roots';auditBox.append(title);const summary=document.createElement('p');summary.textContent=audit.gaps.length?'Evidence gaps: '+audit.gaps.join('; '):'Directed lineage declared; not independently verified.';auditBox.append(summary);for(const id of audit.roots){const root=byId.get(id),b=document.createElement('button');b.textContent='Inspect root: '+(root._name||root.id);b.onclick=()=>{stage='';query='';el('search').value='';select(id)};auditBox.append(b)}if(audit.outcomeUrl){const link=document.createElement('a');link.href=audit.outcomeUrl;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Open declared user-facing outcome';auditBox.append(link)}
+ const h=document.createElement('h3');h.textContent=n._name;detail.append(h);
+ const dl=document.createElement('dl');const add=(k,v)=>{const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=k;dd.textContent=clean(v);dl.append(dt,dd)};add('Role',n._stage);add('Identifier',n.id);if(n.epistemicClass)add('Epistemic',n.epistemicClass);if(n.status)add('Source status',n.status);if(n.genesisPart)add('Genesis part',n.genesisPart);if(n.evidenceBoundary)add('Boundary',n.evidenceBoundary);add('Description',n.description||'No description supplied');detail.append(dl);
+ const urls=[n.url,n.href,n.source_url,n.repository_url].filter(Boolean);urls.forEach(url=>{const href=safeUrl(url);if(!href)return;const p=document.createElement('p'),a=document.createElement('a');a.href=href;a.textContent='Open declared source or outcome';a.rel='noopener noreferrer';a.target='_blank';p.append(a);detail.append(p)});
+ const incoming=edges.filter(e=>e.to===n.id).map(e=>e.from),outgoing=edges.filter(e=>e.from===n.id).map(e=>e.to);
+ const linked=[...incoming,n.id,...outgoing];linked.forEach(id=>{const x=byId.get(id);if(!x)return;const b=document.createElement('button');b.textContent=x._name;b.onclick=()=>{stage='';query='';el('search').value='';select(id)};route.append(b)});
+ if(n._stage==='fruit'&&!incoming.length){const p=document.createElement('p');p.className='notice';p.textContent='Evidence gap: this declared outcome has no incoming source lineage. It is not verified by federation membership.';detail.append(p)}
+}
+
+function renderReadiness(){
+ const atlas=buildReadinessAtlas(nodes,edges),summary=atlas.summary;
+ const metrics=[['Repository roots',summary.roots,'var(--red)'],['Declared outcomes',summary.declaredFruits,'var(--gold)'],['Outcome evidence gaps',summary.fruitEvidenceGaps,'var(--blue)'],['Independent verifications',summary.verifiedProducts,'var(--green)']];
+ el('readiness-metrics').replaceChildren(...metrics.map(([label,value,color])=>{const card=document.createElement('article');card.style.setProperty('--accent',color);const strong=document.createElement('strong'),span=document.createElement('span');strong.textContent=String(value);span.textContent=label;card.append(strong,span);return card}));
+ el('readiness-flow').replaceChildren(...stages.map((s,i)=>{const b=document.createElement('button');b.style.setProperty('--accent',colors[i]);b.textContent=labels[i]+' · '+atlas.rows.filter(r=>r.stage===s).length;b.setAttribute('aria-pressed',String(stage===s));b.onclick=()=>{stage=stage===s?'':s;render()};return b}));
+ const review=el('readiness-review');review.replaceChildren();
+ for(const task of readinessMissions(atlas).slice(0,18)){const card=document.createElement('article'),h=document.createElement('h3'),p=document.createElement('p'),b=document.createElement('button');h.textContent=task.title;p.textContent=task.description;b.textContent='Inspect source lineage';b.onclick=()=>select(task.id);card.append(h,p,b);review.append(card)}
+ if(!review.childElementCount){const p=document.createElement('p');p.textContent=nodes.length?'No missing-lineage review cards in this declared packet. Independent verification remains unestablished.':'Import a Genesis manifest or evidence dossier to reveal review missions.';review.append(p)}
+ el('readiness-disclaimer').textContent=atlas.note+' · '+summary.reviewItems+' declared review items.';
+}
+el('readiness-clear-filter').onclick=()=>{stage='';query='';el('search').value='';render()};
+
+
+let theatreStage='root';
+function renderTheatre(){
+ const rail=el('theatre-rail'),spot=el('theatre-spotlight'),evidence=el('theatre-evidence');
+ if(!rail||!spot||!evidence)return;
+ const focus=nodes.find(n=>n.id===selected);
+ if(focus)theatreStage=focus._stage;
+ const groups=stages.map(s=>nodes.filter(n=>n._stage===s));
+ rail.replaceChildren(...stages.map((s,i)=>{
+  const b=document.createElement('button');b.style.setProperty('--c',colors[i]);
+  b.setAttribute('aria-current',theatreStage===s?'step':'false');
+  const glyph=document.createElement('span');glyph.className='glyph';glyph.textContent=['✦','◇','⌁','❧','✺','◉'][i];
+  const name=document.createElement('strong');name.textContent=labels[i];
+  const count=document.createElement('small');count.textContent=groups[i].length+' declared';
+  b.append(glyph,name,count);b.onclick=()=>{theatreStage=s;selected='';render()};return b;
+ }));
+ const candidates=groups[stages.indexOf(theatreStage)]||[];
+ spot.replaceChildren();evidence.replaceChildren();
+ const title=document.createElement('h3');title.textContent=labels[stages.indexOf(theatreStage)]+' · '+candidates.length+' records';spot.append(title);
+ const intro=document.createElement('p');
+ intro.textContent=candidates.length?'Select a declared station to inspect its provenance, open its actual source, and continue through the Tree.':'No declared nodes at this stage. An empty stage is not evidence of a completed product.';
+ spot.append(intro);
+ const links=document.createElement('div');links.className='theatre-links';
+ candidates.slice(0,24).forEach(n=>{const b=document.createElement('button');const name=document.createElement('strong');name.textContent=n._name||n.label||n.name||n.id;const small=document.createElement('small');small.textContent=n.id===selected?'Selected · inspect below':'Open declared record';b.append(name,small);b.setAttribute('aria-pressed',String(n.id===selected));b.onclick=()=>select(n.id);links.append(b)});
+ spot.append(links);
+ if(candidates.length>24){const note=document.createElement('p');note.textContent=(candidates.length-24)+' more records available in the searchable directory below.';spot.append(note)}
+ const strong=document.createElement('strong');strong.textContent='Evidence boundary · '+labels[stages.indexOf(theatreStage)];evidence.append(strong);
+ const p=document.createElement('p');
+ if(!nodes.length)p.textContent='No packet loaded. Nothing is inferred or awarded.';
+ else if(!focus)p.textContent='Stage records are declared by the imported packet. Select one for directed source lineage.';
+ else{const audit=auditLineage(nodes,edges,focus.id);p.textContent=audit.roots.length+' contributing declared roots. '+(focus._stage==='fruit'?'A declared fruit is not an independently verified product. ':'')+'Use the provenance inspector to review the evidence and gaps.'}
+ evidence.append(p);
+ el('theatre-state').textContent=nodes.length?nodes.length+' declared nodes · '+edges.length+' directed edges':'Import evidence to begin';
+}
+
+function renderMissions(){
+ const board=el('missions'),preview=el('route-preview'),count=el('mission-count');
+ const plan=planJourneys(nodes,edges);board.replaceChildren();
+ count.textContent=nodes.length?plan.counts.roots+' declared roots · '+plan.counts.fruits+' declared outcomes · '+plan.routes.filter(r=>r.classification==='evidence-gap').length+' unresolved outcome gaps':'Import evidence to reveal source-backed review missions.';
+ for(const task of plan.tasks){const card=document.createElement('article');card.className='mission';const h=document.createElement('h3');h.textContent=task.title;const p=document.createElement('p');p.textContent=task.note;const button=document.createElement('button');button.textContent='Inspect declared lineage';button.onclick=()=>{stage='';query='';el('search').value='';select(task.targetId);const path=lineageFor(task.targetId,nodes,edges);preview.replaceChildren();const heading=document.createElement('strong');heading.textContent=path.length?'Directed root-to-selection route':'No verified directed source route declared';preview.append(heading);if(path.length){const ol=document.createElement('ol');for(const id of path){const li=document.createElement('li'),b=document.createElement('button');b.textContent=byLabel(id);b.onclick=()=>select(id);li.append(b);ol.append(li)}preview.append(ol)}else{const gap=document.createElement('p');gap.className='gap';gap.textContent='Evidence gap. No contribution relationship is inferred from common federation membership.';preview.append(gap)}};card.append(h,p,button);board.append(card)}
+ if(!nodes.length)preview.textContent='Choose a lineage mission to inspect its directed source route.';
+}
+function byLabel(id){const n=nodes.find(n=>n.id===id);return n?.label||n?.name||id}
+el('nav-back').onclick=()=>{const n=navigation.back();if(n)select(n.id,{record:false})};
+el('nav-forward').onclick=()=>{const n=navigation.forward();if(n)select(n.id,{record:false})};
+el('nav-roots').onclick=()=>{const ids=selected?auditLineage(nodes,edges,selected).roots:nodes.filter(n=>n._stage==='root').map(n=>n.id);if(ids.length)select(ids[0])};
+el('nav-next').onclick=()=>{const ids=navigation.neighbors(selected);if(ids.length)select(ids[0])};
+el('export').onclick=()=>{try{
+ const packet=createDossier(nodes,edges,selected);
+ const data=new Blob([JSON.stringify(packet,null,2)+'\n'],{type:'application/json'});
+ const url=URL.createObjectURL(data),a=document.createElement('a');
+ a.href=url;a.download='aift-lineage-dossier.json';a.click();
+ setTimeout(()=>URL.revokeObjectURL(url),1500);
+ say('Exported '+packet.nodes.length+' declared nodes and '+packet.edges.length+' edges. This is an unverified local evidence dossier.');
+ }catch(err){say('Export unavailable: '+clean(err.message))}};
+el('file').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;if(file.size>2*1024*1024){say('File exceeds 2 MB limit.');return}try{importPacket((raw=>raw?.kind===DOSSIER_KIND?validateDossier(raw):raw?.kind==='tree-manifest'?adaptGenesisManifest(raw):raw)(JSON.parse(await file.text())))}catch(err){nodes=[];edges=[];selected='';navigation.reset();say('Import rejected: '+clean(err.message));render()}};
+el('search').oninput=e=>{query=e.target.value.toLowerCase().trim();render()};
+el('clear').onclick=()=>{nodes=[];edges=[];selected='';navigation.reset();stage='';query='';el('file').value='';el('search').value='';say('Local evidence cleared.');render()};
+render();
+})();
+</script></body></html>

@@ -1,0 +1,43 @@
+name: Living Universe 2.0 Observatory
+on:
+  pull_request:
+    paths:
+      - 'living-universe-2.html'
+      - 'living-universe-2.test.mjs'
+      - 'genesis-adapter.mjs'
+      - 'genesis-adapter.test.mjs'
+      - 'docs/uxi/living-universe-2.html'
+      - 'docs/uxi/living-universe-2.test.mjs'
+      - 'docs/uxi/genesis-adapter.mjs'
+      - 'docs/uxi/genesis-adapter.test.mjs'
+      - 'docs/uxi/journey-planner.test.mjs'
+      - 'docs/uxi/living-universe-dossier.mjs'
+      - 'docs/uxi/living-universe-dossier.test.mjs'
+      - 'docs/uxi/living-universe-lineage-audit.mjs'
+      - 'docs/uxi/living-universe-lineage-audit.test.mjs'
+      - 'docs/uxi/living-universe-navigation.mjs'
+      - 'docs/uxi/living-universe-navigation.test.mjs'
+      - 'docs/uxi/living-universe-readiness.mjs'
+      - 'docs/uxi/living-universe-readiness.test.mjs'
+      - '.github/workflows/living-universe-2.yml'
+  workflow_dispatch:
+jobs:
+  observatory-contract:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify Living Universe observatory contracts
+        shell: bash
+        run: |
+          if [ -f living-universe-2.test.mjs ]; then
+            node --test living-universe-2.test.mjs genesis-adapter.test.mjs
+          else
+            node --test docs/uxi/living-universe-2.test.mjs docs/uxi/genesis-adapter.test.mjs
+          fi
+          node --test docs/uxi/living-universe-readiness.test.mjs
+          node --test docs/uxi/journey-planner.test.mjs docs/uxi/living-universe-dossier.test.mjs docs/uxi/living-universe-lineage-audit.test.mjs docs/uxi/living-universe-navigation.test.mjs
