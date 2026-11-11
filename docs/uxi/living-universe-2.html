@@ -30,12 +30,13 @@ dl{display:grid;grid-template-columns:95px 1fr;gap:.6rem;overflow-wrap:anywhere}
 <a class="skip" href="#content">Skip to exploration</a><div class="ribbon" aria-hidden="true"></div>
 <header><div><div class="eyebrow">AIFT · Living Universe 2.0</div><h1>Evidence Observatory</h1><p class="lede">An inspectable, local-first constellation. Repositories are roots; outcomes are fruits only when the imported evidence declares a real deliverable. Nothing here claims live CI or completed work without source evidence.</p></div>
 <nav aria-label="Federation navigation"><a href="https://www.aifreedomtrust.com/living-universe-explorer.html">Living Tree</a><a href="https://www.aifreedomtrust.com/evidence-expedition.html">Evidence Expedition</a><a href="https://github.com/AIFreedomTrustFederation/AIFT-OS">MoBox source</a></nav></header>
-<main id="content"><section class="panel"><h2>Open a federation evidence packet</h2><p class="lede">Import a local JSON packet from the portal or operator console. No upload, network submission, telemetry, or local service exposure occurs. Unsupported formats are rejected rather than guessed.</p>
+<main id="content"><section class="panel"><h2>Open a federation evidence packet</h2><p class="lede">Import a local JSON packet from the portal or operator console, or the canonical AIFT-Genesis tree.manifest.json. No upload, network submission, telemetry, or local service exposure occurs. Unsupported formats are rejected rather than guessed.</p>
 <div class="toolbar"><label>Evidence packet (JSON, up to 2 MB)<input id="file" type="file" accept=".json,application/json"></label><label>Search declared nodes<input id="search" type="search" placeholder="Find a source, capability, outcome"></label><button id="clear">Clear local view</button></div><p id="status" class="status" role="status" aria-live="polite">No packet loaded. Import evidence to begin; the scene does not invent federation data.</p></section>
 <div class="grid" style="margin-top:1rem"><section class="panel"><h2>Tree of Emergence</h2><div id="stages" class="stages" role="group" aria-label="Biological stage filter"></div><div class="universe"><svg id="sky" viewBox="0 0 900 430" role="group" aria-label="Evidence constellation; use the accessible node directory below"></svg></div><p class="legend">Red → gold → green → blue → violet → gold. Connections represent only declared directed relationships.</p><svg id="minimap" class="map" viewBox="0 0 900 92" role="img" aria-label="Spatial overview of visible nodes"></svg><h2>Accessible constellation directory</h2><div id="directory" class="list"></div></section>
 <aside class="panel"><h2>Provenance inspector</h2><div id="detail" class="notice">Select an imported node to inspect its biological role, source links and declared lineage.</div><h2>Reversible lineage</h2><div id="route" class="route" aria-label="Declared lineage breadcrumbs"></div><p class="legend">No achievements, progress percentages or product readiness are inferred from browsing. Unlinked outcomes remain evidence gaps.</p></aside></div></main>
 <footer class="lede">Review surface only · No merge, deploy, status mutation, telemetry, or governance authority.</footer>
-<script>
+<script type="module">
+import {adaptGenesisManifest} from './genesis-adapter.mjs';
 (()=>{'use strict';
 const stages=['root','trunk','branch','leaf','flower','fruit'],labels=['Roots','Trunk','Branches','Leaves','Flowers','Fruits'],colors=['#ff547b','#f5cd83','#42e6aa','#69baff','#b49cff','#f5cd83'];
 const el=id=>document.getElementById(id);let nodes=[],edges=[],selected='',stage='',query='';
@@ -48,7 +49,7 @@ const stageOf=n=>stages.includes(kind(n))?kind(n):null;
 function importPacket(raw){
  const source=raw&&typeof raw==='object'?(raw.manifest||raw):null;
  const list=source?.nodes;const links=source?.edges;
- if(!Array.isArray(list)||!Array.isArray(links))throw Error('Expected a JSON object with nodes[] and edges[]; no assumptions about unsupported packet schemas.');
+ if(!Array.isArray(list)||!Array.isArray(links))throw Error('Expected a JSON object with nodes[] and edges[] or a canonical Genesis tree-manifest; unsupported schemas are rejected.');
  if(list.length>350||links.length>1200)throw Error('Packet exceeds bounded visualization limits (350 nodes, 1200 edges).');
  const ids=new Set();
  const parsed=list.map((n,i)=>{if(!n||typeof n!=='object'||typeof n.id!=='string'||!n.id||ids.has(n.id))throw Error('Node '+i+' needs a unique string id.');ids.add(n.id);const s=stageOf(n);if(!s)throw Error('Node '+n.id+' has no recognized biological stage.');return {...n,_stage:s,_name:clean(n.label||n.name||n.title||n.id)}});
@@ -69,13 +70,13 @@ function render(){
  const detail=el('detail'),route=el('route');detail.replaceChildren();route.replaceChildren();const n=byId.get(selected);
  if(!n){detail.textContent=nodes.length?'Select a node to inspect its declared evidence.':'No evidence packet loaded.';return}
  const h=document.createElement('h3');h.textContent=n._name;detail.append(h);
- const dl=document.createElement('dl');const add=(k,v)=>{const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=k;dd.textContent=clean(v);dl.append(dt,dd)};add('Role',n._stage);add('Identifier',n.id);add('Description',n.description||'No description supplied');detail.append(dl);
+ const dl=document.createElement('dl');const add=(k,v)=>{const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=k;dd.textContent=clean(v);dl.append(dt,dd)};add('Role',n._stage);add('Identifier',n.id);if(n.epistemicClass)add('Epistemic',n.epistemicClass);if(n.status)add('Source status',n.status);if(n.genesisPart)add('Genesis part',n.genesisPart);if(n.evidenceBoundary)add('Boundary',n.evidenceBoundary);add('Description',n.description||'No description supplied');detail.append(dl);
  const urls=[n.url,n.href,n.source_url,n.repository_url].filter(Boolean);urls.forEach(url=>{const href=safeUrl(url);if(!href)return;const p=document.createElement('p'),a=document.createElement('a');a.href=href;a.textContent='Open declared source or outcome';a.rel='noopener noreferrer';a.target='_blank';p.append(a);detail.append(p)});
  const incoming=edges.filter(e=>e.to===n.id).map(e=>e.from),outgoing=edges.filter(e=>e.from===n.id).map(e=>e.to);
  const linked=[...incoming,n.id,...outgoing];linked.forEach(id=>{const x=byId.get(id);if(!x)return;const b=document.createElement('button');b.textContent=x._name;b.onclick=()=>{stage='';query='';el('search').value='';select(id)};route.append(b)});
  if(n._stage==='fruit'&&!incoming.length){const p=document.createElement('p');p.className='notice';p.textContent='Evidence gap: this declared outcome has no incoming source lineage. It is not verified by federation membership.';detail.append(p)}
 }
-el('file').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;if(file.size>2*1024*1024){say('File exceeds 2 MB limit.');return}try{importPacket(JSON.parse(await file.text()))}catch(err){nodes=[];edges=[];selected='';say('Import rejected: '+clean(err.message));render()}};
+el('file').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;if(file.size>2*1024*1024){say('File exceeds 2 MB limit.');return}try{importPacket((raw=>raw?.kind==='tree-manifest'?adaptGenesisManifest(raw):raw)(JSON.parse(await file.text())))}catch(err){nodes=[];edges=[];selected='';say('Import rejected: '+clean(err.message));render()}};
 el('search').oninput=e=>{query=e.target.value.toLowerCase().trim();render()};
 el('clear').onclick=()=>{nodes=[];edges=[];selected='';stage='';query='';el('file').value='';el('search').value='';say('Local evidence cleared.');render()};
 render();
