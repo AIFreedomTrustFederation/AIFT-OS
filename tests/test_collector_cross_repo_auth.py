@@ -29,7 +29,7 @@ class CrossRepositoryAuthorizationContract(unittest.TestCase):
     def test_live_job_never_runs_on_pull_requests(self):
         self.assertIn("  push:\n    branches: [main]\n", self.source)
         self.assertIn("  pull_request:\n", self.source)
-        self.assertIn("    if: github.event_name == 'push' || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')\n", self.live)
+        self.assertIn("    if: github.event_name == 'push' || github.event_name == 'schedule'\n", self.live)
         self.assertNotIn("github.event.pull_request", self.live)
 
     def test_pinned_app_action_mints_for_exactly_two_producers(self):
