@@ -37,4 +37,4 @@ jobs:
           else
             node --test docs/uxi/living-universe-2.test.mjs docs/uxi/genesis-adapter.test.mjs
           fi
-          node --test docs/uxi/journey-planner.test.mjs docs/uxi/living-universe-dossier.test.mjs docs/uxi/living-universe-lineage-audit.test.mjs
+          node --test docs/uxi/journey-planner.test.mjs docs/uxi/living-universe-dossier.test.mjs docs/uxi/living-universe-lineage-audit.test.mjs docs/uxi/living-universe-navigation.test.mjs
