@@ -28,3 +28,18 @@ export function filterAtlas(atlas,{search='',stage='',status=''}={}){
  const q=search.toLocaleLowerCase().trim();
  return atlas.missions.filter(m=>(!stage||m.stage===stage)&&(!status||m.status===status)&&(!q||[m.label,m.id,m.stage,...m.roots].join(' ').toLocaleLowerCase().includes(q)));
 }
+
+export function evidenceQuestPlan(atlas,{limit=24}={}){
+ if(!atlas||!Array.isArray(atlas.missions))throw Error('Atlas required');
+ if(!Number.isInteger(limit)||limit<1||limit>100)throw Error('Invalid quest limit');
+ const priority={fruit:0,flower:1,leaf:2,branch:3,trunk:4,root:5};
+ const quests=atlas.missions.map(m=>{
+ const checks=[...(m.issues||[])];
+ if(m.stage==='fruit'&&!m.roots.length)checks.push('Document a directed repository-root contribution');
+ if(m.status==='evidence-declared')checks.push('Independently verify declared evidence against exact-head CI or source');
+ if(m.status==='unverified')checks.push('Attach source-backed evidence before claiming readiness');
+ if(!checks.length)checks.push('Review source provenance; no completion receipt exists');
+ return {id:m.id,label:m.label,stage:m.stage,rootIds:[...m.roots],destination:m.destination,status:m.status,checks,receipt:'not-verified',priority:priority[m.stage]??6};
+ }).sort((a,b)=>a.priority-b.priority||b.checks.length-a.checks.length||a.id.localeCompare(b.id));
+ return {quests:quests.slice(0,limit),total:quests.length,truncated:quests.length>limit,verified:0};
+}
