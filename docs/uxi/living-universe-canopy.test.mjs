@@ -53,3 +53,9 @@ test('canonical observatory selection remains wired',async()=>{
  assert.match(html,/addEventListener\('aift:explore-node'/);
  assert.match(html,/select\(id\);[\s\S]*?scrollIntoView/);
 });
+
+test('cinematic lineage journey exposes source roots, anomalies and missing references without invented nodes',async()=>{
+ const {readFileSync}=await import('node:fs');const {fileURLToPath}=await import('node:url');const {dirname,join}=await import('node:path');
+ const html=readFileSync(join(dirname(fileURLToPath(import.meta.url)),'living-universe-2.html'),'utf8');
+ assert.match(html,/id="canopy-lineage-journey"/);assert.match(html,/Contributing repository roots/);assert.match(html,/Direct stage anomalies/);assert.match(html,/Missing graph references/);assert.match(html,/layout\.omissions\.filter/);assert.match(html,/document\.createElement\('button'\)/);
+});
