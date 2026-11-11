@@ -7,3 +7,8 @@ test('unlinked fruit surfaces gaps',()=>{const a=analyzeAtlas(nodes,[]);assert.m
 test('cyclic lineage bounded and rejects unknown edges',()=>{assert.equal(analyzeAtlas(nodes,[...edges,{from:'fruit',to:'trunk'}]).missions.length,4);assert.throws(()=>analyzeAtlas(nodes,[{from:'missing',to:'fruit'}]),/Undeclared/)});
 test('filters use real declared evidence only',()=>{const a=analyzeAtlas(nodes,edges);assert.equal(filterAtlas(a,{stage:'root'}).length,1);assert.equal(filterAtlas(a,{search:'fruit'}).length,1)});
 test('unsafe URL is not a product destination',()=>{const a=analyzeAtlas([{id:'x',stage:'fruit',url:'javascript:alert(1)'}],[]);assert.equal(a.missions[0].destination,null);assert.ok(a.missions[0].issues.length)});
+
+import {evidenceQuestPlan} from './living-universe-skill-atlas.mjs';
+test('quests prioritize outcomes without fabricated achievements',()=>{const p=evidenceQuestPlan(analyzeAtlas(nodes,edges));assert.equal(p.quests[0].id,'fruit');assert.equal(p.verified,0);assert.equal(p.quests[0].receipt,'not-verified')});
+test('quests reveal missing provenance',()=>{const p=evidenceQuestPlan(analyzeAtlas(nodes,[]));assert.ok(p.quests.find(x=>x.id==='fruit').checks.some(x=>/root/.test(x)))});
+test('quest limit bounded',()=>{assert.equal(evidenceQuestPlan(analyzeAtlas(nodes,edges),{limit:2}).quests.length,2);assert.throws(()=>evidenceQuestPlan(analyzeAtlas(nodes,edges),{limit:0}),/Invalid quest/)});
