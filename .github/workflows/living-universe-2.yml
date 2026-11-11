@@ -15,6 +15,8 @@ on:
       - 'docs/uxi/living-universe-dossier.test.mjs'
       - 'docs/uxi/living-universe-lineage-audit.mjs'
       - 'docs/uxi/living-universe-lineage-audit.test.mjs'
+      - 'docs/uxi/living-universe-navigation.mjs'
+      - 'docs/uxi/living-universe-navigation.test.mjs'
       - '.github/workflows/living-universe-2.yml'
   workflow_dispatch:
 jobs:
