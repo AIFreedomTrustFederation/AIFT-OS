@@ -280,7 +280,7 @@ render();
 })();
 </script><script type="module">
 import {analyzeAtlas,filterAtlas} from './living-universe-skill-atlas.mjs';
-import {canopyLayout,canopyLineage,SPECTRUM,STAGES} from './living-universe-canopy.mjs';
+import {canopyLayout,canopyLineage,canopyRoutes,SPECTRUM,STAGES} from './living-universe-canopy.mjs';
 let current=null;const byId=id=>document.getElementById(id);
 const ns='http://www.w3.org/2000/svg';
 const svg=(name,attrs={})=>{const e=document.createElementNS(ns,name);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));return e};
@@ -294,6 +294,10 @@ const renderCanopy=()=>{
  const journeyCard=(heading,items,empty,anomaly=false)=>{const card=document.createElement('article');if(anomaly)card.className='anomaly';const title=document.createElement('h4');title.textContent=heading;card.append(title);if(!items.length){const p=document.createElement('p');p.textContent=empty;card.append(p)}else for(const item of items){const b=document.createElement('button');b.type='button';b.textContent=item.label;b.onclick=()=>{sky.dataset.focusId=item.id;open(item.id);renderCanopy()};card.append(b)}journey.append(card)};
  if(lineage){
   journeyCard('Contributing repository roots',lineage.rootIds.map(id=>({id,label:points.get(id)?.label||id})),'No declared contributing root. Do not infer provenance.');
+  const routeReport=canopyRoutes(layout,focusId);
+  journeyCard('Directed root-to-record journeys',routeReport.routes.map(route=>({id:route.rootId,label:route.ids.map(id=>points.get(id)?.label||id).join(' → ')+(route.stageGaps?' · '+route.stageGaps+' stage anomalies':'')})),'No directed route from a declared repository root. Evidence remains incomplete.');
+  if(routeReport.truncated){const note=document.createElement('p');note.textContent='Additional declared routes omitted by display limit.';journey.append(note)}
+
   journeyCard('Directed ancestral records',lineage.nodes.filter(n=>n.id!==focusId&&n.stage!=='root').map(n=>({id:n.id,label:n.stage+' · '+n.label})),'No intermediate stage declared; none is invented.');
   journeyCard('Direct stage anomalies',lineage.gaps.map(e=>({id:e.from,label:(points.get(e.from)?.label||e.from)+' → '+(points.get(e.to)?.label||e.to)+' · '+e.kind})),'No stage anomalies in declared ancestry.',true);
   journeyCard('Missing graph references',layout.omissions.filter(e=>lineage.nodes.some(n=>n.id===e.to)).map(e=>({id:e.to,label:e.from+' → '+e.to+' · missing source'})),'No missing direct-parent references in this ancestry.',true);
@@ -304,7 +308,7 @@ const renderCanopy=()=>{
  const open=id=>{window.dispatchEvent(new CustomEvent('aift:explore-node',{detail:{id}}));announce.textContent='Requested source-backed inspection of '+points.get(id).label+'.';};
  for(const n of layout.nodes){const color=SPECTRUM[STAGES.indexOf(n.stage)],g=svg('g',{class:'canopy-node','data-dimmed':String(!!lineage&&!lineageIds.has(n.id)),role:'button',tabindex:0,'aria-label':n.label+' · '+n.stage+(n.issues?' · evidence gap':''),'data-gap':String(n.issues>0),style:'--canopy-color:'+color});g.append(svg('circle',{cx:n.x,cy:n.y,r:20}));const t=svg('text',{x:n.x,y:n.y+35});t.textContent=n.label.slice(0,17);g.append(t);g.addEventListener('click',()=>{sky.dataset.focusId=n.id;open(n.id);renderCanopy()});g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();sky.dataset.focusId=n.id;open(n.id);renderCanopy()}});sky.append(g);
  const b=document.createElement('button');b.style.setProperty('--canopy-color',color);const name=document.createElement('strong');name.textContent=n.label;const detail=document.createElement('small');detail.textContent=n.stage+' · '+(n.issues?'evidence gap':'declared record')+' · '+n.roots+' contributing roots';b.append(name,detail);b.dataset.canopyId=n.id;b.onclick=()=>{sky.dataset.focusId=n.id;open(n.id);renderCanopy()};directory.append(b)}
- announce.textContent=layout.nodes.length+' declared records · '+layout.connections.length+' adjacent-stage declared connections · no independently verified achievements.';
+ announce.textContent=layout.nodes.length+' declared records · '+layout.connections.length+' direct declared connections · no independently verified achievements.';
 };
 const render=()=>{
  renderCanopy();
