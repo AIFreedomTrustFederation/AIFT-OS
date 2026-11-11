@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
   # Refresh evidence when producer repositories change without an AIFT-OS push.
   # GitHub scheduled workflows run from the default branch and may be delayed.
   schedule:
@@ -35,7 +36,7 @@ jobs:
   live-producer-evidence:
     # PR code is untrusted even from same-repository branches. Authenticate only
     # default-branch runs; PRs execute offline regressions without GH_TOKEN.
-    if: github.event_name == 'push' || github.event_name == 'schedule'
+    if: github.event_name == 'push' || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
     needs: collector
     runs-on: ubuntu-24.04
     timeout-minutes: 8
