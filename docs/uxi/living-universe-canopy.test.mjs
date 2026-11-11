@@ -98,3 +98,15 @@ test('semantic zoom and minimap remain accessible and evidence-only',async()=>{
  assert.match(html,/paintNavigation\(layout,sky\)/);
  assert.match(html,/Viewport-only semantic zoom: never mutates the declared provenance graph/);
 });
+
+test('spatial keyboard navigation preserves canonical record identity and focus after rerender',async()=>{
+ const {readFileSync}=await import('node:fs');const {fileURLToPath}=await import('node:url');const {dirname,join}=await import('node:path');
+ const html=readFileSync(join(dirname(fileURLToPath(import.meta.url)),'living-universe-2.html'),'utf8');
+ assert.match(html,/const canopyKeyboardMove=/);
+ assert.match(html,/ArrowLeft/);assert.match(html,/ArrowRight/);assert.match(html,/ArrowUp/);assert.match(html,/ArrowDown/);
+ assert.match(html,/focusCanopyRecord\(next/);
+ assert.match(html,/data-canopy-id/);
+ assert.match(html,/focus\(\{preventScroll:true\}\)/);
+ assert.match(html,/source==='directory'/);
+ assert.match(html,/activate\.textContent/);
+});
