@@ -1,0 +1,28 @@
+name: Living Universe Skill Atlas
+on:
+  pull_request:
+    paths:
+      - 'living-universe-2.html'
+      - 'living-universe-skill-atlas*'
+      - 'docs/uxi/living-universe-2.html'
+      - 'docs/uxi/living-universe-skill-atlas*'
+      - '.github/workflows/living-universe-skill-atlas.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  skill-atlas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Run evidence skill atlas regression suite
+        shell: bash
+        run: |
+          if [ -f living-universe-skill-atlas.test.mjs ]; then
+            node --test living-universe-skill-atlas.test.mjs
+          else
+            node --test docs/uxi/living-universe-skill-atlas.test.mjs
+          fi
