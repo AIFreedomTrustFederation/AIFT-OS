@@ -73,6 +73,21 @@ dl{display:grid;grid-template-columns:95px 1fr;gap:.6rem;overflow-wrap:anywhere}
 .theatre-evidence{border-left:3px solid var(--green);padding:1rem;background:#10293b;border-radius:12px}.theatre-evidence strong{color:var(--gold)}.theatre-evidence p{color:var(--muted)}
 @media(max-width:800px){.theatre-body{grid-template-columns:1fr}}@media(max-width:540px){.theatre-rail{grid-template-columns:repeat(3,minmax(0,1fr))}.theatre-rail button{min-height:70px}}
 @media(prefers-reduced-motion:reduce){.journey-theatre *{animation:none!important;transition:none!important}}
+</style><style>
+.canopy-panel{margin:1.4rem 0;border-color:#d5af6e;background:radial-gradient(ellipse at 50% 0%,#29405d,#0a172b 72%)}
+.canopy-shell{position:relative;overflow:auto;border:1px solid #7294af;border-radius:20px;background:repeating-radial-gradient(circle at 50% 50%,transparent 0 56px,#a6cfff16 57px 58px),radial-gradient(ellipse at 50% 55%,#22415a,#070f20 70%);box-shadow:inset 0 0 90px #071224}
+#canopy-map{display:block;width:100%;min-width:620px;max-height:560px}
+#canopy-map .canopy-edge{stroke:#90b9d3;stroke-width:2;opacity:.4}
+#canopy-map .canopy-node{cursor:pointer;outline:none}
+#canopy-map .canopy-node circle{fill:#0b1d30;stroke:var(--canopy-color);stroke-width:3}
+#canopy-map .canopy-node[data-gap="true"] circle{stroke-dasharray:5 4}
+#canopy-map .canopy-node:focus-visible circle,#canopy-map .canopy-node[aria-pressed="true"] circle{stroke:#fff;stroke-width:5;filter:drop-shadow(0 0 12px #f5cd83)}
+#canopy-map text{font:12px system-ui,sans-serif;fill:#f4f7ff;text-anchor:middle;paint-order:stroke;stroke:#081324;stroke-width:4px;pointer-events:none}
+.canopy-directory{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:.5rem;margin-top:1rem;max-height:270px;overflow:auto}
+.canopy-directory button{text-align:left;border-left:4px solid var(--canopy-color)}
+.canopy-directory small{display:block;color:#c1d3e8}
+@media(max-width:600px){.canopy-panel{padding:.75rem}#canopy-map{min-width:620px}}
+@media(prefers-reduced-motion:reduce){#canopy-map *{transition:none!important;animation:none!important}}
 </style></head><body>
 <a class="skip" href="#content">Skip to exploration</a><div class="ribbon" aria-hidden="true"></div>
 <header><div><div class="eyebrow">AIFT · Living Universe 2.0</div><h1>Evidence Observatory</h1><p class="lede">An inspectable, local-first constellation. Repositories are roots; outcomes are fruits only when the imported evidence declares a real deliverable. Nothing here claims live CI or completed work without source evidence.</p></div>
@@ -94,6 +109,12 @@ dl{display:grid;grid-template-columns:95px 1fr;gap:.6rem;overflow-wrap:anywhere}
 <label>Biological stage<select id="atlas-stage" style="min-height:44px;padding:.7rem;border-radius:10px;background:#10263b;color:white"><option value="">All stages</option><option>root</option><option>trunk</option><option>branch</option><option>leaf</option><option>flower</option><option>fruit</option></select></label>
 <label>Evidence state<select id="atlas-state" style="min-height:44px;padding:.7rem;border-radius:10px;background:#10263b;color:white"><option value="">All states</option><option value="evidence-gap">Evidence gap</option><option value="evidence-declared">Evidence declared</option><option value="unverified">Unverified</option></select></label></div>
 <p id="atlas-summary" class="status" role="status" aria-live="polite">Import a local evidence packet to activate the skill atlas.</p>
+<section class="panel canopy-panel" aria-labelledby="canopy-heading">
+<h2 id="canopy-heading">Living Canopy · Source-to-Outcome Atlas</h2><p class="lede">A spectral map of imported evidence. Roots are repositories, never products. The canopy shows only declared biological records; connections are restricted to explicitly declared adjacent-stage ancestry.</p>
+<div class="canopy-shell"><svg id="canopy-map" viewBox="0 0 960 480" role="img" aria-label="Spatial evidence canopy; the accessible record directory follows"></svg></div>
+<p id="canopy-announcement" role="status" aria-live="polite">Import evidence to illuminate the canopy.</p>
+<div id="canopy-directory" class="canopy-directory" aria-label="Accessible canopy directory"></div>
+</section>
 <div id="atlas-cards" class="list" style="max-height:560px" aria-label="Evidence quests"></div>
 <p class="legend">No XP, readiness percentage, or achievements are inferred from declared records. Open a record in the main constellation to inspect its provenance.</p></section>
 <footer class="lede">Review surface only · No merge, deploy, status mutation, telemetry, or governance authority.</footer>
@@ -239,8 +260,22 @@ render();
 })();
 </script><script type="module">
 import {analyzeAtlas,filterAtlas} from './living-universe-skill-atlas.mjs';
+import {canopyLayout,SPECTRUM,STAGES} from './living-universe-canopy.mjs';
 let current=null;const byId=id=>document.getElementById(id);
+const ns='http://www.w3.org/2000/svg';
+const svg=(name,attrs={})=>{const e=document.createElementNS(ns,name);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));return e};
+const renderCanopy=()=>{
+ const sky=byId('canopy-map'),directory=byId('canopy-directory'),announce=byId('canopy-announcement');sky.replaceChildren();directory.replaceChildren();
+ if(!current){announce.textContent='Import evidence to illuminate the canopy.';return}
+ const layout=canopyLayout(current),points=new Map(layout.nodes.map(n=>[n.id,n]));
+ for(const edge of layout.connections){const a=points.get(edge.from),b=points.get(edge.to);sky.append(svg('line',{class:'canopy-edge',x1:a.x,y1:a.y,x2:b.x,y2:b.y}))}
+ const open=id=>{const original=[...document.querySelectorAll('#directory button')].find(x=>x.textContent.includes(id));if(original){original.click();announce.textContent='Inspecting '+points.get(id).label+' in the source constellation.'}else{announce.textContent='Record is filtered in the main constellation. Clear its filters to inspect '+points.get(id).label+'.'}};
+ for(const n of layout.nodes){const color=SPECTRUM[STAGES.indexOf(n.stage)],g=svg('g',{class:'canopy-node',role:'button',tabindex:0,'aria-label':n.label+' · '+n.stage+(n.issues?' · evidence gap':''),'data-gap':String(n.issues>0),style:'--canopy-color:'+color});g.append(svg('circle',{cx:n.x,cy:n.y,r:20}));const t=svg('text',{x:n.x,y:n.y+35});t.textContent=n.label.slice(0,17);g.append(t);g.addEventListener('click',()=>open(n.id));g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open(n.id)}});sky.append(g);
+ const b=document.createElement('button');b.style.setProperty('--canopy-color',color);const name=document.createElement('strong');name.textContent=n.label;const detail=document.createElement('small');detail.textContent=n.stage+' · '+(n.issues?'evidence gap':'declared record')+' · '+n.roots+' contributing roots';b.append(name,detail);b.onclick=()=>open(n.id);directory.append(b)}
+ announce.textContent=layout.nodes.length+' declared records · '+layout.connections.length+' adjacent-stage declared connections · no independently verified achievements.';
+};
 const render=()=>{
+ renderCanopy();
  const area=byId('atlas-cards');area.replaceChildren();
  if(!current){byId('atlas-summary').textContent='Import a local evidence packet to activate the skill atlas.';return}
  const records=filterAtlas(current,{search:byId('atlas-search').value,stage:byId('atlas-stage').value,status:byId('atlas-state').value});
