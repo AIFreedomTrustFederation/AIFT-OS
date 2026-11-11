@@ -5,3 +5,11 @@ test('roots stay roots, not fruits',()=>{const l=canopyLayout({missions});assert
 test('nonadjacent ancestry never fabricates direct edges',()=>assert.equal(canopyLayout({missions}).connections.length,0));
 test('deterministic bounded layout and missing selection',()=>{const l=canopyLayout({missions});assert.deepEqual(l,canopyLayout({missions}));assert.equal(canopyFocus(l,'missing').node,null)});
 test('evidence gaps remain visible',()=>assert.equal(canopyLayout({missions}).nodes.find(n=>n.id==='outcome').issues,1));
+
+test('transitive adjacent-stage ancestry does not masquerade as a declared edge',()=>{
+ const records=[{id:'r',label:'Root',stage:'root',issues:[],roots:[],status:'unverified',ancestors:[],directParents:[]},
+ {id:'t',label:'Trunk',stage:'trunk',issues:[],roots:['r'],status:'unverified',ancestors:['r'],directParents:[]}];
+ assert.deepEqual(canopyLayout({missions:records}).connections,[]);
+ records[1].directParents=['r'];
+ assert.deepEqual(canopyLayout({missions:records}).connections,[{from:'r',to:'t'}]);
+});
