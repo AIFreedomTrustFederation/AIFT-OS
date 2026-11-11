@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {canopyLayout,canopyFocus,canopyLineage,STAGES} from './living-universe-canopy.mjs';
+import {canopyLayout,canopyFocus,canopyLineage,canopyRoutes,STAGES} from './living-universe-canopy.mjs';
 const mission=(id,stage,directParents=[])=>({id,label:id,stage,directParents,issues:[],roots:[],status:'unverified'});
 test('six stages and repository roots remain distinct from fruits',()=>{
  assert.deepEqual(STAGES,['root','trunk','branch','leaf','flower','fruit']);
@@ -58,4 +58,19 @@ test('cinematic lineage journey exposes source roots, anomalies and missing refe
  const {readFileSync}=await import('node:fs');const {fileURLToPath}=await import('node:url');const {dirname,join}=await import('node:path');
  const html=readFileSync(join(dirname(fileURLToPath(import.meta.url)),'living-universe-2.html'),'utf8');
  assert.match(html,/id="canopy-lineage-journey"/);assert.match(html,/Contributing repository roots/);assert.match(html,/Direct stage anomalies/);assert.match(html,/Missing graph references/);assert.match(html,/layout\.omissions\.filter/);assert.match(html,/document\.createElement\('button'\)/);
+});
+
+test('root-to-record journey resolves directed shortest paths without fabricated ancestry',()=>{
+ const l=canopyLayout({missions:[mission('r','root'),mission('s','root'),mission('t','trunk',['r']),mission('f','fruit',['t','s'])]});
+ const result=canopyRoutes(l,'f');
+ assert.deepEqual(result.routes.map(r=>r.ids),[['r','t','f'],['s','f']]);
+ assert.deepEqual(result.routes.map(r=>r.stageGaps),[1,1]);
+ assert.equal(result.unreachable,false);
+});
+test('journeys are cycle-safe, bounded, deterministic and report absent provenance',()=>{
+ const l=canopyLayout({missions:[mission('r','root',['f']),mission('f','fruit',['r']),mission('orphan','leaf')]});
+ assert.deepEqual(canopyRoutes(l,'f').routes[0].ids,['r','f']);
+ assert.equal(canopyRoutes(l,'orphan').unreachable,true);
+ assert.equal(canopyRoutes(l,'unknown').unreachable,true);
+ assert.throws(()=>canopyRoutes(l,'f',{maxRoutes:0}));
 });
