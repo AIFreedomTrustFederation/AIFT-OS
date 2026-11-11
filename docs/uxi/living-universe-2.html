@@ -95,7 +95,7 @@ function renderMissions(){
 function byLabel(id){const n=nodes.find(n=>n.id===id);return n?.label||n?.name||id}
 el('nav-back').onclick=()=>{const n=navigation.back();if(n)select(n.id,{record:false})};
 el('nav-forward').onclick=()=>{const n=navigation.forward();if(n)select(n.id,{record:false})};
-el('nav-roots').onclick=()=>{const roots=nodes.filter(n=>n._stage==='root');if(roots.length)select(roots[0].id)};
+el('nav-roots').onclick=()=>{const ids=selected?auditLineage(nodes,edges,selected).roots:nodes.filter(n=>n._stage==='root').map(n=>n.id);if(ids.length)select(ids[0])};
 el('nav-next').onclick=()=>{const ids=navigation.neighbors(selected);if(ids.length)select(ids[0])};
 el('export').onclick=()=>{try{
  const packet=createDossier(nodes,edges,selected);
