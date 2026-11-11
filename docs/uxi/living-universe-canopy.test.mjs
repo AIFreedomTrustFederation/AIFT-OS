@@ -13,3 +13,14 @@ test('transitive adjacent-stage ancestry does not masquerade as a declared edge'
  records[1].directParents=['r'];
  assert.deepEqual(canopyLayout({missions:records}).connections,[{from:'r',to:'t'}]);
 });
+
+test('both atlas and canopy delegate selection to canonical observatory navigation',async()=>{
+ const {readFileSync}=await import('node:fs');
+ const {fileURLToPath}=await import('node:url');
+ const {dirname,join}=await import('node:path');
+ const html=readFileSync(join(dirname(fileURLToPath(import.meta.url)),'living-universe-2.html'),'utf8');
+ assert.match(html,/addEventListener\('aift:explore-node'/);
+ assert.match(html,/select\(id\);[\s\S]*?scrollIntoView/);
+ assert.match(html,/CustomEvent\('aift:explore-node',\{detail:\{id:m\.id\}\}\)/);
+ assert.doesNotMatch(html,/textContent\.includes\((?:m\.)?id\)/);
+});
