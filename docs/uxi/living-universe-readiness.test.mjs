@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {buildReadinessAtlas,readinessMissions,STAGES} from './living-universe-readiness.mjs';
+const nodes=[{id:'repo',stage:'root',label:'Source repository',url:'https://github.com/example/repo'},{id:'federation',stage:'trunk'},{id:'service',stage:'branch'},{id:'product',stage:'fruit',product_url:'https://example.org/app'}];
+const edges=[{from:'repo',to:'federation'},{from:'federation',to:'service'},{from:'service',to:'product'}];
+test('root ancestry reaches product without misclassifying repository',()=>{const a=buildReadinessAtlas(nodes,edges);assert.deepEqual(a.rows[3].rootIds,['repo']);assert.equal(a.rows[0].stage,'root');assert.equal(a.summary.declaredFruits,1);assert.equal(a.summary.verifiedProducts,0)});
+test('missing ancestry and destination become review missions, not achievements',()=>{const a=buildReadinessAtlas([{id:'x',stage:'fruit'}],[]);assert.equal(a.summary.fruitEvidenceGaps,1);assert.equal(readinessMissions(a).length,1);assert.equal(a.rows[0].issues.length,3)});
+test('cycles terminate with bounded ancestry',()=>{const a=buildReadinessAtlas(nodes,[...edges,{from:'product',to:'service'}]);assert.equal(a.rows[3].rootIds.length,1)});
+test('reject duplicate IDs, unsafe URLs and unknown relationships',()=>{assert.throws(()=>buildReadinessAtlas([nodes[0],nodes[0]],[]));assert.throws(()=>buildReadinessAtlas(nodes,[{from:'ghost',to:'repo'}]));const a=buildReadinessAtlas([{id:'x',stage:'fruit',url:'javascript:alert(1)'}],[]);assert.equal(a.rows[0].destination,null)});
+test('six biological stages are distinct',()=>assert.deepEqual(STAGES,['root','trunk','branch','leaf','flower','fruit']));
