@@ -35,7 +35,7 @@ export function planJourneys(nodes,edges) {
     /^https?:\/\//i.test(fruit.productEvidence.sourceUrl);
   routes.push({fruitId:fruit.id,fruitLabel:str(fruit.label||fruit.name||fruit.id),
    path:path||[],hasDirectedRootPath:!!path,hasProductEvidence:!!verifiedProduct,
-   classification:verifiedProduct&&path?'evidence-linked-outcome':'evidence-gap',
+   classification:verifiedProduct&&path?'declared-evidence-route':'evidence-gap',
    gap:!path?'No directed root-to-outcome path':!verifiedProduct?'No verified product evidence and destination':'none'});
  }
  const tasks=[];
