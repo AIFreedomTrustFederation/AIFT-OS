@@ -1,3 +1,4 @@
+import {receiptGateState} from './living-universe-receipts.mjs';
 // Living Universe 2.0: evidence-backed skill atlas (pure, no network or storage).
 export const STAGES=Object.freeze(['root','trunk','branch','leaf','flower','fruit']);
 export function analyzeAtlas(nodes,edges){
@@ -20,7 +21,7 @@ export function analyzeAtlas(nodes,edges){
  const evidence=n.evidence||n.verification||n.ci;
  // Never infer a verified achievement from an arbitrary evidence string or URL.
  return {id:n.id,label:String(n.label||n.name||n.title||n.id),stage:s,roots,destination,issues,
-  status:issues.length?'evidence-gap':evidence?'evidence-declared':'unverified',ancestors:parents,directParents:[...new Set(inbound.get(n.id))]};
+  status:issues.length?'evidence-gap':evidence?'evidence-declared':'unverified',receipts:Array.isArray(n.receipts)?n.receipts:[],ancestors:parents,directParents:[...new Set(inbound.get(n.id))]};
  });
  return {missions,summary:{nodes:nodes.length,roots:nodes.filter(isRoot).length,declaredOutcomes:missions.filter(m=>m.stage==='fruit').length,gaps:missions.filter(m=>m.issues.length).length,verifiedAchievements:0}};
 }
@@ -53,7 +54,7 @@ export function evidenceReadinessGates(mission){
  if(!mission||typeof mission.id!=='string'||!Array.isArray(mission.roots)||!Array.isArray(mission.issues))throw Error('Invalid atlas mission');
  const gates=[
   {id:'provenance',label:'Directed source provenance',state:mission.roots.length?'declared':'blocked',detail:mission.roots.length?mission.roots.length+' contributing root(s) declared':'No contributing repository root declared'},
-  {id:'evidence',label:'Independent evidence verification',state:'pending',detail:'Check exact commit SHA, source link, test result and timestamp outside this imported dossier'},
+  {id:'evidence',label:'Independent evidence verification',state:receiptGateState(mission.receipts||[]).state,detail:receiptGateState(mission.receipts||[]).reason+'; independently confirm run conclusion and head before marking complete'},
   {id:'accessibility',label:'Accessible user journey',state:'pending',detail:'Verify keyboard, screen reader, mobile and reduced-motion behavior in a real browser'}
  ];
  if(mission.stage==='fruit')gates.splice(1,0,{id:'destination',label:'User-facing deliverable',state:mission.destination?'declared':'blocked',detail:mission.destination?'HTTPS destination declared; live availability unverified':'No HTTPS user-facing destination declared'});
