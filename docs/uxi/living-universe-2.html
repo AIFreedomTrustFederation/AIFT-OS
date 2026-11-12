@@ -565,10 +565,87 @@ function renderJourney(){
 journeyEl('query').addEventListener('input',()=>{journeyRoute=0;journeyStep=0;renderJourney()});
 journeyEl('target').addEventListener('change',e=>{journeyTarget=e.target.value;journeyRoute=0;journeyStep=0;renderJourney()});
 
+
+/* Federation constellation: declared graph only, reversible and keyboard-accessible. */
+const constellation=document.createElement('section');
+const constellationTitle=document.createElement('h2');constellationTitle.textContent='Federation Constellation · source to outcome';
+const constellationNote=document.createElement('p');constellationNote.textContent='An evidence-first spatial view. Repositories are roots, never fruits. Connections are declared, not independently verified.';
+const constellationTools=document.createElement('div');constellationTools.className='constellation-tools';
+const constellationSearch=document.createElement('input');constellationSearch.type='search';constellationSearch.placeholder='Find a source, capability or outcome';constellationSearch.setAttribute('aria-label','Search federation constellation');
+const constellationZoom=document.createElement('input');constellationZoom.type='range';constellationZoom.min='70';constellationZoom.max='180';constellationZoom.value='100';constellationZoom.setAttribute('aria-label','Constellation zoom percentage');
+const constellationReset=document.createElement('button');constellationReset.type='button';constellationReset.textContent='Reset view';
+const constellationSummary=document.createElement('p');constellationSummary.setAttribute('role','status');
+const constellationCanvas=document.createElement('div');constellationCanvas.className='constellation-canvas';
+const constellationList=document.createElement('div');constellationList.className='constellation-list';
+const constellationDetail=document.createElement('div');constellationDetail.className='constellation-detail';
+constellationTools.append(constellationSearch,constellationZoom,constellationReset);
+constellation.append(constellationTitle,constellationNote,constellationTools,constellationSummary,constellationCanvas,constellationDetail,constellationList);
+constellation.id='federation-constellation';
+document.querySelector('main')?.append(constellation);
+const constellationStyle=document.createElement('style');constellationStyle.textContent=`
+#federation-constellation{margin:2rem auto;padding:clamp(1rem,3vw,2rem);border:1px solid #927b4a;border-radius:24px;background:radial-gradient(ellipse at 20% 10%,#36213c,#101c32 50%,#07141b);color:#f3f6ff;max-width:1200px}
+.constellation-tools{display:flex;flex-wrap:wrap;gap:1rem;align-items:center}.constellation-tools input[type=search]{flex:1;min-width:190px;padding:.8rem;border-radius:10px}
+.constellation-tools button,.constellation-list button,.constellation-detail button{min-height:44px;border:1px solid #d9b86e;border-radius:10px;padding:.65rem;background:#152b40;color:#fff;cursor:pointer}
+.constellation-canvas{overflow:auto;border:1px solid #52617d;border-radius:16px;background:radial-gradient(circle at center,#24314c,#09131f);margin:1rem 0}
+.constellation-canvas svg{display:block;width:100%;min-width:650px;height:auto}.constellation-canvas circle{stroke:#f7e3ac;stroke-width:1.8}
+.constellation-canvas [role=button]{cursor:pointer}.constellation-canvas [role=button]:focus{outline:3px solid #fff;outline-offset:5px}
+.constellation-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.6rem;max-height:300px;overflow:auto}
+.constellation-list button{text-align:left}.constellation-detail{padding:1rem;border-left:4px solid #d9b86e;margin:1rem 0;background:#15263a}
+@media(max-width:600px){.constellation-canvas svg{min-width:560px}.constellation-tools{flex-direction:column;align-items:stretch}}
+@media(prefers-reduced-motion:reduce){#federation-constellation *,#federation-constellation *::before{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+`;document.head.append(constellationStyle);
+let constellationFocus='';
+const svgNS='http://www.w3.org/2000/svg';
+function constellationElement(name,attributes={}){const e=document.createElementNS(svgNS,name);for(const [k,v] of Object.entries(attributes))e.setAttribute(k,String(v));return e}
+function renderConstellation(){
+ constellationCanvas.replaceChildren();constellationList.replaceChildren();constellationDetail.replaceChildren();
+ if(!current){constellationSummary.textContent='No imported evidence. Import a local packet to explore the constellation.';return}
+ const layout=canopyLayout(current,{width:1100,height:640});
+ const query=constellationSearch.value.toLocaleLowerCase().trim();
+ const visible=layout.nodes.filter(n=>!query||[n.id,n.label,n.stage].join(' ').toLocaleLowerCase().includes(query));
+ const ids=new Set(visible.map(n=>n.id));
+ constellationSummary.textContent=visible.length+' declared records · '+layout.connections.filter(e=>ids.has(e.from)&&ids.has(e.to)).length+' direct connections · '+layout.omissions.length+' omitted references · independent verification unavailable';
+ const scale=Number(constellationZoom.value)/100;
+ const svg=constellationElement('svg',{viewBox:'0 0 1100 640',width:1100*scale,height:640*scale,role:'img','aria-label':'Declared federation graph; accessible record list follows'});
+ svg.style.width=(1100*scale)+'px';
+ const positions=new Map(layout.nodes.map(n=>[n.id,n]));
+ for(const edge of layout.connections){
+  if(!ids.has(edge.from)||!ids.has(edge.to))continue;
+  const a=positions.get(edge.from),b=positions.get(edge.to);
+  const path=constellationElement('path',{d:'M'+a.x+' '+a.y+' C'+(a.x+45)+' '+a.y+' '+(b.x-45)+' '+b.y+' '+b.x+' '+b.y,fill:'none',stroke:edge.kind&&edge.kind!=='adjacent'?'#ff547b':'#7ca5bd','stroke-width':2,'stroke-dasharray':edge.kind&&edge.kind!=='adjacent'?'6 5':'none'});
+  svg.append(path);
+ }
+ function inspect(n){
+  constellationFocus=n.id;constellationDetail.replaceChildren();
+  const heading=document.createElement('h3');heading.textContent=n.label+' · '+n.stage;
+  const info=canopyReadiness(layout,n.id),p=document.createElement('p');
+  p.textContent=info.roots+' contributing repository roots · '+info.anomalies+' stage anomalies · '+info.missingReferences+' missing references. Declared graph only; not independently verified.';
+  const jump=journeyButton('Explore lineage in Journey Cockpit',()=>{journeyTarget=n.id;journeyRoute=0;journeyStep=0;renderJourney();journeyEl('target').scrollIntoView({block:'center'});});
+  const tree=journeyButton('Inspect in Living Tree',()=>journeyExplore(n.id));
+  constellationDetail.append(heading,p,jump,tree);
+  for(const el of svg.querySelectorAll('[data-record]'))el.setAttribute('aria-pressed',String(el.getAttribute('data-record')===n.id));
+ }
+ for(const n of visible.slice(0,300)){
+  const color=SPECTRUM[Math.max(0,STAGES.indexOf(n.stage))];
+  const g=constellationElement('g',{role:'button',tabindex:0,'data-record':n.id,'aria-label':n.stage+' '+n.label,'aria-pressed':'false'});
+  const ring=constellationElement('circle',{cx:n.x,cy:n.y,r:n.id===constellationFocus?12:8,fill:color});
+  const label=constellationElement('text',{x:n.x+13,y:n.y+4,fill:'#fff','font-size':12});label.textContent=n.label.length>25?n.label.slice(0,24)+'…':n.label;
+  g.append(ring,label);g.addEventListener('click',()=>inspect(n));g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();inspect(n)}});svg.append(g);
+  const b=journeyButton(n.stage+' · '+n.label,()=>inspect(n));constellationList.append(b);
+ }
+ constellationCanvas.append(svg);
+ if(visible.length>300){const p=document.createElement('p');p.textContent='Showing first 300 records. Refine search to inspect additional records.';constellationList.prepend(p)}
+ const selected=visible.find(n=>n.id===constellationFocus)||visible[0];if(selected)inspect(selected);
+}
+constellationSearch.addEventListener('input',renderConstellation);
+constellationZoom.addEventListener('input',renderConstellation);
+constellationReset.addEventListener('click',()=>{constellationSearch.value='';constellationZoom.value='100';constellationFocus='';renderConstellation()});
+
 const render=()=>{
  renderCanopy();
  renderQuestTheatre();
  renderJourney();
+ renderConstellation();
  const area=byId('atlas-cards');area.replaceChildren();
  if(!current){byId('atlas-summary').textContent='Import a local evidence packet to activate the skill atlas.';return}
  const records=filterAtlas(current,{search:byId('atlas-search').value,stage:byId('atlas-stage').value,status:byId('atlas-state').value});
