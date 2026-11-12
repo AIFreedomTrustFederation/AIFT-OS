@@ -48,7 +48,7 @@ try {
       if (name === 'expedition') {
         assert.match(await page.locator('#status').innerText(), /no evidence|empty|import/i, 'fail-closed empty state');
         await page.locator('#search').fill('nonexistent-record');
-        await page.locator('#zoom').fill('140');
+        await page.locator('#zoom').evaluate(input => { input.value = '140'; input.dispatchEvent(new Event('input', { bubbles: true })); });
         assert.match(await page.locator('#zoom-value').innerText(), /140/, 'zoom feedback');
         await page.locator('#river-search').fill('nonexistent-record');
         await page.locator('#river-filter').selectOption('gaps');
@@ -92,6 +92,9 @@ try {
         const rendered = await page.locator('body').innerText();
         assert.match(rendered, /TEST ONLY user outcome/, 'outcome rendered from imported packet');
         assert.match(rendered, /TEST ONLY repository root/, 'repository represented as source');
+        assert.match(await page.locator('#river-summary').innerText(), /Declared roots: 1/, 'source root counted in root lane');
+        assert.match(await page.locator('#river-grid').innerText(), /TEST ONLY user outcome/, 'outcome visible in provenance river');
+        assert.match(await page.locator('#campaign-track').innerText(), /Fruit/, 'biological campaign retains outcome stage');
         assert.match(rendered, /No achievements|not verified|Independent verification unavailable/i, 'verification remains fail-closed');
         await page.locator('#search').fill('TEST ONLY user outcome');
         assert.match(await page.locator('#records').innerText(), /TEST ONLY user outcome/, 'searchable user outcome');
