@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {canopyLayout,canopyFocus,canopyLineage,canopyRoutes,STAGES} from './living-universe-canopy.mjs';
+import {canopyLayout,canopyFocus,canopyLineage,canopyRoutes,canopyReadiness,STAGES} from './living-universe-canopy.mjs';
 const mission=(id,stage,directParents=[])=>({id,label:id,stage,directParents,issues:[],roots:[],status:'unverified'});
 test('six stages and repository roots remain distinct from fruits',()=>{
  assert.deepEqual(STAGES,['root','trunk','branch','leaf','flower','fruit']);
@@ -109,4 +109,23 @@ test('spatial keyboard navigation preserves canonical record identity and focus 
  assert.match(html,/focus\(\{preventScroll:true\}\)/);
  assert.match(html,/source==='directory'/);
  assert.match(html,/activate\.textContent/);
+});
+
+test('provenance readiness is evidence-only and exposes source gaps without awarding verification',()=>{
+ const l=canopyLayout({missions:[mission('repo','root'),mission('system','branch',['repo']),mission('product','fruit',['system','missing'])]});
+ const r=canopyReadiness(l,'product');
+ assert.equal(r.roots,1);assert.equal(r.intermediate,1);
+ assert.equal(r.anomalies,2);assert.equal(r.missingReferences,1);
+ assert.equal(r.hasDirectedRootPath,true);assert.equal(r.verified,false);
+ assert.equal(canopyReadiness(l,'absent').found,false);
+ const orphan=canopyLayout({missions:[mission('outcome','fruit',['unknown'])]});
+ assert.equal(canopyReadiness(orphan,'outcome').hasDirectedRootPath,false);
+});
+test('readiness ribbon is present and never labels declared paths verified',async()=>{
+ const {readFileSync}=await import('node:fs');const {fileURLToPath}=await import('node:url');const {dirname,join}=await import('node:path');
+ const html=readFileSync(join(dirname(fileURLToPath(import.meta.url)),'living-universe-2.html'),'utf8');
+ assert.match(html,/className='canopy-readiness'/);
+ assert.match(html,/Independent verification is still required/);
+ assert.match(html,/Missing references/);
+ assert.match(html,/aria-label','Declared provenance journey readiness'/);
 });
