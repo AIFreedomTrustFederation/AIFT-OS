@@ -62,14 +62,53 @@ try {
         await page.locator('#search').fill('nonexistent-record');
         await page.screenshot({ path: join(out, name + '-' + width + '-interaction.png'), fullPage: true, animations: 'disabled' });
       }
+      if (name === 'expedition') {
+        // Synthetic, explicitly test-only lineage: never displayed as real federation evidence.
+        const fixture = {
+          nodes: [
+            { id: 'fixture-root', stage: 'root', label: 'TEST ONLY repository root', repository_url: 'https://github.com/AIFreedomTrustFederation/AIFT-Genesis' },
+            { id: 'fixture-trunk', stage: 'trunk', label: 'TEST ONLY federation trunk' },
+            { id: 'fixture-branch', stage: 'branch', label: 'TEST ONLY capability branch' },
+            { id: 'fixture-leaf', stage: 'leaf', label: 'TEST ONLY documented leaf' },
+            { id: 'fixture-flower', stage: 'flower', label: 'TEST ONLY emerging integration' },
+            { id: 'fixture-fruit', stage: 'fruit', label: 'TEST ONLY user outcome', product_url: 'https://example.org/test-only-outcome' },
+            { id: 'fixture-no-fruit', stage: 'fruit', label: 'TEST ONLY missing outcome' }
+          ],
+          edges: [
+            { from: 'fixture-root', to: 'fixture-trunk' },
+            { from: 'fixture-trunk', to: 'fixture-branch' },
+            { from: 'fixture-branch', to: 'fixture-leaf' },
+            { from: 'fixture-leaf', to: 'fixture-flower' },
+            { from: 'fixture-flower', to: 'fixture-fruit' },
+            { from: 'fixture-branch', to: 'fixture-no-fruit' }
+          ]
+        };
+        await page.locator('#packet').setInputFiles({
+          name: 'synthetic-browser-test-only.json',
+          mimeType: 'application/json',
+          buffer: Buffer.from(JSON.stringify(fixture))
+        });
+        assert.match(await page.locator('#status').innerText(), /7 declared records imported locally/i, 'synthetic packet imported');
+        const rendered = await page.locator('body').innerText();
+        assert.match(rendered, /TEST ONLY user outcome/, 'outcome rendered from imported packet');
+        assert.match(rendered, /TEST ONLY repository root/, 'repository represented as source');
+        assert.match(rendered, /No achievements|not verified|Independent verification unavailable/i, 'verification remains fail-closed');
+        await page.locator('#search').fill('TEST ONLY user outcome');
+        assert.match(await page.locator('#records').innerText(), /TEST ONLY user outcome/, 'searchable user outcome');
+        await page.locator('#search').fill('');
+        await page.screenshot({ path: join(out, name + '-' + width + '-synthetic-lineage.png'), fullPage: true, animations: 'disabled' });
+        await page.locator('#clear').click();
+        assert.match(await page.locator('#status').innerText(), /Evidence cleared/i, 'clearing removes synthetic data');
+        assert.doesNotMatch(await page.locator('#records').innerText(), /TEST ONLY user outcome/, 'no stale outcome after clearing');
+      }
       assert.deepEqual(errors, [], name + ' browser errors');
-      findings.push({ name, width, ...before, errors, screenshots: 2 });
+      findings.push({ name, width, ...before, errors, screenshots: name === 'expedition' ? 3 : 2 });
       await page.close();
     }
     await context.close();
   }
   writeFileSync(join(out, 'acceptance-results.json'), JSON.stringify({
-    scope: 'local checked-out pages, empty evidence state; not a live deployment or verified CI receipt',
+    scope: 'local checked-out pages, empty and synthetic test-only evidence states; not a live deployment or verified CI receipt',
     findings
   }, null, 2));
   console.log('Browser acceptance passed: two surfaces, mobile/desktop, interactive states, fail-closed behavior, keyboard focus, reduced motion, screenshots');
