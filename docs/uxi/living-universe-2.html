@@ -76,6 +76,15 @@ dl{display:grid;grid-template-columns:95px 1fr;gap:.6rem;overflow-wrap:anywhere}
 .quest-board{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:1rem}.quest-card{padding:1rem;border-radius:16px;border:1px solid #83b2cc;border-top:4px solid #f5cd83;background:linear-gradient(145deg,#12314b,#091c31);box-shadow:0 12px 30px #0005}.quest-card h3{color:#f5cd83}.quest-card button,.quest-card a{display:inline-block;min-height:44px;margin:.3rem;padding:.7rem;color:#fff;background:#18536a;border:1px solid #7de1db;border-radius:8px}.quest-card :focus-visible{outline:3px solid #f5cd83;outline-offset:3px}@media(prefers-reduced-motion:reduce){.quest-card *{animation:none!important;transition:none!important}}
 /* Evidence Quest Theatre: source-derived readiness gates, never simulated completion */
 .quest-gates{display:grid;gap:.55rem;margin:.9rem 0;padding:0;list-style:none}.quest-gate{display:grid;grid-template-columns:1.3rem minmax(0,1fr);gap:.6rem;align-items:start;padding:.7rem .8rem;border:1px solid rgba(175,195,235,.24);border-radius:.8rem;background:linear-gradient(120deg,rgba(17,34,62,.8),rgba(12,24,42,.65));color:#e6efff}.quest-gate[data-state="blocked"]{border-left:3px solid #ff547b}.quest-gate[data-state="pending"]{border-left:3px solid #69baff}.quest-gate[data-state="declared"]{border-left:3px solid #42e6aa}.quest-gate strong{display:block;font-size:.88rem;color:#fff}.quest-gate small{display:block;font-size:.78rem;line-height:1.45;color:#d2def2;margin-top:.15rem}.quest-gate-icon{font-weight:800;color:#f5cd83}.quest-readiness{font-size:.82rem;color:#f5cd83;font-weight:700;letter-spacing:.025em}.quest-card:focus-within{outline:2px solid #f5cd83;outline-offset:3px}@media(max-width:480px){.quest-gate{padding:.6rem;grid-template-columns:1rem minmax(0,1fr)}.quest-card button,.quest-card a{min-height:44px}}@media(prefers-reduced-motion:reduce){.quest-card,.quest-gate{animation:none!important;transition:none!important}}
+
+/* Integrated Journey Cockpit: evidence-derived, read-only, accessible */
+.journey-cockpit{margin:1.5rem 0;padding:clamp(1rem,3vw,2rem);border:1px solid #d8b878;border-radius:22px;background:radial-gradient(ellipse at 15% 0%,#6e1f4a66,transparent 45%),radial-gradient(ellipse at 85% 100%,#155c7366,transparent 50%),#08172c;box-shadow:0 24px 70px #0008}
+.journey-cockpit h2{color:#f5cd83}.journey-controls{display:flex;gap:.75rem;flex-wrap:wrap;align-items:end}.journey-controls label{display:grid;gap:.3rem;flex:1 1 210px}.journey-controls input,.journey-controls select{min-height:44px;padding:.6rem;background:#091e32;color:#fff;border:1px solid #8ba9c8;border-radius:10px}
+.journey-stage-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.5rem;margin:1rem 0}.journey-stage-grid button{min-height:86px;padding:.7rem .4rem;border:1px solid var(--stage-color);border-top:5px solid var(--stage-color);border-radius:12px;background:linear-gradient(160deg,#203651,#091626);color:#fff;overflow-wrap:anywhere;text-align:center}.journey-stage-grid button[aria-current="step"]{outline:3px solid #f5cd83;outline-offset:2px}.journey-stage-grid small{display:block;color:#d5e4f6}
+.journey-route-list{display:flex;gap:.65rem;overflow-x:auto;padding:.6rem 0;scroll-snap-type:x proximity}.journey-route-list button{flex:0 0 min(210px,65vw);min-height:68px;scroll-snap-align:start;padding:.65rem;border:1px solid #80c6dc;border-radius:12px;background:#102d46;color:#fff;text-align:left}.journey-route-list button[aria-pressed="true"]{border:2px solid #f5cd83;background:#29445d}
+.journey-cockpit button:focus-visible,.journey-cockpit a:focus-visible{outline:3px solid #f5cd83;outline-offset:3px}.journey-detail{border-left:4px solid #f5cd83;background:#10283e;padding:1rem;border-radius:10px;min-height:90px}.journey-detail a,.journey-detail button{display:inline-block;margin:.4rem;padding:.65rem;border-radius:8px;border:1px solid #7cd9e8;background:#16405a;color:#fff;min-height:44px}.journey-route-note{color:#d8e6f5}
+@media(max-width:900px){.journey-stage-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:480px){.journey-stage-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.journey-cockpit *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 </style><style>
 .canopy-panel{margin:1.4rem 0;border-color:#d5af6e;background:radial-gradient(ellipse at 50% 0%,#29405d,#0a172b 72%)}
 .canopy-shell{position:relative;overflow:auto;border:1px solid #7294af;border-radius:20px;background:repeating-radial-gradient(circle at 50% 50%,transparent 0 56px,#a6cfff16 57px 58px),radial-gradient(ellipse at 50% 55%,#22415a,#070f20 70%);box-shadow:inset 0 0 90px #071224}
@@ -151,7 +160,15 @@ dl{display:grid;grid-template-columns:95px 1fr;gap:.6rem;overflow-wrap:anywhere}
 <p id="canopy-announcement" role="status" aria-live="polite">Import evidence to illuminate the canopy.</p>
 <div id="canopy-directory" class="canopy-directory" aria-label="Accessible canopy directory"></div>
 </section>
-<section class="panel" aria-labelledby="quest-title"><h2 id="quest-title">Evidence Quest Theatre</h2><p class="lede">Source-backed review missions, never fabricated XP or achievements.</p><p id="quest-summary" role="status" aria-live="polite">Import evidence to reveal missions.</p><div id="quest-board" class="quest-board"></div></section><div id="atlas-cards" class="list" style="max-height:560px" aria-label="Evidence quests"></div>
+<section class="panel" aria-labelledby="quest-title"><h2 id="quest-title">Evidence Quest Theatre</h2><p class="lede">Source-backed review missions, never fabricated XP or achievements.</p><p id="quest-summary" role="status" aria-live="polite">Import evidence to reveal missions.</p><div id="quest-board" class="quest-board"></div></section><section id="journey-cockpit" class="journey-cockpit" aria-labelledby="journey-heading">
+<h2 id="journey-heading">Living Universe · Source-to-Outcome Journey</h2>
+<p>Navigate only declared directed relationships, from repository roots through the federation to user-facing outcomes. This imported graph is not independently verified.</p>
+<div class="journey-controls"><label>Find a declared outcome or capability<input id="journey-query" type="search" autocomplete="off" placeholder="Search imported evidence"></label><label>Choose a record<select id="journey-target" aria-label="Select evidence record"><option value="">Import evidence to begin</option></select></label></div>
+<p id="journey-status" role="status" aria-live="polite">Awaiting an evidence packet. No live claims or achievements.</p>
+<div id="journey-stages" class="journey-stage-grid" role="group" aria-label="Biological stage navigation"></div>
+<div id="journey-routes" class="journey-route-list" role="group" aria-label="Declared root-to-outcome routes"></div>
+<div id="journey-detail" class="journey-detail" aria-live="polite">Select a record to inspect its source lineage and evidence gaps.</div>
+</section><div id="atlas-cards" class="list" style="max-height:560px" aria-label="Evidence quests"></div>
 <p class="legend">No XP, readiness percentage, or achievements are inferred from declared records. Open a record in the main constellation to inspect its provenance.</p></section>
 <footer class="lede">Review surface only · No merge, deploy, status mutation, telemetry, or governance authority.</footer>
 <script type="module">
@@ -478,9 +495,55 @@ const renderQuestTheatre=()=>{
   board.append(card);
  }
 };
+
+/* Journey Cockpit shares the same imported graph and Tree event contract; no fetch or storage. */
+let journeyTarget='',journeyRoute=0,journeyStep=0;
+const journeyEl=id=>byId('journey-'+id);
+const journeyButton=(label,click)=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.addEventListener('click',click);return b};
+const journeyExplore=id=>window.dispatchEvent(new CustomEvent('aift:explore-node',{detail:{id}}));
+function renderJourney(){
+ const select=journeyEl('target'),stageArea=journeyEl('stages'),routeArea=journeyEl('routes'),detail=journeyEl('detail'),status=journeyEl('status');
+ stageArea.replaceChildren();routeArea.replaceChildren();detail.replaceChildren();
+ if(!current){select.replaceChildren(new Option('Import evidence to begin',''));status.textContent='No imported evidence. No live CI, XP or achievements.';detail.textContent='Import a local evidence packet to explore declared provenance.';return}
+ const search=journeyEl('query').value.toLocaleLowerCase().trim();
+ const candidates=current.missions.filter(m=>!search||[m.label,m.id,m.stage,...m.roots].join(' ').toLocaleLowerCase().includes(search)).sort((a,b)=>STAGES.indexOf(b.stage)-STAGES.indexOf(a.stage)||a.label.localeCompare(b.label)).slice(0,250);
+ if(!candidates.some(m=>m.id===journeyTarget)){journeyTarget=candidates[0]?.id||'';journeyRoute=0;journeyStep=0}
+ select.replaceChildren(new Option('Choose a record',''));
+ for(const m of candidates){const opt=new Option(m.stage+' · '+m.label,m.id);select.add(opt)}
+ select.value=journeyTarget;
+ const mission=current.missions.find(m=>m.id===journeyTarget);
+ if(!mission){status.textContent='No matching records in imported evidence.';detail.textContent='Adjust the search to find a documented record.';return}
+ const layout=canopyLayout(current),routes=canopyRoutes(layout,mission.id,{maxRoutes:12}),lineage=canopyReadiness(layout,mission.id);
+ status.textContent=mission.label+' · '+mission.stage+' · '+lineage.roots+' declared source roots · '+lineage.anomalies+' stage anomalies · '+lineage.missingReferences+' missing references · independent verification unavailable.';
+ const active=routes.routes[journeyRoute]||null;
+ if(journeyRoute>=routes.routes.length){journeyRoute=0;journeyStep=0}
+ const route=routes.routes[journeyRoute]||null;
+ for(const [i,r] of routes.routes.entries()){
+  const b=journeyButton('Route '+(i+1)+' · '+r.ids.length+' declared stages'+(r.stageGaps?' · '+r.stageGaps+' anomalies':''),()=>{journeyRoute=i;journeyStep=0;renderJourney()});
+  b.setAttribute('aria-pressed',String(i===journeyRoute));routeArea.append(b);
+ }
+ if(!route){const note=document.createElement('p');note.className='journey-route-note';note.textContent='No directed path from a repository root is declared. Missing relationships are not synthesized.';routeArea.append(note)}
+ if(routes.truncated){const note=document.createElement('p');note.textContent='Only the first 12 declared routes are displayed.';routeArea.append(note)}
+ const path=route?.ids||[mission.id];journeyStep=Math.min(journeyStep,path.length-1);
+ for(const [i,id] of path.entries()){
+  const item=current.missions.find(m=>m.id===id);if(!item)continue;
+  const b=journeyButton(item.stage+' · '+item.label,()=>{journeyStep=i;renderJourney()});
+  b.style.setProperty('--stage-color',SPECTRUM[Math.max(0,STAGES.indexOf(item.stage))]);b.setAttribute('aria-current',i===journeyStep?'step':'false');
+  const small=document.createElement('small');small.textContent=(i+1)+' of '+path.length;b.append(small);stageArea.append(b);
+ }
+ const selected=current.missions.find(m=>m.id===path[journeyStep])||mission;
+ const heading=document.createElement('strong');heading.textContent=selected.label+' · '+selected.stage;
+ const p=document.createElement('p');p.textContent=selected.status+' · '+selected.roots.length+' declared contributing roots. '+(selected.issues.length?selected.issues.join('; '):'No classification issue detected; verification remains outstanding.');
+ detail.append(heading,p,journeyButton('Inspect in Living Tree',()=>journeyExplore(selected.id)),journeyButton('Return to selected record',()=>journeyExplore(mission.id)));
+ if(selected.destination){try{const u=new URL(selected.destination);if(u.protocol==='https:'){const a=document.createElement('a');a.href=u.href;a.rel='noopener noreferrer';a.target='_blank';a.textContent=selected.stage==='fruit'?'Open declared product (not independently verified)':'Open declared source';detail.append(a)}}catch{}}
+}
+journeyEl('query').addEventListener('input',()=>{journeyRoute=0;journeyStep=0;renderJourney()});
+journeyEl('target').addEventListener('change',e=>{journeyTarget=e.target.value;journeyRoute=0;journeyStep=0;renderJourney()});
+
 const render=()=>{
  renderCanopy();
  renderQuestTheatre();
+ renderJourney();
  const area=byId('atlas-cards');area.replaceChildren();
  if(!current){byId('atlas-summary').textContent='Import a local evidence packet to activate the skill atlas.';return}
  const records=filterAtlas(current,{search:byId('atlas-search').value,stage:byId('atlas-stage').value,status:byId('atlas-state').value});
