@@ -10,3 +10,11 @@ test('mission control integrates search, priority and selected-lineage focus',()
 test('mission control retains fail-closed local data and bounded cards',()=>{assert.ok(html.includes('.slice(0,120)'));assert.ok(!html.includes('fetch('));assert.ok(!html.includes('localStorage'));assert.ok(!html.includes('Math.random('))});
 
 test('federation campaign is an integrated, bounded, evidence-backed six-stage journey',()=>{for(const token of ['id="campaign-track"','id="campaign-missions"','id="campaign-gaps"','function renderCampaign()','STAGES.forEach','evidenceReadinessGates(mission)','campaignStage=stage','select(mission.id)','relevant.slice(0,max)','No XP, rewards, CI success'])assert.ok(html.includes(token),token);assert.ok(!html.includes('Math.random('));assert.ok(!html.includes('fetch('))});
+
+test('provenance river is integrated into the expedition and uses declared evidence only',()=>{
+ for(const token of ['id="river-grid"','id="river-search"','id="river-filter"','id="river-reset"','function renderRiver()','renderRiver();','matching.filter(m=>m.stage===stage)','select(m.id)','No qualifying product declared by this packet.','No achievements or live CI status inferred.'])assert.ok(html.includes(token),token);
+ assert.ok(!html.includes('Math.random('));assert.ok(!html.includes('fetch('));
+});
+test('provenance river has six accessible bounded lanes and responsive layouts',()=>{
+ for(const token of ['STAGES.entries()','aria-label','river-lane','entries.slice(0,30)','@media(max-width:650px)','prefers-reduced-motion:reduce'])assert.ok(html.includes(token),token);
+});
