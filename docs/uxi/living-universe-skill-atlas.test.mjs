@@ -18,3 +18,18 @@ test('fruit with declared source and destination still has independent pending g
 test('unlinked fruit blocks source provenance and outcome verification',()=>{const m=analyzeAtlas([{id:'orphan',stage:'fruit'}],[]).missions[0];const r=evidenceReadinessGates(m);assert.equal(r.gates.find(g=>g.id==='provenance').state,'blocked');assert.equal(r.gates.find(g=>g.id==='destination').state,'blocked');assert.ok(r.blocking>=2);assert.equal(r.verified,false)});
 test('root is never a product fruit or verified achievement',()=>{const q=evidenceQuestPlan(analyzeAtlas(nodes,edges)).quests.find(x=>x.id==='repo');assert.equal(q.stage,'root');assert.equal(q.destination!==null,true);assert.equal(q.receipt,'not-verified');assert.equal(q.readiness.gates.some(g=>g.id==='destination'),false)});
 test('invalid readiness input is rejected',()=>{assert.throws(()=>evidenceReadinessGates({id:'bad',roots:null,issues:[]}),/Invalid atlas mission/)});
+
+test('GitHub source repositories cannot masquerade as finished fruits',()=>{
+ const a=analyzeAtlas([{id:'repo',stage:'root',repository_url:'https://github.com/AIFreedomTrustFederation/AIFT-OS'},{id:'fake-fruit',stage:'fruit',url:'https://github.com/AIFreedomTrustFederation/AIFT-OS'}],[{from:'repo',to:'fake-fruit'}]);
+ const fruit=a.missions.find(m=>m.id==='fake-fruit');assert.equal(fruit.destination,null);assert.equal(fruit.status,'evidence-gap');assert.match(fruit.issues.join(' '),/destination/);
+ assert.equal(evidenceQuestPlan(a).quests[0].readiness.gates.find(g=>g.id==='destination').state,'blocked');
+});
+test('GitHub pull requests and Actions URLs are not finished products',()=>{
+ for(const url of ['https://github.com/AIFreedomTrustFederation/AIFT-OS/pull/65','https://github.com/AIFreedomTrustFederation/AIFT-OS/actions/runs/123','https://api.github.com/repos/x/y']){
+  const a=analyzeAtlas([{id:'fruit',stage:'fruit',url}],[]);assert.equal(a.missions[0].destination,null);
+ }
+});
+test('declared application destination can be a fruit with source ancestry but not verified',()=>{
+ const a=analyzeAtlas([{id:'source',stage:'root',repository_url:'https://github.com/AIFreedomTrustFederation/AIFT-OS'},{id:'outcome',stage:'fruit',product_url:'https://example.org/app'}],[{from:'source',to:'outcome'}]);
+ const outcome=a.missions.find(m=>m.id==='outcome');assert.equal(outcome.destination,'https://example.org/app');assert.deepEqual(outcome.roots,['source']);assert.equal(a.summary.verifiedAchievements,0);
+});
