@@ -54,3 +54,11 @@ test('outcome dossier renders complete directed paths with intermediate systems 
  assert.match(html,/route\.stageGaps/);
  assert.match(html,/aift:explore-node/);
 });
+
+test('cinematic lineage uses only directed route IDs and offers reversible stage inspection',async()=>{
+ const {readFileSync}=await import('node:fs');
+ const html=readFileSync(new URL('./living-universe-2.html',import.meta.url),'utf8');
+ for(const contract of [/lineage-cinema/,/for\(const \[routeIndex,route\] of report\.routes\.entries\(\)\)/,/route\.ids\.forEach/,/lookup\.get\(id\)/,/aift:explore-node/,/aria-pressed/,/ArrowRight/,/ArrowLeft/,/prefers-reduced-motion:reduce/,/no verification or completion is implied/i])assert.match(html,contract);
+ assert.match(html,/rel='noopener noreferrer'/);
+ assert.doesNotMatch(html,/innerHTML\s*=/);
+});
