@@ -100,6 +100,7 @@ dl{display:grid;grid-template-columns:95px 1fr;gap:.6rem;overflow-wrap:anywhere}
 .canopy-directory small{display:block;color:#c1d3e8}
 @media(max-width:600px){.canopy-panel{padding:.75rem}#canopy-map{min-width:620px}}
 @media(prefers-reduced-motion:reduce){#canopy-map *{transition:none!important;animation:none!important}}
+.canopy-readiness{padding:1rem;border:1px solid #9c8550;border-radius:16px;background:linear-gradient(125deg,#291b31,#123a39 52%,#122e54);box-shadow:0 12px 32px #0006;grid-column:1/-1}.canopy-readiness h4{color:#f5cd83;margin:0 0 .65rem}.canopy-readiness ul{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.6rem}.canopy-readiness li{border:1px solid #6685a1;border-radius:10px;padding:.65rem;background:#091d32;display:flex;flex-direction:column;gap:.2rem}.canopy-readiness strong{font-size:1.45rem;color:#f5cd83;font-variant-numeric:tabular-nums}.canopy-readiness span{font-size:.8rem;color:#d6e7f5}.canopy-readiness p{color:#e4f0fa;margin:.75rem 0 0}@media(prefers-reduced-motion:reduce){.canopy-readiness{scroll-behavior:auto}}
 .canopy-lineage-journey{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:.65rem;margin:.8rem 0}.canopy-lineage-journey article{padding:.8rem;border:1px solid #7394ac;border-top:3px solid var(--green);border-radius:12px;background:#0b2335}.canopy-lineage-journey article.anomaly{border-top-color:var(--red)}.canopy-lineage-journey h4{margin:.1rem 0 .45rem;color:var(--gold)}.canopy-lineage-journey button{display:block;width:100%;text-align:left;overflow-wrap:anywhere}.canopy-lineage-journey p{font-size:.86rem;color:var(--muted)}.canopy-route{border-top:1px solid #56738c;padding:.5rem 0}.canopy-route ol{margin:.3rem 0 .6rem;padding-left:1.3rem}.canopy-route li{margin:.2rem 0}.canopy-route button[aria-pressed="true"]{border-color:#f5cd83;background:#294c50}#canopy-map .canopy-edge[data-route="true"]{stroke:#f5cd83;stroke-width:5;filter:drop-shadow(0 0 7px #f5cd83)}#canopy-map .canopy-node[data-route="true"] circle{stroke:#f5cd83;stroke-width:5} @media(prefers-reduced-motion:reduce){#canopy-map .canopy-edge[data-route="true"]{filter:none}}.canopy-stage-nav{display:flex;gap:.45rem;overflow-x:auto;padding:.55rem 0}.canopy-stage-nav button{flex:0 0 auto;min-width:95px;border-top:3px solid var(--stage-color,#f5cd83);background:#102b43;color:#edf6ff}.canopy-stage-nav button[aria-pressed="true"]{background:#294c50;box-shadow:inset 0 0 0 2px #f5cd83}.canopy-viewport{display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:.65rem;align-items:start}.canopy-minimap{border:1px solid #7294af;border-radius:14px;padding:.5rem;background:#0b2335}#canopy-mini{display:block;width:100%;height:auto;background:#091a2a;border-radius:8px}.canopy-minimap button{width:100%;margin-top:.45rem}@media(max-width:700px){.canopy-viewport{grid-template-columns:1fr}.canopy-minimap{display:flex;align-items:center;gap:.6rem}#canopy-mini{width:110px;flex:0 0 110px}.canopy-minimap button{margin:0;flex:1}}@media(prefers-reduced-motion:reduce){.canopy-stage-nav *,#canopy-mini *{animation:none!important;transition:none!important}}</style><style>
 .fruit-lineage-dossier{margin-top:1rem;padding:1rem;border:1px solid rgba(245,205,131,.55);border-radius:1rem;background:linear-gradient(145deg,rgba(32,63,83,.75),rgba(15,27,47,.85))}
 .fruit-lineage-dossier summary{cursor:pointer;font-weight:700;color:#f5cd83;min-height:44px}
@@ -304,7 +305,7 @@ render();
 })();
 </script><script type="module">
 import {analyzeAtlas,filterAtlas,evidenceQuestPlan} from './living-universe-skill-atlas.mjs';
-import {canopyLayout,canopyLineage,canopyRoutes,SPECTRUM,STAGES} from './living-universe-canopy.mjs';
+import {canopyLayout,canopyLineage,canopyRoutes,canopyReadiness,SPECTRUM,STAGES} from './living-universe-canopy.mjs';
 let current=null;const byId=id=>document.getElementById(id);
 // Shared keyboard journey: roving focus follows the biological columns without losing focus on rerender.
 let keyboardFocusId='';
@@ -361,6 +362,16 @@ const renderCanopy=()=>{
  if(lineage){
   journeyCard('Contributing repository roots',lineage.rootIds.map(id=>({id,label:points.get(id)?.label||id})),'No declared contributing root. Do not infer provenance.');
   const routeReport=canopyRoutes(layout,focusId);
+  const readiness=canopyReadiness(layout,focusId);
+  const ribbon=document.createElement('section');ribbon.className='canopy-readiness';ribbon.setAttribute('aria-label','Declared provenance journey readiness');
+  const readinessTitle=document.createElement('h4');readinessTitle.textContent='Source lineage · evidence map';ribbon.append(readinessTitle);
+  const readinessList=document.createElement('ul');
+  for(const [label,value] of [['Repository roots',readiness.roots],['Intermediate records',readiness.intermediate],['Stage anomalies',readiness.anomalies],['Missing references',readiness.missingReferences]]){
+   const item=document.createElement('li');const strong=document.createElement('strong');strong.textContent=String(value);const span=document.createElement('span');span.textContent=label;item.append(strong,span);readinessList.append(item);
+  }
+  ribbon.append(readinessList);
+  const readinessNote=document.createElement('p');readinessNote.textContent=readiness.hasDirectedRootPath?'Declared root-to-record path available. Independent verification is still required.':'No complete directed source-root path. Provenance remains blocked.';
+  ribbon.append(readinessNote);journey.append(ribbon);
   const routeCard=document.createElement('article');const routeTitle=document.createElement('h4');routeTitle.textContent='Directed root-to-record journeys';routeCard.append(routeTitle);
   if(!routeReport.routes.length){const p=document.createElement('p');p.textContent='No directed route from a declared repository root. Evidence remains incomplete.';routeCard.append(p)}
   for(const route of routeReport.routes){const group=document.createElement('div');group.className='canopy-route';const activate=document.createElement('button');activate.type='button';activate.textContent='Trace '+(points.get(route.rootId)?.label||route.rootId)+(route.stageGaps?' · '+route.stageGaps+' stage anomalies':'');activate.setAttribute('aria-pressed',String(activeRoute.join('|')===route.ids.join('|')));activate.onclick=()=>{sky.dataset.routeIds=route.ids.join('|');renderCanopy();const match=[...byId('canopy-lineage-journey').querySelectorAll('.canopy-route > button')].find(b=>b.textContent===activate.textContent);match?.focus({preventScroll:true})};group.append(activate);
