@@ -910,8 +910,10 @@ class CollectionTests(unittest.TestCase):
         live_job = workflow.split("\n  live-producer-evidence:\n", 1)[1]
         guards = [line.strip().removeprefix("if: ") for line in live_job.splitlines()
                   if line.startswith("    if: ")]
+        self.assertIn("  workflow_dispatch:\n", workflow)
         self.assertEqual(guards, [
-            "github.event_name == 'push' || github.event_name == 'schedule'"
+            "github.event_name == 'push' || github.event_name == 'schedule' || "
+            "(github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')"
         ])
         self.assertNotIn("github.event.pull_request", live_job)
         self.assertIn("    needs: collector\n", live_job)

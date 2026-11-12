@@ -44,7 +44,7 @@ export function evidenceQuestPlan(atlas,{limit=24}={}){
  if(m.status==='evidence-declared')checks.push('Independently verify declared evidence against exact-head CI or source');
  if(m.status==='unverified')checks.push('Attach source-backed evidence before claiming readiness');
  if(!checks.length)checks.push('Review source provenance; no completion receipt exists');
- return {id:m.id,label:m.label,stage:m.stage,rootIds:[...m.roots],destination:m.destination,status:m.status,checks,readiness:evidenceReadinessGates(m),receipt:'not-verified',priority:priority[m.stage]??6};
+ return {id:m.id,label:m.label,stage:m.stage,rootIds:[...m.roots],destination:m.destination,status:m.status,checks,readiness:evidenceReadinessGates(m),receipts:m.receipts||[],receipt:'not-verified',priority:priority[m.stage]??6};
  }).sort((a,b)=>a.priority-b.priority||b.checks.length-a.checks.length||a.id.localeCompare(b.id));
  return {quests:quests.slice(0,limit),total:quests.length,truncated:quests.length>limit,verified:0};
 }
