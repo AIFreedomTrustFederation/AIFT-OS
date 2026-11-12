@@ -391,15 +391,28 @@ const renderQuestTheatre=()=>{
    const intro=document.createElement('p');intro.textContent=mission.destination?'Declared product destination; availability and completion are not independently verified.':'No qualified product destination. This is a proposed outcome, not a verified fruit.';dossier.append(intro);
    const trail=document.createElement('nav');trail.setAttribute('aria-label','Declared source lineage for '+q.label);
    const trailTitle=document.createElement('strong');trailTitle.textContent='Reversible source lineage';trail.append(trailTitle);
-   const steps=document.createElement('ol');steps.className='fruit-lineage-steps';
-   const lineage=[{id:q.id,label:q.label,stage:'fruit'},...mission.directParents.map(id=>current.missions.find(m=>m.id===id)).filter(Boolean),...mission.roots.map(id=>current.missions.find(m=>m.id===id)).filter(Boolean)];
-   const seen=new Set();
-   for(const item of lineage){if(seen.has(item.id))continue;seen.add(item.id);
-    const li=document.createElement('li');const step=document.createElement('button');step.type='button';step.className='fruit-lineage-step';
-    step.textContent=item.label+' · '+item.stage;step.addEventListener('click',()=>window.dispatchEvent(new CustomEvent('aift:explore-node',{detail:{id:item.id}})));
-    li.append(step);steps.append(li)}
-   if(!mission.roots.length){const gap=document.createElement('p');gap.textContent='Evidence gap: no directed contributing repository roots are declared.';dossier.append(gap)}
-   trail.append(steps);dossier.append(trail);
+   // Render complete declared directed paths, not a misleading flattened parent/root list.
+   const graph=canopyLayout(current),report=canopyRoutes(graph,q.id,{maxRoutes:12});
+   const lookup=new Map(current.missions.map(m=>[m.id,m]));
+   if(report.truncated){const notice=document.createElement('p');notice.textContent='Additional source routes exist; showing the first 12 in deterministic root order.';dossier.append(notice)}
+   if(!report.routes.length){const gap=document.createElement('p');gap.textContent='Evidence gap: no complete directed route from a declared repository root. No missing links are inferred.';dossier.append(gap)}
+   for(const route of report.routes){
+    const routeSection=document.createElement('section');routeSection.className='fruit-lineage-route';
+    const routeHeading=document.createElement('h5');routeHeading.textContent='Source route · '+(lookup.get(route.rootId)?.label||route.rootId);
+    routeSection.append(routeHeading);
+    const steps=document.createElement('ol');steps.className='fruit-lineage-steps';
+    for(const id of route.ids){
+     const item=lookup.get(id);if(!item)continue;
+     const li=document.createElement('li'),step=document.createElement('button');step.type='button';step.className='fruit-lineage-step';
+     step.textContent=item.label+' · '+item.stage;
+     step.addEventListener('click',()=>window.dispatchEvent(new CustomEvent('aift:explore-node',{detail:{id}})));
+     li.append(step);steps.append(li);
+    }
+    routeSection.append(steps);
+    if(route.stageGaps){const warning=document.createElement('p');warning.textContent=route.stageGaps+' declared stage transition(s) skip or reverse biological stages; review classification.';routeSection.append(warning)}
+    trail.append(routeSection);
+   }
+   dossier.append(trail);
    const returnButton=document.createElement('button');returnButton.type='button';returnButton.textContent='Return to outcome in Tree';returnButton.addEventListener('click',()=>window.dispatchEvent(new CustomEvent('aift:explore-node',{detail:{id:q.id}})));dossier.append(returnButton);
    card.append(dossier);
   }
