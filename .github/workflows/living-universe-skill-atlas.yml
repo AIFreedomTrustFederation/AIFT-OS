@@ -9,6 +9,7 @@ on:
       - 'living-universe-receipts*'
       - 'living-universe-journey-cockpit*'
       - 'living-universe-expedition*'
+      - 'living-universe-browser-acceptance*'
       - 'docs/uxi/living-universe-2.html'
       - 'docs/uxi/living-universe-skill-atlas*'
       - 'docs/uxi/living-universe-canopy*'
@@ -16,6 +17,7 @@ on:
       - 'docs/uxi/living-universe-receipts*'
       - 'docs/uxi/living-universe-journey-cockpit*'
       - 'docs/uxi/living-universe-expedition*'
+      - 'docs/uxi/living-universe-browser-acceptance*'
       - '.github/workflows/living-universe-skill-atlas.yml'
   workflow_dispatch:
 permissions:
@@ -36,3 +38,35 @@ jobs:
           else
             node --test docs/uxi/living-universe-skill-atlas.test.mjs docs/uxi/living-universe-canopy.test.mjs docs/uxi/living-universe-journey-cockpit.test.mjs docs/uxi/living-universe-constellation.test.mjs docs/uxi/living-universe-receipts.test.mjs docs/uxi/living-universe-expedition.test.mjs
           fi
+
+  browser-acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install isolated browser acceptance tooling
+        run: |
+          npm install --no-save --no-package-lock playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Serve checked-out UXI pages
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/aift-uxi-http.log 2>&1 &
+          echo $! > /tmp/aift-uxi-http.pid
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8765/docs/uxi/living-universe-2.html > /dev/null && exit 0; sleep 1; done
+          cat /tmp/aift-uxi-http.log
+          exit 1
+      - name: Browser acceptance at mobile and desktop sizes
+        env:
+          AIFT_UXI_PREFIX: 'docs/uxi/'
+          AIFT_SCREENSHOT_DIR: uxi-browser-evidence
+        run: node docs/uxi/living-universe-browser-acceptance.mjs
+      - name: Upload visual evidence even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: living-universe-browser-screenshots
+          path: uxi-browser-evidence/
+          if-no-files-found: warn
