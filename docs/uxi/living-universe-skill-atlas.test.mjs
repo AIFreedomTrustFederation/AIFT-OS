@@ -44,3 +44,13 @@ test('outcome dossier provides reversible provenance and accessible evidence gap
  assert.match(html,/aift:explore-node/);
  assert.match(html,/prefers-reduced-motion:reduce/);
 });
+
+test('outcome dossier renders complete directed paths with intermediate systems and stage anomalies',async()=>{
+ const {readFileSync}=await import('node:fs');
+ const html=readFileSync(new URL('./living-universe-2.html',import.meta.url),'utf8');
+ assert.match(html,/canopyRoutes\(graph,q\.id,\{maxRoutes:12\}\)/);
+ assert.match(html,/for\(const id of route\.ids\)/);
+ assert.match(html,/No missing links are inferred/i);
+ assert.match(html,/route\.stageGaps/);
+ assert.match(html,/aift:explore-node/);
+});
