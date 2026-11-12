@@ -32,7 +32,7 @@ jobs:
         shell: bash
         run: |
           if [ -f living-universe-skill-atlas.test.mjs ]; then
-            node --test living-universe-skill-atlas.test.mjs living-universe-canopy.test.mjs living-universe-journey-cockpit.test.mjs living-universe-constellation.test.mjs living-universe-receipts.test.mjs docs/uxi/living-universe-expedition.test.mjs
+            node --test living-universe-skill-atlas.test.mjs living-universe-canopy.test.mjs living-universe-journey-cockpit.test.mjs living-universe-constellation.test.mjs living-universe-receipts.test.mjs living-universe-expedition.test.mjs
           else
-            node --test docs/uxi/living-universe-skill-atlas.test.mjs docs/uxi/living-universe-canopy.test.mjs docs/uxi/living-universe-journey-cockpit.test.mjs docs/uxi/living-universe-constellation.test.mjs docs/uxi/living-universe-receipts.test.mjs
+            node --test docs/uxi/living-universe-skill-atlas.test.mjs docs/uxi/living-universe-canopy.test.mjs docs/uxi/living-universe-journey-cockpit.test.mjs docs/uxi/living-universe-constellation.test.mjs docs/uxi/living-universe-receipts.test.mjs docs/uxi/living-universe-expedition.test.mjs
           fi
