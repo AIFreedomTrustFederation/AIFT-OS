@@ -43,3 +43,20 @@ export function evidenceQuestPlan(atlas,{limit=24}={}){
  }).sort((a,b)=>a.priority-b.priority||b.checks.length-a.checks.length||a.id.localeCompare(b.id));
  return {quests:quests.slice(0,limit),total:quests.length,truncated:quests.length>limit,verified:0};
 }
+
+/**
+ * Evidence readiness is intentionally NOT an achievement or live CI assertion.
+ * Each gate describes what an operator must verify outside the imported graph.
+ * A declared evidence URL alone cannot satisfy a gate.
+ */
+export function evidenceReadinessGates(mission){
+ if(!mission||typeof mission.id!=='string'||!Array.isArray(mission.roots)||!Array.isArray(mission.issues))throw Error('Invalid atlas mission');
+ const gates=[
+  {id:'provenance',label:'Directed source provenance',state:mission.roots.length?'declared':'blocked',detail:mission.roots.length?mission.roots.length+' contributing root(s) declared':'No contributing repository root declared'},
+  {id:'evidence',label:'Independent evidence verification',state:'pending',detail:'Check exact commit SHA, source link, test result and timestamp outside this imported dossier'},
+  {id:'accessibility',label:'Accessible user journey',state:'pending',detail:'Verify keyboard, screen reader, mobile and reduced-motion behavior in a real browser'}
+ ];
+ if(mission.stage==='fruit')gates.splice(1,0,{id:'destination',label:'User-facing deliverable',state:mission.destination?'declared':'blocked',detail:mission.destination?'HTTPS destination declared; live availability unverified':'No HTTPS user-facing destination declared'});
+ if(mission.issues.length)gates.push({id:'classification',label:'Biological classification review',state:'blocked',detail:mission.issues.join('; ')});
+ return {id:mission.id,stage:mission.stage,gates,ready:false,verified:false,blocking:gates.filter(g=>g.state==='blocked').length,pending:gates.filter(g=>g.state==='pending').length};
+}
