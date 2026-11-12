@@ -1,0 +1,121 @@
+name: Cloudflare Pages protected release
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_release:
+        description: 'Type DEPLOY to request a production release'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aift-os-cloudflare-production
+  cancel-in-progress: false
+
+jobs:
+  verify-and-build:
+    name: Verify and package landing
+    if: github.ref == 'refs/heads/main' && inputs.confirm_release == 'DEPLOY'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version-file: go.mod
+          cache: false
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version: '24'
+      - name: Install pinned pnpm via Corepack
+        run: |
+          mkdir -p "$RUNNER_TEMP/corepack"
+          corepack enable --install-directory "$RUNNER_TEMP/corepack"
+          echo "$RUNNER_TEMP/corepack" >> "$GITHUB_PATH"
+      - name: Frozen install
+        run: |
+          export PATH="$RUNNER_TEMP/corepack:$PATH"
+          pnpm install --frozen-lockfile --ignore-scripts
+      - name: Typecheck workspace
+        run: pnpm run typecheck
+      - name: JavaScript regression tests
+        run: pnpm test
+      - name: Federation evidence tests
+        run: python3 -B -m unittest discover -s tests -p 'test_federation_evidence.py' -v
+      - name: Canonical verification
+        run: make verify
+      - name: Build landing frontend
+        env:
+          BASE_PATH: /
+        run: pnpm --filter @workspace/aift-os-landing build
+      - name: Validate static output
+        run: |
+          test -s artifacts/aift-os-landing/dist/public/index.html
+          test -d artifacts/aift-os-landing/dist/public/assets
+          if grep -R -E -n 'CLOUDFLARE_API_TOKEN|CLOUDFLARE_ACCOUNT_ID' artifacts/aift-os-landing/dist/public; then
+            echo 'Potential secret identifier in public output' >&2
+            exit 1
+          fi
+      - name: Upload immutable release artifact
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: aift-os-landing-${{ github.sha }}
+          path: artifacts/aift-os-landing/dist/public/
+          if-no-files-found: error
+          retention-days: 7
+
+  deploy-production:
+    name: Deploy to Cloudflare Pages (protected)
+    needs: verify-and-build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment:
+      name: cloudflare-production
+      url: https://${{ vars.CLOUDFLARE_PAGES_PROJECT }}.pages.dev
+    steps:
+      - uses: actions/download-artifact@018cc2cf9868b82d6f63a2a4f8a9a9f57f21d916 # v7.0.0
+        with:
+          name: aift-os-landing-${{ github.sha }}
+          path: public
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version: '24'
+      - name: Validate release configuration
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CF_PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+        run: |
+          test -n "$CF_TOKEN" || { echo 'Missing CLOUDFLARE_API_TOKEN' >&2; exit 1; }
+          test -n "$CF_ACCOUNT" || { echo 'Missing CLOUDFLARE_ACCOUNT_ID' >&2; exit 1; }
+          [[ "$CF_PROJECT" =~ ^[a-z0-9][a-z0-9-]*$ ]] || { echo 'Invalid CLOUDFLARE_PAGES_PROJECT' >&2; exit 1; }
+      - name: Publish approved artifact
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CF_PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+        run: |
+          npx --yes wrangler@4.45.0 pages deploy public --project-name "$CF_PROJECT" --branch main --commit-hash "$GITHUB_SHA" --commit-message "AIFT-OS approved release $GITHUB_SHA"
+      - name: Verify public HTML over HTTPS
+        env:
+          CF_PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+        run: |
+          url="https://${CF_PROJECT}.pages.dev/"
+          for attempt in 1 2 3 4 5 6; do
+            if curl --fail --location --silent --show-error --max-time 20 "$url" -o "$RUNNER_TEMP/landing.html" && grep -qi '<html' "$RUNNER_TEMP/landing.html"; then
+              echo "Verified HTML at $url"
+              echo "### Cloudflare Pages release" >> "$GITHUB_STEP_SUMMARY"
+              echo "- Commit: \`$GITHUB_SHA\`" >> "$GITHUB_STEP_SUMMARY"
+              echo "- URL: $url" >> "$GITHUB_STEP_SUMMARY"
+              echo "- Result: HTTPS returned HTML" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo 'Public URL did not return HTML within verification window' >&2
+          exit 1
