@@ -33,3 +33,14 @@ test('declared application destination can be a fruit with source ancestry but n
  const a=analyzeAtlas([{id:'source',stage:'root',repository_url:'https://github.com/AIFreedomTrustFederation/AIFT-OS'},{id:'outcome',stage:'fruit',product_url:'https://example.org/app'}],[{from:'source',to:'outcome'}]);
  const outcome=a.missions.find(m=>m.id==='outcome');assert.equal(outcome.destination,'https://example.org/app');assert.deepEqual(outcome.roots,['source']);assert.equal(a.summary.verifiedAchievements,0);
 });
+
+test('outcome dossier provides reversible provenance and accessible evidence gaps',async()=>{
+ const {readFileSync}=await import('node:fs');
+ const html=readFileSync(new URL('./living-universe-2.html',import.meta.url),'utf8');
+ assert.match(html,/fruit-lineage-dossier/);
+ assert.match(html,/Explore outcome → contributing roots/);
+ assert.match(html,/Return to outcome in Tree/);
+ assert.match(html,/No qualified product destination/);
+ assert.match(html,/aift:explore-node/);
+ assert.match(html,/prefers-reduced-motion:reduce/);
+});
