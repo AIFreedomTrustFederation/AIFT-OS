@@ -109,7 +109,19 @@ dl{display:grid;grid-template-columns:95px 1fr;gap:.6rem;overflow-wrap:anywhere}
 @media(max-width:480px){.fruit-lineage-dossier{padding:.75rem}.fruit-lineage-steps{padding-left:1rem}}
 @media(prefers-reduced-motion:reduce){.fruit-lineage-dossier *{transition:none!important;animation:none!important}}
 </style>
-</head><body>
+<style>
+/* Cinematic source-to-outcome journey: purely imported evidence, never an achievement. */
+.lineage-cinema{position:relative;isolation:isolate;margin:1rem 0;padding:clamp(.8rem,2vw,1.5rem);border:1px solid #bda66f;border-radius:20px;background:radial-gradient(ellipse at 70% 0%,#315b6655,transparent 65%),linear-gradient(135deg,#251c37,#0b2234 55%,#101c31);box-shadow:inset 0 0 45px #66d8d014,0 18px 45px #0007}
+.lineage-cinema::before{content:'';display:block;height:5px;border-radius:5px;background:linear-gradient(90deg,#ff547b,#f5cd83,#42e6aa,#69baff,#b49cff)}
+.lineage-cinema h5{color:#f5cd83;font-size:1.05rem;margin:.8rem 0}.lineage-cinema .lineage-track{display:flex;gap:.45rem;overflow-x:auto;scroll-snap-type:x proximity;padding:.7rem .1rem 1rem;scrollbar-color:#f5cd83 #14263f}
+.lineage-cinema .lineage-stop{position:relative;flex:0 0 clamp(140px,28%,220px);min-height:116px;scroll-snap-align:center;text-align:left;border:1px solid #7896b5;border-top:5px solid var(--stage-color,#69baff);background:#101d35dd;border-radius:14px;overflow-wrap:anywhere}
+.lineage-cinema .lineage-stop[aria-pressed=true]{border-color:#f5cd83;box-shadow:0 0 0 2px #f5cd83,0 0 28px #f5cd8344}
+.lineage-cinema .lineage-stop strong,.lineage-cinema .lineage-stop small{display:block}.lineage-cinema .lineage-stop small{color:#c1d3e8}
+.lineage-cinema .lineage-detail{border:1px solid #6284a3;border-radius:12px;padding:1rem;background:#0a182bcc;min-height:120px;overflow-wrap:anywhere}
+.lineage-cinema .lineage-actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem}.lineage-cinema .lineage-actions a{display:inline-flex;align-items:center;padding:.7rem;border:1px solid #91b3d0;border-radius:10px;min-height:44px}
+@media(max-width:600px){.lineage-cinema .lineage-stop{flex-basis:72%}.lineage-cinema{padding:.8rem}}
+@media(prefers-reduced-motion:reduce){.lineage-cinema *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+</style></head><body>
 <a class="skip" href="#content">Skip to exploration</a><div class="ribbon" aria-hidden="true"></div>
 <header><div><div class="eyebrow">AIFT · Living Universe 2.0</div><h1>Evidence Observatory</h1><p class="lede">An inspectable, local-first constellation. Repositories are roots; outcomes are fruits only when the imported evidence declares a real deliverable. Nothing here claims live CI or completed work without source evidence.</p></div>
 <nav aria-label="Federation navigation"><a href="https://www.aifreedomtrust.com/living-universe-explorer.html">Living Tree</a><a href="https://www.aifreedomtrust.com/evidence-expedition.html">Evidence Expedition</a><a href="https://github.com/AIFreedomTrustFederation/AIFT-OS">MoBox source</a></nav></header>
@@ -413,6 +425,40 @@ const renderQuestTheatre=()=>{
     trail.append(routeSection);
    }
    dossier.append(trail);
+   // A reversible, stage-by-stage cinematic journey for each declared source route.
+   // Every stop comes from the directed graph; no stage or product is synthesized.
+   for(const [routeIndex,route] of report.routes.entries()){
+    const scene=document.createElement('section');scene.className='lineage-cinema';scene.setAttribute('aria-label','Interactive provenance journey '+(routeIndex+1));
+    const sceneTitle=document.createElement('h5');sceneTitle.textContent='Living lineage · route '+(routeIndex+1)+' of '+report.routes.length;scene.append(sceneTitle);
+    const hint=document.createElement('p');hint.textContent='Explore declared stages from source root to outcome. Select a stage to inspect its record; no verification or completion is implied.';scene.append(hint);
+    const track=document.createElement('div');track.className='lineage-track';track.setAttribute('role','group');track.setAttribute('aria-label','Directed lineage stages');
+    const detail=document.createElement('div');detail.className='lineage-detail';detail.setAttribute('role','status');detail.setAttribute('aria-live','polite');
+    const actions=document.createElement('div');actions.className='lineage-actions';
+    const stops=[];
+    const choose=(position,focus=false)=>{
+     const id=route.ids[position],item=lookup.get(id);if(!item)return;
+     stops.forEach((stop,i)=>stop.setAttribute('aria-pressed',String(i===position)));
+     detail.replaceChildren();
+     const name=document.createElement('strong');name.textContent=item.label+' · '+item.stage;
+     const provenance=document.createElement('p');provenance.textContent=item.roots.length+' declared contributing repository roots · '+item.status+' · '+item.issues.length+' classification/evidence gaps. This is imported evidence, not a live verification.';
+     detail.append(name,provenance);
+     if(item.issues.length){const warning=document.createElement('p');warning.textContent=item.issues.join('; ');detail.append(warning)}
+     actions.replaceChildren();
+     const inspect=document.createElement('button');inspect.type='button';inspect.textContent='Inspect this stage in Tree';inspect.addEventListener('click',()=>window.dispatchEvent(new CustomEvent('aift:explore-node',{detail:{id}})));actions.append(inspect);
+     if(item.stage==='root'){const source=String(item.destination||'');try{const u=new URL(source);if(u.protocol==='https:'&&u.hostname==='github.com'&&/^\\/[A-Za-z0-9_.-]+\\/[A-Za-z0-9_.-]+\\/?$/.test(u.pathname)){const link=document.createElement('a');link.href=u.href;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Open repository root';actions.append(link)}}catch{}}
+     if(item.stage==='fruit'&&item.destination){const link=document.createElement('a');link.href=item.destination;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Open declared outcome (unverified)';actions.append(link)}
+     if(focus)stops[position]?.focus();
+    };
+    route.ids.forEach((id,position)=>{
+     const item=lookup.get(id);if(!item)return;
+     const stop=document.createElement('button');stop.type='button';stop.className='lineage-stop';stop.style.setProperty('--stage-color',SPECTRUM[Math.max(0,STAGES.indexOf(item.stage))]);
+     const name=document.createElement('strong');name.textContent=item.label;const stage=document.createElement('small');stage.textContent=(position+1)+' / '+route.ids.length+' · '+item.stage;
+     stop.append(name,stage);stop.setAttribute('aria-pressed','false');stop.addEventListener('click',()=>choose(position));
+     stop.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'||e.key==='Home'||e.key==='End'){e.preventDefault();choose(e.key==='Home'?0:e.key==='End'?stops.length-1:Math.max(0,Math.min(stops.length-1,position+(e.key==='ArrowRight'?1:-1))),true)}});
+     stops.push(stop);track.append(stop);
+    });
+    scene.append(track,detail,actions);dossier.append(scene);if(stops.length)choose(0);
+   }
    const returnButton=document.createElement('button');returnButton.type='button';returnButton.textContent='Return to outcome in Tree';returnButton.addEventListener('click',()=>window.dispatchEvent(new CustomEvent('aift:explore-node',{detail:{id:q.id}})));dossier.append(returnButton);
    card.append(dossier);
   }
