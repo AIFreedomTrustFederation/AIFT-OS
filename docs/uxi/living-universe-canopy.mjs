@@ -84,3 +84,24 @@ export function canopyRoutes(layout,id,{maxRoutes=12}={}){
  }
  return {routes:routes.slice(0,maxRoutes),truncated:routes.length>maxRoutes,unreachable:routes.length===0};
 }
+
+/**
+ * Evidence-only journey readiness. This is graph completeness, not CI verification.
+ * A declared fruit cannot become a verified outcome through this function.
+ */
+export function canopyReadiness(layout,id){
+ const index=new Map(layout.nodes.map(n=>[n.id,n]));
+ const target=index.get(id);
+ if(!target)return {found:false,stage:null,roots:0,intermediate:0,anomalies:0,missingReferences:0,hasDirectedRootPath:false,verified:false};
+ const lineage=canopyLineage(layout,id);
+ const routes=canopyRoutes(layout,id);
+ const ancestors=new Set(lineage.nodes.map(n=>n.id));
+ const missingReferences=layout.omissions.filter(e=>ancestors.has(e.to)).length;
+ return {
+  found:true,stage:target.stage,roots:lineage.rootIds.length,
+  intermediate:lineage.nodes.filter(n=>n.id!==id&&n.stage!=='root').length,
+  anomalies:lineage.gaps.length,missingReferences,
+  hasDirectedRootPath:!routes.unreachable,
+  verified:false
+ };
+}
