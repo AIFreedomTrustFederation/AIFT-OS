@@ -18,3 +18,10 @@ test('Journey Cockpit limits imported record options and routes',()=>{
  assert.match(html,/new URL\(selected.destination\)/);
  assert.match(html,/u.protocol==='https:'/);
 });
+
+test('Journey Cockpit exposes reversible breadcrumb, stage minimap and traversal controls',()=>{
+ for(const marker of ['id="journey-trail"','id="journey-overview"','id="journey-actions"','function renderJourneyNavigation(path)','renderJourneyNavigation(path);','Previous stage','Next stage','Return to source root','Return to selected outcome','aria-current','Evidence gap'])assert.ok(html.includes(marker),marker);
+});
+test('Journey semantic minimap is accessible and honors reduced motion',()=>{
+ for(const marker of ['aria-label="Reversible lineage breadcrumbs"','aria-label="Biological stage minimap"','aria-label="Journey traversal controls"','@media(prefers-reduced-motion:reduce){.journey-trail'])assert.ok(html.includes(marker),marker);
+});
