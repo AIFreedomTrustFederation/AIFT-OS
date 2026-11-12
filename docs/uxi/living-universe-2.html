@@ -445,7 +445,7 @@ const renderQuestTheatre=()=>{
      if(item.issues.length){const warning=document.createElement('p');warning.textContent=item.issues.join('; ');detail.append(warning)}
      actions.replaceChildren();
      const inspect=document.createElement('button');inspect.type='button';inspect.textContent='Inspect this stage in Tree';inspect.addEventListener('click',()=>window.dispatchEvent(new CustomEvent('aift:explore-node',{detail:{id}})));actions.append(inspect);
-     if(item.stage==='root'){const source=String(item.destination||'');try{const u=new URL(source);if(u.protocol==='https:'&&u.hostname==='github.com'&&/^\\/[A-Za-z0-9_.-]+\\/[A-Za-z0-9_.-]+\\/?$/.test(u.pathname)){const link=document.createElement('a');link.href=u.href;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Open repository root';actions.append(link)}}catch{}}
+     if(item.stage==='root'){const source=String(item.destination||'');try{const u=new URL(source);const segments=u.pathname.split('/').filter(Boolean);if(u.protocol==='https:'&&u.hostname==='github.com'&&segments.length===2&&segments.every(s=>/^[A-Za-z0-9_.-]+$/.test(s))){const link=document.createElement('a');link.href=u.href;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Open repository root';actions.append(link)}}catch{}}
      if(item.stage==='fruit'&&item.destination){const link=document.createElement('a');link.href=item.destination;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Open declared outcome (unverified)';actions.append(link)}
      if(focus)stops[position]?.focus();
     };
