@@ -4,7 +4,7 @@
 
 The workflow `.github/workflows/cloudflare-pages-release.yml` deploys the **static AIFT-OS landing frontend only**. It does not host the Go control plane, Express API, databases, collectors, secrets, or authenticated operator endpoints. It does not alter the existing federation portal or domains.
 
-The workflow is **manual only** (`workflow_dispatch`), requires an exact `DEPLOY` confirmation, and runs only from `main`. A successful verification job packages the frontend as an Actions artifact. The deploy job consumes only that artifact, and is associated with the `cloudflare-production` GitHub environment. No credentials are available to the build job.
+The workflow runs **credential-free verification on relevant pull requests**. Production deployment remains **manual only** (`workflow_dispatch`), requires an exact `DEPLOY` confirmation, and runs only from `main`. A successful verification job packages the frontend as an Actions artifact. The deploy job consumes only that artifact, and is associated with the `cloudflare-production` GitHub environment. No credentials are available to the build job.
 
 ## One-time operator setup (required before deployment)
 
@@ -33,3 +33,7 @@ The workflow is **manual only** (`workflow_dispatch`), requires an exact `DEPLOY
 - A successful deployment does not make the AIFT-OS backend available. Do not claim federation operations are live without separate authenticated backend evidence.
 - For rollback, select and restore a previously verified Pages deployment using Cloudflare's deployment history, subject to Cloudflare's supported rollback options.
 - Cloudflare and GitHub free-plan quotas and environment approval features can change; verify current entitlements before the first release.
+
+## Pull-request validation
+
+Changes to the release workflow, landing frontend, workspace lockfile, or package manifest trigger the `Verify and package landing` job on pull requests. This checks the build without Cloudflare credentials or publishing. The artifact upload and `deploy-production` job are restricted to an explicitly confirmed manual dispatch from `main`. A passing PR validation is necessary but not sufficient for a production release; the protected environment and Cloudflare project must still be configured and approved.
