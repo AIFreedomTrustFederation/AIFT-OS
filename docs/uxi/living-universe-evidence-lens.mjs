@@ -6,7 +6,7 @@ export function buildEvidenceLens(missions=[],selected=null){
  const records=Array.isArray(missions)?missions.filter(m=>m&&typeof m.id==='string'&&LENS_STAGES.includes(m.stage)).slice(0,350):[];
  const byId=new Map(records.map(m=>[m.id,m]));
  const current=byId.get(selected)||null;
- const parents=m=>Array.isArray(m?.parents)?m.parents.filter(id=>typeof id==='string'):[];
+ const parents=m=>Array.isArray(m?.directParents)?m.directParents.filter(id=>typeof id==='string'):[];
  const lineage=[],missing=new Set(),seen=new Set(),stack=current?[current.id]:[];
  while(stack.length&&seen.size<350){const id=stack.pop();if(seen.has(id))continue;seen.add(id);const m=byId.get(id);if(!m){missing.add(id);continue}lineage.push(m);for(const p of parents(m))stack.push(p)}
  const roots=lineage.filter(m=>m.stage==='root');
