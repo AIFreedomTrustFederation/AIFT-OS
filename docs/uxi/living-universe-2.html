@@ -88,6 +88,16 @@ dl{display:grid;grid-template-columns:95px 1fr;gap:.6rem;overflow-wrap:anywhere}
 
 /* Journey epic: reversible spatial navigator and accessible route atlas */
 .journey-trail{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;padding:.8rem;border:1px solid #b99a57;border-radius:14px;background:linear-gradient(110deg,#341a32,#14394b,#132a47)}.journey-trail button{min-height:44px;border:1px solid #d6c48a;border-radius:10px;background:#102b43;color:#fff;padding:.55rem}.journey-trail button[aria-current=step]{background:#295d56;outline:2px solid #f5cd83}.journey-overview{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.35rem;margin:1rem 0}.journey-overview button{min-height:58px;border:1px solid #8ba7c0;border-top:4px solid var(--stage-color,#f5cd83);background:#0c253c;color:#fff;border-radius:9px;padding:.4rem;overflow-wrap:anywhere}.journey-overview button[aria-current=step]{outline:3px solid #f5cd83}.journey-overview small{display:block;color:#d6e7f5}.journey-actions{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0}.journey-actions button{min-height:44px;padding:.6rem 1rem;border-radius:9px;background:#164c60;color:white;border:1px solid #85d4db}@media(max-width:640px){.journey-overview{grid-template-columns:repeat(3,minmax(0,1fr))}.journey-trail{padding:.5rem}}@media(prefers-reduced-motion:reduce){.journey-trail *,.journey-overview *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* Living Universe immersive source-to-outcome panorama: additive, local-only. */
+.panorama{position:relative;isolation:isolate;overflow:hidden;margin:1rem 0;border:1px solid #d4b57888;border-radius:26px;padding:clamp(1rem,3vw,2rem);background:radial-gradient(ellipse at 50% 75%,#277d6a36,transparent 60%),radial-gradient(ellipse at 25% 20%,#ff547b22,transparent 45%),linear-gradient(155deg,#081021,#13233b 55%,#080f20)}
+.panorama:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.24;background:repeating-radial-gradient(circle at 50% 55%,transparent 0 47px,#f5cd8320 48px 49px,transparent 50px 94px)}
+.panorama>*{position:relative}.panorama h2{font-size:clamp(1.7rem,3vw,2.7rem)}.panorama-sky{width:100%;min-height:350px;overflow:auto;border-radius:18px;background:linear-gradient(90deg,#ff547b0a,#f5cd8308,#42e6aa0a,#69baff0a)}
+.panorama-sky svg{display:block;min-width:760px;width:100%;height:auto}.panorama-node{cursor:pointer;outline:none}.panorama-node:focus-visible circle{stroke:#fff;stroke-width:4}.panorama-node[aria-pressed=true] circle{stroke:#f5cd83;stroke-width:5}
+.panorama-bottom{display:grid;grid-template-columns:minmax(0,2fr) minmax(230px,1fr);gap:1rem;margin-top:1rem}.panorama-directory{display:flex;gap:.5rem;flex-wrap:wrap;max-height:210px;overflow:auto;align-content:start}.panorama-directory button{text-align:left;max-width:100%;overflow-wrap:anywhere}.panorama-detail{border:1px solid #b7cbe877;border-radius:16px;padding:1rem;background:#06101eaa;min-width:0}.panorama-detail p{overflow-wrap:anywhere}.panorama-status{color:var(--muted)}.panorama-tools{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}.panorama-tools label{max-width:320px;flex:1 1 200px}.panorama-tools select{width:100%;min-height:44px;color:var(--ink);background:#10223a;border:1px solid #9cb6d1;border-radius:10px;padding:.6rem}
+@media(max-width:700px){.panorama-bottom{grid-template-columns:1fr}.panorama-sky{min-height:230px}.panorama-directory{max-height:175px}}
+@media(prefers-reduced-motion:reduce){.panorama *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
 </style><style>
 .canopy-panel{margin:1.4rem 0;border-color:#d5af6e;background:radial-gradient(ellipse at 50% 0%,#29405d,#0a172b 72%)}
 .canopy-shell{position:relative;overflow:auto;border:1px solid #7294af;border-radius:20px;background:repeating-radial-gradient(circle at 50% 50%,transparent 0 56px,#a6cfff16 57px 58px),radial-gradient(ellipse at 50% 55%,#22415a,#070f20 70%);box-shadow:inset 0 0 90px #071224}
@@ -154,7 +164,18 @@ dl{display:grid;grid-template-columns:95px 1fr;gap:.6rem;overflow-wrap:anywhere}
 <p class="lede">Explore source roots, the shared federation trunk, real systems, documented capabilities, emerging integrations and evidenced outcomes. Each station opens the actual imported record; no repository becomes a fruit.</p>
 <div class="theatre-rail" id="theatre-rail" role="group" aria-label="Explore biological stages"></div>
 <div class="theatre-body"><div class="theatre-spotlight" id="theatre-spotlight"><h3>Awaiting evidence</h3><p>Load a canonical Genesis manifest or portable dossier to illuminate the declared constellation.</p></div><aside class="theatre-evidence" id="theatre-evidence"><strong>Evidence boundary</strong><p>Exploration is not independent verification. Unlinked products remain evidence gaps.</p></aside></div></section><div class="grid" style="margin-top:1rem"><section class="panel"><h2>Tree of Emergence</h2><div id="stages" class="stages" role="group" aria-label="Biological stage filter"></div><div class="focus-deck" role="group" aria-label="Cinematic evidence focus"><label for="focus-zoom">Semantic zoom <input id="focus-zoom" type="range" min="1" max="3" step="1" value="1"><output id="zoom-level" for="focus-zoom">1×</output></label><button id="focus-lineage" aria-pressed="false">Trace lineage</button><button id="focus-reset">Full constellation</button></div><p class="focus-readout" id="focus-readout" role="status" aria-live="polite">Overview · select an evidence node to trace its declared ancestry.</p><div class="universe"><svg id="sky" viewBox="0 0 900 430" role="group" aria-label="Evidence constellation; use the accessible node directory below"></svg></div><p class="legend">Red → gold → green → blue → violet → gold. Connections represent only declared directed relationships.</p><svg id="minimap" class="map" viewBox="0 0 900 92" role="img" aria-label="Spatial overview of visible nodes"></svg><h2>Accessible constellation directory</h2><div id="directory" class="list"></div></section>
-<aside class="panel"><h2>Provenance inspector</h2><div id="detail" class="notice">Select an imported node to inspect its biological role, source links and declared lineage.</div><h2>Source lineage audit</h2><div id="lineage-audit" class="notice" aria-live="polite">Select a node to review its declared source roots and evidence gaps.</div><h2>Reversible lineage</h2><div id="route" class="route" aria-label="Declared lineage breadcrumbs"></div><p class="legend">No achievements, progress percentages or product readiness are inferred from browsing. Unlinked outcomes remain evidence gaps.</p><section class="mission-board" aria-label="Evidence exploration missions"><h2>Evidence missions</h2><p class="lede">Review opportunities generated from imported graph evidence. These are not earned achievements, live checks, or XP.</p><div id="mission-count" role="status" aria-live="polite"></div><div id="missions" class="mission-grid"></div><div id="route-preview" class="route-preview" aria-live="polite">Choose a lineage mission to inspect its directed source route.</div></section></aside></div></main>
+<aside class="panel"><h2>Provenance inspector</h2><div id="detail" class="notice">Select an imported node to inspect its biological role, source links and declared lineage.</div><h2>Source lineage audit</h2><div id="lineage-audit" class="notice" aria-live="polite">Select a node to review its declared source roots and evidence gaps.</div><h2>Reversible lineage</h2><div id="route" class="route" aria-label="Declared lineage breadcrumbs"></div><p class="legend">No achievements, progress percentages or product readiness are inferred from browsing. Unlinked outcomes remain evidence gaps.</p><section class="mission-board" aria-label="Evidence exploration missions"><h2>Evidence missions</h2><p class="lede">Review opportunities generated from imported graph evidence. These are not earned achievements, live checks, or XP.</p><div id="mission-count" role="status" aria-live="polite"></div><div id="missions" class="mission-grid"></div><div id="route-preview" class="route-preview" aria-live="polite">Choose a lineage mission to inspect its directed source route.</div></section></aside></div>
+<section class="panorama" id="living-panorama" aria-labelledby="panorama-title">
+<p class="eyebrow">Living Universe · immersive source-to-outcome exploration</p>
+<h2 id="panorama-title">The Federation Emergence Panorama</h2>
+<p class="lede">Navigate only declared relationships from repository roots toward documented capabilities and qualifying outcomes. Empty stages and unresolved evidence remain visible. This is an imported-data view, not a live operational status.</p>
+<div class="panorama-tools"><label>Find a declared record<input id="panorama-query" type="search" placeholder="Search roots, systems, capabilities and outcomes"></label><label>Focus biological stage<select id="panorama-stage"><option value="">All six stages</option><option value="root">Roots · repositories</option><option value="trunk">Shared trunk</option><option value="branch">Branches · systems</option><option value="leaf">Leaves · capabilities</option><option value="flower">Flowers · emerging work</option><option value="fruit">Fruits · user outcomes</option></select></label><button type="button" id="panorama-reset">Reset view</button></div>
+<div class="panorama-sky" id="panorama-sky" role="region" aria-label="Scrollable six-stage evidence panorama" tabindex="0"></div>
+<p class="panorama-status" id="panorama-status" role="status" aria-live="polite">Import a local evidence packet to reveal the declared source network.</p>
+<div class="panorama-bottom"><div class="panorama-directory" id="panorama-directory" role="group" aria-label="Accessible panorama record directory"></div><div class="panorama-detail" id="panorama-detail"><strong>Inspect the living network</strong><p>Choose a declared record to trace its source lineage in the existing Tree and Journey Cockpit.</p></div></div>
+</section>
+
+</main>
 <section class="panel" id="skill-atlas" aria-labelledby="skill-atlas-title" style="max-width:1600px;margin:1rem auto;padding:clamp(1rem,3vw,2rem)">
 <h2 id="skill-atlas-title">The Living Skill Atlas · Evidence Quests</h2>
 <p class="lede">Explore source-backed capabilities and the evidence required for demonstrable outcomes. Quests identify work to inspect; they never award unverified achievements.</p>
@@ -648,7 +669,74 @@ constellationSearch.addEventListener('input',renderConstellation);
 constellationZoom.addEventListener('input',renderConstellation);
 constellationReset.addEventListener('click',()=>{constellationSearch.value='';constellationZoom.value='100';constellationFocus='';renderConstellation()});
 
+
+/* Panorama uses the already-validated local atlas and canonical Observatory selection bridge. */
+const panoramaNS='http://www.w3.org/2000/svg';
+const panoramaColors=['#ff547b','#f5cd83','#42e6aa','#69baff','#b49cff','#efc46e'];
+let panoramaSelected='';
+const panoramaSvg=(tag,attributes={})=>{const e=document.createElementNS(panoramaNS,tag);for(const [k,v] of Object.entries(attributes))e.setAttribute(k,String(v));return e};
+const panoramaText=(x,y,value,attributes={})=>{const e=panoramaSvg('text',{x,y,fill:'#edf6ff','font-size':12,...attributes});e.textContent=value;return e};
+function renderPanorama(){
+ const sky=byId('panorama-sky'),directory=byId('panorama-directory'),detail=byId('panorama-detail'),status=byId('panorama-status');
+ sky.replaceChildren();directory.replaceChildren();detail.replaceChildren();
+ const stages=['root','trunk','branch','leaf','flower','fruit'],search=byId('panorama-query').value.trim().toLocaleLowerCase(),stage=byId('panorama-stage').value;
+ const records=(current?.missions||[]).filter(m=>stages.includes(m.stage));
+ const visible=records.filter(m=>(!stage||m.stage===stage)&&(!search||(m.label+' '+m.id+' '+m.stage).toLocaleLowerCase().includes(search))).slice(0,180);
+ const svg=panoramaSvg('svg',{viewBox:'0 0 1080 400',role:'img','aria-label':'Six biological stages showing declared evidence records; accessible directory follows'});
+ const defs=panoramaSvg('defs');const glow=panoramaSvg('filter',{id:'panorama-glow',x:'-100%',y:'-100%',width:'300%',height:'300%'});
+ glow.append(panoramaSvg('feGaussianBlur',{stdDeviation:9}));defs.append(glow);svg.append(defs);
+ const counts=stages.map(s=>records.filter(m=>m.stage===s).length);
+ stages.forEach((s,i)=>{
+  const x=90+i*180,color=panoramaColors[i];
+  svg.append(panoramaSvg('line',{x1:x,y1:60,x2:x,y2:368,stroke:color,'stroke-opacity':'.3','stroke-dasharray':'4 8'}));
+  svg.append(panoramaSvg('circle',{cx:x,cy:200,r:55,fill:color,opacity:'.09',filter:'url(#panorama-glow)'}));
+  svg.append(panoramaText(x,32,s.toUpperCase(),{'text-anchor':'middle',fill:color,'font-size':15,'font-weight':'bold'}));
+  svg.append(panoramaText(x,53,counts[i]+' declared',{'text-anchor':'middle',fill:'#c1d3e8','font-size':11}));
+ });
+ const layout=current?canopyLayout(current):null;
+ const positions=new Map();
+ visible.forEach((m,index)=>{
+  const column=stages.indexOf(m.stage),siblings=visible.filter(n=>n.stage===m.stage),rank=siblings.findIndex(n=>n.id===m.id);
+  const x=90+column*180,y=85+((rank+1)*275/(siblings.length+1));positions.set(m.id,{x,y});
+ });
+ if(layout){
+  const drawn=new Set();
+  for(const edge of (layout.links||layout.edges||[])){
+   const a=positions.get(edge.from||edge.source),b=positions.get(edge.to||edge.target);
+   if(!a||!b)continue;const key=(edge.from||edge.source)+'|'+(edge.to||edge.target);if(drawn.has(key))continue;drawn.add(key);
+   svg.append(panoramaSvg('path',{d:'M'+a.x+' '+a.y+' C'+(a.x+b.x)/2+' '+a.y+' '+(a.x+b.x)/2+' '+b.y+' '+b.x+' '+b.y,fill:'none',stroke:'#e4c78c','stroke-width':1.4,'stroke-opacity':'.45'}));
+  }
+ }
+ function select(m){
+  panoramaSelected=m.id;detail.replaceChildren();
+  const h=document.createElement('strong');h.textContent=m.label;
+  const p=document.createElement('p');p.textContent=m.stage+' · '+(m.status||'declared')+' · '+(m.roots?.length||0)+' declared contributing roots. Imported claims are not independently verified.';
+  const inspect=document.createElement('button');inspect.textContent='Trace in Living Tree';inspect.addEventListener('click',()=>window.dispatchEvent(new CustomEvent('aift:explore-node',{detail:{id:m.id}})));
+  const route=document.createElement('button');route.textContent='Open Journey Cockpit';route.addEventListener('click',()=>{journeyTarget=m.id;journeyRoute=0;journeyStep=0;renderJourney();byId('journey-cockpit')?.scrollIntoView({block:'start',behavior:'auto'})});
+  detail.append(h,p,inspect,document.createTextNode(' '),route);
+  for(const el of svg.querySelectorAll('[data-panorama-id]'))el.setAttribute('aria-pressed',String(el.getAttribute('data-panorama-id')===m.id));
+ }
+ visible.forEach(m=>{
+  const {x,y}=positions.get(m.id),color=panoramaColors[stages.indexOf(m.stage)];
+  const g=panoramaSvg('g',{role:'button',tabindex:0,'data-panorama-id':m.id,'aria-label':m.stage+' '+m.label,'aria-pressed':String(panoramaSelected===m.id),class:'panorama-node'});
+  g.append(panoramaSvg('circle',{cx:x,cy:y,r:9,fill:color,stroke:'#081021','stroke-width':2}));
+  const t=panoramaText(x+13,y+4,m.label.length>19?m.label.slice(0,18)+'…':m.label,{'font-size':11});g.append(t);
+  g.addEventListener('click',()=>select(m));g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select(m)}});
+  svg.append(g);
+  const b=document.createElement('button');b.textContent=m.stage+' · '+m.label;b.addEventListener('click',()=>select(m));directory.append(b);
+ });
+ sky.append(svg);
+ status.textContent=records.length?visible.length+' of '+records.length+' declared records displayed across six biological stages. No independent completion verification.':'No evidence imported. Repository roots and outcomes are not fabricated.';
+ if(visible.length>=180)status.textContent+=' Refine the search to inspect more records.';
+ const selected=visible.find(m=>m.id===panoramaSelected)||visible[0];if(selected)select(selected);
+ else detail.textContent='No matching declared record. Adjust filters or import evidence.';
+}
+byId('panorama-query').addEventListener('input',renderPanorama);
+byId('panorama-stage').addEventListener('change',renderPanorama);
+byId('panorama-reset').addEventListener('click',()=>{byId('panorama-query').value='';byId('panorama-stage').value='';panoramaSelected='';renderPanorama()});
+
 const render=()=>{
+ renderPanorama();
  renderCanopy();
  renderQuestTheatre();
  renderJourney();
