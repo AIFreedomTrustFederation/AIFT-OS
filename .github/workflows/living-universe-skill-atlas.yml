@@ -22,6 +22,7 @@ on:
       - 'docs/uxi/living-universe-lineage-trail*'
       - 'docs/uxi/living-universe-journey-atlas*'
       - 'docs/uxi/living-universe-mission-control*'
+      - 'docs/uxi/living-universe-spectral-theatre*'
       - 'docs/uxi/living-universe-journey-dossier*'
       - 'docs/uxi/living-universe-browser-acceptance*'
       - '.github/workflows/living-universe-skill-atlas.yml'
@@ -42,7 +43,7 @@ jobs:
           if [ -f living-universe-skill-atlas.test.mjs ]; then
             node --test living-universe-skill-atlas.test.mjs living-universe-canopy.test.mjs living-universe-journey-cockpit.test.mjs living-universe-constellation.test.mjs living-universe-receipts.test.mjs living-universe-expedition.test.mjs
           else
-            node --test docs/uxi/living-universe-skill-atlas.test.mjs docs/uxi/living-universe-canopy.test.mjs docs/uxi/living-universe-journey-cockpit.test.mjs docs/uxi/living-universe-constellation.test.mjs docs/uxi/living-universe-receipts.test.mjs docs/uxi/living-universe-expedition.test.mjs docs/uxi/living-universe-panorama.test.mjs docs/uxi/living-universe-lineage-theatre.test.mjs docs/uxi/living-universe-lineage-trail.test.mjs docs/uxi/living-universe-journey-atlas.test.mjs docs/uxi/living-universe-journey-dossier.test.mjs docs/uxi/living-universe-mission-control.test.mjs
+            node --test docs/uxi/living-universe-skill-atlas.test.mjs docs/uxi/living-universe-canopy.test.mjs docs/uxi/living-universe-journey-cockpit.test.mjs docs/uxi/living-universe-constellation.test.mjs docs/uxi/living-universe-receipts.test.mjs docs/uxi/living-universe-expedition.test.mjs docs/uxi/living-universe-panorama.test.mjs docs/uxi/living-universe-lineage-theatre.test.mjs docs/uxi/living-universe-lineage-trail.test.mjs docs/uxi/living-universe-journey-atlas.test.mjs docs/uxi/living-universe-journey-dossier.test.mjs docs/uxi/living-universe-mission-control.test.mjs docs/uxi/living-universe-spectral-theatre.test.mjs
           fi
 
   browser-acceptance:
