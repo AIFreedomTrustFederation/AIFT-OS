@@ -103,7 +103,7 @@ try {
         assert.match(rendered, /TEST ONLY repository root/, 'repository represented as source');
         assert.match(await page.locator('#river-summary').innerText(), /Declared roots: 1/, 'source root counted in root lane');
         assert.match(await page.locator('#river-grid').innerText(), /TEST ONLY user outcome/, 'outcome visible in provenance river');
-        assert.match(await page.locator('#campaign-track').innerText(), /Fruit/, 'biological campaign retains outcome stage');
+        assert.match(await page.locator('#campaign-track').innerText(), /fruit\s*·\s*2/i, 'biological campaign retains two declared fruit-stage records without claiming verified products');
         assert.match(rendered, /No achievements|not verified|Independent verification unavailable/i, 'verification remains fail-closed');
         await page.locator('#search').fill('TEST ONLY user outcome');
         assert.match(await page.locator('#records').innerText(), /TEST ONLY user outcome/, 'searchable user outcome');
