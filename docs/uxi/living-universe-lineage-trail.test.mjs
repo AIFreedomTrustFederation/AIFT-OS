@@ -15,3 +15,12 @@ test('mobile and reduced-motion equivalents exist',()=>{
  assert.match(page,/@media\(max-width:600px\)\{\.aift-trail/);
  assert.match(page,/@media\(prefers-reduced-motion:reduce\)/);
 });
+
+test('history survives same-packet rerenders without phantom navigation entries',()=>{
+ assert.match(page,/if\(signature===aiftEvidenceSignature\)return/);
+ assert.match(page,/JSON\.stringify\(\[nodes,edges\]\)/);
+ assert.match(page,/function inspect\(n,recordHistory=true\)/);
+ assert.match(page,/if\(selected\)inspect\(selected,false\)/);
+ assert.match(page,/function select\(m,recordHistory=true\)/);
+ assert.match(page,/if\(selected\)select\(selected,false\)/);
+});
