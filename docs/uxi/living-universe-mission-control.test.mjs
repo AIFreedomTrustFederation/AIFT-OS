@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {createExplorationController} from './living-universe-exploration-state.mjs';
 const html=readFileSync(new URL('./living-universe-mission-control.html',import.meta.url),'utf8');
 test('integrated mission control exposes graph, lineage, routes, quests and accessible directory',()=>{
  for(const id of ['graph','directory','inspector','paths','quests','back','forward','file','search','stage','clear','orbit'])assert.match(html,new RegExp('id="'+id+'"'));
@@ -23,7 +24,14 @@ test('source repositories remain roots and fruits are never automatically verifi
  assert.match(html,/No remote fetch, telemetry, storage, fabricated records or automatic achievements/);
 });
 test('navigation preserves bounded history and keyboard access',()=>{
- assert.match(html,/history\.length>25/);
- assert.match(html,/cursor--/);assert.match(html,/cursor\+\+/);
+ assert.match(html,/const exploration=createExplorationController\(\)/);
+ assert.match(html,/\$\('back'\)\.onclick=.*exploration\.back\(\)/);
+ assert.match(html,/\$\('forward'\)\.onclick=.*exploration\.forward\(\)/);
  assert.match(html,/e\.key==='Enter'/);assert.match(html,/e\.key===' '/);
+
+ const exploration = createExplorationController();
+ const records = Array.from({length: 26}, (_, index) => ({id: `record-${index}`}));
+ exploration.importRecords(records);
+ for (const {id} of records) exploration.select(id);
+ assert.deepEqual(exploration.snapshot().history, records.slice(1).map(({id}) => id));
 });
