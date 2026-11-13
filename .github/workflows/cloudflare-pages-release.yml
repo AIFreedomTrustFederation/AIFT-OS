@@ -1,6 +1,13 @@
 name: Cloudflare Pages protected release
 
 on:
+  pull_request:
+    paths:
+      - '.github/workflows/cloudflare-pages-release.yml'
+      - 'artifacts/aift-os-landing/**'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'package.json'
   workflow_dispatch:
     inputs:
       confirm_release:
@@ -18,7 +25,7 @@ concurrency:
 jobs:
   verify-and-build:
     name: Verify and package landing
-    if: github.ref == 'refs/heads/main' && inputs.confirm_release == 'DEPLOY'
+    if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.confirm_release == 'DEPLOY')
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -62,6 +69,7 @@ jobs:
             exit 1
           fi
       - name: Upload immutable release artifact
+        if: github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: aift-os-landing-${{ github.sha }}
@@ -72,6 +80,7 @@ jobs:
   deploy-production:
     name: Deploy to Cloudflare Pages (protected)
     needs: verify-and-build
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.confirm_release == 'DEPLOY'
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     environment:
