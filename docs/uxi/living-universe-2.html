@@ -644,8 +644,8 @@ function renderConstellation(){
   const path=constellationElement('path',{d:'M'+a.x+' '+a.y+' C'+(a.x+45)+' '+a.y+' '+(b.x-45)+' '+b.y+' '+b.x+' '+b.y,fill:'none',stroke:edge.kind&&edge.kind!=='adjacent'?'#ff547b':'#7ca5bd','stroke-width':2,'stroke-dasharray':edge.kind&&edge.kind!=='adjacent'?'6 5':'none'});
   svg.append(path);
  }
- function inspect(n){
-  constellationFocus=n.id;aiftVisit(n.id);constellationDetail.replaceChildren();
+ function inspect(n,recordHistory=true){
+  constellationFocus=n.id;if(recordHistory)aiftVisit(n.id);constellationDetail.replaceChildren();
   const heading=document.createElement('h3');heading.textContent=n.label+' · '+n.stage;
   const info=canopyReadiness(layout,n.id),p=document.createElement('p');
   p.textContent=info.roots+' contributing repository roots · '+info.anomalies+' stage anomalies · '+info.missingReferences+' missing references. Declared graph only; not independently verified.';
@@ -664,7 +664,7 @@ function renderConstellation(){
  }
  constellationCanvas.append(svg);
  if(visible.length>300){const p=document.createElement('p');p.textContent='Showing first 300 records. Refine search to inspect additional records.';constellationList.prepend(p)}
- const selected=visible.find(n=>n.id===constellationFocus)||visible[0];if(selected)inspect(selected);
+ const selected=visible.find(n=>n.id===constellationFocus)||visible[0];if(selected)inspect(selected,false);
 }
 constellationSearch.addEventListener('input',renderConstellation);
 constellationZoom.addEventListener('input',renderConstellation);
@@ -708,8 +708,8 @@ function renderPanorama(){
    svg.append(panoramaSvg('path',{d:'M'+a.x+' '+a.y+' C'+(a.x+b.x)/2+' '+a.y+' '+(a.x+b.x)/2+' '+b.y+' '+b.x+' '+b.y,fill:'none',stroke:'#e4c78c','stroke-width':1.4,'stroke-opacity':'.45'}));
   }
  }
- function select(m){
-  panoramaSelected=m.id;aiftVisit(m.id);detail.replaceChildren();
+ function select(m,recordHistory=true){
+  panoramaSelected=m.id;if(recordHistory)aiftVisit(m.id);detail.replaceChildren();
   const h=document.createElement('strong');h.textContent=m.label;
   const p=document.createElement('p');p.textContent=m.stage+' · '+(m.status||'declared')+' · '+(m.roots?.length||0)+' declared contributing roots. Imported claims are not independently verified.';
   const inspect=document.createElement('button');inspect.textContent='Trace in Living Tree';inspect.addEventListener('click',()=>window.dispatchEvent(new CustomEvent('aift:explore-node',{detail:{id:m.id}})));
@@ -729,7 +729,7 @@ function renderPanorama(){
  sky.append(svg);
  status.textContent=records.length?visible.length+' of '+records.length+' declared records displayed across six biological stages. No independent completion verification.':'No evidence imported. Repository roots and outcomes are not fabricated.';
  if(visible.length>=180)status.textContent+=' Refine the search to inspect more records.';
- const selected=visible.find(m=>m.id===panoramaSelected)||visible[0];if(selected)select(selected);
+ const selected=visible.find(m=>m.id===panoramaSelected)||visible[0];if(selected)select(selected,false);
  else detail.textContent='No matching declared record. Adjust filters or import evidence.';
 }
 byId('panorama-query').addEventListener('input',renderPanorama);
@@ -789,6 +789,15 @@ function aiftRenderTrail(){
  document.getElementById('aift-trail-status').textContent=record?record.stage+' · '+record.label+' · declared evidence, not independently verified.':'No selected record. Imported evidence is unchanged.';
 }
 function aiftMove(delta){const next=aiftPosition+delta;if(next<0||next>=aiftVisited.length)return;aiftPosition=next;aiftRenderTrail();window.dispatchEvent(new CustomEvent('aift:explore-node',{detail:{id:aiftVisited[aiftPosition]}}))}
-window.addEventListener('aift:observatory-evidence',()=>{aiftVisited.length=0;aiftPosition=-1;aiftRenderTrail()});
+let aiftEvidenceSignature=null;
+window.addEventListener('aift:observatory-evidence',event=>{
+ const nodes=event.detail?.nodes||[],edges=event.detail?.edges||[];
+ // Selection renders re-emit the same packet. Reset only when imported
+ // evidence actually changes, not when exploring an existing record.
+ const signature=JSON.stringify([nodes,edges]);
+ if(signature===aiftEvidenceSignature)return;
+ aiftEvidenceSignature=signature;
+ aiftVisited.length=0;aiftPosition=-1;aiftRenderTrail();
+});
 </script>
 </body></html>
