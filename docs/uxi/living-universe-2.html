@@ -645,7 +645,7 @@ function renderConstellation(){
   svg.append(path);
  }
  function inspect(n){
-  constellationFocus=n.id;constellationDetail.replaceChildren();
+  constellationFocus=n.id;aiftVisit(n.id);constellationDetail.replaceChildren();
   const heading=document.createElement('h3');heading.textContent=n.label+' · '+n.stage;
   const info=canopyReadiness(layout,n.id),p=document.createElement('p');
   p.textContent=info.roots+' contributing repository roots · '+info.anomalies+' stage anomalies · '+info.missingReferences+' missing references. Declared graph only; not independently verified.';
@@ -709,7 +709,7 @@ function renderPanorama(){
   }
  }
  function select(m){
-  panoramaSelected=m.id;detail.replaceChildren();
+  panoramaSelected=m.id;aiftVisit(m.id);detail.replaceChildren();
   const h=document.createElement('strong');h.textContent=m.label;
   const p=document.createElement('p');p.textContent=m.stage+' · '+(m.status||'declared')+' · '+(m.roots?.length||0)+' declared contributing roots. Imported claims are not independently verified.';
   const inspect=document.createElement('button');inspect.textContent='Trace in Living Tree';inspect.addEventListener('click',()=>window.dispatchEvent(new CustomEvent('aift:explore-node',{detail:{id:m.id}})));
@@ -759,4 +759,36 @@ window.addEventListener('aift:observatory-evidence',e=>{try{current=analyzeAtlas
 byId('canopy-reset').addEventListener('click',()=>{byId('canopy-map').dataset.focusId='';renderCanopy()});
 
 for(const id of ['atlas-search','atlas-stage','atlas-state'])byId(id).addEventListener('input',render);
-</script></body></html>
+</script>
+<style>
+.aift-trail{position:sticky;top:0;z-index:30;padding:12px 24px;background:linear-gradient(100deg,#311a32,#124039,#16345b);border-block:1px solid #f5cd8380;box-shadow:0 12px 30px #0008}
+.aift-trail button{margin:4px;min-height:44px}.aift-trail p{margin:4px 0;color:#eaf4ff}
+@media(max-width:600px){.aift-trail{position:relative;padding:12px}}
+@media(prefers-reduced-motion:reduce){.aift-trail{scroll-behavior:auto}}
+</style>
+<script>
+/* Reversible, session-only exploration; never confuses declared evidence with verification. */
+const aiftTrail=document.createElement('nav');
+aiftTrail.className='aift-trail';
+aiftTrail.setAttribute('aria-label','Living lineage history');
+aiftTrail.innerHTML='<strong>Living lineage · evidence trail</strong><div id="aift-trail-buttons"></div><p id="aift-trail-status" role="status" aria-live="polite">Select an imported record to begin.</p>';
+document.querySelector('header')?.after(aiftTrail);
+const aiftVisited=[];let aiftPosition=-1;
+function aiftVisit(id){
+ if(!current?.missions?.some(m=>m.id===id))return;
+ if(aiftVisited[aiftPosition]!==id){aiftVisited.splice(aiftPosition+1);aiftVisited.push(id);if(aiftVisited.length>20)aiftVisited.shift();aiftPosition=aiftVisited.length-1}
+ aiftRenderTrail();
+}
+function aiftRenderTrail(){
+ const host=document.getElementById('aift-trail-buttons');host.replaceChildren();
+ const prev=document.createElement('button');prev.textContent='← Back';prev.disabled=aiftPosition<1;prev.onclick=()=>aiftMove(-1);
+ const next=document.createElement('button');next.textContent='Forward →';next.disabled=aiftPosition>=aiftVisited.length-1;next.onclick=()=>aiftMove(1);
+ const clear=document.createElement('button');clear.textContent='Clear trail';clear.onclick=()=>{aiftVisited.length=0;aiftPosition=-1;aiftRenderTrail()};
+ host.append(prev,next,clear);
+ const record=current?.missions?.find(m=>m.id===aiftVisited[aiftPosition]);
+ document.getElementById('aift-trail-status').textContent=record?record.stage+' · '+record.label+' · declared evidence, not independently verified.':'No selected record. Imported evidence is unchanged.';
+}
+function aiftMove(delta){const next=aiftPosition+delta;if(next<0||next>=aiftVisited.length)return;aiftPosition=next;aiftRenderTrail();window.dispatchEvent(new CustomEvent('aift:explore-node',{detail:{id:aiftVisited[aiftPosition]}}))}
+window.addEventListener('aift:observatory-evidence',()=>{aiftVisited.length=0;aiftPosition=-1;aiftRenderTrail()});
+</script>
+</body></html>
