@@ -42,6 +42,9 @@ try {
    const directory=await page.locator('#directory').innerText();
    assert.match(directory,/TEST ONLY source repository/,'root retained');
    assert.match(directory,/TEST ONLY outcome/,'outcome retained');
+   assert.equal(await page.locator('#directory').getByText('TEST ONLY source repository').count(),1,'repository appears once as a source record');
+   assert.equal(await page.locator('#directory').getByText('TEST ONLY outcome').count(),1,'outcome appears once as a separate record');
+   assert.equal(await page.evaluate(()=>matchMedia('(prefers-reduced-motion: reduce)').matches),true,'reduced motion enabled');
    const text=await page.locator('body').innerText();
    assert.match(text,/not independently verified|not verified|declared/i,'verification disclaimer');
    await page.locator('#search').fill('TEST ONLY outcome');
@@ -55,8 +58,17 @@ try {
    assert.match(await page.locator('#inspector').innerText(),/TEST ONLY outcome/,'outcome inspector');
    const external=await page.locator('a[target="_blank"]').evaluateAll(nodes=>nodes.filter(a=>!a.rel.includes('noopener')||!a.rel.includes('noreferrer')).map(a=>a.href));
    assert.deepEqual(external,[],'external links isolated');
+   const enabled=page.locator('button:visible:not([disabled])');
+   if(await enabled.count()){
+    await enabled.first().focus();
+    assert.equal(await enabled.first().evaluate(el=>document.activeElement===el),true,'keyboard-focusable controls');
+   }
    assert.deepEqual(errors,[],'no browser runtime exceptions');
    await page.screenshot({path:join(out,name+'-'+width+'-after.png'),fullPage:true,animations:'disabled'});
+   await page.locator('#clear').click();
+   assert.doesNotMatch(await page.locator('#directory').innerText(),/TEST ONLY outcome|TEST ONLY source repository/,'clear removes all imported records');
+   assert.match(await page.locator('#status').innerText(),/clear|no evidence|empty/i,'clear remains fail-closed');
+   await page.screenshot({path:join(out,name+'-'+width+'-cleared.png'),fullPage:true,animations:'disabled'});
    report.push({surface:name,width,importedNodes:fixture.nodes.length,synthetic:true,errors:errors.length});
    await page.close();
   }
