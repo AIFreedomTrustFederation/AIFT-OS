@@ -63,3 +63,26 @@ button{min-height:40px}
  .ribbon{background:Highlight!important}
  :where(button,a,input,select,[tabindex]):focus-visible{outline:3px solid Highlight!important}
 }
+
+
+/* Living Universe: coordinated, evidence-neutral cinematic composition.
+   Shared by the Journey Atlas and Mission Control; never alters imported data. */
+:root{--aift-depth-shadow:0 22px 70px rgba(0,0,0,.46),0 0 42px rgba(105,186,255,.08)}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.24;background:repeating-radial-gradient(circle at 50% 43%,transparent 0 56px,rgba(245,205,131,.12) 57px 58px,transparent 59px 114px);mask-image:linear-gradient(to bottom,black,transparent 82%)}
+header{position:relative;isolation:isolate}
+header:before{content:"";position:absolute;right:clamp(1rem,5vw,5rem);top:0;width:clamp(130px,24vw,350px);aspect-ratio:1;border:1px solid rgba(245,205,131,.24);border-radius:50%;pointer-events:none;z-index:-1;box-shadow:0 0 0 25px rgba(105,186,255,.025),0 0 0 52px rgba(66,230,170,.025),inset 0 0 75px rgba(245,205,131,.045);background:conic-gradient(from 0deg,transparent 0 18%,rgba(245,205,131,.13) 19%,transparent 20% 48%,rgba(105,186,255,.13) 49%,transparent 50% 78%,rgba(66,230,170,.13) 79%,transparent 80%)}
+header h1{max-width:18ch;text-wrap:balance;text-shadow:0 6px 35px rgba(245,205,131,.18)}
+header nav{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;padding:.65rem .85rem;border:1px solid var(--aift-border);border-radius:16px;background:rgba(8,17,36,.75);backdrop-filter:blur(12px)}
+header nav a{display:inline-flex;min-height:44px;align-items:center;padding:.35rem .6rem;border-radius:10px;text-underline-offset:.2em}
+header nav a:hover,header nav a:focus-visible{background:rgba(105,186,255,.13)}
+main>.panel,main section.panel{position:relative;box-shadow:var(--aift-depth-shadow);border-color:var(--aift-border)}
+main>.panel:before,main section.panel:before{content:"";position:absolute;top:0;left:18px;right:18px;height:2px;background:var(--aift-spectrum);opacity:.65;pointer-events:none}
+#graph{filter:drop-shadow(0 0 12px rgba(105,186,255,.12))}
+#graph .node circle{filter:drop-shadow(0 0 8px var(--stage,rgba(105,186,255,.35)))}
+#directory button,#quests .quest,.route-card,.path{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+#directory button:hover,#quests .quest:hover,.route-card:hover,.path:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.24)}
+#inspector,#dossier{overflow-wrap:anywhere}
+#status{border-left:3px solid var(--aift-gold);padding-left:.75rem}
+@media(max-width:650px){header:before{opacity:.3;right:0}header nav{width:100%;gap:.15rem}header nav a{flex:1 1 auto;justify-content:center}main>.panel,main section.panel{box-shadow:0 10px 30px rgba(0,0,0,.28)}#directory button,#quests .quest,.route-card,.path{transition:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}#directory button,#quests .quest,.route-card,.path{transition:none!important;transform:none!important}header nav{backdrop-filter:none}}
+@media(forced-colors:active){header nav,main>.panel,main section.panel{border:1px solid CanvasText}#status{border-left:3px solid Highlight}#graph .node circle{filter:none}}
