@@ -7,7 +7,9 @@ test('shared lineage navigation is accessible and reversible',()=>{
 });
 test('lineage history is bounded, local and evidence-derived',()=>{
  assert.match(page,/aiftVisited\.length>20/);
- assert.match(page,/current\?\.missions\?\.some\(m=>m\.id===id\)/);
+ assert.match(page,/aiftTrailRecords\.has\(id\)/);
+ assert.match(page,/aiftTrailRecords=new Map\(nodes\.filter/);
+ assert.doesNotMatch(page,/function aiftVisit\(id\)\{\s*if\(!current/);
  assert.match(page,/declared evidence, not independently verified/);
  assert.match(page,/aift:observatory-evidence/);
 });
