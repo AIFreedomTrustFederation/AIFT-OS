@@ -63,6 +63,14 @@ try {
         await page.screenshot({ path: join(out, name + '-' + width + '-interaction.png'), fullPage: true, animations: 'disabled' });
       }
       if (name === 'expedition') {
+        // Restore all exploratory filters before importing: the preceding empty-state
+        // interaction intentionally searched for a nonexistent record. Without reset,
+        // the synthetic journey was hidden and produced a false browser failure.
+        await page.locator('#search').fill('');
+        await page.locator('#river-reset').click();
+        await page.locator('#quest-search').fill('');
+        assert.equal(await page.locator('#search').inputValue(), '', 'main search reset before import');
+        assert.equal(await page.locator('#river-search').inputValue(), '', 'river search reset before import');
         // Synthetic, explicitly test-only lineage: never displayed as real federation evidence.
         const fixture = {
           nodes: [
