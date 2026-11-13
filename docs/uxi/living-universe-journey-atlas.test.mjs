@@ -29,3 +29,21 @@ test('safe external navigation and keyboard interaction',()=>{
  assert.match(html,/e\.key===' '/);
  assert.match(html,/role:'button'/);
 });
+
+test('integrated lineage focus and route theatre remain evidence-bounded',()=>{
+ for(const id of ['focusAll','focusLineage','focusRoutes','fitSelection','focusSummary','routeCards','canvas'])assert.match(html,new RegExp('id="'+id+'"'));
+ assert.match(html,/function focusedIds\(\)/);
+ assert.match(html,/canopyLineage\(layout,selected\)/);
+ assert.match(html,/canopyRoutes\(layout,selected,\{maxRoutes:12\}\)/);
+ assert.match(html,/const route=routes\.routes\[activeRoute\]/);
+ assert.match(html,/new Set\(\[\.\.\.allowed\]\.filter\(id=>focused\.has\(id\)\)\)/);
+ assert.match(html,/role="group" aria-label="Lineage focus"/);
+ assert.match(html,/aria-pressed/);
+ assert.match(html,/No independent verification|no independent verification/i);
+});
+test('spatial navigation and selection state have safe empty states',()=>{
+ assert.match(html,/if\(!n\)return/);
+ assert.match(html,/Math\.max\(0,n\.x/);
+ assert.match(html,/if\(!layout\|\|!selected\|\|focusMode==='all'\)return null/);
+ assert.match(html,/activeRoute=0/);
+});
