@@ -25,6 +25,7 @@ on:
       - 'docs/uxi/living-universe-spectral-theatre*'
       - 'docs/uxi/living-universe-journey-dossier*'
       - 'docs/uxi/living-universe-browser-acceptance*'
+      - 'docs/uxi/living-universe-multi-surface-acceptance*'
       - '.github/workflows/living-universe-skill-atlas.yml'
   workflow_dispatch:
 permissions:
@@ -69,7 +70,9 @@ jobs:
         env:
           AIFT_UXI_PREFIX: 'docs/uxi/'
           AIFT_SCREENSHOT_DIR: uxi-browser-evidence
-        run: node docs/uxi/living-universe-browser-acceptance.mjs
+        run: |
+          node docs/uxi/living-universe-browser-acceptance.mjs
+          node docs/uxi/living-universe-multi-surface-acceptance.mjs
       - name: Upload visual evidence even on failure
         if: always()
         uses: actions/upload-artifact@v4
