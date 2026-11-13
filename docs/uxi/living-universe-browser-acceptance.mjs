@@ -97,7 +97,8 @@ try {
           mimeType: 'application/json',
           buffer: Buffer.from(JSON.stringify(fixture))
         });
-        assert.match(await page.locator('#status').innerText(), /7 declared records imported locally/i, 'synthetic packet imported');
+        await page.locator('#status').filter({ hasText: /7 declared records imported locally/i })
+          .waitFor({ state: 'visible', timeout: 5000 });
         const rendered = await page.locator('body').innerText();
         assert.match(rendered, /TEST ONLY user outcome/, 'outcome rendered from imported packet');
         assert.match(rendered, /TEST ONLY repository root/, 'repository represented as source');
