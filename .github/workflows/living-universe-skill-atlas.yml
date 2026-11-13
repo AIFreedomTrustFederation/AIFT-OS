@@ -48,7 +48,9 @@ jobs:
           fi
 
   browser-acceptance:
-    runs-on: ubuntu-latest
+    # Playwright 1.58.2 does not support the Ubuntu 26.04 image selected by ubuntu-latest.
+    # Pin the browser job to the supported Ubuntu 24.04 runner; keep all other jobs unchanged.
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
