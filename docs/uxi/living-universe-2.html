@@ -772,7 +772,16 @@ for(const id of ['atlas-search','atlas-stage','atlas-state'])byId(id).addEventLi
 const aiftTrail=document.createElement('nav');
 aiftTrail.className='aift-trail';
 aiftTrail.setAttribute('aria-label','Living lineage history');
-aiftTrail.innerHTML='<strong>Living lineage · evidence trail</strong><div id="aift-trail-buttons"></div><p id="aift-trail-status" role="status" aria-live="polite">Select an imported record to begin.</p>';
+const trailHeading=document.createElement('strong');
+trailHeading.textContent='Living lineage · evidence trail';
+const trailButtons=document.createElement('div');
+trailButtons.id='aift-trail-buttons';
+const trailStatus=document.createElement('p');
+trailStatus.id='aift-trail-status';
+trailStatus.setAttribute('role','status');
+trailStatus.setAttribute('aria-live','polite');
+trailStatus.textContent='Select an imported record to begin.';
+aiftTrail.append(trailHeading,trailButtons,trailStatus);
 document.querySelector('header')?.after(aiftTrail);
 const aiftVisited=[];let aiftPosition=-1;
 function aiftVisit(id){
