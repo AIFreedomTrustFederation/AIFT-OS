@@ -18,6 +18,7 @@ on:
       - 'docs/uxi/living-universe-journey-cockpit*'
       - 'docs/uxi/living-universe-expedition*'
       - 'docs/uxi/living-universe-panorama*'
+      - 'docs/uxi/living-universe-lineage-theatre*'
       - 'docs/uxi/living-universe-browser-acceptance*'
       - '.github/workflows/living-universe-skill-atlas.yml'
   workflow_dispatch:
@@ -37,7 +38,7 @@ jobs:
           if [ -f living-universe-skill-atlas.test.mjs ]; then
             node --test living-universe-skill-atlas.test.mjs living-universe-canopy.test.mjs living-universe-journey-cockpit.test.mjs living-universe-constellation.test.mjs living-universe-receipts.test.mjs living-universe-expedition.test.mjs
           else
-            node --test docs/uxi/living-universe-skill-atlas.test.mjs docs/uxi/living-universe-canopy.test.mjs docs/uxi/living-universe-journey-cockpit.test.mjs docs/uxi/living-universe-constellation.test.mjs docs/uxi/living-universe-receipts.test.mjs docs/uxi/living-universe-expedition.test.mjs docs/uxi/living-universe-panorama.test.mjs
+            node --test docs/uxi/living-universe-skill-atlas.test.mjs docs/uxi/living-universe-canopy.test.mjs docs/uxi/living-universe-journey-cockpit.test.mjs docs/uxi/living-universe-constellation.test.mjs docs/uxi/living-universe-receipts.test.mjs docs/uxi/living-universe-expedition.test.mjs docs/uxi/living-universe-panorama.test.mjs docs/uxi/living-universe-lineage-theatre.test.mjs
           fi
 
   browser-acceptance:
