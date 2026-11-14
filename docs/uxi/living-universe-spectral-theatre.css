@@ -1,0 +1,102 @@
+/* AIFT Living Universe spectral theatre: additive, shared across Atlas and Mission Control.
+   Repositories are provenance roots, not outcomes. Presentation never changes evidence. */
+:root{
+ --aift-void:#050a17;--aift-panel:#0c1730;--aift-panel-deep:#081124;
+ --aift-red:#ff547b;--aift-green:#42e6aa;--aift-blue:#69baff;
+ --aift-gold:#f5cd83;--aift-violet:#b49cff;--aift-text:#eef7ff;
+ --aift-border:rgba(143,196,255,.27);--aift-glow:rgba(105,186,255,.16);
+ --aift-radius:22px;--aift-focus:3px solid #f5cd83;
+ --aift-spectrum:linear-gradient(105deg,#ff547b 0%,#ffa66e 18%,#f5cd83 34%,#42e6aa 53%,#69baff 74%,#b49cff 100%);
+}
+html{scroll-behavior:smooth;scroll-padding-top:2rem}
+body{background-color:var(--aift-void);isolation:isolate}
+body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.48;background:
+ radial-gradient(ellipse at 6% 8%,rgba(255,84,123,.19),transparent 38%),
+ radial-gradient(ellipse at 91% 15%,rgba(66,230,170,.16),transparent 39%),
+ radial-gradient(ellipse at 50% 94%,rgba(105,186,255,.14),transparent 42%),
+ repeating-linear-gradient(120deg,transparent 0 74px,rgba(245,205,131,.024) 75px 76px)}
+.ribbon{background:var(--aift-spectrum)!important;box-shadow:0 0 32px rgba(105,186,255,.38);position:relative}
+.ribbon:after{content:"";position:absolute;inset:100% 0 auto;height:18px;background:var(--aift-spectrum);filter:blur(18px);opacity:.4;pointer-events:none}
+header{position:relative}
+header:before{content:"";position:absolute;right:clamp(1rem,4vw,4rem);top:12%;width:clamp(80px,14vw,220px);aspect-ratio:1;pointer-events:none;opacity:.16;background:conic-gradient(from 30deg,var(--aift-gold),transparent,var(--aift-blue),transparent,var(--aift-gold));clip-path:polygon(50% 0,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);filter:drop-shadow(0 0 18px var(--aift-gold))}
+h1{letter-spacing:-.035em;text-wrap:balance;text-shadow:0 0 38px rgba(245,205,131,.16)}
+h2,h3{text-wrap:balance}
+.panel{position:relative;border:1px solid var(--aift-border)!important;border-radius:var(--aift-radius)!important;background:linear-gradient(148deg,rgba(18,37,72,.94),rgba(7,16,35,.97))!important;box-shadow:0 12px 46px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.065);overflow:clip}
+.panel:before{content:"";position:absolute;top:0;left:20px;right:20px;height:1px;background:linear-gradient(90deg,transparent,rgba(245,205,131,.54),transparent);pointer-events:none}
+.panel:focus-within{border-color:rgba(245,205,131,.52)!important}
+.canvas,.orbit{position:relative;background:
+ radial-gradient(ellipse at 50% 45%,rgba(105,186,255,.12),transparent 63%),
+ radial-gradient(ellipse at 20% 70%,rgba(66,230,170,.09),transparent 40%),
+ rgba(3,10,25,.65)!important;border-radius:18px}
+.canvas:before,.orbit:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.26;background-image:linear-gradient(rgba(105,186,255,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(105,186,255,.12) 1px,transparent 1px);background-size:36px 36px;mask-image:radial-gradient(ellipse at center,#000 12%,transparent 78%)}
+#graph{position:relative;filter:drop-shadow(0 4px 12px rgba(105,186,255,.16))}
+#stages,.stages,.stage-row{position:relative}
+#stages button,.stages button,.stage-row button{border-radius:999px;min-height:44px;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+#stages button:hover,.stages button:hover,.stage-row button:hover{transform:translateY(-2px);box-shadow:0 5px 18px rgba(105,186,255,.18)}
+#stages button[aria-pressed="true"],.stages button[aria-pressed="true"],.stage-row button[aria-pressed="true"]{border-color:var(--aift-gold)!important;box-shadow:0 0 0 1px rgba(245,205,131,.35),0 0 22px rgba(245,205,131,.15)}
+button,a,input,select{accent-color:var(--aift-green)}
+button,a{touch-action:manipulation}
+:where(button,a,input,select,[tabindex]):focus-visible{outline:var(--aift-focus)!important;outline-offset:3px!important}
+button{min-height:40px}
+#directory button,#quests button,#paths button,#routeCards button{transition:background-color .15s ease,border-color .15s ease,transform .15s ease}
+#directory button:hover,#quests button:hover,#paths button:hover,#routeCards button:hover{transform:translateY(-1px)}
+#inspector,#dossier,#quests{overflow-wrap:anywhere}
+#status,[role="status"],[aria-live]{font-variant-numeric:tabular-nums}
+@media(min-width:1100px){.panel{backdrop-filter:blur(9px)}}
+@media(max-width:700px){
+ header,main,footer{padding-inline:clamp(12px,4vw,22px)!important}
+ h1{font-size:clamp(2.1rem,10vw,3.5rem)!important}
+ .panel{border-radius:16px!important}
+ .toolbar,.controls,.focus-controls{gap:.6rem}
+ input,select{max-width:100%;min-width:0}
+ #stages,.stages,.stage-row{scroll-margin-inline:12px}
+ #stages button,.stages button,.stage-row button{flex-shrink:0}
+ .canvas,.orbit{min-height:270px}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}
+ *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+ .panel{backdrop-filter:none}
+}
+@media(forced-colors:active){
+ .panel{border:2px solid CanvasText!important;background:Canvas!important}
+ .ribbon{background:Highlight!important}
+ :where(button,a,input,select,[tabindex]):focus-visible{outline:3px solid Highlight!important}
+}
+
+
+/* Living Universe: coordinated, evidence-neutral cinematic composition.
+   Shared by the Journey Atlas and Mission Control; never alters imported data. */
+:root{--aift-depth-shadow:0 22px 70px rgba(0,0,0,.46),0 0 42px rgba(105,186,255,.08)}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.24;background:repeating-radial-gradient(circle at 50% 43%,transparent 0 56px,rgba(245,205,131,.12) 57px 58px,transparent 59px 114px);mask-image:linear-gradient(to bottom,black,transparent 82%)}
+header{position:relative;isolation:isolate}
+header:before{content:"";position:absolute;right:clamp(1rem,5vw,5rem);top:0;width:clamp(130px,24vw,350px);aspect-ratio:1;border:1px solid rgba(245,205,131,.24);border-radius:50%;pointer-events:none;z-index:-1;box-shadow:0 0 0 25px rgba(105,186,255,.025),0 0 0 52px rgba(66,230,170,.025),inset 0 0 75px rgba(245,205,131,.045);background:conic-gradient(from 0deg,transparent 0 18%,rgba(245,205,131,.13) 19%,transparent 20% 48%,rgba(105,186,255,.13) 49%,transparent 50% 78%,rgba(66,230,170,.13) 79%,transparent 80%)}
+header h1{max-width:18ch;text-wrap:balance;text-shadow:0 6px 35px rgba(245,205,131,.18)}
+header nav{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;padding:.65rem .85rem;border:1px solid var(--aift-border);border-radius:16px;background:rgba(8,17,36,.75);backdrop-filter:blur(12px)}
+header nav a{display:inline-flex;min-height:44px;align-items:center;padding:.35rem .6rem;border-radius:10px;text-underline-offset:.2em}
+header nav a:hover,header nav a:focus-visible{background:rgba(105,186,255,.13)}
+main>.panel,main section.panel{position:relative;box-shadow:var(--aift-depth-shadow);border-color:var(--aift-border)}
+main>.panel:before,main section.panel:before{content:"";position:absolute;top:0;left:18px;right:18px;height:2px;background:var(--aift-spectrum);opacity:.65;pointer-events:none}
+#graph{filter:drop-shadow(0 0 12px rgba(105,186,255,.12))}
+#graph .node circle{filter:drop-shadow(0 0 8px var(--stage,rgba(105,186,255,.35)))}
+#directory button,#quests .quest,.route-card,.path{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+#directory button:hover,#quests .quest:hover,.route-card:hover,.path:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.24)}
+#inspector,#dossier{overflow-wrap:anywhere}
+#status{border-left:3px solid var(--aift-gold);padding-left:.75rem}
+@media(max-width:650px){header:before{opacity:.3;right:0}header nav{width:100%;gap:.15rem}header nav a{flex:1 1 auto;justify-content:center}main>.panel,main section.panel{box-shadow:0 10px 30px rgba(0,0,0,.28)}#directory button,#quests .quest,.route-card,.path{transition:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}#directory button,#quests .quest,.route-card,.path{transition:none!important;transform:none!important}header nav{backdrop-filter:none}}
+@media(forced-colors:active){header nav,main>.panel,main section.panel{border:1px solid CanvasText}#status{border-left:3px solid Highlight}#graph .node circle{filter:none}}
+
+
+/* Shared biological semantic-zoom explorer, Journey Atlas and Mission Control. */
+.aift-passage-navigation{display:flex;flex-wrap:wrap;gap:.45rem;margin:.9rem 0}
+.aift-passage-navigation button{flex:1 1 120px;min-height:44px;border:1px solid #7799bb;background:linear-gradient(145deg,#18314b,#0b1a30);color:#f2f8ff;border-radius:12px;overflow-wrap:anywhere}
+.aift-passage-navigation button[aria-pressed=true]{border-color:#f5cd83;box-shadow:inset 0 0 0 1px #f5cd83,0 0 18px #f5cd8340}
+.aift-passage-panel label{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;margin:.8rem 0;color:#e5f2ff}
+.aift-passage-panel input[type=search]{flex:1 1 230px;min-width:0;min-height:44px;border-radius:12px;border:1px solid #8caac8;background:#091b30;color:#fff;padding:.6rem .8rem}
+.aift-passage-stage{box-shadow:inset 0 1px 18px #8bbdff0d,0 8px 24px #0004}
+.aift-passage-stage[data-selected=true]{box-shadow:0 0 0 2px #f5cd83,0 0 25px #f5cd8340}
+.aift-passage-navigation button:focus-visible,.aift-passage-panel input:focus-visible{outline:3px solid #f5cd83;outline-offset:3px}
+@media(max-width:560px){.aift-passage-navigation button{flex-basis:calc(50% - .5rem)}}
+@media(prefers-reduced-motion:reduce){.aift-passage-navigation *{transition:none!important;animation:none!important}}
+@media(forced-colors:active){.aift-passage-navigation button[aria-pressed=true],.aift-passage-stage[data-selected=true]{outline:2px solid Highlight;box-shadow:none}}
