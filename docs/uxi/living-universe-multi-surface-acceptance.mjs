@@ -38,7 +38,9 @@ try {
    assert.match(await page.locator('#status').innerText(),/import|evidence|empty|no /i,'empty evidence state');
    await page.screenshot({path:join(out,name+'-'+width+'-before.png'),fullPage:true,animations:'disabled'});
    await page.locator('#file').setInputFiles({name:'TEST-ONLY-lineage.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture))});
-   await assert.doesNotReject(async()=>{await page.locator('#directory').getByText('TEST ONLY source repository').first().waitFor({timeout:5000})},name+' root imported');
+   await assert.doesNotReject(async()=>{
+    await page.locator('#directory').getByText('TEST ONLY source repository').first().waitFor({timeout:5000});
+   },name+' root imported; status='+JSON.stringify(await page.locator('#status').innerText())+'; page errors='+JSON.stringify(errors));
    const directory=await page.locator('#directory').innerText();
    assert.match(directory,/TEST ONLY source repository/,'root retained');
    assert.match(directory,/TEST ONLY outcome/,'outcome retained');
