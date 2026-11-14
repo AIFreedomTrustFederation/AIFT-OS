@@ -6,7 +6,7 @@ const html=readFileSync(new URL('./living-universe-mission-control.html',import.
 test('integrated mission control exposes graph, lineage, routes, quests and accessible directory',()=>{
  for(const id of ['graph','directory','inspector','paths','quests','back','forward','file','search','stage','clear','orbit'])assert.match(html,new RegExp('id="'+id+'"'));
  for(const stage of ['root','trunk','branch','leaf','flower','fruit'])assert.match(html,new RegExp('value="'+stage+'"'));
- for(const name of ['canopyLayout','canopyLineage','canopyRoutes','journeyDossier','evidenceQuestPlan'])assert.match(html,new RegExp(name+'\\('));
+ for(const name of ['canopyLayout','canopyLineage','canopyRoutes','journeyDossier','mountQuestTheatre'])assert.match(html,new RegExp(name+'\\('));
  assert.match(html,/aria-live="polite"/);assert.match(html,/prefers-reduced-motion:reduce/);
 });
 test('canonical graph contracts and local evidence boundaries',()=>{
