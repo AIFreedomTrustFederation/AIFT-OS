@@ -19,7 +19,7 @@ test('canonical directed graph modules, no repository-as-fruit shortcut',()=>{
  assert.match(html,/from '\.\/living-universe-skill-atlas\.mjs'/);
  assert.match(html,/from '\.\/living-universe-canopy\.mjs'/);
  assert.match(html,/canopyLineage\(layout,m\.id\)/);
- assert.match(html,/evidenceQuestPlan\(atlas/);
+ assert.match(html,/mountQuestTheatre\(\$\('quests'\),\{atlas,selected,stage:/);
  assert.match(html,/Source repositories are roots, never fruits/);
  assert.match(html,/Not independently verified/);
 });
