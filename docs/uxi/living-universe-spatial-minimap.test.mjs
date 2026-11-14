@@ -41,7 +41,8 @@ test('routes are bounded, cycle safe, deterministic and do not invent roots',()=
  {id:'b',stage:'branch',directParents:['a','fruit']},
  {id:'a',stage:'root'},
  {id:'z',stage:'root',directParents:['fruit']}];
- assert.deepEqual(spatialRoutes(rows,'fruit').map(r=>r.rootId),['a','z']);
+ // z is a descendant of fruit, not an ancestor; treating it as a contributing root would fabricate provenance.
+ assert.deepEqual(spatialRoutes(rows,'fruit').map(r=>r.rootId),['a']);
  assert.equal(spatialRoutes(rows,'missing').length,0);
  assert.equal(spatialRoutes(rows,'fruit',{maxRoutes:1}).length,1);
  assert.equal(spatialRoutes([{id:'fruit',stage:'fruit',directParents:['unknown']}],'fruit').length,0);
@@ -50,4 +51,10 @@ test('shared spatial summary carries routes without asserting verified outcomes'
  const m=spatialSummary([{id:'r',stage:'root'},{id:'f',stage:'fruit',directParents:['r']}],'f');
  assert.deepEqual(m.routes[0].ids,['r','f']);
  assert.match(m.claim,/Imported declarations only/);
+});
+
+test('a repository root downstream of an outcome cannot be credited as its contributor',()=>{
+ const records=[{id:'product',stage:'fruit'},{id:'downstream-repo',stage:'root',directParents:['product']}];
+ assert.deepEqual(spatialRoutes(records,'product'),[]);
+ assert.equal(spatialSummary(records,'product').hasRoot,false);
 });
