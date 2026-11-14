@@ -73,13 +73,90 @@ dl{display:grid;grid-template-columns:95px 1fr;gap:.6rem;overflow-wrap:anywhere}
 .theatre-evidence{border-left:3px solid var(--green);padding:1rem;background:#10293b;border-radius:12px}.theatre-evidence strong{color:var(--gold)}.theatre-evidence p{color:var(--muted)}
 @media(max-width:800px){.theatre-body{grid-template-columns:1fr}}@media(max-width:540px){.theatre-rail{grid-template-columns:repeat(3,minmax(0,1fr))}.theatre-rail button{min-height:70px}}
 @media(prefers-reduced-motion:reduce){.journey-theatre *{animation:none!important;transition:none!important}}
+.quest-board{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:1rem}.quest-card{padding:1rem;border-radius:16px;border:1px solid #83b2cc;border-top:4px solid #f5cd83;background:linear-gradient(145deg,#12314b,#091c31);box-shadow:0 12px 30px #0005}.quest-card h3{color:#f5cd83}.quest-card button,.quest-card a{display:inline-block;min-height:44px;margin:.3rem;padding:.7rem;color:#fff;background:#18536a;border:1px solid #7de1db;border-radius:8px}.quest-card :focus-visible{outline:3px solid #f5cd83;outline-offset:3px}@media(prefers-reduced-motion:reduce){.quest-card *{animation:none!important;transition:none!important}}
+/* Evidence Quest Theatre: source-derived readiness gates, never simulated completion */
+.quest-gates{display:grid;gap:.55rem;margin:.9rem 0;padding:0;list-style:none}.quest-gate{display:grid;grid-template-columns:1.3rem minmax(0,1fr);gap:.6rem;align-items:start;padding:.7rem .8rem;border:1px solid rgba(175,195,235,.24);border-radius:.8rem;background:linear-gradient(120deg,rgba(17,34,62,.8),rgba(12,24,42,.65));color:#e6efff}.quest-gate[data-state="blocked"]{border-left:3px solid #ff547b}.quest-gate[data-state="pending"]{border-left:3px solid #69baff}.quest-gate[data-state="declared"]{border-left:3px solid #42e6aa}.quest-gate strong{display:block;font-size:.88rem;color:#fff}.quest-gate small{display:block;font-size:.78rem;line-height:1.45;color:#d2def2;margin-top:.15rem}.quest-gate-icon{font-weight:800;color:#f5cd83}.quest-readiness{font-size:.82rem;color:#f5cd83;font-weight:700;letter-spacing:.025em}.quest-card:focus-within{outline:2px solid #f5cd83;outline-offset:3px}@media(max-width:480px){.quest-gate{padding:.6rem;grid-template-columns:1rem minmax(0,1fr)}.quest-card button,.quest-card a{min-height:44px}}@media(prefers-reduced-motion:reduce){.quest-card,.quest-gate{animation:none!important;transition:none!important}}
+
+/* Integrated Journey Cockpit: evidence-derived, read-only, accessible */
+.journey-cockpit{margin:1.5rem 0;padding:clamp(1rem,3vw,2rem);border:1px solid #d8b878;border-radius:22px;background:radial-gradient(ellipse at 15% 0%,#6e1f4a66,transparent 45%),radial-gradient(ellipse at 85% 100%,#155c7366,transparent 50%),#08172c;box-shadow:0 24px 70px #0008}
+.journey-cockpit h2{color:#f5cd83}.journey-controls{display:flex;gap:.75rem;flex-wrap:wrap;align-items:end}.journey-controls label{display:grid;gap:.3rem;flex:1 1 210px}.journey-controls input,.journey-controls select{min-height:44px;padding:.6rem;background:#091e32;color:#fff;border:1px solid #8ba9c8;border-radius:10px}
+.journey-stage-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.5rem;margin:1rem 0}.journey-stage-grid button{min-height:86px;padding:.7rem .4rem;border:1px solid var(--stage-color);border-top:5px solid var(--stage-color);border-radius:12px;background:linear-gradient(160deg,#203651,#091626);color:#fff;overflow-wrap:anywhere;text-align:center}.journey-stage-grid button[aria-current="step"]{outline:3px solid #f5cd83;outline-offset:2px}.journey-stage-grid small{display:block;color:#d5e4f6}
+.journey-route-list{display:flex;gap:.65rem;overflow-x:auto;padding:.6rem 0;scroll-snap-type:x proximity}.journey-route-list button{flex:0 0 min(210px,65vw);min-height:68px;scroll-snap-align:start;padding:.65rem;border:1px solid #80c6dc;border-radius:12px;background:#102d46;color:#fff;text-align:left}.journey-route-list button[aria-pressed="true"]{border:2px solid #f5cd83;background:#29445d}
+.journey-cockpit button:focus-visible,.journey-cockpit a:focus-visible{outline:3px solid #f5cd83;outline-offset:3px}.journey-detail{border-left:4px solid #f5cd83;background:#10283e;padding:1rem;border-radius:10px;min-height:90px}.journey-detail a,.journey-detail button{display:inline-block;margin:.4rem;padding:.65rem;border-radius:8px;border:1px solid #7cd9e8;background:#16405a;color:#fff;min-height:44px}.journey-route-note{color:#d8e6f5}
+@media(max-width:900px){.journey-stage-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:480px){.journey-stage-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.journey-cockpit *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* Journey epic: reversible spatial navigator and accessible route atlas */
+.journey-trail{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;padding:.8rem;border:1px solid #b99a57;border-radius:14px;background:linear-gradient(110deg,#341a32,#14394b,#132a47)}.journey-trail button{min-height:44px;border:1px solid #d6c48a;border-radius:10px;background:#102b43;color:#fff;padding:.55rem}.journey-trail button[aria-current=step]{background:#295d56;outline:2px solid #f5cd83}.journey-overview{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.35rem;margin:1rem 0}.journey-overview button{min-height:58px;border:1px solid #8ba7c0;border-top:4px solid var(--stage-color,#f5cd83);background:#0c253c;color:#fff;border-radius:9px;padding:.4rem;overflow-wrap:anywhere}.journey-overview button[aria-current=step]{outline:3px solid #f5cd83}.journey-overview small{display:block;color:#d6e7f5}.journey-actions{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0}.journey-actions button{min-height:44px;padding:.6rem 1rem;border-radius:9px;background:#164c60;color:white;border:1px solid #85d4db}@media(max-width:640px){.journey-overview{grid-template-columns:repeat(3,minmax(0,1fr))}.journey-trail{padding:.5rem}}@media(prefers-reduced-motion:reduce){.journey-trail *,.journey-overview *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* Living Universe immersive source-to-outcome panorama: additive, local-only. */
+.panorama{position:relative;isolation:isolate;overflow:hidden;margin:1rem 0;border:1px solid #d4b57888;border-radius:26px;padding:clamp(1rem,3vw,2rem);background:radial-gradient(ellipse at 50% 75%,#277d6a36,transparent 60%),radial-gradient(ellipse at 25% 20%,#ff547b22,transparent 45%),linear-gradient(155deg,#081021,#13233b 55%,#080f20)}
+.panorama:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.24;background:repeating-radial-gradient(circle at 50% 55%,transparent 0 47px,#f5cd8320 48px 49px,transparent 50px 94px)}
+.panorama>*{position:relative}.panorama h2{font-size:clamp(1.7rem,3vw,2.7rem)}.panorama-sky{width:100%;min-height:350px;overflow:auto;border-radius:18px;background:linear-gradient(90deg,#ff547b0a,#f5cd8308,#42e6aa0a,#69baff0a)}
+.panorama-sky svg{display:block;min-width:760px;width:100%;height:auto}.panorama-node{cursor:pointer;outline:none}.panorama-node:focus-visible circle{stroke:#fff;stroke-width:4}.panorama-node[aria-pressed=true] circle{stroke:#f5cd83;stroke-width:5}
+.panorama-bottom{display:grid;grid-template-columns:minmax(0,2fr) minmax(230px,1fr);gap:1rem;margin-top:1rem}.panorama-directory{display:flex;gap:.5rem;flex-wrap:wrap;max-height:210px;overflow:auto;align-content:start}.panorama-directory button{text-align:left;max-width:100%;overflow-wrap:anywhere}.panorama-detail{border:1px solid #b7cbe877;border-radius:16px;padding:1rem;background:#06101eaa;min-width:0}.panorama-detail p{overflow-wrap:anywhere}.panorama-status{color:var(--muted)}.panorama-tools{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}.panorama-tools label{max-width:320px;flex:1 1 200px}.panorama-tools select{width:100%;min-height:44px;color:var(--ink);background:#10223a;border:1px solid #9cb6d1;border-radius:10px;padding:.6rem}
+@media(max-width:700px){.panorama-bottom{grid-template-columns:1fr}.panorama-sky{min-height:230px}.panorama-directory{max-height:175px}}
+@media(prefers-reduced-motion:reduce){.panorama *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+</style><style>
+.canopy-panel{margin:1.4rem 0;border-color:#d5af6e;background:radial-gradient(ellipse at 50% 0%,#29405d,#0a172b 72%)}
+.canopy-shell{position:relative;overflow:auto;border:1px solid #7294af;border-radius:20px;background:repeating-radial-gradient(circle at 50% 50%,transparent 0 56px,#a6cfff16 57px 58px),radial-gradient(ellipse at 50% 55%,#22415a,#070f20 70%);box-shadow:inset 0 0 90px #071224}
+#canopy-map{display:block;width:100%;min-width:620px;max-height:560px}
+#canopy-map .canopy-edge{stroke:#90b9d3;stroke-width:2;opacity:.4}
+#canopy-map .canopy-edge[data-kind="stage-gap"]{stroke:#f5cd83;stroke-width:2.8;stroke-dasharray:9 5;opacity:.95}
+#canopy-map .canopy-edge[data-kind="nonprogressive"]{stroke:#ff547b;stroke-width:3;stroke-dasharray:3 5;opacity:1}
+#canopy-map .canopy-edge[data-lineage="true"]{stroke:#42e6aa;stroke-width:4;opacity:1;filter:drop-shadow(0 0 5px #42e6aa)}
+#canopy-map .canopy-edge[data-dimmed="true"],#canopy-map .canopy-node[data-dimmed="true"]{opacity:.17}
+.canopy-inspector{margin:.8rem 0;padding:1rem;border:1px solid #b9a06b;border-radius:12px;background:#101f34;color:#f4f7ff}
+.canopy-inspector button{min-height:44px;margin:.3rem;padding:.55rem .85rem}
+.canopy-legend{display:flex;flex-wrap:wrap;gap:.7rem;margin:.6rem 0;font-size:.88rem}
+.canopy-legend span{padding:.35rem .65rem;border:1px solid #607f9c;border-radius:8px}
+@media(prefers-reduced-motion:reduce){#canopy-map .canopy-edge{filter:none!important}}
+#canopy-map .canopy-node{cursor:pointer;outline:none}
+#canopy-map .canopy-node circle{fill:#0b1d30;stroke:var(--canopy-color);stroke-width:3}
+#canopy-map .canopy-node[data-gap="true"] circle{stroke-dasharray:5 4}
+#canopy-map .canopy-node:focus-visible circle,#canopy-map .canopy-node[aria-pressed="true"] circle{stroke:#fff;stroke-width:5;filter:drop-shadow(0 0 12px #f5cd83)}
+#canopy-map text{font:12px system-ui,sans-serif;fill:#f4f7ff;text-anchor:middle;paint-order:stroke;stroke:#081324;stroke-width:4px;pointer-events:none}
+.canopy-directory{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:.5rem;margin-top:1rem;max-height:270px;overflow:auto}
+.canopy-directory button{text-align:left;border-left:4px solid var(--canopy-color)}
+.canopy-directory small{display:block;color:#c1d3e8}
+@media(max-width:600px){.canopy-panel{padding:.75rem}#canopy-map{min-width:620px}}
+@media(prefers-reduced-motion:reduce){#canopy-map *{transition:none!important;animation:none!important}}
+.canopy-readiness{padding:1rem;border:1px solid #9c8550;border-radius:16px;background:linear-gradient(125deg,#291b31,#123a39 52%,#122e54);box-shadow:0 12px 32px #0006;grid-column:1/-1}.canopy-readiness h4{color:#f5cd83;margin:0 0 .65rem}.canopy-readiness ul{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.6rem}.canopy-readiness li{border:1px solid #6685a1;border-radius:10px;padding:.65rem;background:#091d32;display:flex;flex-direction:column;gap:.2rem}.canopy-readiness strong{font-size:1.45rem;color:#f5cd83;font-variant-numeric:tabular-nums}.canopy-readiness span{font-size:.8rem;color:#d6e7f5}.canopy-readiness p{color:#e4f0fa;margin:.75rem 0 0}@media(prefers-reduced-motion:reduce){.canopy-readiness{scroll-behavior:auto}}
+.canopy-lineage-journey{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:.65rem;margin:.8rem 0}.canopy-lineage-journey article{padding:.8rem;border:1px solid #7394ac;border-top:3px solid var(--green);border-radius:12px;background:#0b2335}.canopy-lineage-journey article.anomaly{border-top-color:var(--red)}.canopy-lineage-journey h4{margin:.1rem 0 .45rem;color:var(--gold)}.canopy-lineage-journey button{display:block;width:100%;text-align:left;overflow-wrap:anywhere}.canopy-lineage-journey p{font-size:.86rem;color:var(--muted)}.canopy-route{border-top:1px solid #56738c;padding:.5rem 0}.canopy-route ol{margin:.3rem 0 .6rem;padding-left:1.3rem}.canopy-route li{margin:.2rem 0}.canopy-route button[aria-pressed="true"]{border-color:#f5cd83;background:#294c50}#canopy-map .canopy-edge[data-route="true"]{stroke:#f5cd83;stroke-width:5;filter:drop-shadow(0 0 7px #f5cd83)}#canopy-map .canopy-node[data-route="true"] circle{stroke:#f5cd83;stroke-width:5} @media(prefers-reduced-motion:reduce){#canopy-map .canopy-edge[data-route="true"]{filter:none}}.canopy-stage-nav{display:flex;gap:.45rem;overflow-x:auto;padding:.55rem 0}.canopy-stage-nav button{flex:0 0 auto;min-width:95px;border-top:3px solid var(--stage-color,#f5cd83);background:#102b43;color:#edf6ff}.canopy-stage-nav button[aria-pressed="true"]{background:#294c50;box-shadow:inset 0 0 0 2px #f5cd83}.canopy-viewport{display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:.65rem;align-items:start}.canopy-minimap{border:1px solid #7294af;border-radius:14px;padding:.5rem;background:#0b2335}#canopy-mini{display:block;width:100%;height:auto;background:#091a2a;border-radius:8px}.canopy-minimap button{width:100%;margin-top:.45rem}@media(max-width:700px){.canopy-viewport{grid-template-columns:1fr}.canopy-minimap{display:flex;align-items:center;gap:.6rem}#canopy-mini{width:110px;flex:0 0 110px}.canopy-minimap button{margin:0;flex:1}}@media(prefers-reduced-motion:reduce){.canopy-stage-nav *,#canopy-mini *{animation:none!important;transition:none!important}}</style><style>
+.fruit-lineage-dossier{margin-top:1rem;padding:1rem;border:1px solid rgba(245,205,131,.55);border-radius:1rem;background:linear-gradient(145deg,rgba(32,63,83,.75),rgba(15,27,47,.85))}
+.fruit-lineage-dossier summary{cursor:pointer;font-weight:700;color:#f5cd83;min-height:44px}
+.fruit-lineage-steps{display:grid;gap:.55rem;padding-left:1.5rem}
+.fruit-lineage-step{width:100%;min-height:44px;text-align:left;overflow-wrap:anywhere}
+.fruit-lineage-dossier button:focus-visible{outline:3px solid #f5cd83;outline-offset:3px}
+@media(max-width:480px){.fruit-lineage-dossier{padding:.75rem}.fruit-lineage-steps{padding-left:1rem}}
+@media(prefers-reduced-motion:reduce){.fruit-lineage-dossier *{transition:none!important;animation:none!important}}
+</style>
+<style>
+/* Cinematic source-to-outcome journey: purely imported evidence, never an achievement. */
+.lineage-cinema{position:relative;isolation:isolate;margin:1rem 0;padding:clamp(.8rem,2vw,1.5rem);border:1px solid #bda66f;border-radius:20px;background:radial-gradient(ellipse at 70% 0%,#315b6655,transparent 65%),linear-gradient(135deg,#251c37,#0b2234 55%,#101c31);box-shadow:inset 0 0 45px #66d8d014,0 18px 45px #0007}
+.lineage-cinema::before{content:'';display:block;height:5px;border-radius:5px;background:linear-gradient(90deg,#ff547b,#f5cd83,#42e6aa,#69baff,#b49cff)}
+.lineage-cinema h5{color:#f5cd83;font-size:1.05rem;margin:.8rem 0}.lineage-cinema .lineage-track{display:flex;gap:.45rem;overflow-x:auto;scroll-snap-type:x proximity;padding:.7rem .1rem 1rem;scrollbar-color:#f5cd83 #14263f}
+.lineage-cinema .lineage-stop{position:relative;flex:0 0 clamp(140px,28%,220px);min-height:116px;scroll-snap-align:center;text-align:left;border:1px solid #7896b5;border-top:5px solid var(--stage-color,#69baff);background:#101d35dd;border-radius:14px;overflow-wrap:anywhere}
+.lineage-cinema .lineage-stop[aria-pressed=true]{border-color:#f5cd83;box-shadow:0 0 0 2px #f5cd83,0 0 28px #f5cd8344}
+.lineage-cinema .lineage-stop strong,.lineage-cinema .lineage-stop small{display:block}.lineage-cinema .lineage-stop small{color:#c1d3e8}
+.lineage-cinema .lineage-detail{border:1px solid #6284a3;border-radius:12px;padding:1rem;background:#0a182bcc;min-height:120px;overflow-wrap:anywhere}
+.lineage-cinema .lineage-actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem}.lineage-cinema .lineage-actions a{display:inline-flex;align-items:center;padding:.7rem;border:1px solid #91b3d0;border-radius:10px;min-height:44px}
+@media(max-width:600px){.lineage-cinema .lineage-stop{flex-basis:72%}.lineage-cinema{padding:.8rem}}
+@media(prefers-reduced-motion:reduce){.lineage-cinema *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 
 .receipt-dossier{margin:.85rem 0;border:1px solid #7d9db6;border-radius:14px;padding:.8rem;background:linear-gradient(125deg,#281d36,#10363b,#112742)}.receipt-dossier summary{cursor:pointer;color:var(--gold);font-weight:700;min-height:44px;display:flex;align-items:center}.receipt-dossier ol{padding-left:1.5rem}.receipt-dossier li{margin:.7rem 0;padding:.7rem;border-left:4px solid var(--gold);background:#0a1b2d;border-radius:8px;overflow-wrap:anywhere}.receipt-dossier li[data-state=invalid]{border-left-color:var(--red)}.receipt-dossier small{display:block;color:var(--muted)}.receipt-dossier a{display:inline-block;margin:.35rem .7rem .2rem 0}
 </style></head><body>
+<nav aria-label="Immersive exploration" style="padding:.8rem 2rem;background:#10233d;border-bottom:1px solid #7b9dbb"><strong style="color:#f5cd83">Living Universe · </strong><a href="./living-universe-journey-atlas.html">Immersive Journey Atlas</a> · Explore repository roots, directed lineage, declared outcomes and evidence quests</nav>
 <a class="skip" href="#content">Skip to exploration</a><div class="ribbon" aria-hidden="true"></div>
 <header><div><div class="eyebrow">AIFT · Living Universe 2.0</div><h1>Evidence Observatory</h1><p class="lede">An inspectable, local-first constellation. Repositories are roots; outcomes are fruits only when the imported evidence declares a real deliverable. Nothing here claims live CI or completed work without source evidence.</p></div>
-<nav aria-label="Federation navigation"><a href="https://www.aifreedomtrust.com/living-universe-explorer.html">Living Tree</a><a href="https://www.aifreedomtrust.com/evidence-expedition.html">Evidence Expedition</a><a href="https://github.com/AIFreedomTrustFederation/AIFT-OS">MoBox source</a></nav></header>
-<main id="content"><section class="panel"><h2>Open a federation evidence packet</h2><p class="lede">Import a local JSON packet from the portal or operator console, or the canonical AIFT-Genesis tree.manifest.json. No upload, network submission, telemetry, or local service exposure occurs. Unsupported formats are rejected rather than guessed.</p>
+<nav aria-label="Federation navigation"><a href="living-universe-expedition.html">Source-to-Outcome Expedition</a><a href="https://www.aifreedomtrust.com/living-universe-explorer.html">Living Tree</a><a href="https://www.aifreedomtrust.com/evidence-expedition.html">Evidence Expedition</a><a href="https://github.com/AIFreedomTrustFederation/AIFT-OS">MoBox source</a></nav></header>
+<main id="content"><section class="panel" id="expedition-launch" aria-labelledby="expedition-launch-title" style="margin-bottom:1rem;border-top:5px solid var(--gold);background:radial-gradient(ellipse at 15% 0%,#69324955,transparent 60%),radial-gradient(ellipse at 90% 100%,#176d7955,transparent 60%),#0b192d">
+<h2 id="expedition-launch-title">Explore the source-to-outcome constellation</h2>
+<p class="lede">Follow actual declared evidence from GitHub repository roots through the federation trunk, systems and capabilities toward qualifying user-facing outcomes. Repositories never become fruits. Missing destinations or ancestry remain visible as evidence gaps, not completed achievements.</p>
+<div class="toolbar"><a href="living-universe-expedition.html" style="display:inline-flex;align-items:center;min-height:44px;padding:.7rem 1rem;border:1px solid var(--gold);border-radius:12px;background:#263b51;color:#fff;font-weight:700">Enter spatial expedition</a><a href="#file">Inspect an evidence packet here</a></div>
+<p class="legend">Both workspaces read local JSON packets independently; the expedition does not silently transfer imported data, store secrets, or assert live verification. Import the same packet on the expedition page to compare the constellation and this Observatory.</p>
+</section><section class="panel"><h2>Open a federation evidence packet</h2><p class="lede">Import a local JSON packet from the portal or operator console, or the canonical AIFT-Genesis tree.manifest.json. No upload, network submission, telemetry, or local service exposure occurs. Unsupported formats are rejected rather than guessed.</p>
 <div class="toolbar"><label>Evidence packet (JSON, up to 2 MB)<input id="file" type="file" accept=".json,application/json"></label><label>Search declared nodes<input id="search" type="search" placeholder="Find a source, capability, outcome"></label><button id="export" disabled title="Select an imported node to export its declared ancestor lineage">Export selected lineage dossier</button><button id="clear">Clear local view</button></div><p id="status" class="status" role="status" aria-live="polite">No packet loaded. Import evidence to begin; the scene does not invent federation data.</p></section>
 <section class="panel navigation-deck" aria-label="Semantic exploration navigation"><h2>Explore the living lineage</h2><p class="lede">Move between declared nodes and return through your local exploration history. Navigation never changes evidence or readiness.</p><div class="nav-actions"><button id="nav-back" disabled aria-label="Previous explored node">← Back</button><button id="nav-forward" disabled aria-label="Next explored node">Forward →</button><button id="nav-roots" disabled>Explore declared roots</button><button id="nav-next" disabled>Follow directed branch →</button></div><p id="nav-position" role="status" aria-live="polite">Import evidence to begin semantic exploration.</p></section>
 <section class="panel readiness-theatre" aria-label="Evidence readiness theatre"><div class="theatre-head"><div><div class="eyebrow">Root-fed systems · review workspace</div><h2>Federation Readiness Theatre</h2><p>Explore declared source ancestry and unresolved outcome evidence. Counts reflect only the locally imported packet, never live CI or independently verified product status.</p></div><button id="readiness-clear-filter">Show entire lineage</button></div><div id="readiness-metrics" class="readiness-metrics" aria-live="polite"></div><div id="readiness-flow" class="readiness-flow" role="group" aria-label="Explore biological stages"></div><h2>Evidence review missions</h2><div id="readiness-review" class="readiness-review"></div><p class="legend" id="readiness-disclaimer">Import evidence to populate this review workspace. No achievement or readiness claim is inferred.</p></section>
@@ -88,7 +165,44 @@ dl{display:grid;grid-template-columns:95px 1fr;gap:.6rem;overflow-wrap:anywhere}
 <p class="lede">Explore source roots, the shared federation trunk, real systems, documented capabilities, emerging integrations and evidenced outcomes. Each station opens the actual imported record; no repository becomes a fruit.</p>
 <div class="theatre-rail" id="theatre-rail" role="group" aria-label="Explore biological stages"></div>
 <div class="theatre-body"><div class="theatre-spotlight" id="theatre-spotlight"><h3>Awaiting evidence</h3><p>Load a canonical Genesis manifest or portable dossier to illuminate the declared constellation.</p></div><aside class="theatre-evidence" id="theatre-evidence"><strong>Evidence boundary</strong><p>Exploration is not independent verification. Unlinked products remain evidence gaps.</p></aside></div></section><div class="grid" style="margin-top:1rem"><section class="panel"><h2>Tree of Emergence</h2><div id="stages" class="stages" role="group" aria-label="Biological stage filter"></div><div class="focus-deck" role="group" aria-label="Cinematic evidence focus"><label for="focus-zoom">Semantic zoom <input id="focus-zoom" type="range" min="1" max="3" step="1" value="1"><output id="zoom-level" for="focus-zoom">1×</output></label><button id="focus-lineage" aria-pressed="false">Trace lineage</button><button id="focus-reset">Full constellation</button></div><p class="focus-readout" id="focus-readout" role="status" aria-live="polite">Overview · select an evidence node to trace its declared ancestry.</p><div class="universe"><svg id="sky" viewBox="0 0 900 430" role="group" aria-label="Evidence constellation; use the accessible node directory below"></svg></div><p class="legend">Red → gold → green → blue → violet → gold. Connections represent only declared directed relationships.</p><svg id="minimap" class="map" viewBox="0 0 900 92" role="img" aria-label="Spatial overview of visible nodes"></svg><h2>Accessible constellation directory</h2><div id="directory" class="list"></div></section>
-<aside class="panel"><h2>Provenance inspector</h2><div id="detail" class="notice">Select an imported node to inspect its biological role, source links and declared lineage.</div><h2>Source lineage audit</h2><div id="lineage-audit" class="notice" aria-live="polite">Select a node to review its declared source roots and evidence gaps.</div><h2>Reversible lineage</h2><div id="route" class="route" aria-label="Declared lineage breadcrumbs"></div><p class="legend">No achievements, progress percentages or product readiness are inferred from browsing. Unlinked outcomes remain evidence gaps.</p><section class="mission-board" aria-label="Evidence exploration missions"><h2>Evidence missions</h2><p class="lede">Review opportunities generated from imported graph evidence. These are not earned achievements, live checks, or XP.</p><div id="mission-count" role="status" aria-live="polite"></div><div id="missions" class="mission-grid"></div><div id="route-preview" class="route-preview" aria-live="polite">Choose a lineage mission to inspect its directed source route.</div></section></aside></div></main>
+<aside class="panel"><h2>Provenance inspector</h2><div id="detail" class="notice">Select an imported node to inspect its biological role, source links and declared lineage.</div><h2>Source lineage audit</h2><div id="lineage-audit" class="notice" aria-live="polite">Select a node to review its declared source roots and evidence gaps.</div><h2>Reversible lineage</h2><div id="route" class="route" aria-label="Declared lineage breadcrumbs"></div><p class="legend">No achievements, progress percentages or product readiness are inferred from browsing. Unlinked outcomes remain evidence gaps.</p><section class="mission-board" aria-label="Evidence exploration missions"><h2>Evidence missions</h2><p class="lede">Review opportunities generated from imported graph evidence. These are not earned achievements, live checks, or XP.</p><div id="mission-count" role="status" aria-live="polite"></div><div id="missions" class="mission-grid"></div><div id="route-preview" class="route-preview" aria-live="polite">Choose a lineage mission to inspect its directed source route.</div></section></aside></div>
+<section class="panel" aria-labelledby="lineage-compare-title" style="max-width:1600px;margin:1rem auto;border-top:6px solid #f5cd83"><p class="eyebrow">Source-to-outcome · two journeys</p><h2 id="lineage-compare-title">Comparative Lineage Theatre</h2><p class="lede">Trace two declared source paths side by side, inspect shared repository roots, and see missing evidence without inventing outcomes. Uses the same local evidence packet contract as the Observatory.</p><a href="./living-universe-lineage-theatre.html">Open the interactive lineage comparison</a></section>
+<section class="panorama" id="living-panorama" aria-labelledby="panorama-title">
+<p class="eyebrow">Living Universe · immersive source-to-outcome exploration</p>
+<h2 id="panorama-title">The Federation Emergence Panorama</h2>
+<p class="lede">Navigate only declared relationships from repository roots toward documented capabilities and qualifying outcomes. Empty stages and unresolved evidence remain visible. This is an imported-data view, not a live operational status.</p>
+<div class="panorama-tools"><label>Find a declared record<input id="panorama-query" type="search" placeholder="Search roots, systems, capabilities and outcomes"></label><label>Focus biological stage<select id="panorama-stage"><option value="">All six stages</option><option value="root">Roots · repositories</option><option value="trunk">Shared trunk</option><option value="branch">Branches · systems</option><option value="leaf">Leaves · capabilities</option><option value="flower">Flowers · emerging work</option><option value="fruit">Fruits · user outcomes</option></select></label><button type="button" id="panorama-reset">Reset view</button></div>
+<div class="panorama-sky" id="panorama-sky" role="region" aria-label="Scrollable six-stage evidence panorama" tabindex="0"></div>
+<p class="panorama-status" id="panorama-status" role="status" aria-live="polite">Import a local evidence packet to reveal the declared source network.</p>
+<div class="panorama-bottom"><div class="panorama-directory" id="panorama-directory" role="group" aria-label="Accessible panorama record directory"></div><div class="panorama-detail" id="panorama-detail"><strong>Inspect the living network</strong><p>Choose a declared record to trace its source lineage in the existing Tree and Journey Cockpit.</p></div></div>
+</section>
+
+</main>
+<section class="panel" id="skill-atlas" aria-labelledby="skill-atlas-title" style="max-width:1600px;margin:1rem auto;padding:clamp(1rem,3vw,2rem)">
+<h2 id="skill-atlas-title">The Living Skill Atlas · Evidence Quests</h2>
+<p class="lede">Explore source-backed capabilities and the evidence required for demonstrable outcomes. Quests identify work to inspect; they never award unverified achievements.</p>
+<div class="toolbar"><label>Search skills and evidence<input id="atlas-search" type="search" placeholder="Search imported lineage"></label>
+<label>Biological stage<select id="atlas-stage" style="min-height:44px;padding:.7rem;border-radius:10px;background:#10263b;color:white"><option value="">All stages</option><option>root</option><option>trunk</option><option>branch</option><option>leaf</option><option>flower</option><option>fruit</option></select></label>
+<label>Evidence state<select id="atlas-state" style="min-height:44px;padding:.7rem;border-radius:10px;background:#10263b;color:white"><option value="">All states</option><option value="evidence-gap">Evidence gap</option><option value="evidence-declared">Evidence declared</option><option value="unverified">Unverified</option></select></label></div>
+<p id="atlas-summary" class="status" role="status" aria-live="polite">Import a local evidence packet to activate the skill atlas.</p>
+<section class="panel canopy-panel" aria-labelledby="canopy-heading">
+<h2 id="canopy-heading">Living Canopy · Source-to-Outcome Atlas</h2><p class="lede">A spectral map of imported evidence. Roots are repositories, never products. The canopy shows only declared biological records; connections are restricted to explicitly declared adjacent-stage ancestry.</p>
+<div class="canopy-legend" aria-label="Declared relationship legend"><span>Solid blue: adjacent direct edge</span><span>Dashed gold: direct stage gap</span><span>Dotted red: nonprogressive direct edge</span><span>Green: inspected lineage</span></div>
+<div id="canopy-inspector" class="canopy-inspector" role="region" aria-label="Canopy provenance inspection"><p id="canopy-inspector-text">Select a declared record to trace its source ancestry. No independent verification is implied.</p><div id="canopy-lineage-journey" class="canopy-lineage-journey" aria-label="Directed source ancestry and evidence gaps"></div><button type="button" id="canopy-reset">Show full canopy</button></div>
+<nav id="canopy-stage-nav" class="canopy-stage-nav" aria-label="Semantic stage zoom"></nav><div class="canopy-viewport"><div class="canopy-shell"><svg id="canopy-map" viewBox="0 0 960 480" role="img" aria-label="Spatial evidence canopy; the accessible record directory follows"></svg></div><aside class="canopy-minimap" aria-label="Spatial minimap"><svg id="canopy-mini" viewBox="0 0 960 480" role="img" aria-label="Overview of declared nodes and current zoom region"></svg><button type="button" id="canopy-zoom-reset">Fit all stages</button></aside></div>
+<p id="canopy-announcement" role="status" aria-live="polite">Import evidence to illuminate the canopy.</p>
+<div id="canopy-directory" class="canopy-directory" aria-label="Accessible canopy directory"></div>
+</section>
+<section class="panel" aria-labelledby="quest-title"><h2 id="quest-title">Evidence Quest Theatre</h2><p class="lede">Source-backed review missions, never fabricated XP or achievements.</p><p id="quest-summary" role="status" aria-live="polite">Import evidence to reveal missions.</p><div id="quest-board" class="quest-board"></div></section><section id="journey-cockpit" class="journey-cockpit" aria-labelledby="journey-heading">
+<h2 id="journey-heading">Living Universe · Source-to-Outcome Journey</h2>
+<p>Navigate only declared directed relationships, from repository roots through the federation to user-facing outcomes. This imported graph is not independently verified.</p>
+<div class="journey-controls"><label>Find a declared outcome or capability<input id="journey-query" type="search" autocomplete="off" placeholder="Search imported evidence"></label><label>Choose a record<select id="journey-target" aria-label="Select evidence record"><option value="">Import evidence to begin</option></select></label></div>
+<p id="journey-status" role="status" aria-live="polite">Awaiting an evidence packet. No live claims or achievements.</p>
+<nav id="journey-trail" class="journey-trail" aria-label="Reversible lineage breadcrumbs"></nav><div id="journey-overview" class="journey-overview" role="group" aria-label="Biological stage minimap"></div><div id="journey-actions" class="journey-actions" role="group" aria-label="Journey traversal controls"></div><div id="journey-stages" class="journey-stage-grid" role="group" aria-label="Biological stage navigation"></div>
+<div id="journey-routes" class="journey-route-list" role="group" aria-label="Declared root-to-outcome routes"></div>
+<div id="journey-detail" class="journey-detail" aria-live="polite">Select a record to inspect its source lineage and evidence gaps.</div>
+</section><div id="atlas-cards" class="list" style="max-height:560px" aria-label="Evidence quests"></div>
+<p class="legend">No XP, readiness percentage, or achievements are inferred from declared records. Open a record in the main constellation to inspect its provenance.</p></section>
 <footer class="lede">Review surface only · No merge, deploy, status mutation, telemetry, or governance authority.</footer>
 <script type="module">
 import {buildReadinessAtlas,readinessMissions} from './living-universe-readiness.mjs';
@@ -123,8 +237,18 @@ el('focus-lineage').onclick=()=>{focusLineage=!focusLineage;render()};
 el('focus-reset').onclick=()=>{zoomLevel=1;focusLineage=false;stage='';query='';el('search').value='';el('focus-zoom').value='1';render()};
 let navigation=createNavigation();
 function select(id,{record=true}={}){if(!nodes.some(n=>n.id===id))return;selected=id;if(record)navigation.inspect(id);stage='';query='';el('search').value='';render();}
+// One source of truth for selection: the canopy and atlas request navigation here.
+window.addEventListener('aift:explore-node',event=>{
+ const id=event.detail?.id;
+ if(typeof id!=='string'||!nodes.some(node=>node.id===id))return;
+ select(id);
+ const target=el('detail');
+ target?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'nearest'});
+ say('Inspecting declared record '+(nodes.find(node=>node.id===id)?._name||id)+'.');
+});
 function updateExport(){el('export').disabled=!nodes.some(n=>n.id===selected)}
 function render(){
+ window.dispatchEvent(new CustomEvent('aift:observatory-evidence',{detail:{nodes,edges}}));
  renderTheatre();
  updateExport();
  const v=visible(),byId=new Map(nodes.map(n=>[n.id,n])),positions=new Map();
@@ -229,4 +353,466 @@ el('search').oninput=e=>{query=e.target.value.toLowerCase().trim();render()};
 el('clear').onclick=()=>{nodes=[];edges=[];selected='';navigation.reset();stage='';query='';el('file').value='';el('search').value='';say('Local evidence cleared.');render()};
 render();
 })();
-</script></body></html>
+</script><script type="module">
+import {analyzeAtlas,filterAtlas,evidenceQuestPlan} from './living-universe-skill-atlas.mjs';
+import {canopyLayout,canopyLineage,canopyRoutes,canopyReadiness,SPECTRUM,STAGES} from './living-universe-canopy.mjs';
+let current=null;const byId=id=>document.getElementById(id);
+// Shared keyboard journey: roving focus follows the biological columns without losing focus on rerender.
+let keyboardFocusId='';
+const focusCanopyRecord=(id,source='svg')=>{
+ keyboardFocusId=id;
+ const sky=byId('canopy-map');
+ sky.dataset.focusId=id;
+ renderCanopy();
+ const target=source==='directory'
+  ? [...byId('canopy-directory').querySelectorAll('[data-canopy-id]')].find(e=>e.dataset.canopyId===id)
+  : [...sky.querySelectorAll('[data-canopy-id]')].find(e=>e.dataset.canopyId===id);
+ target?.focus({preventScroll:true});
+};
+const canopyKeyboardMove=(layout,id,key)=>{
+ const nodes=layout.nodes,here=nodes.find(n=>n.id===id);if(!here)return null;
+ const direction={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[key];
+ if(!direction)return null;
+ const [dx,dy]=direction;
+ const candidates=nodes.filter(n=>n.id!==id&&(dx?(n.x-here.x)*dx>0:(n.y-here.y)*dy>0));
+ candidates.sort((a,b)=>{
+  const cost=n=>dx?Math.abs(n.x-here.x)*2+Math.abs(n.y-here.y):Math.abs(n.y-here.y)*2+Math.abs(n.x-here.x);
+  return cost(a)-cost(b)||a.id.localeCompare(b.id);
+ });
+ return candidates[0]?.id||null;
+};
+const ns='http://www.w3.org/2000/svg';
+const svg=(name,attrs={})=>{const e=document.createElementNS(ns,name);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));return e};
+// Viewport-only semantic zoom: never mutates the declared provenance graph.
+let zoomStage='all';
+const setZoom=stage=>{zoomStage=stage;renderCanopy()};
+const paintNavigation=(layout,sky)=>{
+ const nav=byId('canopy-stage-nav'),mini=byId('canopy-mini');nav.replaceChildren();mini.replaceChildren();
+ for(const [stage,label] of [['all','Whole federation'],...STAGES.map(s=>[s,s[0].toUpperCase()+s.slice(1)])]){
+  const button=document.createElement('button');button.type='button';button.textContent=label+' · '+(stage==='all'?layout.nodes.length:layout.nodes.filter(n=>n.stage===stage).length);
+  button.setAttribute('aria-pressed',String(stage===zoomStage));button.style.setProperty('--stage-color',stage==='all'?'#f5cd83':SPECTRUM[STAGES.indexOf(stage)]);button.onclick=()=>setZoom(stage);nav.append(button);
+ }
+ const idx=STAGES.indexOf(zoomStage),view=idx<0?[0,0,960,480]:[Math.max(0,75+idx*162-100),0,200,480];sky.setAttribute('viewBox',view.join(' '));
+ for(const n of layout.nodes)mini.append(svg('circle',{cx:n.x,cy:n.y,r:5,fill:SPECTRUM[STAGES.indexOf(n.stage)]}));
+ mini.append(svg('rect',{x:view[0],y:view[1],width:view[2],height:view[3],fill:'none',stroke:'#f5cd83','stroke-width':5,'pointer-events':'none'}));
+ byId('canopy-zoom-reset').onclick=()=>setZoom('all');
+};
+const renderCanopy=()=>{
+ const sky=byId('canopy-map'),directory=byId('canopy-directory'),announce=byId('canopy-announcement');sky.replaceChildren();directory.replaceChildren();
+ if(!current){paintNavigation({nodes:[]},sky);announce.textContent='Import evidence to illuminate the canopy.';return}
+ const layout=canopyLayout(current),points=new Map(layout.nodes.map(n=>[n.id,n]));
+ paintNavigation(layout,sky);
+ const focusId=sky.dataset.focusId||'',lineage=focusId?canopyLineage(layout,focusId):null;
+ const activeRoute=(sky.dataset.routeIds||'').split('|').filter(Boolean);
+ if(activeRoute.length&&(activeRoute.at(-1)!==focusId||activeRoute.some(id=>!points.has(id)))){sky.dataset.routeIds='';activeRoute.length=0}
+ const routeIds=new Set(activeRoute),routeEdges=new Set(activeRoute.slice(1).map((id,i)=>JSON.stringify([activeRoute[i],id])));
+ const lineageIds=new Set(lineage?.nodes.map(n=>n.id)||[]),lineageEdges=new Set(lineage?.connections.map(e=>JSON.stringify([e.from,e.to]))||[]);
+ const journey=byId('canopy-lineage-journey');journey.replaceChildren();
+ const journeyCard=(heading,items,empty,anomaly=false)=>{const card=document.createElement('article');if(anomaly)card.className='anomaly';const title=document.createElement('h4');title.textContent=heading;card.append(title);if(!items.length){const p=document.createElement('p');p.textContent=empty;card.append(p)}else for(const item of items){const b=document.createElement('button');b.type='button';b.textContent=item.label;b.onclick=()=>{sky.dataset.focusId=item.id;open(item.id);renderCanopy()};card.append(b)}journey.append(card)};
+ if(lineage){
+  journeyCard('Contributing repository roots',lineage.rootIds.map(id=>({id,label:points.get(id)?.label||id})),'No declared contributing root. Do not infer provenance.');
+  const routeReport=canopyRoutes(layout,focusId);
+  const readiness=canopyReadiness(layout,focusId);
+  const ribbon=document.createElement('section');ribbon.className='canopy-readiness';ribbon.setAttribute('aria-label','Declared provenance journey readiness');
+  const readinessTitle=document.createElement('h4');readinessTitle.textContent='Source lineage · evidence map';ribbon.append(readinessTitle);
+  const readinessList=document.createElement('ul');
+  for(const [label,value] of [['Repository roots',readiness.roots],['Intermediate records',readiness.intermediate],['Stage anomalies',readiness.anomalies],['Missing references',readiness.missingReferences]]){
+   const item=document.createElement('li');const strong=document.createElement('strong');strong.textContent=String(value);const span=document.createElement('span');span.textContent=label;item.append(strong,span);readinessList.append(item);
+  }
+  ribbon.append(readinessList);
+  const readinessNote=document.createElement('p');readinessNote.textContent=readiness.hasDirectedRootPath?'Declared root-to-record path available. Independent verification is still required.':'No complete directed source-root path. Provenance remains blocked.';
+  ribbon.append(readinessNote);journey.append(ribbon);
+  const routeCard=document.createElement('article');const routeTitle=document.createElement('h4');routeTitle.textContent='Directed root-to-record journeys';routeCard.append(routeTitle);
+  if(!routeReport.routes.length){const p=document.createElement('p');p.textContent='No directed route from a declared repository root. Evidence remains incomplete.';routeCard.append(p)}
+  for(const route of routeReport.routes){const group=document.createElement('div');group.className='canopy-route';const activate=document.createElement('button');activate.type='button';activate.textContent='Trace '+(points.get(route.rootId)?.label||route.rootId)+(route.stageGaps?' · '+route.stageGaps+' stage anomalies':'');activate.setAttribute('aria-pressed',String(activeRoute.join('|')===route.ids.join('|')));activate.onclick=()=>{sky.dataset.routeIds=route.ids.join('|');renderCanopy();const match=[...byId('canopy-lineage-journey').querySelectorAll('.canopy-route > button')].find(b=>b.textContent===activate.textContent);match?.focus({preventScroll:true})};group.append(activate);
+   const steps=document.createElement('ol');for(const id of route.ids){const li=document.createElement('li');const button=document.createElement('button');button.type='button';button.textContent=(points.get(id)?.stage||'record')+' · '+(points.get(id)?.label||id);button.onclick=()=>{sky.dataset.routeIds='';sky.dataset.focusId=id;open(id);renderCanopy()};li.append(button);steps.append(li)}group.append(steps);routeCard.append(group)}journey.append(routeCard);
+  if(routeReport.truncated){const note=document.createElement('p');note.textContent='Additional declared routes omitted by display limit.';journey.append(note)}
+
+  journeyCard('Directed ancestral records',lineage.nodes.filter(n=>n.id!==focusId&&n.stage!=='root').map(n=>({id:n.id,label:n.stage+' · '+n.label})),'No intermediate stage declared; none is invented.');
+  journeyCard('Direct stage anomalies',lineage.gaps.map(e=>({id:e.from,label:(points.get(e.from)?.label||e.from)+' → '+(points.get(e.to)?.label||e.to)+' · '+e.kind})),'No stage anomalies in declared ancestry.',true);
+  journeyCard('Missing graph references',layout.omissions.filter(e=>lineage.nodes.some(n=>n.id===e.to)).map(e=>({id:e.to,label:e.from+' → '+e.to+' · missing source'})),'No missing direct-parent references in this ancestry.',true);
+ }
+ const inspector=byId('canopy-inspector-text');
+ inspector.textContent=lineage?'Declared ancestry for '+(points.get(focusId)?.label||focusId)+': '+lineage.rootIds.length+' contributing repository roots, '+lineage.connections.length+' direct relationships, '+lineage.gaps.length+' stage anomalies. These declarations are not independently verified.': 'Select a declared record to trace its source ancestry. No independent verification is implied.';
+ for(const edge of layout.connections){const a=points.get(edge.from),b=points.get(edge.to),key=JSON.stringify([edge.from,edge.to]);sky.append(svg('line',{class:'canopy-edge','data-kind':edge.kind||'adjacent','data-lineage':String(lineageEdges.has(key)),'data-route':String(routeEdges.has(key)),'data-dimmed':String(!!lineage&&!lineageEdges.has(key)),x1:a.x,y1:a.y,x2:b.x,y2:b.y}))}
+ const open=id=>{window.dispatchEvent(new CustomEvent('aift:explore-node',{detail:{id}}));announce.textContent='Requested source-backed inspection of '+points.get(id).label+'.';};
+ for(const n of layout.nodes){const color=SPECTRUM[STAGES.indexOf(n.stage)],g=svg('g',{class:'canopy-node','data-canopy-id':n.id,'data-dimmed':String(!!lineage&&!lineageIds.has(n.id)),'data-route':String(routeIds.has(n.id)),role:'button',tabindex:0,'aria-label':n.label+' · '+n.stage+(n.issues?' · evidence gap':''),'data-gap':String(n.issues>0),style:'--canopy-color:'+color});g.append(svg('circle',{cx:n.x,cy:n.y,r:20}));const t=svg('text',{x:n.x,y:n.y+35});t.textContent=n.label.slice(0,17);g.append(t);g.addEventListener('click',()=>{sky.dataset.focusId=n.id;open(n.id);renderCanopy()});g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open(n.id);focusCanopyRecord(n.id)}else if(e.key.startsWith('Arrow')){const next=canopyKeyboardMove(layout,n.id,e.key);if(next){e.preventDefault();focusCanopyRecord(next)}}});sky.append(g);
+ const b=document.createElement('button');b.style.setProperty('--canopy-color',color);const name=document.createElement('strong');name.textContent=n.label;const detail=document.createElement('small');detail.textContent=n.stage+' · '+(n.issues?'evidence gap':'declared record')+' · '+n.roots+' contributing roots';b.append(name,detail);b.dataset.canopyId=n.id;b.onclick=()=>{open(n.id);focusCanopyRecord(n.id,'directory')};b.addEventListener('keydown',e=>{const next=canopyKeyboardMove(layout,n.id,e.key);if(next){e.preventDefault();focusCanopyRecord(next,'directory')}});directory.append(b)}
+ announce.textContent=layout.nodes.length+' declared records · '+layout.connections.length+' direct declared connections · no independently verified achievements.';
+};
+const renderQuestTheatre=()=>{
+ const board=byId('quest-board'),summary=byId('quest-summary');board.replaceChildren();
+ if(!current){summary.textContent='Import evidence to reveal missions.';return}
+ const plan=evidenceQuestPlan(current);summary.textContent=plan.total+' declared review missions · 0 verified completion receipts'+(plan.truncated?' · first '+plan.quests.length+' shown':'');
+ for(const q of plan.quests){
+  const card=document.createElement('article');card.className='quest-card';
+  const heading=document.createElement('h3');heading.textContent=q.label;
+  const meta=document.createElement('p');meta.textContent=q.stage+' · '+q.status+' · '+q.rootIds.length+' contributing roots · not verified';
+  const readiness=document.createElement('p');readiness.className='quest-readiness';readiness.textContent=q.readiness.blocking+' blocked · '+q.readiness.pending+' awaiting independent verification · 0 completed';
+  const gates=document.createElement('ol');gates.className='quest-gates';gates.setAttribute('aria-label','Evidence readiness gates for '+q.label);
+  for(const gate of q.readiness.gates){const item=document.createElement('li');item.className='quest-gate';item.dataset.state=gate.state;
+   const symbol=document.createElement('span');symbol.className='quest-gate-icon';symbol.setAttribute('aria-hidden','true');symbol.textContent=gate.state==='blocked'?'!':gate.state==='declared'?'◇':'○';
+   const content=document.createElement('div');const title=document.createElement('strong');title.textContent=gate.label+' · '+gate.state;const detail=document.createElement('small');detail.textContent=gate.detail;content.append(title,detail);item.append(symbol,content);gates.append(item)}
+  const checks=document.createElement('details');const checkTitle=document.createElement('summary');checkTitle.textContent='Review required actions ('+q.checks.length+')';const list=document.createElement('ul');for(const check of q.checks){const li=document.createElement('li');li.textContent=check;list.append(li)}checks.append(checkTitle,list);
+  const button=document.createElement('button');button.type='button';button.textContent='Inspect source lineage';button.onclick=()=>window.dispatchEvent(new CustomEvent('aift:explore-node',{detail:{id:q.id}}));
+  // A reversible outcome-to-root inspector, derived exclusively from imported records.
+  // The UI never promotes a declared destination to a verified product.
+  if(q.stage==='fruit'){
+   const mission=current.missions.find(m=>m.id===q.id);
+   const dossier=document.createElement('details');dossier.className='fruit-lineage-dossier';
+   const summary=document.createElement('summary');summary.textContent='Explore outcome → contributing roots';dossier.append(summary);
+   const intro=document.createElement('p');intro.textContent=mission.destination?'Declared product destination; availability and completion are not independently verified.':'No qualified product destination. This is a proposed outcome, not a verified fruit.';dossier.append(intro);
+   const trail=document.createElement('nav');trail.setAttribute('aria-label','Declared source lineage for '+q.label);
+   const trailTitle=document.createElement('strong');trailTitle.textContent='Reversible source lineage';trail.append(trailTitle);
+   // Render complete declared directed paths, not a misleading flattened parent/root list.
+   const graph=canopyLayout(current),report=canopyRoutes(graph,q.id,{maxRoutes:12});
+   const lookup=new Map(current.missions.map(m=>[m.id,m]));
+   if(report.truncated){const notice=document.createElement('p');notice.textContent='Additional source routes exist; showing the first 12 in deterministic root order.';dossier.append(notice)}
+   if(!report.routes.length){const gap=document.createElement('p');gap.textContent='Evidence gap: no complete directed route from a declared repository root. No missing links are inferred.';dossier.append(gap)}
+   for(const route of report.routes){
+    const routeSection=document.createElement('section');routeSection.className='fruit-lineage-route';
+    const routeHeading=document.createElement('h5');routeHeading.textContent='Source route · '+(lookup.get(route.rootId)?.label||route.rootId);
+    routeSection.append(routeHeading);
+    const steps=document.createElement('ol');steps.className='fruit-lineage-steps';
+    for(const id of route.ids){
+     const item=lookup.get(id);if(!item)continue;
+     const li=document.createElement('li'),step=document.createElement('button');step.type='button';step.className='fruit-lineage-step';
+     step.textContent=item.label+' · '+item.stage;
+     step.addEventListener('click',()=>window.dispatchEvent(new CustomEvent('aift:explore-node',{detail:{id}})));
+     li.append(step);steps.append(li);
+    }
+    routeSection.append(steps);
+    if(route.stageGaps){const warning=document.createElement('p');warning.textContent=route.stageGaps+' declared stage transition(s) skip or reverse biological stages; review classification.';routeSection.append(warning)}
+    trail.append(routeSection);
+   }
+   dossier.append(trail);
+   // A reversible, stage-by-stage cinematic journey for each declared source route.
+   // Every stop comes from the directed graph; no stage or product is synthesized.
+   for(const [routeIndex,route] of report.routes.entries()){
+    const scene=document.createElement('section');scene.className='lineage-cinema';scene.setAttribute('aria-label','Interactive provenance journey '+(routeIndex+1));
+    const sceneTitle=document.createElement('h5');sceneTitle.textContent='Living lineage · route '+(routeIndex+1)+' of '+report.routes.length;scene.append(sceneTitle);
+    const hint=document.createElement('p');hint.textContent='Explore declared stages from source root to outcome. Select a stage to inspect its record; no verification or completion is implied.';scene.append(hint);
+    const track=document.createElement('div');track.className='lineage-track';track.setAttribute('role','group');track.setAttribute('aria-label','Directed lineage stages');
+    const detail=document.createElement('div');detail.className='lineage-detail';detail.setAttribute('role','status');detail.setAttribute('aria-live','polite');
+    const actions=document.createElement('div');actions.className='lineage-actions';
+    const stops=[];
+    const choose=(position,focus=false)=>{
+     const id=route.ids[position],item=lookup.get(id);if(!item)return;
+     stops.forEach((stop,i)=>stop.setAttribute('aria-pressed',String(i===position)));
+     detail.replaceChildren();
+     const name=document.createElement('strong');name.textContent=item.label+' · '+item.stage;
+     const provenance=document.createElement('p');provenance.textContent=item.roots.length+' declared contributing repository roots · '+item.status+' · '+item.issues.length+' classification/evidence gaps. This is imported evidence, not a live verification.';
+     detail.append(name,provenance);
+     if(item.issues.length){const warning=document.createElement('p');warning.textContent=item.issues.join('; ');detail.append(warning)}
+     actions.replaceChildren();
+     const inspect=document.createElement('button');inspect.type='button';inspect.textContent='Inspect this stage in Tree';inspect.addEventListener('click',()=>window.dispatchEvent(new CustomEvent('aift:explore-node',{detail:{id}})));actions.append(inspect);
+     if(item.stage==='root'){const source=String(item.destination||'');try{const u=new URL(source);const segments=u.pathname.split('/').filter(Boolean);if(u.protocol==='https:'&&u.hostname==='github.com'&&segments.length===2&&segments.every(s=>/^[A-Za-z0-9_.-]+$/.test(s))){const link=document.createElement('a');link.href=u.href;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Open repository root';actions.append(link)}}catch{}}
+     if(item.stage==='fruit'&&item.destination){const link=document.createElement('a');link.href=item.destination;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Open declared outcome (unverified)';actions.append(link)}
+     if(focus)stops[position]?.focus();
+    };
+    route.ids.forEach((id,position)=>{
+     const item=lookup.get(id);if(!item)return;
+     const stop=document.createElement('button');stop.type='button';stop.className='lineage-stop';stop.style.setProperty('--stage-color',SPECTRUM[Math.max(0,STAGES.indexOf(item.stage))]);
+     const name=document.createElement('strong');name.textContent=item.label;const stage=document.createElement('small');stage.textContent=(position+1)+' / '+route.ids.length+' · '+item.stage;
+     stop.append(name,stage);stop.setAttribute('aria-pressed','false');stop.addEventListener('click',()=>choose(position));
+     stop.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'||e.key==='Home'||e.key==='End'){e.preventDefault();choose(e.key==='Home'?0:e.key==='End'?stops.length-1:Math.max(0,Math.min(stops.length-1,position+(e.key==='ArrowRight'?1:-1))),true)}});
+     stops.push(stop);track.append(stop);
+    });
+    scene.append(track,detail,actions);dossier.append(scene);if(stops.length)choose(0);
+   }
+   const returnButton=document.createElement('button');returnButton.type='button';returnButton.textContent='Return to outcome in Tree';returnButton.addEventListener('click',()=>window.dispatchEvent(new CustomEvent('aift:explore-node',{detail:{id:q.id}})));dossier.append(returnButton);
+   card.append(dossier);
+  }
+  card.append(heading,meta,readiness,gates,checks,button);
+  if(q.stage==='fruit'&&q.destination){const link=document.createElement('a');link.href=q.destination;link.rel='noopener noreferrer';link.target='_blank';link.textContent='Open declared outcome';card.append(link)}
+  board.append(card);
+ }
+};
+
+/* Journey Cockpit shares the same imported graph and Tree event contract; no fetch or storage. */
+let journeyTarget='',journeyRoute=0,journeyStep=0;
+const journeyEl=id=>byId('journey-'+id);
+const journeyButton=(label,click)=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.addEventListener('click',click);return b};
+const journeyExplore=id=>window.dispatchEvent(new CustomEvent('aift:explore-node',{detail:{id}}));
+
+/* Journey map and breadcrumb controls derive solely from the selected declared path. */
+function renderJourneyNavigation(path){
+ const trail=journeyEl('trail'),overview=journeyEl('overview'),actions=journeyEl('actions');
+ trail.replaceChildren();overview.replaceChildren();actions.replaceChildren();
+ const nodes=path.map(id=>current?.missions.find(m=>m.id===id)).filter(Boolean);
+ if(!nodes.length){trail.textContent='No directed lineage available';overview.textContent='Import evidence to inspect the source network.';return}
+ nodes.forEach((node,i)=>{
+  const b=journeyButton(node.label,()=>{journeyStep=i;renderJourney()});b.setAttribute('aria-current',i===journeyStep?'step':'false');b.title=node.stage+' · declared, not independently verified';trail.append(b);
+ });
+ STAGES.forEach(stage=>{
+  const match=nodes.findIndex(n=>n.stage===stage),b=journeyButton(stage+(match<0?' · no declared stage':''),()=>{if(match>=0){journeyStep=match;renderJourney()}});
+  b.disabled=match<0;b.style.setProperty('--stage-color',SPECTRUM[Math.max(0,STAGES.indexOf(stage))]);
+  if(match===journeyStep)b.setAttribute('aria-current','step');const small=document.createElement('small');small.textContent=match<0?'Evidence gap':'Stage '+(match+1)+' / '+nodes.length;b.append(small);overview.append(b);
+ });
+ const prev=journeyButton('Previous stage',()=>{journeyStep=Math.max(0,journeyStep-1);renderJourney()});prev.disabled=journeyStep===0;
+ const next=journeyButton('Next stage',()=>{journeyStep=Math.min(nodes.length-1,journeyStep+1);renderJourney()});next.disabled=journeyStep>=nodes.length-1;
+ const root=journeyButton('Return to source root',()=>{journeyStep=0;renderJourney()});
+ const outcome=journeyButton('Return to selected outcome',()=>{journeyStep=nodes.length-1;renderJourney()});
+ actions.append(prev,next,root,outcome);
+}
+
+function renderJourney(){
+ const select=journeyEl('target'),stageArea=journeyEl('stages'),routeArea=journeyEl('routes'),detail=journeyEl('detail'),status=journeyEl('status');
+ stageArea.replaceChildren();routeArea.replaceChildren();detail.replaceChildren();
+ if(!current){select.replaceChildren(new Option('Import evidence to begin',''));status.textContent='No imported evidence. No live CI, XP or achievements.';detail.textContent='Import a local evidence packet to explore declared provenance.';return}
+ const search=journeyEl('query').value.toLocaleLowerCase().trim();
+ const candidates=current.missions.filter(m=>!search||[m.label,m.id,m.stage,...m.roots].join(' ').toLocaleLowerCase().includes(search)).sort((a,b)=>STAGES.indexOf(b.stage)-STAGES.indexOf(a.stage)||a.label.localeCompare(b.label)).slice(0,250);
+ if(!candidates.some(m=>m.id===journeyTarget)){journeyTarget=candidates[0]?.id||'';journeyRoute=0;journeyStep=0}
+ select.replaceChildren(new Option('Choose a record',''));
+ for(const m of candidates){const opt=new Option(m.stage+' · '+m.label,m.id);select.add(opt)}
+ select.value=journeyTarget;
+ const mission=current.missions.find(m=>m.id===journeyTarget);
+ if(!mission){status.textContent='No matching records in imported evidence.';detail.textContent='Adjust the search to find a documented record.';return}
+ const layout=canopyLayout(current),routes=canopyRoutes(layout,mission.id,{maxRoutes:12}),lineage=canopyReadiness(layout,mission.id);
+ status.textContent=mission.label+' · '+mission.stage+' · '+lineage.roots+' declared source roots · '+lineage.anomalies+' stage anomalies · '+lineage.missingReferences+' missing references · independent verification unavailable.';
+ const active=routes.routes[journeyRoute]||null;
+ if(journeyRoute>=routes.routes.length){journeyRoute=0;journeyStep=0}
+ const route=routes.routes[journeyRoute]||null;
+ for(const [i,r] of routes.routes.entries()){
+  const b=journeyButton('Route '+(i+1)+' · '+r.ids.length+' declared stages'+(r.stageGaps?' · '+r.stageGaps+' anomalies':''),()=>{journeyRoute=i;journeyStep=0;renderJourney()});
+  b.setAttribute('aria-pressed',String(i===journeyRoute));routeArea.append(b);
+ }
+ if(!route){const note=document.createElement('p');note.className='journey-route-note';note.textContent='No directed path from a repository root is declared. Missing relationships are not synthesized.';routeArea.append(note)}
+ if(routes.truncated){const note=document.createElement('p');note.textContent='Only the first 12 declared routes are displayed.';routeArea.append(note)}
+ const path=route?.ids||[mission.id];journeyStep=Math.min(journeyStep,path.length-1);renderJourneyNavigation(path);
+ for(const [i,id] of path.entries()){
+  const item=current.missions.find(m=>m.id===id);if(!item)continue;
+  const b=journeyButton(item.stage+' · '+item.label,()=>{journeyStep=i;renderJourney()});
+  b.style.setProperty('--stage-color',SPECTRUM[Math.max(0,STAGES.indexOf(item.stage))]);b.setAttribute('aria-current',i===journeyStep?'step':'false');
+  const small=document.createElement('small');small.textContent=(i+1)+' of '+path.length;b.append(small);stageArea.append(b);
+ }
+ const selected=current.missions.find(m=>m.id===path[journeyStep])||mission;
+ const heading=document.createElement('strong');heading.textContent=selected.label+' · '+selected.stage;
+ const p=document.createElement('p');p.textContent=selected.status+' · '+selected.roots.length+' declared contributing roots. '+(selected.issues.length?selected.issues.join('; '):'No classification issue detected; verification remains outstanding.');
+ detail.append(heading,p,journeyButton('Inspect in Living Tree',()=>journeyExplore(selected.id)),journeyButton('Return to selected record',()=>journeyExplore(mission.id)));
+ if(selected.destination){try{const u=new URL(selected.destination);if(u.protocol==='https:'){const a=document.createElement('a');a.href=u.href;a.rel='noopener noreferrer';a.target='_blank';a.textContent=selected.stage==='fruit'?'Open declared product (not independently verified)':'Open declared source';detail.append(a)}}catch{}}
+}
+journeyEl('query').addEventListener('input',()=>{journeyRoute=0;journeyStep=0;renderJourney()});
+journeyEl('target').addEventListener('change',e=>{journeyTarget=e.target.value;journeyRoute=0;journeyStep=0;renderJourney()});
+
+
+/* Federation constellation: declared graph only, reversible and keyboard-accessible. */
+const constellation=document.createElement('section');
+const constellationTitle=document.createElement('h2');constellationTitle.textContent='Federation Constellation · source to outcome';
+const constellationNote=document.createElement('p');constellationNote.textContent='An evidence-first spatial view. Repositories are roots, never fruits. Connections are declared, not independently verified.';
+const constellationTools=document.createElement('div');constellationTools.className='constellation-tools';
+const constellationSearch=document.createElement('input');constellationSearch.type='search';constellationSearch.placeholder='Find a source, capability or outcome';constellationSearch.setAttribute('aria-label','Search federation constellation');
+const constellationZoom=document.createElement('input');constellationZoom.type='range';constellationZoom.min='70';constellationZoom.max='180';constellationZoom.value='100';constellationZoom.setAttribute('aria-label','Constellation zoom percentage');
+const constellationReset=document.createElement('button');constellationReset.type='button';constellationReset.textContent='Reset view';
+const constellationSummary=document.createElement('p');constellationSummary.setAttribute('role','status');
+const constellationCanvas=document.createElement('div');constellationCanvas.className='constellation-canvas';
+const constellationList=document.createElement('div');constellationList.className='constellation-list';
+const constellationDetail=document.createElement('div');constellationDetail.className='constellation-detail';
+constellationTools.append(constellationSearch,constellationZoom,constellationReset);
+constellation.append(constellationTitle,constellationNote,constellationTools,constellationSummary,constellationCanvas,constellationDetail,constellationList);
+constellation.id='federation-constellation';
+document.querySelector('main')?.append(constellation);
+const constellationStyle=document.createElement('style');constellationStyle.textContent=`
+#federation-constellation{margin:2rem auto;padding:clamp(1rem,3vw,2rem);border:1px solid #927b4a;border-radius:24px;background:radial-gradient(ellipse at 20% 10%,#36213c,#101c32 50%,#07141b);color:#f3f6ff;max-width:1200px}
+.constellation-tools{display:flex;flex-wrap:wrap;gap:1rem;align-items:center}.constellation-tools input[type=search]{flex:1;min-width:190px;padding:.8rem;border-radius:10px}
+.constellation-tools button,.constellation-list button,.constellation-detail button{min-height:44px;border:1px solid #d9b86e;border-radius:10px;padding:.65rem;background:#152b40;color:#fff;cursor:pointer}
+.constellation-canvas{overflow:auto;border:1px solid #52617d;border-radius:16px;background:radial-gradient(circle at center,#24314c,#09131f);margin:1rem 0}
+.constellation-canvas svg{display:block;width:100%;min-width:650px;height:auto}.constellation-canvas circle{stroke:#f7e3ac;stroke-width:1.8}
+.constellation-canvas [role=button]{cursor:pointer}.constellation-canvas [role=button]:focus{outline:3px solid #fff;outline-offset:5px}
+.constellation-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.6rem;max-height:300px;overflow:auto}
+.constellation-list button{text-align:left}.constellation-detail{padding:1rem;border-left:4px solid #d9b86e;margin:1rem 0;background:#15263a}
+@media(max-width:600px){.constellation-canvas svg{min-width:560px}.constellation-tools{flex-direction:column;align-items:stretch}}
+@media(prefers-reduced-motion:reduce){#federation-constellation *,#federation-constellation *::before{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+`;document.head.append(constellationStyle);
+let constellationFocus='';
+const svgNS='http://www.w3.org/2000/svg';
+function constellationElement(name,attributes={}){const e=document.createElementNS(svgNS,name);for(const [k,v] of Object.entries(attributes))e.setAttribute(k,String(v));return e}
+function renderConstellation(){
+ constellationCanvas.replaceChildren();constellationList.replaceChildren();constellationDetail.replaceChildren();
+ if(!current){constellationSummary.textContent='No imported evidence. Import a local packet to explore the constellation.';return}
+ const layout=canopyLayout(current,{width:1100,height:640});
+ const query=constellationSearch.value.toLocaleLowerCase().trim();
+ const visible=layout.nodes.filter(n=>!query||[n.id,n.label,n.stage].join(' ').toLocaleLowerCase().includes(query));
+ const ids=new Set(visible.map(n=>n.id));
+ constellationSummary.textContent=visible.length+' declared records · '+layout.connections.filter(e=>ids.has(e.from)&&ids.has(e.to)).length+' direct connections · '+layout.omissions.length+' omitted references · independent verification unavailable';
+ const scale=Number(constellationZoom.value)/100;
+ const svg=constellationElement('svg',{viewBox:'0 0 1100 640',width:1100*scale,height:640*scale,role:'img','aria-label':'Declared federation graph; accessible record list follows'});
+ svg.style.width=(1100*scale)+'px';
+ const positions=new Map(layout.nodes.map(n=>[n.id,n]));
+ for(const edge of layout.connections){
+  if(!ids.has(edge.from)||!ids.has(edge.to))continue;
+  const a=positions.get(edge.from),b=positions.get(edge.to);
+  const path=constellationElement('path',{d:'M'+a.x+' '+a.y+' C'+(a.x+45)+' '+a.y+' '+(b.x-45)+' '+b.y+' '+b.x+' '+b.y,fill:'none',stroke:edge.kind&&edge.kind!=='adjacent'?'#ff547b':'#7ca5bd','stroke-width':2,'stroke-dasharray':edge.kind&&edge.kind!=='adjacent'?'6 5':'none'});
+  svg.append(path);
+ }
+ function inspect(n,recordHistory=true){
+  constellationFocus=n.id;if(recordHistory)aiftVisit(n.id);constellationDetail.replaceChildren();
+  const heading=document.createElement('h3');heading.textContent=n.label+' · '+n.stage;
+  const info=canopyReadiness(layout,n.id),p=document.createElement('p');
+  p.textContent=info.roots+' contributing repository roots · '+info.anomalies+' stage anomalies · '+info.missingReferences+' missing references. Declared graph only; not independently verified.';
+  const jump=journeyButton('Explore lineage in Journey Cockpit',()=>{journeyTarget=n.id;journeyRoute=0;journeyStep=0;renderJourney();journeyEl('target').scrollIntoView({block:'center'});});
+  const tree=journeyButton('Inspect in Living Tree',()=>journeyExplore(n.id));
+  constellationDetail.append(heading,p,jump,tree);
+  for(const el of svg.querySelectorAll('[data-record]'))el.setAttribute('aria-pressed',String(el.getAttribute('data-record')===n.id));
+ }
+ for(const n of visible.slice(0,300)){
+  const color=SPECTRUM[Math.max(0,STAGES.indexOf(n.stage))];
+  const g=constellationElement('g',{role:'button',tabindex:0,'data-record':n.id,'aria-label':n.stage+' '+n.label,'aria-pressed':'false'});
+  const ring=constellationElement('circle',{cx:n.x,cy:n.y,r:n.id===constellationFocus?12:8,fill:color});
+  const label=constellationElement('text',{x:n.x+13,y:n.y+4,fill:'#fff','font-size':12});label.textContent=n.label.length>25?n.label.slice(0,24)+'…':n.label;
+  g.append(ring,label);g.addEventListener('click',()=>inspect(n));g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();inspect(n)}});svg.append(g);
+  const b=journeyButton(n.stage+' · '+n.label,()=>inspect(n));constellationList.append(b);
+ }
+ constellationCanvas.append(svg);
+ if(visible.length>300){const p=document.createElement('p');p.textContent='Showing first 300 records. Refine search to inspect additional records.';constellationList.prepend(p)}
+ const selected=visible.find(n=>n.id===constellationFocus)||visible[0];if(selected)inspect(selected,false);
+}
+constellationSearch.addEventListener('input',renderConstellation);
+constellationZoom.addEventListener('input',renderConstellation);
+constellationReset.addEventListener('click',()=>{constellationSearch.value='';constellationZoom.value='100';constellationFocus='';renderConstellation()});
+
+
+/* Panorama uses the already-validated local atlas and canonical Observatory selection bridge. */
+const panoramaNS='http://www.w3.org/2000/svg';
+const panoramaColors=['#ff547b','#f5cd83','#42e6aa','#69baff','#b49cff','#efc46e'];
+let panoramaSelected='';
+const panoramaSvg=(tag,attributes={})=>{const e=document.createElementNS(panoramaNS,tag);for(const [k,v] of Object.entries(attributes))e.setAttribute(k,String(v));return e};
+const panoramaText=(x,y,value,attributes={})=>{const e=panoramaSvg('text',{x,y,fill:'#edf6ff','font-size':12,...attributes});e.textContent=value;return e};
+function renderPanorama(){
+ const sky=byId('panorama-sky'),directory=byId('panorama-directory'),detail=byId('panorama-detail'),status=byId('panorama-status');
+ sky.replaceChildren();directory.replaceChildren();detail.replaceChildren();
+ const stages=['root','trunk','branch','leaf','flower','fruit'],search=byId('panorama-query').value.trim().toLocaleLowerCase(),stage=byId('panorama-stage').value;
+ const records=(current?.missions||[]).filter(m=>stages.includes(m.stage));
+ const visible=records.filter(m=>(!stage||m.stage===stage)&&(!search||(m.label+' '+m.id+' '+m.stage).toLocaleLowerCase().includes(search))).slice(0,180);
+ const svg=panoramaSvg('svg',{viewBox:'0 0 1080 400',role:'img','aria-label':'Six biological stages showing declared evidence records; accessible directory follows'});
+ const defs=panoramaSvg('defs');const glow=panoramaSvg('filter',{id:'panorama-glow',x:'-100%',y:'-100%',width:'300%',height:'300%'});
+ glow.append(panoramaSvg('feGaussianBlur',{stdDeviation:9}));defs.append(glow);svg.append(defs);
+ const counts=stages.map(s=>records.filter(m=>m.stage===s).length);
+ stages.forEach((s,i)=>{
+  const x=90+i*180,color=panoramaColors[i];
+  svg.append(panoramaSvg('line',{x1:x,y1:60,x2:x,y2:368,stroke:color,'stroke-opacity':'.3','stroke-dasharray':'4 8'}));
+  svg.append(panoramaSvg('circle',{cx:x,cy:200,r:55,fill:color,opacity:'.09',filter:'url(#panorama-glow)'}));
+  svg.append(panoramaText(x,32,s.toUpperCase(),{'text-anchor':'middle',fill:color,'font-size':15,'font-weight':'bold'}));
+  svg.append(panoramaText(x,53,counts[i]+' declared',{'text-anchor':'middle',fill:'#c1d3e8','font-size':11}));
+ });
+ const layout=current?canopyLayout(current):null;
+ const positions=new Map();
+ visible.forEach((m,index)=>{
+  const column=stages.indexOf(m.stage),siblings=visible.filter(n=>n.stage===m.stage),rank=siblings.findIndex(n=>n.id===m.id);
+  const x=90+column*180,y=85+((rank+1)*275/(siblings.length+1));positions.set(m.id,{x,y});
+ });
+ if(layout){
+  const drawn=new Set();
+  for(const edge of (layout.links||layout.edges||[])){
+   const a=positions.get(edge.from||edge.source),b=positions.get(edge.to||edge.target);
+   if(!a||!b)continue;const key=(edge.from||edge.source)+'|'+(edge.to||edge.target);if(drawn.has(key))continue;drawn.add(key);
+   svg.append(panoramaSvg('path',{d:'M'+a.x+' '+a.y+' C'+(a.x+b.x)/2+' '+a.y+' '+(a.x+b.x)/2+' '+b.y+' '+b.x+' '+b.y,fill:'none',stroke:'#e4c78c','stroke-width':1.4,'stroke-opacity':'.45'}));
+  }
+ }
+ function select(m,recordHistory=true){
+  panoramaSelected=m.id;if(recordHistory)aiftVisit(m.id);detail.replaceChildren();
+  const h=document.createElement('strong');h.textContent=m.label;
+  const p=document.createElement('p');p.textContent=m.stage+' · '+(m.status||'declared')+' · '+(m.roots?.length||0)+' declared contributing roots. Imported claims are not independently verified.';
+  const inspect=document.createElement('button');inspect.textContent='Trace in Living Tree';inspect.addEventListener('click',()=>window.dispatchEvent(new CustomEvent('aift:explore-node',{detail:{id:m.id}})));
+  const route=document.createElement('button');route.textContent='Open Journey Cockpit';route.addEventListener('click',()=>{journeyTarget=m.id;journeyRoute=0;journeyStep=0;renderJourney();byId('journey-cockpit')?.scrollIntoView({block:'start',behavior:'auto'})});
+  detail.append(h,p,inspect,document.createTextNode(' '),route);
+  for(const el of svg.querySelectorAll('[data-panorama-id]'))el.setAttribute('aria-pressed',String(el.getAttribute('data-panorama-id')===m.id));
+ }
+ visible.forEach(m=>{
+  const {x,y}=positions.get(m.id),color=panoramaColors[stages.indexOf(m.stage)];
+  const g=panoramaSvg('g',{role:'button',tabindex:0,'data-panorama-id':m.id,'aria-label':m.stage+' '+m.label,'aria-pressed':String(panoramaSelected===m.id),class:'panorama-node'});
+  g.append(panoramaSvg('circle',{cx:x,cy:y,r:9,fill:color,stroke:'#081021','stroke-width':2}));
+  const t=panoramaText(x+13,y+4,m.label.length>19?m.label.slice(0,18)+'…':m.label,{'font-size':11});g.append(t);
+  g.addEventListener('click',()=>select(m));g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select(m)}});
+  svg.append(g);
+  const b=document.createElement('button');b.textContent=m.stage+' · '+m.label;b.addEventListener('click',()=>select(m));directory.append(b);
+ });
+ sky.append(svg);
+ status.textContent=records.length?visible.length+' of '+records.length+' declared records displayed across six biological stages. No independent completion verification.':'No evidence imported. Repository roots and outcomes are not fabricated.';
+ if(visible.length>=180)status.textContent+=' Refine the search to inspect more records.';
+ const selected=visible.find(m=>m.id===panoramaSelected)||visible[0];if(selected)select(selected,false);
+ else detail.textContent='No matching declared record. Adjust filters or import evidence.';
+}
+byId('panorama-query').addEventListener('input',renderPanorama);
+byId('panorama-stage').addEventListener('change',renderPanorama);
+byId('panorama-reset').addEventListener('click',()=>{byId('panorama-query').value='';byId('panorama-stage').value='';panoramaSelected='';renderPanorama()});
+
+const render=()=>{
+ renderPanorama();
+ renderCanopy();
+ renderQuestTheatre();
+ renderJourney();
+ renderConstellation();
+ const area=byId('atlas-cards');area.replaceChildren();
+ if(!current){byId('atlas-summary').textContent='Import a local evidence packet to activate the skill atlas.';return}
+ const records=filterAtlas(current,{search:byId('atlas-search').value,stage:byId('atlas-stage').value,status:byId('atlas-state').value});
+ byId('atlas-summary').textContent=current.summary.nodes+' declared nodes · '+current.summary.roots+' source roots · '+current.summary.declaredOutcomes+' declared outcomes · '+current.summary.gaps+' evidence gaps · 0 independently verified achievements';
+ for(const m of records){
+  const b=document.createElement('button');b.style.borderLeft='4px solid '+(m.issues.length?'#ff547b':m.stage==='fruit'?'#f5cd83':'#42e6aa');b.style.textAlign='left';
+  const title=document.createElement('strong');title.textContent=m.label;
+  const detail=document.createElement('small');detail.textContent=m.stage+' · '+m.status+' · '+m.roots.length+' contributing roots';
+  const gaps=document.createElement('small');gaps.textContent=m.issues.length?'Inspect: '+m.issues.join('; '):'Inspect declared lineage and evidence';
+  b.append(title,detail,gaps);b.onclick=()=>{window.dispatchEvent(new CustomEvent('aift:explore-node',{detail:{id:m.id}}));};
+  area.append(b);
+ }
+};
+window.addEventListener('aift:observatory-evidence',e=>{try{current=analyzeAtlas(e.detail.nodes,e.detail.edges)}catch{current=null}byId('canopy-map').dataset.focusId='';render()});
+byId('canopy-reset').addEventListener('click',()=>{byId('canopy-map').dataset.focusId='';renderCanopy()});
+
+for(const id of ['atlas-search','atlas-stage','atlas-state'])byId(id).addEventListener('input',render);
+</script>
+<style>
+.aift-trail{position:sticky;top:0;z-index:30;padding:12px 24px;background:linear-gradient(100deg,#311a32,#124039,#16345b);border-block:1px solid #f5cd8380;box-shadow:0 12px 30px #0008}
+.aift-trail button{margin:4px;min-height:44px}.aift-trail p{margin:4px 0;color:#eaf4ff}
+@media(max-width:600px){.aift-trail{position:relative;padding:12px}}
+@media(prefers-reduced-motion:reduce){.aift-trail{scroll-behavior:auto}}
+</style>
+<script>
+/* Reversible, session-only exploration; never confuses declared evidence with verification. */
+const aiftTrail=document.createElement('nav');
+aiftTrail.className='aift-trail';
+aiftTrail.setAttribute('aria-label','Living lineage history');
+const trailHeading=document.createElement('strong');
+trailHeading.textContent='Living lineage · evidence trail';
+const trailButtons=document.createElement('div');
+trailButtons.id='aift-trail-buttons';
+const trailStatus=document.createElement('p');
+trailStatus.id='aift-trail-status';
+trailStatus.setAttribute('role','status');
+trailStatus.setAttribute('aria-live','polite');
+trailStatus.textContent='Select an imported record to begin.';
+aiftTrail.append(trailHeading,trailButtons,trailStatus);
+document.querySelector('header')?.after(aiftTrail);
+const aiftVisited=[];let aiftPosition=-1;
+// This classic script cannot access the module-scoped `current` binding.
+// Keep a separate evidence-bound, read-only index refreshed by the canonical import event.
+let aiftTrailRecords=new Map();
+function aiftVisit(id){
+ if(!aiftTrailRecords.has(id))return;
+ if(aiftVisited[aiftPosition]!==id){aiftVisited.splice(aiftPosition+1);aiftVisited.push(id);if(aiftVisited.length>20)aiftVisited.shift();aiftPosition=aiftVisited.length-1}
+ aiftRenderTrail();
+}
+function aiftRenderTrail(){
+ const host=document.getElementById('aift-trail-buttons');host.replaceChildren();
+ const prev=document.createElement('button');prev.textContent='← Back';prev.disabled=aiftPosition<1;prev.onclick=()=>aiftMove(-1);
+ const next=document.createElement('button');next.textContent='Forward →';next.disabled=aiftPosition>=aiftVisited.length-1;next.onclick=()=>aiftMove(1);
+ const clear=document.createElement('button');clear.textContent='Clear trail';clear.onclick=()=>{aiftVisited.length=0;aiftPosition=-1;aiftRenderTrail()};
+ host.append(prev,next,clear);
+ const record=aiftTrailRecords.get(aiftVisited[aiftPosition]);
+ document.getElementById('aift-trail-status').textContent=record?record.stage+' · '+record.label+' · declared evidence, not independently verified.':'No selected record. Imported evidence is unchanged.';
+}
+function aiftMove(delta){const next=aiftPosition+delta;if(next<0||next>=aiftVisited.length)return;aiftPosition=next;aiftRenderTrail();window.dispatchEvent(new CustomEvent('aift:explore-node',{detail:{id:aiftVisited[aiftPosition]}}))}
+let aiftEvidenceSignature=null;
+window.addEventListener('aift:observatory-evidence',event=>{
+ const nodes=event.detail?.nodes||[],edges=event.detail?.edges||[];
+ // Selection renders re-emit the same packet. Reset only when imported
+ // evidence actually changes, not when exploring an existing record.
+ const signature=JSON.stringify([nodes,edges]);
+ if(signature===aiftEvidenceSignature)return;
+ aiftEvidenceSignature=signature;
+ // Canonical packet nodes are declared records; never infer verification or products.
+ aiftTrailRecords=new Map(nodes.filter(n=>typeof n.id==='string').map(n=>[n.id,{label:String(n.label||n.id),stage:String(n.stage||'unknown')}]));
+ aiftVisited.length=0;aiftPosition=-1;aiftRenderTrail();
+});
+</script>
+</body></html>

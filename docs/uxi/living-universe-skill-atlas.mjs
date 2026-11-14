@@ -8,16 +8,20 @@ export function analyzeAtlas(nodes,edges){
  const inbound=new Map(nodes.map(n=>[n.id,[]]));
  for(const e of edges){const a=e.from??e.source,b=e.to??e.target;if(!index.has(a)||!index.has(b))throw Error('Undeclared edge');inbound.get(b).push(a)}
  const stage=n=>String(n._stage||n.stage||n.kind||n.type||'').toLowerCase().replace(/s$/,'');
- const isRoot=n=>stage(n)==='root' && (n.repository_url||n.source_url||n.url||n.href);
+ const isRoot=n=>stage(n)==='root' && [n.repository_url,n.source_url,n.url,n.href].some(u=>typeof u==='string'&&/^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/?$/.test(u));
+ // A GitHub repository is source infrastructure, never a user-facing fruit.
+ // Reject repository, commit, tree, blob, PR, Actions and API endpoints as outcomes.
+ const productUrl=n=>[n.product_url,n.application_url,n.url,n.href].find(u=>{try{const p=new URL(u);return p.protocol==='https:'&&!!p.hostname&&!['github.com','www.github.com','api.github.com','raw.githubusercontent.com'].includes(p.hostname)&&!p.hostname.endsWith('.githubusercontent.com')}catch{return false}})||null;
  const sourceUrl=n=>[n.url,n.href,n.source_url,n.repository_url].find(u=>{try{return new URL(u).protocol==='https:'}catch{return false}})||null;
  const ancestors=id=>{const visited=new Set(),stack=[id];while(stack.length){const next=stack.pop();if(visited.has(next))continue;visited.add(next);stack.push(...(inbound.get(next)||[]))}visited.delete(id);return [...visited]};
  const missions=nodes.map(n=>{
- const s=stage(n),parents=ancestors(n.id),roots=parents.filter(id=>isRoot(index.get(id))),destination=sourceUrl(n);
+ const s=stage(n),parents=ancestors(n.id),roots=parents.filter(id=>isRoot(index.get(id))),destination=s==='fruit'?productUrl(n):sourceUrl(n);
  const issues=[];
  if(!STAGES.includes(s))issues.push('Unrecognized biological stage');
- if(s==='fruit'&&!destination)issues.push('No declared user-facing destination');
+ if(s==='fruit'&&!destination)issues.push('No declared user-facing destination distinct from source repository');
  if(s==='fruit'&&roots.length===0)issues.push('No directed repository-root ancestry');
  if(s==='fruit'&&inbound.get(n.id).length===0)issues.push('No declared incoming contribution');
+ if(s==='fruit'&&[n.repository_url,n.source_url].some(Boolean))issues.push('Fruit contains repository-source fields; review biological classification');
  const evidence=n.evidence||n.verification||n.ci;
  // Never infer a verified achievement from an arbitrary evidence string or URL.
  return {id:n.id,label:String(n.label||n.name||n.title||n.id),stage:s,roots,destination,issues,

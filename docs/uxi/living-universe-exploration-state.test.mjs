@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createExplorationController,EXPLORATION_MODES} from './living-universe-exploration-state.mjs';
+const records=[{id:'repo-root',stage:'root'},{id:'capability',stage:'leaf'},{id:'product',stage:'fruit'}];
+test('shared exploration modes are bounded and stable',()=>assert.deepEqual(EXPLORATION_MODES,['all','lineage','routes']));
+test('unknown and unimported records fail closed',()=>{const x=createExplorationController();assert.equal(x.select('repo-root'),false);x.importRecords(records);assert.equal(x.select('not-in-evidence'),false);assert.equal(x.snapshot().selected,null)});
+test('selection and back/forward remain reversible',()=>{const x=createExplorationController();x.importRecords(records);x.select('repo-root');x.select('capability');x.select('product');assert.equal(x.back(),true);assert.equal(x.snapshot().selected,'capability');assert.equal(x.forward(),true);assert.equal(x.snapshot().selected,'product');x.back();x.select('repo-root');assert.equal(x.snapshot().canForward,false)});
+test('import and clear erase stale lineage',()=>{const x=createExplorationController();x.importRecords(records);x.select('product');x.setMode('lineage');x.importRecords([{id:'new-root'}]);assert.equal(x.snapshot().selected,null);assert.equal(x.snapshot().mode,'all');assert.equal(x.select('product'),false);x.select('new-root');x.clear();assert.equal(x.snapshot().history.length,0);assert.equal(x.contains('new-root'),false)});
+test('route index must be within declared route count',()=>{const x=createExplorationController();x.importRecords(records);assert.equal(x.setRoute(0,1),false);x.select('product');assert.equal(x.setRoute(2,2),false);assert.equal(x.setRoute(-1,2),false);assert.equal(x.setRoute(1,2),true);assert.equal(x.snapshot().route,1);assert.equal(x.snapshot().mode,'routes')});
+test('bounded history retains current selection',()=>{const x=createExplorationController({limit:2});x.importRecords(records);records.forEach(r=>x.select(r.id));assert.deepEqual(x.snapshot().history,['capability','product']);assert.equal(x.snapshot().cursor,1)});

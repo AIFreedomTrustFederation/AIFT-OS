@@ -1,0 +1,38 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AIFT | Comparative Lineage Theatre</title><style>
+:root{color-scheme:dark;--red:#ff547b;--gold:#f5cd83;--green:#42e6aa;--blue:#69baff;color:#ecf5ff;background:#060b19;font:16px/1.55 system-ui}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 20%,#5a204666,transparent 48%),radial-gradient(ellipse at 80% 75%,#124d5d88,transparent 55%),#060b19}.ribbon{height:10px;background:linear-gradient(90deg,var(--red),var(--gold),var(--green),var(--blue),#a587f9)}main{max-width:1440px;margin:auto;padding:clamp(1rem,4vw,3rem)}h1{font:clamp(2.2rem,5vw,4.5rem)/1.05 Georgia,serif;color:var(--gold)}h2{color:var(--gold);font:1.5rem Georgia,serif}p{color:#c4d9ed}a{color:#b4e8ff}.controls,.columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.panel{border:1px solid #7195b2;border-radius:22px;padding:clamp(1rem,2vw,1.6rem);background:#0b192de8;min-width:0;box-shadow:0 24px 65px #0006}.panel:first-child{border-top:5px solid var(--red)}.panel:last-child{border-top:5px solid var(--blue)}label{display:grid;gap:.4rem}input,select,button{font:inherit;min-height:44px;background:#10263e;color:white;border:1px solid #92b2d0;border-radius:11px;padding:.65rem}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}.toolbar{display:flex;flex-wrap:wrap;gap:1rem;align-items:end;margin:1.5rem 0}.toolbar label{flex:1;min-width:200px}.route{display:flex;flex-wrap:wrap;gap:.5rem;padding:.8rem 0;border-bottom:1px solid #49637d}.route button{border-top:4px solid var(--c,var(--gold));text-align:left}.notice{border-left:4px solid var(--gold);padding:1rem;background:#1b2940;margin:1rem 0}.gap{color:#ffd3d9}.summary{margin:1rem 0;padding:1.2rem;border:1px solid #a38e61;border-radius:16px;background:#15263b}.sr{position:absolute;left:-9999px}.sr:focus{position:static}@media(max-width:720px){.controls,.columns{grid-template-columns:1fr}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+</style></head><body><div class="ribbon"></div><a class="sr" href="#main">Skip to comparison</a><main id="main"><a href="./living-universe-2.html">Return to Living Universe Observatory</a><p>Living Universe · source-to-outcome exploration</p><h1>Comparative Lineage Theatre</h1><p>Follow two declared journeys through the same federation. Repository roots remain roots; outcomes require a declared destination. Imported claims are not independent verification.</p><div class="notice">Offline, local-only evidence inspection. No remote calls, telemetry, achievements or fabricated products. Select a JSON evidence packet containing nodes and edges.</div><div class="toolbar"><label>Import local evidence packet<input id="file" type="file" accept=".json,application/json"></label><button id="clear">Clear evidence</button></div><p id="status" role="status" aria-live="polite">No evidence imported.</p><div class="controls"><label>First record<select id="first"><option value="">Choose a record</option></select></label><label>Second record<select id="second"><option value="">Choose a record</option></select></label></div><div class="columns" id="columns" aria-label="Compared declared lineages"></div><div class="summary" id="summary" aria-live="polite">Import evidence to compare documented source ancestry.</div></main><script type="module">
+import {analyzeAtlas} from './living-universe-skill-atlas.mjs';
+import {canopyLayout,canopyRoutes} from './living-universe-canopy.mjs';
+const $=id=>document.getElementById(id),stages=['root','trunk','branch','leaf','flower','fruit'],colors=['#ff547b','#f5cd83','#42e6aa','#69baff','#b49cff','#efc46e'];
+let atlas=null,selected=['',''];
+const element=(tag,text)=>{const e=document.createElement(tag);e.textContent=text;return e};
+function render(){
+ const records=(atlas?.missions||[]).filter(m=>stages.includes(m.stage)).slice(0,350),lookup=new Map(records.map(m=>[m.id,m]));
+ for(const [i,key] of ['first','second'].entries()){const s=$(key);s.replaceChildren(new Option('Choose a record',''));for(const m of records)s.add(new Option(m.stage+' · '+m.label,m.id));selected[i]=lookup.has(selected[i])?selected[i]:'';s.value=selected[i]}
+ $('columns').replaceChildren();
+ const layout=atlas?canopyLayout(atlas):null;
+ for(let i=0;i<2;i++){
+  const m=lookup.get(selected[i]),panel=document.createElement('section');panel.className='panel';panel.append(element('h2',m?m.label:'Select '+(i?'second':'first')+' record'));
+  if(m){
+   panel.append(element('p',m.stage+' · '+m.status+' · '+(m.destination?'Declared outcome destination, not independently verified':'No verified product destination')));
+   const report=canopyRoutes(layout,m.id,{maxRoutes:8});
+   if(!report.routes.length)panel.append(element('p','No complete directed root-to-record route documented.'));
+   for(const route of report.routes){const wrap=document.createElement('div');wrap.className='route';const ids=Array.isArray(route)?route:(route.ids||route.nodes||[]);
+    for(const entry of ids){const id=typeof entry==='string'?entry:entry.id,n=lookup.get(id);if(!n)continue;const b=element('button',n.label);b.style.setProperty('--c',colors[stages.indexOf(n.stage)]);b.title=n.stage+' · declared source';b.onclick=()=>{selected[i]=id;render()};wrap.append(b)}
+    if(wrap.childElementCount)panel.append(wrap);
+   }
+   if(report.truncated)panel.append(element('p','Additional routes exist; showing at most eight.'));
+   const gaps=element('p',m.issues.length?'Evidence gaps: '+m.issues.join('; '):'No issues declared; independent verification still unavailable.');gaps.className='gap';panel.append(gaps);
+   const roots=element('p','Contributing roots: '+(m.roots.map(id=>lookup.get(id)?.label||id).join(' · ')||'None declared'));panel.append(roots);
+  }else panel.append(element('p','Choose a declared record to inspect its provenance.'));
+  $('columns').append(panel);
+ }
+ const a=lookup.get(selected[0]),b=lookup.get(selected[1]);$('summary').replaceChildren();
+ if(a&&b){const shared=a.roots.filter(id=>b.roots.includes(id));$('summary').append(element('strong',shared.length+' shared contributing repository roots'),element('p',shared.length?shared.map(id=>lookup.get(id)?.label||id).join(' · '):'No shared repository roots declared.'),element('p','This comparison describes imported evidence, not product readiness or earned achievements.'))}
+ else $('summary').textContent='Select two records to compare shared roots, documented routes and unresolved evidence.';
+}
+for(const [i,key] of ['first','second'].entries())$(key).onchange=e=>{selected[i]=e.target.value;render()};
+$('clear').onclick=()=>{atlas=null;selected=['',''];$('file').value='';$('status').textContent='Local evidence cleared.';render()};
+$('file').onchange=async e=>{try{const f=e.target.files[0];if(!f)return;if(f.size>3000000)throw Error('Packet exceeds 3 MB limit');const data=JSON.parse(await f.text());if(!Array.isArray(data.nodes)||!Array.isArray(data.edges)||data.nodes.length>350||data.edges.length>1200)throw Error('Invalid or oversized graph');atlas=analyzeAtlas(data.nodes,data.edges);selected=['',''];$('status').textContent=atlas.summary.nodes+' declared records imported. Independent verification unavailable.';render()}catch(error){atlas=null;selected=['',''];$('status').textContent='Import rejected: '+error.message;render()}};
+render();
+</script></body></html>

@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {verifyReceiptShape,receiptGateState} from './living-universe-receipts.mjs';
+import {analyzeAtlas,evidenceReadinessGates} from './living-universe-skill-atlas.mjs';
+const sha='a'.repeat(40);
+const good={repository:'AIFreedomTrustFederation/AIFT-OS',headSha:sha,runUrl:'https://github.com/AIFreedomTrustFederation/AIFT-OS/actions/runs/123',commitUrl:'https://github.com/AIFreedomTrustFederation/AIFT-OS/commit/'+sha,conclusion:'success',observedAt:'2026-11-11T20:00:00Z',workflow:'CI'};
+test('valid shape remains declared, never independently verified',()=>{const r=verifyReceiptShape(good,{expectedHead:sha});assert.equal(r.valid,true);assert.equal(r.state,'declared');assert.equal(r.independentlyVerified,false)});
+test('reject stale heads and mismatched run origins',()=>{assert.equal(verifyReceiptShape(good,{expectedHead:'b'.repeat(40)}).valid,false);assert.equal(verifyReceiptShape({...good,runUrl:'https://github.com/other/repo/actions/runs/123'}).valid,false)});
+test('reject non-GitHub links and fabricated conclusions',()=>{assert.equal(verifyReceiptShape({...good,runUrl:'https://example.org/actions/runs/123'}).valid,false);assert.equal(verifyReceiptShape({...good,conclusion:'verified'}).valid,false)});
+test('reject future receipts',()=>assert.equal(verifyReceiptShape(good,{now:Date.parse('2026-11-10T00:00:00Z')}).valid,false));
+test('empty receipts never imply success',()=>{assert.equal(receiptGateState([]).state,'pending');assert.equal(receiptGateState([good]).state,'declared');assert.equal(receiptGateState([good]).independentlyVerified,false)});
+test('atlas gate reflects declared receipt but remains unverified',()=>{const a=analyzeAtlas([{id:'repo',stage:'root',url:'https://github.com/AIFreedomTrustFederation/AIFT-OS'},{id:'out',stage:'fruit',url:'https://example.org',receipts:[good]}],[{from:'repo',to:'out'}]);const m=a.missions.find(m=>m.id==='out');const gate=evidenceReadinessGates(m);assert.equal(gate.gates.find(g=>g.id==='evidence').state,'declared');assert.equal(gate.verified,false);assert.equal(gate.ready,false)});

@@ -1,0 +1,90 @@
+name: Living Universe Skill Atlas
+on:
+  pull_request:
+    paths:
+      - 'living-universe-2.html'
+      - 'living-universe-skill-atlas*'
+      - 'living-universe-canopy*'
+      - 'living-universe-constellation*'
+      - 'living-universe-receipts*'
+      - 'living-universe-journey-cockpit*'
+      - 'living-universe-expedition*'
+      - 'living-universe-browser-acceptance*'
+      - 'docs/uxi/living-universe-2.html'
+      - 'docs/uxi/living-universe-skill-atlas*'
+      - 'docs/uxi/living-universe-canopy*'
+      - 'docs/uxi/living-universe-constellation*'
+      - 'docs/uxi/living-universe-receipts*'
+      - 'docs/uxi/living-universe-journey-cockpit*'
+      - 'docs/uxi/living-universe-expedition*'
+      - 'docs/uxi/living-universe-panorama*'
+      - 'docs/uxi/living-universe-lineage-theatre*'
+      - 'docs/uxi/living-universe-lineage-trail*'
+      - 'docs/uxi/living-universe-journey-atlas*'
+      - 'docs/uxi/living-universe-mission-control*'
+      - 'docs/uxi/living-universe-exploration-state*'
+      - 'docs/uxi/living-universe-passage*'
+      - 'docs/uxi/living-universe-evidence-lens*'
+      - 'docs/uxi/living-universe-spatial-minimap*'
+      - 'docs/uxi/living-universe-quest-theatre*'
+      - 'docs/uxi/living-universe-spectral-theatre*'
+      - 'docs/uxi/living-universe-journey-dossier*'
+      - 'docs/uxi/living-universe-portable-dossier*'
+      - 'docs/uxi/living-universe-browser-acceptance*'
+      - 'docs/uxi/living-universe-multi-surface-acceptance*'
+      - '.github/workflows/living-universe-skill-atlas.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  skill-atlas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Run evidence skill atlas regression suite
+        shell: bash
+        run: |
+          if [ -f living-universe-skill-atlas.test.mjs ]; then
+            node --test living-universe-skill-atlas.test.mjs living-universe-canopy.test.mjs living-universe-journey-cockpit.test.mjs living-universe-constellation.test.mjs living-universe-receipts.test.mjs living-universe-expedition.test.mjs
+          else
+            node --test docs/uxi/living-universe-skill-atlas.test.mjs docs/uxi/living-universe-canopy.test.mjs docs/uxi/living-universe-journey-cockpit.test.mjs docs/uxi/living-universe-constellation.test.mjs docs/uxi/living-universe-receipts.test.mjs docs/uxi/living-universe-expedition.test.mjs docs/uxi/living-universe-panorama.test.mjs docs/uxi/living-universe-lineage-theatre.test.mjs docs/uxi/living-universe-lineage-trail.test.mjs docs/uxi/living-universe-journey-atlas.test.mjs docs/uxi/living-universe-journey-dossier.test.mjs docs/uxi/living-universe-portable-dossier.test.mjs docs/uxi/living-universe-mission-control.test.mjs docs/uxi/living-universe-spectral-theatre.test.mjs docs/uxi/living-universe-exploration-state.test.mjs docs/uxi/living-universe-spectral-integration.test.mjs docs/uxi/living-universe-passage.test.mjs docs/uxi/living-universe-evidence-lens.test.mjs docs/uxi/living-universe-spatial-minimap.test.mjs docs/uxi/living-universe-constellation-theatre.test.mjs docs/uxi/living-universe-quest-theatre.test.mjs
+          fi
+
+  browser-acceptance:
+    # Playwright 1.58.2 does not support the Ubuntu 26.04 image selected by ubuntu-latest.
+    # Pin the browser job to the supported Ubuntu 24.04 runner; keep all other jobs unchanged.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install isolated browser acceptance tooling
+        run: |
+          npm install --no-save --no-package-lock playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Serve checked-out UXI pages
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/aift-uxi-http.log 2>&1 &
+          echo $! > /tmp/aift-uxi-http.pid
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8765/docs/uxi/living-universe-2.html > /dev/null && exit 0; sleep 1; done
+          cat /tmp/aift-uxi-http.log
+          exit 1
+      - name: Browser acceptance at mobile and desktop sizes
+        env:
+          AIFT_UXI_PREFIX: 'docs/uxi/'
+          AIFT_SCREENSHOT_DIR: uxi-browser-evidence
+        run: |
+          node docs/uxi/living-universe-browser-acceptance.mjs
+          node docs/uxi/living-universe-multi-surface-acceptance.mjs
+      - name: Upload visual evidence even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: living-universe-browser-screenshots
+          path: uxi-browser-evidence/
+          if-no-files-found: warn
