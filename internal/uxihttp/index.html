@@ -8,6 +8,20 @@
     .lineage-journey{margin:16px 0;padding:clamp(14px,3vw,24px);border:1px solid #bda76a;border-radius:20px;background:radial-gradient(ellipse at 8% 0%,#77344b66,transparent 50%),radial-gradient(ellipse at 95% 100%,#23678a55,transparent 55%),#0c1627;box-shadow:0 18px 48px #0005}
     .lineage-journey strong{color:#f5d994;font:700 clamp(18px,2.8vw,26px) Georgia,serif}.lineage-journey p{color:#d2e3eb;max-width:75ch}.lineage-journey-controls{display:flex;flex-wrap:wrap;gap:9px}.lineage-journey button{min-height:44px;border:1px solid #79c9d2;border-radius:12px;background:#193247;color:#fff;padding:9px 14px}.lineage-journey button:disabled{opacity:.45;cursor:not-allowed}.lineage-journey button:focus-visible{outline:3px solid #ffe5a3;outline-offset:3px}.lineage-journey ol{list-style:none;padding:0;margin:16px 0 0;display:flex;flex-wrap:wrap;gap:8px}.lineage-journey li{flex:1 1 130px}.lineage-journey li button{width:100%;text-align:left;background:#172238}.lineage-journey li button[aria-current="step"]{border-color:#f6d28b;background:#493a35;box-shadow:0 0 0 1px #f6d28b}.universe-node.lineage-active circle{stroke:#f6d28b;stroke-width:5;filter:drop-shadow(0 0 8px #e6c56a)}.universe-edge.lineage-active{stroke:#f6d28b;stroke-width:4;opacity:1}@media(prefers-reduced-motion:reduce){.lineage-journey *, .universe-node{animation:none!important;transition:none!important}}
     .universe-camera{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:12px 0;padding:12px;border:1px solid #a17f53;border-radius:14px;background:linear-gradient(110deg,#542b4666,#123a5066,#163c3266)}.universe-camera button{min-height:44px;border-radius:10px;border:1px solid #d7b875;background:#132b3e;color:#fff;padding:8px 12px}.universe-camera button:focus-visible{outline:3px solid #f9d489;outline-offset:3px}.universe-camera output{color:#f5d994;font-variant-numeric:tabular-nums}.universe-map{overflow:auto}@media(max-width:600px){.universe-camera button{flex:1 1 40%}.universe-camera output{width:100%;text-align:center}}
+    .universe-ledger{max-width:1180px;margin:24px auto;padding:clamp(16px,3vw,28px);border:1px solid #6d9cb088;border-radius:24px;background:radial-gradient(circle at 100% 0%,#2e477455,transparent 55%),radial-gradient(circle at 0% 100%,#27534455,transparent 55%),#0b182a;box-shadow:0 24px 60px #0006;position:relative;overflow:hidden}
+    .universe-ledger::before{content:"";position:absolute;inset:0 0 auto;height:4px;background:linear-gradient(90deg,#ff5877,#f3cd82,#43e5a7,#64b4ff,#b98cff)}
+    .universe-ledger-heading{display:flex;align-items:end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+    .universe-ledger-heading small{color:#e9c98a;letter-spacing:.18em}.universe-ledger h2{font:clamp(23px,3vw,36px) Georgia,serif;color:#f4dfa7;margin:6px 0}
+    .universe-ledger p{color:#c8d9e7;max-width:70ch}.universe-ledger output{color:#bce9d8;font-variant-numeric:tabular-nums}
+    .universe-ledger-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:14px;margin-top:18px}
+    .universe-ledger-card{border:1px solid #49637c;border-radius:16px;padding:16px;background:linear-gradient(155deg,#142a42,#0b192b);box-shadow:0 12px 30px #0004;min-width:0}
+    .universe-ledger-card[data-kind="root"]{border-top:3px solid #ff718c}.universe-ledger-card[data-kind="leaf"]{border-top:3px solid #64b4ff}
+    .universe-ledger-card h3{margin:6px 0;color:#f4dfa7;font-size:17px;overflow-wrap:anywhere}
+    .universe-ledger-card small{color:#9dc8d7}.universe-ledger-card p{font-size:13px;overflow-wrap:anywhere}
+    .universe-ledger-card button{min-height:44px;width:100%;border:1px solid #6cd9c4;border-radius:10px;background:#173b4b;color:#fff;padding:9px}
+    .universe-ledger-card button:focus-visible{outline:3px solid #f3cd82;outline-offset:3px}
+    .universe-ledger-empty{grid-column:1/-1;border:1px dashed #7794a6;border-radius:12px;padding:20px;color:#d6e5ed}
+    @media(forced-colors:active){.universe-ledger-card,.universe-ledger{border:2px solid CanvasText}}
     .universe-expedition { margin:18px 0;padding:20px;border:1px solid #6c9eab;border-radius:18px;background:linear-gradient(120deg,#172d3c,#1b1834); }
     .universe-expedition h2 { color:#f9d489;font:26px Georgia,serif;margin:0 0 8px; }
     .universe-expedition p { color:#cbdce6; }
@@ -251,7 +265,7 @@
         <nav class="lineage-journey" aria-label="Guided provenance journey"><div><strong>Follow the evidence</strong><p id="lineageJourneyStatus" role="status">Select a repository root to begin a source-backed journey.</p></div><div class="lineage-journey-controls"><button id="lineagePrev" type="button">Previous stage</button><button id="lineageNext" type="button">Next stage</button><button id="lineageHome" type="button">Return to roots</button></div><ol id="lineageSteps" aria-label="Source lineage stages"></ol></nav>
         <div class="universe-toolbar"><input id="universeSearch" type="search" placeholder="Find repositories and capabilities…" aria-label="Search local world"><select id="universeKind" aria-label="Growth layer"><option value="all">All growth layers</option><option value="root">Repository roots</option><option value="trunk">Federation trunk</option><option value="leaf">Capability leaves</option></select><button id="universeReset" type="button">Reset</button></div><div class="universe-camera" role="group" aria-label="Constellation camera"><button type="button" id="universeZoomIn" aria-label="Zoom constellation in">Zoom in</button><button type="button" id="universeZoomOut" aria-label="Zoom constellation out">Zoom out</button><button type="button" id="universeFocus" aria-label="Focus selected constellation node">Focus selection</button><button type="button" id="universeCameraReset">Full constellation</button><output id="universeCameraStatus" role="status" aria-live="polite">100% · full constellation</output></div>
         <div class="universe-layout"><div class="universe-map"><svg id="universeSvg" viewBox="0 0 900 580" role="group" aria-label="Source-linked local federation roots and capabilities"></svg></div><aside class="universe-detail" aria-live="polite"><small id="universeLayer">Select a node</small><h2 id="universeTitle">The Living Universe</h2><p id="universeDescription">Select a source root or capability leaf to inspect observed local evidence.</p><div id="universeLineage"></div></aside></div>
-        <section class="universe-expedition" aria-labelledby="universeExpeditionTitle"><h2 id="universeExpeditionTitle">The Local Evidence Expedition</h2><p>Explore observed source roots and capability leaves. Discovery is local to this page, not a CI achievement or deployment certification.</p><div id="universeQuests" class="universe-quests"></div><p id="universeQuestStatus" role="status">Waiting for local federation evidence…</p></section><div id="universeIndex" class="universe-index" aria-label="Accessible local world index"></div>
+        <section class="universe-expedition" aria-labelledby="universeExpeditionTitle"><h2 id="universeExpeditionTitle">The Local Evidence Expedition</h2><p>Explore observed source roots and capability leaves. Discovery is local to this page, not a CI achievement or deployment certification.</p><div id="universeQuests" class="universe-quests"></div><p id="universeQuestStatus" role="status">Waiting for local federation evidence…</p></section><section class="universe-ledger" aria-labelledby="universeLedgerTitle"><div class="universe-ledger-heading"><div><small>LOCAL EVIDENCE · SOURCE-TO-CAPABILITY</small><h2 id="universeLedgerTitle">The Provenance Observatory</h2><p>Explore what local records actually support. Unverified outcomes remain unclaimed, and exploration is not an achievement certification.</p></div><output id="universeLedgerCount" role="status" aria-live="polite">Waiting for local evidence…</output></div><div id="universeLedger" class="universe-ledger-grid"></div></section><div id="universeIndex" class="universe-index" aria-label="Accessible local world index"></div>
       </section>
       <div class="composer" id="composerWrap"><form id="composer"><input id="message" autocomplete="off" placeholder="Ask Aetherion, /inspect AIFT-OS, or /forge"><button type="submit">Send</button></form></div>
     </main>
@@ -432,6 +446,25 @@
     $("#universeZoomOut").addEventListener("click",()=>{universeCamera.zoom=Math.max(1,Math.round((universeCamera.zoom-.25)*100)/100);applyUniverseCamera()});
     $("#universeFocus").addEventListener("click",()=>{const p=universePositions[universeSelected];if(!p)return;universeCamera.x=p.x;universeCamera.y=p.y;universeCamera.zoom=Math.max(2,universeCamera.zoom);applyUniverseCamera()});
     $("#universeCameraReset").addEventListener("click",()=>{universeCamera.zoom=1;universeCamera.x=450;universeCamera.y=290;applyUniverseCamera()});
+    // Read-only observatory: cards derive exclusively from the same local evidence as the constellation.
+    function renderUniverseLedger(){
+      const {roots,leaves}=universeModel(),byId=new Map(roots.map(root=>[root.id,root]));
+      const query=$("#universeSearch").value.trim().toLocaleLowerCase(),kind=$("#universeKind").value;
+      const entries=[...roots,...leaves].filter(node=>(kind==="all"||kind===node.kind)&&(!query||(node.name+" "+node.description+" "+(node.repo?.name||"")).toLocaleLowerCase().includes(query)));
+      const container=$("#universeLedger");clear(container);
+      for(const node of entries){
+        const source=node.kind==="root"?node:byId.get(node.parent);
+        const card=element("article","universe-ledger-card");card.dataset.kind=node.kind;
+        card.append(element("small","",node.kind==="root"?"SOURCE ROOT · OBSERVED":"CAPABILITY LEAF · REPORTED"),element("h3","",node.name));
+        card.append(element("p","",node.description));
+        card.append(element("small","",node.kind==="root"?"Repository is a source, never a fruit.":"Lineage: "+(source?.name||"source not resolved")+" → AIFT Federation → "+node.name));
+        const action=element("button","","Trace in constellation");action.type="button";
+        action.addEventListener("click",()=>{selectUniverse(node);$("#universeSvg").scrollIntoView({block:"nearest",behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"instant":"smooth"})});
+        card.append(action);container.append(card);
+      }
+      if(!entries.length)container.append(element("p","universe-ledger-empty","No matching local evidence. No product outcome can be inferred."));
+      $("#universeLedgerCount").textContent=entries.length+" of "+(roots.length+leaves.length)+" observed source and capability records · 0 certified fruits asserted";
+    }
     function renderUniverse(){
       if(!state.tree)return;
       const {nodes,roots,leaves}=universeModel(),query=$("#universeSearch").value.trim().toLocaleLowerCase(),kind=$("#universeKind").value;
@@ -453,7 +486,7 @@
         if(matches){const button=element("button","",node.name);button.type="button";button.append(element("small","",node.kind+" · "+node.description));button.addEventListener("click",()=>selectUniverse(node));index.append(button)}
       }
       if(!index.children.length)index.append(element("p","","No matching observed local nodes."));
-      renderUniverseQuests();renderLineageJourney();applyUniverseCamera();
+      renderUniverseQuests();renderLineageJourney();renderUniverseLedger();applyUniverseCamera();
     }
     $("#universeSearch").addEventListener("input",renderUniverse);
     $("#universeKind").addEventListener("change",renderUniverse);
