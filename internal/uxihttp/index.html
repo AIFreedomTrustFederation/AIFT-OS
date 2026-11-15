@@ -358,6 +358,7 @@
       return {nodes:[...roots,trunk,...leaves],roots,leaves};
     }
     function selectUniverse(node){
+      if(!lineageJourney.some(item=>item.id===node.id))showLineageJourney(node);
       universeSelected=node.id;
       $("#universeLayer").textContent=node.kind.toUpperCase()+" · local evidence";
       $("#universeTitle").textContent=node.name;
