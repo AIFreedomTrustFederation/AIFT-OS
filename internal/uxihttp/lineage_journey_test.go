@@ -66,3 +66,23 @@ func TestUniverseProvenanceObservatoryContract(t *testing.T) {
 		}
 	}
 }
+
+func TestEvidenceExpeditionProgressContract(t *testing.T) {
+	b, err := os.ReadFile("index.html")
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := string(b)
+	for _, marker := range []string{
+		"Source Cartography", "Capability Atlas", "Lineage Expedition",
+		"rootById.has(leaf.parent)", "universeVisited.has(item.id)",
+		"document.createElement(\"progress\")",
+		"meter.setAttribute(\"aria-label\"",
+		"Evidence gap: no qualifying local records.",
+		"No XP, CI verification, product fruit or achievement certification inferred.",
+	} {
+		if !strings.Contains(s, marker) {
+			t.Errorf("missing evidence expedition contract %q", marker)
+		}
+	}
+}
