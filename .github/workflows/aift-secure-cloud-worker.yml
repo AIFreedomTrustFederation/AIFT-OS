@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: '7,37 * * * *'
   workflow_dispatch:
+    inputs:
+      run_ai_once:
+        description: 'Run one approved documentation issue now (even if scheduled AI is disabled)'
+        type: boolean
+        required: false
+        default: false
   pull_request:
     paths:
       - '.github/workflows/aift-secure-cloud-worker.yml'
@@ -34,7 +40,8 @@ jobs:
     if: >-
       github.event_name != 'pull_request' &&
       github.ref == 'refs/heads/main' &&
-      vars.AIFT_AUTODEV_AI_ENABLED == 'true'
+      ((github.event_name == 'schedule' && vars.AIFT_AUTODEV_AI_ENABLED == 'true') ||
+       (github.event_name == 'workflow_dispatch' && inputs.run_ai_once == true))
     needs: offline-contract
     runs-on: ubuntu-24.04
     timeout-minutes: 9
