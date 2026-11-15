@@ -137,16 +137,20 @@ func TestUniverseSemanticEvidenceDeck(t *testing.T) {
 }
 
 func TestUniverseEvidenceMatrixContract(t *testing.T) {
- b, err := os.ReadFile("index.html")
- if err != nil { t.Fatal(err) }
- s := string(b)
- for _, marker := range []string{
-  "id=\"universeEvidenceTitle\"", "id=\"universeEvidenceSummary\" role=\"status\"",
-  "id=\"universeEvidenceMatrix\"", "function renderUniverseEvidenceMatrix()",
-  "renderUniverseSemantic();renderUniverseEvidenceMatrix();renderUniverseNavigator(nodes,positions)",
-  "rootIds.has(leaf.parent)", "0 certified outcomes", "Evidence gap: no linked capability records.",
-  "No relationship is inferred.", "aria-label", "prefers-reduced-motion:reduce",
- } {
-  if !strings.Contains(s,marker) { t.Errorf("missing evidence matrix contract %q",marker) }
- }
+	b, err := os.ReadFile("index.html")
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := string(b)
+	for _, marker := range []string{
+		"id=\"universeEvidenceTitle\"", "id=\"universeEvidenceSummary\" role=\"status\"",
+		"id=\"universeEvidenceMatrix\"", "function renderUniverseEvidenceMatrix()",
+		"renderUniverseSemantic();renderUniverseEvidenceMatrix();renderUniverseNavigator(nodes,positions)",
+		"rootIds.has(leaf.parent)", "0 certified outcomes", "Evidence gap: no linked capability records.",
+		"No relationship is inferred.", "aria-label", "prefers-reduced-motion:reduce",
+	} {
+		if !strings.Contains(s, marker) {
+			t.Errorf("missing evidence matrix contract %q", marker)
+		}
+	}
 }
