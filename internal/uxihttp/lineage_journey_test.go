@@ -46,3 +46,19 @@ func TestUniverseSpatialCameraContract(t *testing.T) {
 		}
 	}
 }
+
+func TestUniverseProvenanceObservatoryContract(t *testing.T) {
+ b, err := os.ReadFile("index.html")
+ if err != nil { t.Fatal(err) }
+ s := string(b)
+ for _, marker := range []string{
+  "id=\"universeLedgerTitle\"", "id=\"universeLedger\"",
+  "id=\"universeLedgerCount\" role=\"status\"",
+  "function renderUniverseLedger()", "renderUniverseLedger();applyUniverseCamera()",
+  "node.kind===\"root\"?\"SOURCE ROOT · OBSERVED\":\"CAPABILITY LEAF · REPORTED\"",
+  "No product outcome can be inferred", "0 certified fruits asserted",
+  "selectUniverse(node)", "prefers-reduced-motion: reduce",
+ } {
+  if !strings.Contains(s, marker) { t.Errorf("missing provenance observatory contract %q", marker) }
+ }
+}
