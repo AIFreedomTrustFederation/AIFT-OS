@@ -111,3 +111,27 @@ func TestFederationNavigatorEvidenceContract(t *testing.T) {
 		}
 	}
 }
+
+func TestUniverseSemanticEvidenceDeck(t *testing.T) {
+	b, err := os.ReadFile("index.html")
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := string(b)
+	for _, marker := range []string{
+		"id=\"universeSemanticTitle\"",
+		"id=\"universeSemanticRail\"",
+		"id=\"universeSemanticCards\"",
+		"id=\"universeSemanticStatus\" role=\"status\"",
+		"function renderUniverseSemantic()",
+		"renderUniverseSemantic();",
+		"fruit:[]",
+		"Repository roots are never fruits.",
+		"selectUniverse(target)",
+		"prefers-reduced-motion:reduce",
+	} {
+		if !strings.Contains(s, marker) {
+			t.Errorf("missing semantic evidence deck contract %q", marker)
+		}
+	}
+}
