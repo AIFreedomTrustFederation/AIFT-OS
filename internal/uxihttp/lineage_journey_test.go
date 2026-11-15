@@ -26,3 +26,23 @@ func TestEvidenceLineageJourneyContract(t *testing.T) {
 		}
 	}
 }
+
+func TestUniverseSpatialCameraContract(t *testing.T) {
+	b, err := os.ReadFile("index.html")
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := string(b)
+	for _, marker := range []string{
+		"id=\"universeZoomIn\"", "id=\"universeZoomOut\"",
+		"id=\"universeFocus\"", "id=\"universeCameraReset\"",
+		"id=\"universeCameraStatus\" role=\"status\"",
+		"function applyUniverseCamera()", "universePositions=positions",
+		"setAttribute(\"viewBox\"", "universeCamera.zoom>=3",
+		"universeCamera.zoom<=1", "prefers-reduced-motion:reduce",
+	} {
+		if !strings.Contains(s, marker) {
+			t.Errorf("missing spatial camera contract %q", marker)
+		}
+	}
+}
