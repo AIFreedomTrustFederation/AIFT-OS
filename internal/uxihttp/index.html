@@ -383,19 +383,41 @@
       renderUniverse();
     }
     const universeVisited=new Set();
+    // Evidence-backed exploration: visiting a node is never a CI result or achievement.
     function renderUniverseQuests(){
       if(!state.tree)return;
-      const {roots,leaves}=universeModel(),quests=[
-        {kind:"root",title:"Rootkeeper",description:"Inspect an observed repository source",items:roots},
-        {kind:"leaf",title:"Knowledge Gardener",description:"Explore a reported capability leaf",items:leaves}
-      ],container=$("#universeQuests");clear(container);
+      const {roots,leaves}=universeModel();
+      const rootById=new Map(roots.map(root=>[root.id,root]));
+      const traced=leaves.filter(leaf=>rootById.has(leaf.parent));
+      const quests=[
+        {title:"Source Cartography",description:"Explore the observed repository roots and inspect their source lineage.",items:roots},
+        {title:"Capability Atlas",description:"Explore reported capability leaves without assuming product completion.",items:leaves},
+        {title:"Lineage Expedition",description:"Trace capabilities to their recorded source roots through the federation trunk.",items:traced}
+      ];
+      const container=$("#universeQuests");clear(container);
+      let visitedObjectives=0;
       for(const quest of quests){
-        const visited=quest.items.some(item=>universeVisited.has(item.id)),card=element("article","universe-quest"),title=element("strong","",quest.title),description=element("p","",quest.description),status=element("small","",visited?"Explored locally · no certification implied":quest.items.length+" observed destinations"),button=element("button","",visited?"Explore again":"Begin exploration");
-        card.dataset.visited=String(visited);button.type="button";button.disabled=!quest.items.length;
-        button.addEventListener("click",()=>{const target=quest.items.find(item=>!universeVisited.has(item.id))||quest.items[0];if(!target)return;universeVisited.add(target.id);selectUniverse(target);renderUniverseQuests()});
-        card.append(title,description,status,button);container.append(card)
+        const visited=quest.items.filter(item=>universeVisited.has(item.id));
+        const card=element("article","universe-quest");
+        const heading=element("strong","",quest.title);
+        const description=element("p","",quest.description);
+        const count=element("small","",visited.length+" / "+quest.items.length+" explored locally · not certified");
+        const meter=document.createElement("progress");meter.max=Math.max(1,quest.items.length);meter.value=visited.length;
+        meter.setAttribute("aria-label",quest.title+" exploration progress");
+        const button=element("button","",visited.length===quest.items.length&&quest.items.length?"Review explored sources":"Explore next source");
+        button.type="button";button.disabled=!quest.items.length;
+        button.addEventListener("click",()=>{
+          const target=quest.items.find(item=>!universeVisited.has(item.id))||quest.items[0];
+          if(!target)return;
+          universeVisited.add(target.id);selectUniverse(target);renderUniverseQuests();
+        });
+        card.dataset.visited=String(visited.length>0);
+        card.append(heading,description,count,meter,button);
+        if(quest.items.length===0)card.append(element("small","","Evidence gap: no qualifying local records."));
+        container.append(card);
+        if(visited.length&&quest.items.length)visitedObjectives++;
       }
-      $("#universeQuestStatus").textContent=quests.filter(q=>q.items.some(n=>universeVisited.has(n.id))).length+" of "+quests.length+" local exploration objectives visited; no product fruits or live health inferred.";
+      $("#universeQuestStatus").textContent=visitedObjectives+" of "+quests.length+" exploration paths started · "+universeVisited.size+" unique observed nodes visited in this session. No XP, CI verification, product fruit or achievement certification inferred.";
     }
     // Read-only guided journey: every step is derived from observed local nodes.
     let lineageJourney=[],lineageStep=0;
