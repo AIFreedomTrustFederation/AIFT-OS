@@ -529,7 +529,7 @@
         if(matches){const button=element("button","",node.name);button.type="button";button.append(element("small","",node.kind+" · "+node.description));button.addEventListener("click",()=>selectUniverse(node));index.append(button)}
       }
       if(!index.children.length)index.append(element("p","","No matching observed local nodes."));
-      renderUniverseQuests();renderLineageJourney();renderUniverseLedger();renderUniverseSemantic();applyUniverseCamera();renderUniverseNavigator(nodes,positions);
+      renderUniverseQuests();renderLineageJourney();renderUniverseLedger();applyUniverseCamera();renderUniverseSemantic();renderUniverseNavigator(nodes,positions);
     }
     $("#universeSearch").addEventListener("input",renderUniverse);
     $("#universeKind").addEventListener("change",renderUniverse);
