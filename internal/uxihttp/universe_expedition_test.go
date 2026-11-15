@@ -18,10 +18,10 @@ func TestUniverseEvidenceExpeditionContract(t *testing.T) {
 		`id="universeQuestStatus"`,
 		`const universeVisited=new Set()`,
 		`function renderUniverseQuests()`,
-		`Rootkeeper`,
-		`Knowledge Gardener`,
+		`Source Cartography`,
+		`Capability Atlas`,
 		`universeVisited.add(target.id)`,
-		`no product fruits or live health inferred.`,
+		`No XP, CI verification, product fruit or achievement certification inferred.`,
 	} {
 		if !strings.Contains(html, marker) {
 			t.Errorf("missing expedition marker %q", marker)
