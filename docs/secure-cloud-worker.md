@@ -21,7 +21,7 @@ The worker is intentionally a small, verifiable first AI capability. It **cannot
         Instruction: Clarify the existing validation example without inventing features or test results.
 
    The target must be an existing tracked Markdown file under docs/, outside protected security, trust, identity, doctrine, governance, financial, release and credential paths. Issue body max 3500 characters and instruction max 1800. Avoid personal or secret data.
-6. Review Actions logs for a manually triggered run of **AIFT Secure Cloud AI Documentation Worker** on main, and the resulting draft PR. Without an eligible labelled issue, there is deliberately no OpenAI API call or charge. Once you have verified permission boundaries and costs, change AIFT_AUTODEV_AI_ENABLED from false to true for scheduled runs.
+6. After the workflow is merged, run **AIFT Secure Cloud AI Documentation Worker** manually on main with the **run_ai_once** input set to true. This permits one controlled test while AIFT_AUTODEV_AI_ENABLED remains false. Inspect the logs and resulting draft PR. Without an eligible labelled issue there is deliberately no OpenAI API call or charge. After checking security, spend and the draft, set AIFT_AUTODEV_AI_ENABLED=true to enable scheduled runs.
 
 ## How one cloud run works
 
