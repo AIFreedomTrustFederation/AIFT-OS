@@ -86,3 +86,28 @@ func TestEvidenceExpeditionProgressContract(t *testing.T) {
 		}
 	}
 }
+
+func TestFederationNavigatorEvidenceContract(t *testing.T) {
+	b, err := os.ReadFile("index.html")
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := string(b)
+	for _, marker := range []string{
+		"id=\"universeNavigationTitle\"",
+		"id=\"universeMiniMap\"",
+		"id=\"universeNavigationDestinations\"",
+		"id=\"universeNavigationReset\"",
+		"function renderUniverseNavigator(nodes,positions)",
+		"renderUniverseNavigator(nodes,positions)",
+		"const byId=new Map(nodes.map(n=>[n.id,n]))",
+		"n.kind===\"root\"",
+		"aria-live=\"polite\"",
+		"No repositories are presented as fruits.",
+		"prefers-reduced-motion: reduce",
+	} {
+		if !strings.Contains(s, marker) {
+			t.Errorf("missing federation navigator contract %q", marker)
+		}
+	}
+}
