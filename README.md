@@ -244,3 +244,7 @@ In AIFT-OS, the Word returns as verified state. A request becomes inspection, in
 See the [staged upgrade plan](docs/UPGRADE-PREPARATION.md) for the reviewed
 baseline, repository-specific verification gates, integration sequence and
 acceptance criteria. This plan does not certify current readiness.
+
+See the [real producer integration guide](docs/PRODUCER-INTEGRATION.md) for the
+pinned Runtime/Forge source-QA test, offline consumption and retained evidence
+limitations.
