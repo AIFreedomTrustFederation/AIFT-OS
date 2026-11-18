@@ -43,11 +43,15 @@ means failed QA or rejected evidence. Exit 2 means preflight, execution,
 publication, timeout or post-run checkout validation blocked completion. No
 success report is printed after a blocked execution.
 
-The five [integration regressions](../integration/test_producer_consumer.py)
+The [integration regressions](../integration/test_producer_consumer.py)
 copy the real exporter source into disposable Git repositories and run it as a
 subprocess with small synthetic QA gates. They cover source pass with retained
 gaps, either producer failing independently, stale SHA, dirty tree and a missing
-exporter. They do not replace the workflow's separate full-source-QA integration.
+exporter. Two cases exercise the final checkout check: while Forge QA runs,
+it creates an untracked file in the disposable Runtime checkout or advances
+Runtime's commit with a clean working tree. In both cases the runner must exit
+2 and leave stdout empty, because the earlier Runtime evidence is stale.
+The workflow also runs full source QA against both pinned producer revisions.
 
 ```sh
 AIFT_TEST_RUNTIME_ROOT="$PWD/../AIFT-Runtime" \

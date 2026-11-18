@@ -103,6 +103,31 @@ class ProducerConsumerTests(unittest.TestCase):
         self.assertIn("must be clean", result.stderr)
         self.assertEqual(result.stdout, "")
 
+    def run_with_forge_qa(self, command):
+        forge = self.roots[1]
+        (forge / "package.json").write_text(json.dumps({"scripts": {"qa:local": command}}))
+        self.commit(forge)
+        self.shas[1] = self.git(forge, "rev-parse", "HEAD")
+        return self.invoke()
+
+    def test_runtime_dirtied_after_its_qa_blocks_report(self):
+        result = self.run_with_forge_qa("touch ../runtime/late-file")
+        self.assertTrue((self.roots[0] / "late-file").is_file())
+        self.assertEqual(result.returncode, 2, result.stderr)
+        self.assertIn("input checkout must be clean", result.stderr)
+        self.assertEqual(result.stdout, "")
+
+    def test_runtime_commit_changed_after_its_qa_blocks_report(self):
+        result = self.run_with_forge_qa(
+            "git -C ../runtime -c user.name=Fixture -c user.email=fixture@example.invalid "
+            "commit --allow-empty -qm late-revision"
+        )
+        self.assertNotEqual(self.git(self.roots[0], "rev-parse", "HEAD"), self.shas[0])
+        self.assertEqual(self.git(self.roots[0], "status", "--porcelain"), "")
+        self.assertEqual(result.returncode, 2, result.stderr)
+        self.assertIn("input checkout does not match expected commit", result.stderr)
+        self.assertEqual(result.stdout, "")
+
     def test_missing_exporter_blocks(self):
         (self.roots[1] / "scripts/run_forge_verification.py").unlink()
         self.commit(self.roots[1])
