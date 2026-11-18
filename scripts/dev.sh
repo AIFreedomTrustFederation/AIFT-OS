@@ -171,6 +171,8 @@ verify_fast() {
   python3 -B -m unittest discover -s tests -p test_federation_evidence.py -v
   say "Testing offline upgrade inventory"
   python3 -B -m unittest discover -s tests -p test_upgrade_inventory.py -v
+  say "Testing Runtime/Forge offline evidence contracts"
+  python3 -B -m unittest discover -s tests -p test_upgrade_evidence_contract.py -v
   say "Testing fresh CLI launcher"
   bash tests/test-aift-launcher.sh
   test_all

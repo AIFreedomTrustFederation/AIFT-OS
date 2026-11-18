@@ -1,0 +1,46 @@
+{
+  "schema": "aift.verification.v1",
+  "repository": "AIFreedomTrustFederation/AIFT-Forge",
+  "commit_sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "generated_at": "2026-11-18T01:00:00+00:00",
+  "source": {
+    "type": "local",
+    "run_url": null
+  },
+  "checks": [
+    {
+      "id": "forge_qa",
+      "command": "npm run qa:local",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "id": "worktree",
+      "command": "git status before/after",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "id": "checkout_identity",
+      "command": "git rev-parse HEAD before/after",
+      "status": "passed",
+      "exit_code": 0
+    }
+  ],
+  "overall_status": "passed",
+  "security": {
+    "status": "not_checked",
+    "reason": "Synthetic fixture; no security assessment."
+  },
+  "dependencies": {
+    "status": "not_checked",
+    "reason": "Synthetic fixture; no live integration."
+  },
+  "deployment": {
+    "status": "not_applicable",
+    "reason": "Fixture does not deploy."
+  },
+  "limitations": [
+    "Synthetic producer-shaped contract fixture, not actual execution evidence."
+  ]
+}

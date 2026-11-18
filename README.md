@@ -244,3 +244,5 @@ In AIFT-OS, the Word returns as verified state. A request becomes inspection, in
 See the [staged upgrade plan](docs/UPGRADE-PREPARATION.md) for the reviewed
 baseline, repository-specific verification gates, integration sequence and
 acceptance criteria. This plan does not certify current readiness.
+
+The [engineering command contract](docs/COMMAND-CONTRACT.md) records prerequisites, side effects, failure meanings and verification limits.
