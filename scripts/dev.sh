@@ -169,6 +169,8 @@ verify_fast() {
   say "Testing commit-bound Federation evidence consumer"
   require python3
   python3 -B -m unittest discover -s tests -p test_federation_evidence.py -v
+  say "Testing offline upgrade inventory"
+  python3 -B -m unittest discover -s tests -p test_upgrade_inventory.py -v
   say "Testing fresh CLI launcher"
   bash tests/test-aift-launcher.sh
   test_all

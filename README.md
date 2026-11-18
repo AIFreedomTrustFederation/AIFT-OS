@@ -238,3 +238,9 @@ That makes the OS a constitutional mechanism as much as a technical one. Soverei
 ### The Return of the Word
 
 In AIFT-OS, the Word returns as verified state. A request becomes inspection, inspection becomes a named model, the model becomes an approved plan, the plan becomes action, and action returns as evidence rather than assertion. The operating system speaks truthfully because it has learned to return what it can prove.
+
+## Engineering upgrade preparation
+
+See the [staged upgrade plan](docs/UPGRADE-PREPARATION.md) for the reviewed
+baseline, repository-specific verification gates, integration sequence and
+acceptance criteria. This plan does not certify current readiness.
