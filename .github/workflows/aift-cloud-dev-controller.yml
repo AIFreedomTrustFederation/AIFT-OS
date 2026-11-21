@@ -1,0 +1,141 @@
+name: AIFT Cloud Development Controller
+
+on:
+  # Scheduled workflows are best-effort, not guaranteed real-time or always-on.
+  schedule:
+    - cron: '11,26,41,56 * * * *'
+  workflow_dispatch:
+    inputs:
+      propose_routine_fixes:
+        description: 'Propose a draft PR containing only gofmt corrections to internal Go tests'
+        type: boolean
+        required: false
+        default: false
+  pull_request:
+    paths:
+      - '.github/workflows/aift-cloud-dev-controller.yml'
+      - 'scripts/aift_cloud_dev_controller.py'
+      - 'tests/test_aift_cloud_dev_controller.py'
+      - 'docs/cloud-development-controller.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloud-dev-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  offline-contract:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - name: Verify cloud controller safety contract
+        run: python3 -B -m unittest discover -s tests -p 'test_aift_cloud_dev_controller.py' -v
+
+  observe:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: offline-contract
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      checks: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - name: Collect bounded exact-head observations
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          AIFT_AUTODEV_REPOS: ${{ vars.AIFT_AUTODEV_REPOS }}
+        run: |
+          if [[ -z "$AIFT_AUTODEV_REPOS" ]]; then
+            export AIFT_AUTODEV_REPOS='AIFT-OS,AIFT-Runtime,AIFT-Forge,VPS,www.aifreedomtrust.com'
+          fi
+          python3 -B scripts/aift_cloud_dev_controller.py audit \
+            --output "$RUNNER_TEMP/aift-cloud-observation.json" \
+            --summary "$GITHUB_STEP_SUMMARY"
+      - name: Upload observed evidence
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: aift-cloud-observation
+          path: ${{ runner.temp }}/aift-cloud-observation.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  routine-proposal:
+    # Never execute privileged code from a PR branch or arbitrary workflow_dispatch ref.
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      ((github.event_name == 'schedule' && vars.AIFT_AUTODEV_AUTO_PROPOSE == 'true') ||
+       (github.event_name == 'workflow_dispatch' && inputs.propose_routine_fixes == true))
+    needs: offline-contract
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    permissions:
+      contents: read
+    steps:
+      - name: Require dedicated scoped GitHub App credentials
+        env:
+          APP_CLIENT_ID: ${{ vars.AIFT_AUTODEV_APP_CLIENT_ID }}
+          APP_PRIVATE_KEY: ${{ secrets.AIFT_AUTODEV_APP_PRIVATE_KEY }}
+        run: |
+          if [[ -z "$APP_CLIENT_ID" || -z "$APP_PRIVATE_KEY" ]]; then
+            echo '::error::Auto-proposal requires AIFT_AUTODEV_APP_CLIENT_ID and AIFT_AUTODEV_APP_PRIVATE_KEY.'
+            exit 1
+          fi
+      - name: Mint short-lived AIFT-OS-only development token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.AIFT_AUTODEV_APP_CLIENT_ID }}
+          private-key: ${{ secrets.AIFT_AUTODEV_APP_PRIVATE_KEY }}
+          owner: AIFreedomTrustFederation
+          repositories: AIFT-OS
+          permission-contents: write
+          permission-pull-requests: write
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: true
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version-file: go.mod
+          cache: false
+      - name: Propose only format-only Go regression repairs
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/main
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain)"
+          python3 -B scripts/aift_cloud_dev_controller.py format-tests
+          if git diff --quiet; then
+            echo 'No formatting corrections required.' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git diff --check
+          go test ./internal/...
+          branch="automation/gofmt-tests-${GITHUB_SHA:0:12}"
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null; then
+            echo "Existing proposal branch $branch; refusing to overwrite." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git switch -c "$branch"
+          git config user.name 'aift-cloud-development[bot]'
+          git config user.email 'aift-cloud-development[bot]@users.noreply.github.com'
+          git add -u -- internal
+          git diff --cached --check
+          git commit -m 'chore: gofmt tracked Go test files (routine proposal)'
+          git push origin "HEAD:refs/heads/$branch"
+          gh pr create --base main --head "$branch" --draft \
+            --title 'chore: automated Go test formatting (review required)' \
+            --body 'Automated **format-only** proposal against observed main. Scope: tracked internal/**/*_test.go files. Ran go test ./internal/... before proposing. Verify exact-head CI and diff before approval. No automatic merge, deployment or trust-boundary changes.'
