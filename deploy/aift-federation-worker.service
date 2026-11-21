@@ -1,0 +1,26 @@
+[Unit]
+Description=AIFT Federation Automation worker (existing GitHub App 5861093)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+WorkingDirectory=/opt/aift/AIFT-OS
+StateDirectory=aift-federation-automation
+LoadCredential=app.pem:/etc/aift/automation/app.pem
+LoadCredential=webhook-secret:/etc/aift/automation/webhook-secret
+Environment=AIFT_APP_PRIVATE_KEY_FILE=%d/app.pem
+Environment=AIFT_WEBHOOK_SECRET_FILE=%d/webhook-secret
+ExecStart=/usr/bin/python3 -m federation_automation.service --db /var/lib/aift-federation-automation/jobs.db run
+Restart=on-failure
+RestartSec=15
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target
