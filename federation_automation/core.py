@@ -141,9 +141,25 @@ class App:
             raise Blocked("Installation token not issued")
         if any(result.get("permissions", {}).get(k) != v for k, v in permissions.items()):
             raise Blocked("Installation token permissions not verified")
+        extras = set(result.get("permissions", {})) - set(permissions) - {"metadata"}
+        if extras:
+            raise Blocked("Unexpected installation token permission grants")
         repositories = result.get("repositories", [])
         if len(repositories) != 1 or repositories[0].get("full_name") != repo:
             raise Blocked("Installation token repository scope not verified")
+        return self.factory(result["token"])
+
+    def discovery_api(self):
+        """Read installation repository metadata without granting contents or PR writes."""
+        _, installation = self.identify()
+        api = self.factory(self.jwt())
+        result = api.request("POST", f"/app/installations/{installation['id']}/access_tokens",
+                             {"permissions": {"metadata": "read"}})
+        if not isinstance(result.get("token"), str):
+            raise Blocked("Discovery token not issued")
+        actual = result.get("permissions", {})
+        if actual.get("metadata") != "read" or set(actual) != {"metadata"}:
+            raise Blocked("Discovery token is not metadata-only")
         return self.factory(result["token"])
 
 
