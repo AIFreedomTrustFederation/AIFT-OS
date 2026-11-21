@@ -255,6 +255,18 @@ class Queue:
         rows = self.db.execute("SELECT state,COUNT(*) FROM jobs GROUP BY state").fetchall()
         return {"paused": self.paused(), "jobs": dict(rows)}
 
+    def recent(self, limit=40):
+        """Bounded operator evidence. Results include no tokens, PEMs or raw API bodies."""
+        limit = min(50, max(1, int(limit)))
+        rows = self.db.execute(
+            "SELECT id,kind,payload,state,attempts,due,updated,result"
+            " FROM jobs ORDER BY updated DESC,id DESC LIMIT ?", (limit,)).fetchall()
+        return [{"id": r["id"], "kind": r["kind"], "repo": json.loads(r["payload"])["repo"],
+                 "state": r["state"], "attempts": r["attempts"],
+                 "due": r["due"], "updated": r["updated"],
+                 "result": json.loads(r["result"]) if r["result"] else None}
+                for r in rows]
+
 
 def receive(queue, event, payload, delivery_id):
     if not queue.delivery(delivery_id):
