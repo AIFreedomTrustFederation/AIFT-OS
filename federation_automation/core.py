@@ -253,7 +253,9 @@ class Queue:
 
     def status(self):
         rows = self.db.execute("SELECT state,COUNT(*) FROM jobs GROUP BY state").fetchall()
-        return {"paused": self.paused(), "jobs": dict(rows)}
+        last = self.get("last_scheduled", "0")
+        return {"paused": self.paused(), "jobs": dict(rows),
+                "last_scheduled": float(last) if last else None}
 
     def recent(self, limit=40):
         """Bounded operator evidence. Results include no tokens, PEMs or raw API bodies."""
