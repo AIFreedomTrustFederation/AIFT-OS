@@ -79,30 +79,75 @@ class SecureCloudWorkerTests(unittest.TestCase):
         with self.assertRaises(worker.Blocked):
             worker.verify_checkout("main")
 
-    def test_responses_request_has_no_tools_or_storage_and_structured_output(self):
-        response = {
-            "status": "completed",
-            "output": [{
-                "type": "message", "status": "completed",
-                "content": [{"type": "output_text", "text": json.dumps({
-                    "content": "Improved\n", "summary": "Clarified language"
-                })}]
-            }]
-        }
+    def test_aetherion_loopback_structured_completion_and_no_credentials(self):
+        response = {"choices": [{"message": {"content": json.dumps({
+            "content": "Improved\n", "summary": "Clarified language"
+        })}}]}
         requests = []
-        def fake_urlopen(req, timeout):
-            requests.append(json.loads(req.data))
-            return MockHTTP(json.dumps(response).encode())
-        with patch.object(worker, "urlopen", side_effect=fake_urlopen):
+        class LocalConnection:
+            def __init__(self, host, port, timeout):
+                requests.append({"host": host, "port": port, "timeout": timeout})
+            def request(self, method, path, body, headers):
+                requests[-1].update({"method": method, "path": path,
+                                     "body": json.loads(body), "headers": headers})
+            def getresponse(self):
+                class Result:
+                    status = 200
+                    def read(self, limit):
+                        return json.dumps(response).encode()
+                return Result()
+            def close(self):
+                pass
+        with patch.object(worker.http.client, "HTTPConnection", LocalConnection):
             result = worker.model_edit(
-                api_key="test_only", model="gpt-6-luna",
+                model="aetherion.gguf", endpoint="http://127.0.0.1:8080/v1",
                 path="docs/example.md", content="Original\n",
                 instruction="Clarify the text")
         self.assertEqual(result["content"], "Improved\n")
-        self.assertEqual(requests[0]["tools"], [])
-        self.assertIs(requests[0]["store"], False)
-        self.assertEqual(requests[0]["text"]["format"]["type"], "json_schema")
-        self.assertTrue(requests[0]["text"]["format"]["strict"])
+        self.assertEqual(requests[0]["host"], "127.0.0.1")
+        self.assertEqual(requests[0]["port"], 8080)
+        self.assertEqual(requests[0]["path"], "/v1/chat/completions")
+        self.assertIs(requests[0]["body"]["stream"], False)
+        self.assertEqual(requests[0]["body"]["model"], "aetherion.gguf")
+        self.assertNotIn("Authorization", requests[0]["headers"])
+        self.assertNotIn("tools", requests[0]["body"])
+
+    def test_local_model_refuses_remote_dns_https_and_redirect_urls(self):
+        for url in (
+            "https://api.openai.com/v1", "http://localhost:8080/v1",
+            "http://192.168.1.7:8080/v1", "http://127.0.0.1:8080/v1?url=example",
+            "http://127.0.0.1:bad/v1", "http://127.0.0.1:8080/secret",
+            "http://127.0.0.1:8080/v1#fragment", "http://user@127.0.0.1:8080/v1",
+        ):
+            with self.subTest(url=url), self.assertRaises(worker.Blocked):
+                worker._loopback_model_endpoint(url)
+
+    def test_unavailable_local_model_fails_without_cloud_fallback(self):
+        with patch.object(worker.http.client, "HTTPConnection") as connection:
+            connection.return_value.request.side_effect = OSError("offline")
+            with self.assertRaisesRegex(worker.Blocked, "no cloud fallback"):
+                worker.model_edit(model="local", path="docs/example.md",
+                                  content="Original\n", instruction="Clarify the text")
+            self.assertEqual(connection.call_args.args[0], "127.0.0.1")
+
+    def test_local_model_rejects_bad_or_unstructured_output(self):
+        class LocalConnection:
+            def __init__(self, *_args, **_kwargs):
+                pass
+            def request(self, *_args, **_kwargs):
+                pass
+            def getresponse(self):
+                class Result:
+                    status = 200
+                    def read(self, limit):
+                        return b'{"choices":[{"message":{"content":"Not JSON"}}]}'
+                return Result()
+            def close(self):
+                pass
+        with patch.object(worker.http.client, "HTTPConnection", LocalConnection):
+            with self.assertRaises(worker.Blocked):
+                worker.model_edit(model="local", path="docs/example.md",
+                                  content="Original\n", instruction="Clarify the text")
 
     def test_plan_without_eligible_issue_does_not_call_model(self):
         with TemporaryDirectory() as tmp:
@@ -111,8 +156,8 @@ class SecureCloudWorkerTests(unittest.TestCase):
                 with patch.object(worker, "select_issue", return_value=None):
                     with patch.object(worker, "model_edit") as model:
                         self.assertFalse(worker.create_plan(
-                            destination, read_token="fake", api_key="fake",
-                            model="gpt-6-luna", expected_sha="a" * 40))
+                            destination, read_token="fake",
+                            model="local", expected_sha="a" * 40))
                         model.assert_not_called()
             self.assertFalse(destination.exists())
 
@@ -130,7 +175,9 @@ class SecureCloudWorkerTests(unittest.TestCase):
         self.assertIn("permission-pull-requests: write", workflow)
         self.assertIn("permission-contents: write", workflow)
         self.assertIn("needs.plan.outputs.has_plan == 'true'", workflow)
-        self.assertIn("AIFT_AUTODEV_OPENAI_API_KEY", workflow)
+        self.assertIn("runs-on: [self-hosted, linux, aift-local-model]", workflow)
+        self.assertIn("AIFT_MODEL_URL", workflow)
+        self.assertNotIn("AIFT_AUTODEV_OPENAI_API_KEY", workflow)
         self.assertIn("AIFT_AUTODEV_APP_PRIVATE_KEY", workflow)
         self.assertNotIn("pull_request_target:", workflow)
         self.assertNotIn("gh pr merge", workflow)
