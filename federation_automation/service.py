@@ -57,8 +57,7 @@ def schedule(queue, auth, seconds):
     if queue.paused() or time.time() - float(queue.get("last_scheduled", "0")) < seconds:
         return
     # App-only repository enumeration, never a personal GitHub token.
-    auth.identify()
-    api = auth.token(OWNER + "/AIFT-OS", READ)
+    api = auth.discovery_api()
     epoch = int(time.time() // seconds)
     for page in range(1, 11):
         results = api.request("GET", f"/installation/repositories?per_page=100&page={page}")
