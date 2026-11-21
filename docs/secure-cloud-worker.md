@@ -88,12 +88,20 @@ It has no DNS discovery, redirects, remote inference or external API fallback.
 - The planner runs trusted main code only, with no GitHub write token.
 - No model-issued shell commands, arbitrary file edits or tool calls.
 - Labelled issues may change only one existing non-sensitive `docs/*.md`.
-- The local OpenAI-compatible chat request includes `response_format` with
-  `type: json_schema`, a strict two-field `{content, summary}` schema, and
-  temperature `0`. This is an **on-device protocol feature**, not a third-party
-  service. The worker still parses, validates and bounds the output; a
-  truncated or non-JSON reply blocks publication instead of being repaired
-  heuristically. Small GGUFs can still fail to follow edit instructions.
+- The local OpenAI-compatible chat request uses `response_format` with
+  `type: json_schema`, a strict three-field `{old, new, summary}` schema, and
+  temperature `0`. This is a **local protocol feature**, not an external AI
+  service. Aetherion proposes exactly one original text span and its replacement,
+  not a full rewritten document. The worker verifies that the old span occurs
+  exactly once in the actual source, that both spans are single-line and
+  nonempty, and that the replacement passes bounded change validation.
+  It deterministically applies the substitution so headings, other lines and
+  the original final newline are preserved verbatim. It refuses ambiguous,
+  missing, multiline, oversized, no-op or malformed proposals. It cannot
+  guarantee semantic correctness: reviewers must inspect every draft PR.
+- A truncated or non-JSON reply blocks publication; there is no heuristic
+  repair and no cloud fallback. Small GGUFs can still fail to follow
+  instructions, or select the wrong span, even under constrained decoding.
 - Strict JSON, output-size and changed-line limits. Invalid or malformed
   local output blocks publication.
 - Publisher rechecks label, issue body, exact main commit, source hash,
