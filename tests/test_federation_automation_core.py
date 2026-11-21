@@ -169,6 +169,37 @@ class WorkerSafetyTests(unittest.TestCase):
                          entry[1].endswith("/pulls")][0][2]["draft"])
         self.assertFalse(any(entry[1].endswith("/merges") for entry in writes))
 
+    def test_operator_recent_jobs_and_schedule_evidence(self):
+        self.job()
+        self.q.set("last_scheduled", "1000")
+        self.assertEqual(self.q.status()["last_scheduled"], 1000.)
+        recent = self.q.recent()
+        self.assertEqual(recent[0]["repo"], self.repo)
+        self.assertEqual(recent[0]["state"], "queued")
+        self.assertIsNone(recent[0]["result"])
+
+    def test_metadata_only_installation_discovery_refuses_extra_scope(self):
+        responses = []
+        class FakeAPI:
+            def __init__(self, token):
+                self.token = token
+            def request(self, method, path, body=None):
+                responses.append(body)
+                return {"token": "ephemeral", "permissions": {"metadata": "read"}}
+        auth = App("synthetic-not-read", factory=FakeAPI)
+        with patch.object(auth, "identify", return_value=({}, {"id": 123})), patch.object(
+                auth, "jwt", return_value="synthetic-jwt"):
+            self.assertIsInstance(auth.discovery_api(), FakeAPI)
+        self.assertEqual(responses[0]["permissions"], {"metadata": "read"})
+
+    def test_readonly_console_is_local_and_offers_no_public_mutations(self):
+        html = (Path(__file__).parents[1] / "federation_automation" /
+                "console.html").read_text(encoding="utf-8")
+        self.assertIn("PAUSED", html)
+        self.assertIn("/api/jobs", html)
+        self.assertIn("No inferred merge readiness", html)
+        self.assertNotIn('fetch("/control/', html)
+
 
 if __name__ == "__main__":
     unittest.main()
