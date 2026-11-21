@@ -36,14 +36,15 @@ jobs:
         run: python3 -B -m unittest discover -s tests -p 'test_aift_secure_cloud_worker.py' -v
 
   plan:
-    # Never expose model credentials on PR code, forks or non-main dispatch.
+    # Native AIFT inference is localhost-only, so plan must run beside Aetherion.
+    # Do not schedule untrusted PR code on the private model runner.
     if: >-
       github.event_name != 'pull_request' &&
       github.ref == 'refs/heads/main' &&
       ((github.event_name == 'schedule' && vars.AIFT_AUTODEV_AI_ENABLED == 'true') ||
        (github.event_name == 'workflow_dispatch' && inputs.run_ai_once == true))
     needs: offline-contract
-    runs-on: ubuntu-24.04
+    runs-on: [self-hosted, linux, aift-local-model]
     timeout-minutes: 9
     permissions:
       contents: read
@@ -59,13 +60,16 @@ jobs:
       - name: Prepare one bounded, read-only model proposal
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          OPENAI_API_KEY: ${{ secrets.AIFT_AUTODEV_OPENAI_API_KEY }}
-          AIFT_AUTODEV_MODEL: ${{ vars.AIFT_AUTODEV_MODEL }}
+          AIFT_MODEL_URL: ${{ vars.AIFT_MODEL_URL }}
+          AIFT_MODEL_NAME: ${{ vars.AIFT_MODEL_NAME }}
         shell: bash
         run: |
           set -euo pipefail
-          if [[ -z "$AIFT_AUTODEV_MODEL" ]]; then
-            export AIFT_AUTODEV_MODEL=gpt-6-luna
+          if [[ -z "$AIFT_MODEL_URL" ]]; then
+            export AIFT_MODEL_URL=http://127.0.0.1:8080/v1
+          fi
+          if [[ -z "$AIFT_MODEL_NAME" ]]; then
+            export AIFT_MODEL_NAME=local
           fi
           test "$GITHUB_REF" = refs/heads/main
           python3 -B scripts/aift_secure_cloud_worker.py plan \
@@ -89,7 +93,7 @@ jobs:
           retention-days: 1
 
   publish:
-    # Model API secret is NOT available to this job.
+    # Publisher uses GitHub-hosted Actions and has no route to the loopback model.
     if: >-
       needs.plan.outputs.has_plan == 'true' &&
       github.event_name != 'pull_request' &&
@@ -101,7 +105,7 @@ jobs:
       contents: read
       issues: read
     steps:
-      - name: Receive bounded plan (no model credential)
+      - name: Receive bounded plan (no access to local model)
         uses: actions/download-artifact@018cc2cf9868b82d6f63a2a4f8a9a9f57f21d916 # v7.0.0
         with:
           name: aift-secure-doc-plan
