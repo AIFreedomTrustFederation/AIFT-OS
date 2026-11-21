@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>AIFT Federation Automation | Operator Console</title>
+<style>
+:root{color-scheme:dark;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#070b16;color:#ecf0ff}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 15% 5%,#22375d78,transparent 44%),radial-gradient(ellipse at 90% 80%,#5b173d55,transparent 40%),#070b16}
+main{max-width:1240px;margin:auto;padding:clamp(20px,5vw,64px)}
+header{display:flex;justify-content:space-between;gap:20px;align-items:center;flex-wrap:wrap}
+.eyebrow{font-size:11px;letter-spacing:2.4px;text-transform:uppercase;color:#93b4e0}.title{font-size:clamp(30px,4.5vw,60px);font-weight:750;letter-spacing:-1.8px;line-height:1.05;margin:14px 0}
+.subtitle{max-width:710px;line-height:1.65;color:#a7b4cb;margin:12px 0 28px}
+.card{border:1px solid #ffffff1f;border-radius:20px;background:linear-gradient(155deg,#1c2a42bb,#111625dd);box-shadow:0 20px 50px #0004;padding:22px}
+.status{border:1px solid #9fb7dc55;border-radius:999px;padding:9px 15px;color:#d7e4ff;background:#233a5e80;font-weight:700;font-size:12px;letter-spacing:1px}
+.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin:24px 0}
+.stat .num{font-size:32px;font-weight:760;margin:8px 0}.stat .label{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:#a1b0ca}
+section{margin:28px 0}section h2{font-size:19px;letter-spacing:-.4px;margin:0 0 14px}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+button,select{background:#1e3553;border:1px solid #6386bb66;color:#ecf0ff;border-radius:11px;padding:10px 14px;font:inherit;font-size:13px;cursor:pointer}
+button:hover,select:hover{background:#2b476d}button:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid #a7d1ff;outline-offset:2px}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:650px}th{text-align:left;text-transform:uppercase;font-size:10px;letter-spacing:1.4px;color:#97acca;padding:12px}td{border-top:1px solid #ffffff17;padding:14px 12px;vertical-align:top}
+.scroll{overflow-x:auto}a{color:#9eceff}a:hover{color:#d4e7ff}.small{font-size:11px;color:#9aaeca;overflow-wrap:anywhere}
+.pill{display:inline-block;font-size:11px;padding:4px 9px;border-radius:99px;background:#2a384d;color:#dbe7f4;text-transform:uppercase;letter-spacing:.6px}
+.pill.done{background:#154439;color:#c4f9e5}.pill.dead{background:#54252f;color:#ffd0d3}.pill.retry,.pill.running{background:#504022;color:#ffe3a8}
+.notice{border-left:3px solid #8cbcff;padding:12px 16px;color:#c2cee0;background:#2b3c5b45;line-height:1.6;font-size:13px}
+footer{color:#8393b0;font-size:12px;margin:40px 0}#error{color:#ffb8c4;font-size:13px}
+@media(max-width:750px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.stat:last-child{grid-column:span 2}main{padding:18px}table{min-width:600px}}
+@media(prefers-reduced-motion:no-preference){button{transition:background .2s}}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div><div class="eyebrow">AIFREEDOMTRUSTFEDERATION · SOVEREIGN OPERATIONS</div><h1 class="title">Federation Automation</h1></div>
+  <span id="mode" class="status" role="status">VERIFYING LOCAL WORKER</span>
+</header>
+<p class="subtitle">App identity 5861093 · Local operational telemetry. Repositories are roots feeding federation systems. Only recorded evidence appears here. No CI success, merge readiness, or deployment is inferred.</p>
+<div class="grid" aria-label="Queue status">
+  <div class="card stat"><div class="label">Queued</div><div class="num" id="queued">—</div></div>
+  <div class="card stat"><div class="label">Running</div><div class="num" id="running">—</div></div>
+  <div class="card stat"><div class="label">Retry</div><div class="num" id="retry">—</div></div>
+  <div class="card stat"><div class="label">Completed</div><div class="num" id="done">—</div></div>
+  <div class="card stat"><div class="label">Dead / blocked</div><div class="num" id="dead">—</div></div>
+</div>
+<section class="card">
+  <h2>Operator actions</h2>
+  <div class="toolbar">
+    <button id="refresh" type="button">Refresh recorded evidence</button>
+    <button id="pause" type="button">Copy safe pause command</button>
+    <button id="resume" type="button">Copy resume command</button>
+    <select id="filter" aria-label="Filter job state"><option value="">All job states</option><option value="queued">Queued</option><option value="running">Running</option><option value="retry">Retry</option><option value="done">Done</option><option value="dead">Dead</option></select>
+  </div>
+  <p class="small" id="copied" aria-live="polite">Pause/resume require an authenticated host shell. This read-only console does not grant remote administrator control.</p>
+  <p id="error" aria-live="polite"></p>
+</section>
+<section class="card">
+  <h2>Durable development jobs</h2>
+  <div class="scroll">
+    <table>
+    <thead><tr><th>Repository root</th><th>Job</th><th>State</th><th>Attempts</th><th>Evidence</th></tr></thead>
+    <tbody id="jobs"><tr><td colspan="5">Loading recorded jobs…</td></tr></tbody>
+    </table>
+  </div>
+  <p class="small" id="count"></p>
+</section>
+<section class="notice">
+  <strong>Approval boundary.</strong> Production deployments, merges, governance, identity, trust, security authorization and credential rotation remain human-gated. A passing CI check is not merge approval. This interface is loopback-only and does not indicate public deployment.
+</section>
+<footer id="last">Waiting for local service…</footer>
+</main>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+let latest = [];
+const hostCommand = action => "python3 -m federation_automation.service --db /var/lib/aift-federation-automation/jobs.db " + action;
+function cell(row, value) { const item = document.createElement("td"); item.textContent = String(value ?? "—"); row.appendChild(item); return item; }
+function validGitHub(u) { return typeof u === "string" && u.startsWith("https://github.com/AIFreedomTrustFederation/"); }
+function render() {
+  const body = $("jobs"); body.replaceChildren();
+  const items = latest.filter(item => !$("filter").value || item.state === $("filter").value);
+  for (const job of items) {
+    const row = document.createElement("tr");
+    const root = cell(row,job.repo);
+    if (job.repo && /^AIFreedomTrustFederation\/[A-Za-z0-9_.-]+$/.test(job.repo)) {
+      root.replaceChildren();
+      const link = document.createElement("a");link.href = "https://github.com/" + job.repo;
+      link.target="_blank";link.rel="noopener noreferrer";link.textContent=job.repo;root.appendChild(link);
+    }
+    cell(row, job.kind);const state=cell(row,"");const tag=document.createElement("span");tag.className="pill "+job.state;tag.textContent=job.state;state.appendChild(tag);
+    cell(row, job.attempts);
+    const evidence=cell(row, "No verified PR link");
+    const result=job.result||{};
+    const url=result.url;
+    if(validGitHub(url)) {
+      evidence.replaceChildren();const link=document.createElement("a");link.href=url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="Draft PR evidence";evidence.appendChild(link);
+    } else if (Array.isArray(result.open_pr_sample)) {
+      evidence.textContent=result.open_pr_sample.length+" observed PRs · merge unverified";
+    } else if (result.outcome) {evidence.textContent=result.outcome;}
+    body.appendChild(row);
+  }
+  if (!items.length) {const tr=document.createElement("tr");cell(tr,"No recorded jobs match the filter").colSpan=5;body.appendChild(tr);}
+  $("count").textContent="Displaying "+items.length+" of "+latest.length+" latest recorded jobs. No inferred merge readiness.";
+}
+async function refresh() {
+  try {
+    const response=await fetch("/api/jobs",{cache:"no-store"});
+    if (!response.ok) throw Error("Local worker returned HTTP "+response.status);
+    const data=await response.json();
+    const status=data.status||{};
+    $("mode").textContent=status.paused?"PAUSED · FAIL CLOSED":"LOCAL WORKER ACTIVE";
+    const counts=status.jobs||{};
+    for(const state of ["queued","running","retry","done","dead"]) $(state).textContent=counts[state]||0;
+    latest=Array.isArray(data.recent)?data.recent:[];
+    render();$("error").textContent="";
+    $("last").textContent="Last local refresh: "+new Date().toLocaleString()+" · Snapshot is local-only; not a federation-wide acceptance certificate.";
+  } catch (_err) {
+    $("mode").textContent="WORKER STATUS UNAVAILABLE";
+    $("error").textContent="The local worker could not be reached. No live status is claimed.";
+  }
+}
+async function copy(action) {
+  try {await navigator.clipboard.writeText(hostCommand(action));$("copied").textContent="Copied host-shell "+action+" command. Execute only on the approved worker host.";}
+  catch (_err) {$("copied").textContent="Clipboard unavailable. Use the documented command from the worker runbook.";}
+}
+$("refresh").addEventListener("click",refresh);
+$("filter").addEventListener("change",render);
+$("pause").addEventListener("click",()=>copy("pause"));
+$("resume").addEventListener("click",()=>copy("resume"));
+refresh();setInterval(refresh,15000);
+</script>
+</body>
+</html>

@@ -14,6 +14,9 @@ import tempfile
 
 HERE = Path(__file__).resolve().parent
 SETUP = HERE / "setup_federation_evidence.py"
+sys.path.insert(0, str(HERE.parent))
+from federation_automation.core import App, Blocked, EVIDENCE
+
 
 
 def candidates(directory):
@@ -35,14 +38,31 @@ def candidates(directory):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--downloads-dir", type=Path, required=True,
-                        help="Explicit local directory containing the downloaded App PEM")
-    parser.add_argument("--client-id", required=True, help="Public GitHub App Client ID")
+    parser.add_argument("--downloads-dir", type=Path,
+                        help="Optional explicit PEM directory; otherwise search accessible Android Downloads")
+    parser.add_argument("--client-id", help="Optional expected App Client ID; verified against the authenticated App")
     parser.add_argument("--apply", action="store_true",
                         help="Explicitly authorize writing the key as a GitHub Actions secret")
     args = parser.parse_args()
     try:
-        found = candidates(args.downloads_dir)
+        locations = ([args.downloads_dir] if args.downloads_dir else [
+            Path.home() / "storage" / "downloads",
+            Path("/sdcard/Download"),
+            Path("/storage/emulated/0/Download"),
+            Path.home() / "Downloads",
+        ])
+        found = []
+        visited = set()
+        for directory in locations:
+            if not directory.is_dir():
+                if args.downloads_dir:
+                    raise ValueError("Explicit downloads directory is unavailable")
+                continue
+            resolved = directory.resolve()
+            if resolved in visited:
+                continue
+            visited.add(resolved)
+            found.extend(candidates(directory))
         if len(found) != 1:
             raise ValueError("Expected exactly one recognizable PEM in the selected directory; "
                              "move other PEM files elsewhere and retry")
@@ -67,9 +87,30 @@ def main():
             except BaseException:
                 private_path.unlink(missing_ok=True)
                 raise
-            # Existing setup verifies admin access and passes the key through gh stdin.
+            # Verify RSA signature, the real App ID, installation, and both
+            # producer repositories before any Actions secret or variable write.
+            try:
+                auth = App(str(private_path))
+                app, installation = auth.identify()
+                client_id = app.get("client_id")
+                if not isinstance(client_id, str) or not client_id:
+                    raise ValueError("Authenticated GitHub App did not supply Client ID")
+                if args.client_id and args.client_id != client_id:
+                    raise ValueError("Provided Client ID does not match authenticated App")
+                for short in (".github", "AIFT-Runtime"):
+                    repository = "AIFreedomTrustFederation/" + short
+                    api = auth.token(repository, EVIDENCE)
+                    if api.request("GET", "/repos/" + repository).get("full_name") != repository:
+                        raise ValueError("Producer repository identity mismatch")
+                    response = api.request("GET", "/repos/" + repository + "/actions/workflows?per_page=1")
+                    if not isinstance(response.get("total_count"), int):
+                        raise ValueError("Producer Actions API access not verified")
+            except Blocked:
+                raise ValueError("Existing GitHub App authentication or producer permission verification failed") from None
+            print("Verified existing App ID 5861093, owner installation, and both read-only evidence producers.")
+            # Existing setup checks administrator access; PEM contents travel to gh stdin.
             return subprocess.call([sys.executable, str(SETUP), "--apply",
-                                    "--client-id", args.client_id,
+                                    "--client-id", client_id,
                                     "--private-key", str(private_path)])
     except (ValueError, OSError) as exc:
         print(f"Setup not performed: {exc}", file=sys.stderr)

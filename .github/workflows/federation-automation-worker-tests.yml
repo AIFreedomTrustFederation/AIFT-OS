@@ -1,0 +1,34 @@
+name: Federation automation offline worker tests
+on:
+  pull_request:
+    paths:
+      - 'federation_automation/**'
+      - 'tests/test_federation_automation_core.py'
+      - 'tests/test_bootstrap_local_app_key.py'
+      - 'scripts/bootstrap_local_app_key.py'
+      - 'scripts/setup_federation_evidence.py'
+      - 'docs/federation-automation-worker.md'
+      - 'deploy/aift-federation-worker.service'
+      - '.github/workflows/federation-automation-worker-tests.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'federation_automation/**'
+      - 'tests/test_federation_automation_core.py'
+permissions:
+  contents: read
+jobs:
+  worker-regressions:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.13'
+      - run: python -B -m unittest discover -s tests -p test_federation_automation_core.py -v
+      - run: python -B -m unittest discover -s tests -p test_bootstrap_local_app_key.py -v
+      - run: PYTHONPYCACHEPREFIX="$RUNNER_TEMP/aift-pyc" python -m compileall -q federation_automation
+      - run: git diff --check && test -z "$(git status --porcelain)"
