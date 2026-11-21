@@ -17,6 +17,7 @@ APP_ID = 5861093
 OWNER = "AIFreedomTrustFederation"
 READ = {"contents": "read", "pull_requests": "read", "checks": "read"}
 WRITE = {"contents": "write", "pull_requests": "write"}
+EVIDENCE = {"contents": "read", "actions": "read"}
 REPO = re.compile(r"AIFreedomTrustFederation/[A-Za-z0-9_.-]+\Z")
 DOC = re.compile(r"docs/[A-Za-z0-9_./-]+\.md\Z")
 SENSITIVE = re.compile(r"governan|doctrin|constitut|trust|identit|secur|policy|credential|deploy|finance|legal|auth|secret", re.I)
@@ -131,7 +132,7 @@ class App:
 
     def token(self, repo, permissions):
         repo_ok(repo)
-        if permissions not in (READ, WRITE):
+        if permissions not in (READ, WRITE, EVIDENCE):
             raise Blocked("Unsupported permission grant")
         _, installation = self.identify()
         api = self.factory(self.jwt())
