@@ -8,12 +8,13 @@ This branch implements a **phone-independent worker foundation** for the already
 - Short-lived installation tokens restricted to a single repository and exactly requested read or write scopes, with token response readback. No personal GitHub CLI token is used.
 - Signature-verified HMAC-SHA256 webhook endpoint on **127.0.0.1 only**; deduplicated delivery and exact-head events; bot and non-default push filtering.
 - SQLite WAL-backed durable jobs, bounded queue (300 active), four-attempt exponential retries, expired lease recovery, structured no-secret audit records, initial paused state, local pause/resume/status CLI, systemd example for independent hosting.
+- Read-only operator console and evidence JSON at `http://127.0.0.1:8787/` and `/api/jobs` on an approved running host; live job records are displayed without inferred merge readiness. Remote administrative controls are intentionally absent. Commands can be copied for authorized host-shell execution.
 - Read-only, bounded open-PR and exact-head check-run sampling. **Merge readiness is always unverified**: branch rules, review requirements, and conflicts are not independently evaluated.
 - Opt-in deterministic whitespace-only formatting of narrowly allowed files under `docs/` into isolated branches and **draft PRs only**. Requires both `AIFT_ENABLE_DOC_PROPOSALS=1` and membership in `AIFT_WRITE_REPOS`; never auto-merges.
 
 ## Not yet implemented or verified
 
-No AI model or autonomous arbitrary code-writing agent, full control-center frontend, remote approvals, cross-repository dependency solver, browser acceptance, production deployment, live App authentication, or live webhook verification is present. A scheduled audit is not equivalent to an operational AI coding system. Exact-head CI and a real draft PR created by this worker require live verification. There is no uptime claim.
+No AI model or autonomous arbitrary code-writing agent, remote administrative console/approvals, cross-repository dependency solver, browser acceptance, production deployment, live App authentication, or live webhook verification is present. A scheduled audit is not equivalent to an operational AI coding system. Exact-head CI and a real draft PR created by this worker require live verification. There is no uptime claim.
 
 ## Safe operator runbook
 
