@@ -30,4 +30,5 @@ jobs:
           python-version: '3.13'
       - run: python -B -m unittest discover -s tests -p test_federation_automation_core.py -v
       - run: python -B -m unittest discover -s tests -p test_bootstrap_local_app_key.py -v
+      - run: python -m compileall -q federation_automation
       - run: git diff --check && test -z "$(git status --porcelain)"
