@@ -111,6 +111,14 @@ class SecureCloudWorkerTests(unittest.TestCase):
         self.assertEqual(requests[0]["body"]["model"], "aetherion.gguf")
         self.assertNotIn("Authorization", requests[0]["headers"])
         self.assertNotIn("tools", requests[0]["body"])
+        self.assertEqual(requests[0]["body"]["temperature"], 0)
+        self.assertEqual(requests[0]["body"]["response_format"], {
+            "type": "json_schema",
+            "json_schema": {"name": "aift_document_edit", "strict": True,
+                            "schema": worker.SCHEMA},
+        })
+        self.assertEqual(set(worker.SCHEMA["required"]), {"content", "summary"})
+        self.assertIs(worker.SCHEMA["additionalProperties"], False)
 
     def test_local_model_refuses_remote_dns_https_and_redirect_urls(self):
         for url in (
@@ -146,6 +154,28 @@ class SecureCloudWorkerTests(unittest.TestCase):
                 pass
         with patch.object(worker.http.client, "HTTPConnection", LocalConnection):
             with self.assertRaises(worker.Blocked):
+                worker.model_edit(model="local", path="docs/example.md",
+                                  content="Original\n", instruction="Clarify the text")
+
+    def test_truncated_local_completion_fails_closed(self):
+        class LocalConnection:
+            def __init__(self, *_args, **_kwargs):
+                pass
+            def request(self, *_args, **_kwargs):
+                pass
+            def getresponse(self):
+                class Result:
+                    status = 200
+                    def read(self, limit):
+                        return json.dumps({"choices": [{
+                            "finish_reason": "length",
+                            "message": {"content": '{"content":"partial","summary":"x"}'}
+                        }]}).encode()
+                return Result()
+            def close(self):
+                pass
+        with patch.object(worker.http.client, "HTTPConnection", LocalConnection):
+            with self.assertRaisesRegex(worker.Blocked, "truncated"):
                 worker.model_edit(model="local", path="docs/example.md",
                                   content="Original\n", instruction="Clarify the text")
 
