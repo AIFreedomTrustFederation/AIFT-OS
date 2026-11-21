@@ -211,8 +211,12 @@ def model_edit(*, model: str, path: str, content: str, instruction: str,
         "do not invent test results or verification. No executable tools are available."
     )
     packet = {
-        "model": model, "stream": False, "temperature": 0.2,
+        "model": model, "stream": False, "temperature": 0,
         "max_tokens": 3500,
+        "response_format": {
+            "type": "json_schema",
+            "json_schema": {"name": "aift_document_edit", "strict": True, "schema": SCHEMA},
+        },
         "messages": [
             {"role": "system", "content": system},
             {"role": "user", "content": prompt},
@@ -243,6 +247,8 @@ def model_edit(*, model: str, path: str, content: str, instruction: str,
         choices = result.get("choices", [])
         if not isinstance(choices, list) or len(choices) != 1:
             raise Blocked("Local model response must have one choice")
+        if choices[0].get("finish_reason") == "length":
+            raise Blocked("Local model response truncated by token limit")
         raw = choices[0].get("message", {}).get("content")
         if not isinstance(raw, str) or len(raw) > 65000:
             raise Blocked("Local model output missing or oversized")

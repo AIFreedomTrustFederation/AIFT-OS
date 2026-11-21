@@ -88,6 +88,12 @@ It has no DNS discovery, redirects, remote inference or external API fallback.
 - The planner runs trusted main code only, with no GitHub write token.
 - No model-issued shell commands, arbitrary file edits or tool calls.
 - Labelled issues may change only one existing non-sensitive `docs/*.md`.
+- The local OpenAI-compatible chat request includes `response_format` with
+  `type: json_schema`, a strict two-field `{content, summary}` schema, and
+  temperature `0`. This is an **on-device protocol feature**, not a third-party
+  service. The worker still parses, validates and bounds the output; a
+  truncated or non-JSON reply blocks publication instead of being repaired
+  heuristically. Small GGUFs can still fail to follow edit instructions.
 - Strict JSON, output-size and changed-line limits. Invalid or malformed
   local output blocks publication.
 - Publisher rechecks label, issue body, exact main commit, source hash,
