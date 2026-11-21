@@ -1,0 +1,140 @@
+name: AIFT Secure Cloud AI Documentation Worker
+
+on:
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+    inputs:
+      run_ai_once:
+        description: 'Run one approved documentation issue now (even if scheduled AI is disabled)'
+        type: boolean
+        required: false
+        default: false
+  pull_request:
+    paths:
+      - '.github/workflows/aift-secure-cloud-worker.yml'
+      - 'scripts/aift_secure_cloud_worker.py'
+      - 'tests/test_aift_secure_cloud_worker.py'
+      - 'docs/secure-cloud-worker.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aift-secure-cloud-docs-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  offline-contract:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - name: Verify bounded AI worker safety contract
+        run: python3 -B -m unittest discover -s tests -p 'test_aift_secure_cloud_worker.py' -v
+
+  plan:
+    # Never expose model credentials on PR code, forks or non-main dispatch.
+    if: >-
+      github.event_name != 'pull_request' &&
+      github.ref == 'refs/heads/main' &&
+      ((github.event_name == 'schedule' && vars.AIFT_AUTODEV_AI_ENABLED == 'true') ||
+       (github.event_name == 'workflow_dispatch' && inputs.run_ai_once == true))
+    needs: offline-contract
+    runs-on: ubuntu-24.04
+    timeout-minutes: 9
+    permissions:
+      contents: read
+      issues: read
+      pull-requests: read
+    outputs:
+      has_plan: ${{ steps.proposal.outputs.has_plan }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Prepare one bounded, read-only model proposal
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          OPENAI_API_KEY: ${{ secrets.AIFT_AUTODEV_OPENAI_API_KEY }}
+          AIFT_AUTODEV_MODEL: ${{ vars.AIFT_AUTODEV_MODEL }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "$AIFT_AUTODEV_MODEL" ]]; then
+            export AIFT_AUTODEV_MODEL=gpt-6-luna
+          fi
+          test "$GITHUB_REF" = refs/heads/main
+          python3 -B scripts/aift_secure_cloud_worker.py plan \
+            --output "$RUNNER_TEMP/aift-secure-plan.json"
+      - name: Signal validated plan availability
+        id: proposal
+        shell: bash
+        run: |
+          if [[ -f "$RUNNER_TEMP/aift-secure-plan.json" ]]; then
+            echo 'has_plan=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'has_plan=false' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Transfer bounded plan to separate publisher
+        if: steps.proposal.outputs.has_plan == 'true'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: aift-secure-doc-plan
+          path: ${{ runner.temp }}/aift-secure-plan.json
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    # Model API secret is NOT available to this job.
+    if: >-
+      needs.plan.outputs.has_plan == 'true' &&
+      github.event_name != 'pull_request' &&
+      github.ref == 'refs/heads/main'
+    needs: plan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 9
+    permissions:
+      contents: read
+      issues: read
+    steps:
+      - name: Receive bounded plan (no model credential)
+        uses: actions/download-artifact@018cc2cf9868b82d6f63a2a4f8a9a9f57f21d916 # v7.0.0
+        with:
+          name: aift-secure-doc-plan
+          path: ${{ runner.temp }}/aift-secure-plan
+      - name: Require dedicated repository-scoped GitHub App
+        env:
+          APP_CLIENT_ID: ${{ vars.AIFT_AUTODEV_APP_CLIENT_ID }}
+          APP_PRIVATE_KEY: ${{ secrets.AIFT_AUTODEV_APP_PRIVATE_KEY }}
+        run: |
+          if [[ -z "$APP_CLIENT_ID" || -z "$APP_PRIVATE_KEY" ]]; then
+            echo '::error::Missing dedicated GitHub App credentials; no PR published.'
+            exit 1
+          fi
+      - name: Mint short-lived write token only for AIFT-OS
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.AIFT_AUTODEV_APP_CLIENT_ID }}
+          private-key: ${{ secrets.AIFT_AUTODEV_APP_PRIVATE_KEY }}
+          owner: AIFreedomTrustFederation
+          repositories: AIFT-OS
+          permission-contents: write
+          permission-pull-requests: write
+      - name: Check out trusted exact main commit
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: true
+      - name: Validate, push one doc file and create draft PR
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          python3 -B scripts/aift_secure_cloud_worker.py publish \
+            --plan "$RUNNER_TEMP/aift-secure-plan/aift-secure-plan.json"
