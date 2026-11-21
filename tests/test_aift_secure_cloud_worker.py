@@ -79,9 +79,40 @@ class SecureCloudWorkerTests(unittest.TestCase):
         with self.assertRaises(worker.Blocked):
             worker.verify_checkout("main")
 
+    def test_exact_span_preserves_unrelated_lines_and_trailing_newline(self):
+        original = "# AIFT Example\n\nAIFT performs local checks.\n"
+        result = worker.apply_exact_replacement(original, {
+            "old": "local checks",
+            "new": "local verification",
+            "summary": "Replaced terminology",
+        })
+        self.assertEqual(
+            result["content"], "# AIFT Example\n\nAIFT performs local verification.\n")
+        self.assertEqual(worker.checked_edit(original, result["content"]), 1)
+
+    def test_exact_span_rejects_ambiguous_invalid_or_multiline_edits(self):
+        original = "# Heading\n\nlocal checks\nlocal checks\n"
+        examples = [
+            {"old": "local checks", "new": "local verification", "summary": "x"},
+            {"old": "missing", "new": "replacement", "summary": "x"},
+            {"old": "local checks", "new": "local checks", "summary": "x"},
+            {"old": "local checks", "new": "different\nunapproved line", "summary": "x"},
+            {"old": "local checks\n", "new": "changed", "summary": "x"},
+            {"old": "", "new": "something", "summary": "x"},
+            {"old": "local checks", "new": "local verification"},
+        ]
+        for item in examples:
+            with self.subTest(item=item), self.assertRaises(worker.Blocked):
+                worker.apply_exact_replacement(original, item)
+
+    def test_exact_span_fails_if_original_lacks_required_final_newline(self):
+        with self.assertRaises(worker.Blocked):
+            worker.apply_exact_replacement("Original", {
+                "old": "Original", "new": "Changed", "summary": "x"})
+
     def test_aetherion_loopback_structured_completion_and_no_credentials(self):
         response = {"choices": [{"message": {"content": json.dumps({
-            "content": "Improved\n", "summary": "Clarified language"
+            "old": "Original", "new": "Improved", "summary": "Clarified language"
         })}}]}
         requests = []
         class LocalConnection:
@@ -117,7 +148,7 @@ class SecureCloudWorkerTests(unittest.TestCase):
             "json_schema": {"name": "aift_document_edit", "strict": True,
                             "schema": worker.SCHEMA},
         })
-        self.assertEqual(set(worker.SCHEMA["required"]), {"content", "summary"})
+        self.assertEqual(set(worker.SCHEMA["required"]), {"old", "new", "summary"})
         self.assertIs(worker.SCHEMA["additionalProperties"], False)
 
     def test_local_model_refuses_remote_dns_https_and_redirect_urls(self):
