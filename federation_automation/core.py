@@ -293,6 +293,32 @@ def receive(queue, event, payload, delivery_id):
                                       {"repo": name, "head": sha}) else "duplicate_head")
 
 
+def instruction_sources(api, repo, path, base):
+    """Verify and surface applicable AGENTS files, never execute their content."""
+    parts = path.split("/")[:-1]
+    names = ["AGENTS.md"] + ["/".join(parts[:n]) + "/AGENTS.md"
+                             for n in range(1, len(parts) + 1)]
+    seen = []
+    for index, filename in enumerate(names):
+        try:
+            item = api.request("GET", f"/repos/{repo}/contents/{quote(filename)}?ref={base}")
+        except ApiError as error:
+            if error.status == 404 and index > 0:
+                continue
+            raise Blocked("Required repository instructions could not be verified") from None
+        if (item.get("encoding") != "base64" or
+                item.get("size", 9999999) > 100000 or not item.get("sha")):
+            raise Blocked("Repository instructions are not verifiable plain text")
+        try:
+            content = base64.b64decode(item["content"]).decode("utf-8")
+        except (ValueError, UnicodeError, KeyError):
+            raise Blocked("Repository instructions could not be decoded") from None
+        if re.search(r"no automated (?:changes|edits|commits)|all changes require (?:human|manual) approval", content, re.I):
+            raise Blocked("Repository instructions require human control over this change")
+        seen.append({"path": filename, "sha": item["sha"]})
+    return seen
+
+
 def work(job, auth, write_repos=frozenset()):
     data = json.loads(job["payload"])
     name = repo_ok(data["repo"])
@@ -325,6 +351,7 @@ def work(job, auth, write_repos=frozenset()):
     meta = read.request("GET", "/repos/" + name)
     branch = meta["default_branch"]
     base = read.request("GET", f"/repos/{name}/branches/{quote(branch, safe='')}")["commit"]["sha"]
+    sources = instruction_sources(read, name, path, base)
     item = read.request("GET", f"/repos/{name}/contents/{quote(path)}?ref={base}")
     if item.get("encoding") != "base64" or item.get("size", 999999) > 200000:
         raise Blocked("File is not small base64-encoded UTF-8")
@@ -352,7 +379,7 @@ def work(job, auth, write_repos=frozenset()):
     pr = write.request("POST", f"/repos/{name}/pulls", {
         "head": head, "base": branch, "draft": True,
         "title": "docs: normalize safe Markdown whitespace",
-        "body": "Bounded whitespace-only automation; exact-head CI and human review required. No merge/deploy."})
+        "body": "Bounded whitespace-only automation; exact-head CI and human review required. No merge/deploy. Verified instruction SHA sources: " + json.dumps(sources, sort_keys=True)})
     if not pr.get("draft") or not pr.get("html_url"):
         raise Blocked("Draft PR could not be verified")
     return {"outcome": "draft_pr", "url": pr["html_url"], "number": pr.get("number"),
