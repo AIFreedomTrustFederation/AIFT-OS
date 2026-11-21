@@ -68,7 +68,7 @@ def validate_run(run_id):
     return run
 
 def configure(args):
-    if args.client_id and not re.fullmatch(r"[A-Za-z0-9_]{1,128}", args.client_id):
+    if args.client_id and not re.fullmatch(r"[A-Za-z0-9_.-]{1,128}", args.client_id):
         raise SetupError("Invalid App client ID")
     if args.apply and (not args.client_id or not args.private_key):
         raise SetupError("--apply requires --client-id and --private-key")
