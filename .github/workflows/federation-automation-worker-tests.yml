@@ -4,6 +4,9 @@ on:
     paths:
       - 'federation_automation/**'
       - 'tests/test_federation_automation_core.py'
+      - 'tests/test_bootstrap_local_app_key.py'
+      - 'scripts/bootstrap_local_app_key.py'
+      - 'scripts/setup_federation_evidence.py'
       - 'docs/federation-automation-worker.md'
       - 'deploy/aift-federation-worker.service'
       - '.github/workflows/federation-automation-worker-tests.yml'
@@ -26,4 +29,5 @@ jobs:
         with:
           python-version: '3.13'
       - run: python -B -m unittest discover -s tests -p test_federation_automation_core.py -v
+      - run: python -B -m unittest discover -s tests -p test_bootstrap_local_app_key.py -v
       - run: git diff --check && test -z "$(git status --porcelain)"
