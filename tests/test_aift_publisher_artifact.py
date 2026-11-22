@@ -168,6 +168,25 @@ class PublisherArtifactTests(unittest.TestCase):
                 with self.assertRaises(worker.Blocked):
                     worker.validate_model_config(endpoint, model)
 
+    def test_plan_refuses_missing_coordinates_before_issue_lookup(self):
+        with TemporaryDirectory() as directory:
+            for model, endpoint in (
+                ("", "http://127.0.0.1:11434/v1"),
+                ("aetherion:latest", ""),
+            ):
+                with (
+                    patch.object(worker, "verify_checkout"),
+                    patch.object(worker, "select_issue", side_effect=AssertionError("issue queried")) as select,
+                    self.assertRaises(worker.Blocked),
+                ):
+                    worker.create_plan(
+                        Path(directory) / "plan.json",
+                        read_token="fake", model=model, endpoint=endpoint,
+                        expected_sha="a" * 40,
+                    )
+                select.assert_not_called()
+
+
 
 if __name__ == "__main__":
     unittest.main()
