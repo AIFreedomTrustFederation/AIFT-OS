@@ -16,6 +16,10 @@ on:
       - 'scripts/aift_secure_cloud_worker.py'
       - 'tests/test_aift_secure_cloud_worker.py'
       - 'docs/secure-cloud-worker.md'
+      - 'scripts/aift_aetherion_readiness.py'
+      - 'tests/test_aift_aetherion_readiness.py'
+      - 'tests/test_aift_publisher_artifact.py'
+      - 'docs/aetherion-worker-readiness.md'
 
 permissions:
   contents: read
@@ -32,8 +36,13 @@ jobs:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           persist-credentials: false
-      - name: Verify bounded AI worker safety contract
-        run: python3 -B -m unittest discover -s tests -p 'test_aift_secure_cloud_worker.py' -v
+      - name: Verify bounded AI worker and Aetherion readiness contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -s tests -p 'test_aift_secure_cloud_worker.py' -v
+          python3 -B -m unittest discover -s tests -p 'test_aift_aetherion_readiness.py' -v
+          python3 -B -m unittest discover -s tests -p 'test_aift_publisher_artifact.py' -v
 
   plan:
     # Native AIFT inference is localhost-only, so plan must run beside Aetherion.
@@ -44,7 +53,11 @@ jobs:
       ((github.event_name == 'schedule' && vars.AIFT_AUTODEV_AI_ENABLED == 'true') ||
        (github.event_name == 'workflow_dispatch' && inputs.run_ai_once == true))
     needs: offline-contract
-    runs-on: [self-hosted, linux, aift-local-model]
+    # Requires an org-managed approved runner GROUP, not just an easily copied label.
+    # No matching runner => queued, never a GitHub-hosted fallback.
+    runs-on:
+      group: aift-isolated-ephemeral
+      labels: [self-hosted, linux, aift-local-model]
     timeout-minutes: 9
     permissions:
       contents: read
@@ -57,6 +70,18 @@ jobs:
         with:
           ref: ${{ github.sha }}
           persist-credentials: false
+      - name: Gate planning on exact-head local Aetherion readiness
+        env:
+          AIFT_MODEL_URL: ${{ vars.AIFT_MODEL_URL }}
+          AIFT_MODEL_NAME: ${{ vars.AIFT_MODEL_NAME }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$AIFT_MODEL_URL" || { echo "::error::AIFT_MODEL_URL is required"; exit 1; }
+          test -n "$AIFT_MODEL_NAME" || { echo "::error::AIFT_MODEL_NAME is required"; exit 1; }
+          python3 -B scripts/aift_aetherion_readiness.py \
+            --repetitions 3 --expected-sha "$GITHUB_SHA" \
+            --model-url "$AIFT_MODEL_URL" --model "$AIFT_MODEL_NAME"
       - name: Prepare one bounded, read-only model proposal
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -65,12 +90,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [[ -z "$AIFT_MODEL_URL" ]]; then
-            export AIFT_MODEL_URL=http://127.0.0.1:8080/v1
-          fi
-          if [[ -z "$AIFT_MODEL_NAME" ]]; then
-            export AIFT_MODEL_NAME=local
-          fi
+          test -n "$AIFT_MODEL_URL" || { echo "::error::AIFT_MODEL_URL is required"; exit 1; }
+          test -n "$AIFT_MODEL_NAME" || { echo "::error::AIFT_MODEL_NAME is required"; exit 1; }
           test "$GITHUB_REF" = refs/heads/main
           python3 -B scripts/aift_secure_cloud_worker.py plan \
             --output "$RUNNER_TEMP/aift-secure-plan.json"

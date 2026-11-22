@@ -1,0 +1,5 @@
+# Custom self-hosted label used only by the independently approved isolated Aetherion runner group.
+# Declaring a label here does not register or approve a runner.
+self-hosted-runner:
+  labels:
+    - aift-local-model
