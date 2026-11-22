@@ -6,7 +6,7 @@
 go test ./...
 ```
 
-Run with verbose output:
+Run tests with verbose output:
 
 ```bash
 go test ./... -v
