@@ -272,7 +272,7 @@ def markdown(report: dict[str, Any]) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repository", choices=("all",) + REPOSITORIES, default="all")
-    parser.add_argument("--max-per-repo", type=int, default=10)
+    parser.add_argument("--max-per-repo", type=int, default=2)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     selected = REPOSITORIES if args.repository == "all" else (args.repository,)
