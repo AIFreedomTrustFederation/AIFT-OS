@@ -1,0 +1,72 @@
+name: AIFT Aetherion Local Worker Readiness
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_local_smoke:
+        description: 'Explicitly test a pre-approved isolated local model runner'
+        type: boolean
+        required: true
+        default: false
+  pull_request:
+    paths:
+      - '.github/workflows/aift-aetherion-readiness.yml'
+      - 'scripts/aift_aetherion_readiness.py'
+      - 'tests/test_aift_aetherion_readiness.py'
+      - 'docs/aetherion-worker-readiness.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aift-aetherion-readiness-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  offline-contract:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 4
+    steps:
+      - name: Check out source without persisted credentials
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - name: Verify offline smoke-test contract
+        run: python3 -B -m unittest discover -s tests -p 'test_aift_aetherion_readiness.py' -v
+
+  operator-local-smoke:
+    # NOT an automatic or public runner-registration mechanism.
+    # Never execute model jobs on PR events or non-main workflow dispatches.
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/main' &&
+      inputs.run_local_smoke == true
+    needs: offline-contract
+    runs-on: [self-hosted, linux, aift-local-model]
+    timeout-minutes: 12
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the trusted exact main source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Run bounded live Aetherion smoke test (no publisher secrets)
+        shell: bash
+        env:
+          AIFT_MODEL_URL: ${{ vars.AIFT_MODEL_URL }}
+          AIFT_MODEL_NAME: ${{ vars.AIFT_MODEL_NAME }}
+        run: |
+          set -euo pipefail
+          python3 -B scripts/aift_aetherion_readiness.py \
+            --repetitions 5 --expected-sha "$GITHUB_SHA" \
+            | tee "$RUNNER_TEMP/aift-aetherion-readiness.json"
+      - name: Preserve read-only evidence even on failure
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: aift-aetherion-readiness
+          path: ${{ runner.temp }}/aift-aetherion-readiness.json
+          if-no-files-found: ignore
+          retention-days: 1
