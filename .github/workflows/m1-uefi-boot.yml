@@ -26,14 +26,14 @@ jobs:
           set -euo pipefail
           kernel="$(find /boot -maxdepth 1 -type f -name 'vmlinuz-*' | sort -V | tail -1)"
           test -n "$kernel"
-          test -f /usr/lib/ovmf/OVMF_CODE_4M.fd
-          test -f /usr/lib/ovmf/OVMF_VARS_4M.fd
+          test -f /usr/share/OVMF/OVMF_CODE_4M.fd
+          test -f /usr/share/OVMF/OVMF_VARS_4M.fd
           file /usr/bin/busybox | grep 'statically linked'
           {
             echo "AIFT_M1_KERNEL=$kernel"
             echo "AIFT_M1_BUSYBOX=/usr/bin/busybox"
-            echo "AIFT_M1_OVMF_CODE=/usr/lib/ovmf/OVMF_CODE_4M.fd"
-            echo "AIFT_M1_OVMF_VARS=/usr/lib/ovmf/OVMF_VARS_4M.fd"
+            echo "AIFT_M1_OVMF_CODE=/usr/share/OVMF/OVMF_CODE_4M.fd"
+            echo "AIFT_M1_OVMF_VARS=/usr/share/OVMF/OVMF_VARS_4M.fd"
             echo "AIFT_M1_OUTPUT=${RUNNER_TEMP}/aift-m1-uefi"
           } >> "$GITHUB_ENV"
           dpkg-query -W linux-image-virtual busybox-static ovmf qemu-system-x86 grub-efi-amd64-bin
