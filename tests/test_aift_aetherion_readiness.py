@@ -85,6 +85,10 @@ class AetherionReadinessTests(unittest.TestCase):
         self.assertIn("github.event_name == 'workflow_dispatch'", workflow)
         self.assertIn("github.ref == 'refs/heads/main'", workflow)
         self.assertIn("aift-local-model", workflow)
+        self.assertIn("group: aift-isolated-ephemeral", workflow)
+        self.assertIn("--varied-fixtures", workflow)
+        self.assertIn("AIFT_MODEL_URL is required", workflow)
+        self.assertIn("AIFT_MODEL_NAME is required", workflow)
         self.assertIn("persist-credentials: false", workflow)
         self.assertNotIn("APP_PRIVATE_KEY", workflow)
         self.assertNotIn("AIFT_AUTODEV_AI_ENABLED=true", workflow)
@@ -96,6 +100,47 @@ class AetherionReadinessTests(unittest.TestCase):
         self.assertIn("scripts/aift_aetherion_readiness.py", workflow)
         self.assertIn("--expected-sha", workflow)
         self.assertIn("aift-secure-plan.json", workflow)
+
+    def test_varied_fixtures_are_selected_and_must_all_pass(self):
+        seen = []
+
+        def fake_infer(**kwargs):
+            seen.append(kwargs["content"])
+            for source, expected, instruction in readiness.FIXTURES:
+                if kwargs["content"] == source and kwargs["instruction"] == instruction:
+                    return {"content": expected}
+            self.fail("unexpected fixture")
+
+        clock = iter(range(11)).__next__
+        report, code = readiness.evaluate(
+            repetitions=5, varied_fixtures=True, model="aetherion:latest",
+            endpoint="http://127.0.0.1:11434/v1", infer=fake_infer, clock=clock,
+        )
+        self.assertEqual(code, 0)
+        self.assertEqual(report["passed"], 5)
+        self.assertEqual(report["fixture_mode"], "varied")
+        self.assertEqual(seen[0], readiness.FIXTURES[0][0])
+        self.assertEqual(seen[1], readiness.FIXTURES[1][0])
+        self.assertEqual(seen[2], readiness.FIXTURES[2][0])
+        self.assertEqual(seen[3], readiness.FIXTURES[0][0])
+
+    def test_invalid_model_config_does_not_invoke_inference(self):
+        def forbidden(**_):
+            self.fail("should never query model with bad config")
+
+        for endpoint, model in (
+            ("", "aetherion:latest"),
+            ("http://example.com/v1", "aetherion:latest"),
+            ("http://127.0.0.1:11434/v1", ""),
+        ):
+            with self.subTest(endpoint=endpoint, model=model):
+                report, code = readiness.evaluate(
+                    repetitions=5, model=model, endpoint=endpoint, infer=forbidden,
+                )
+                self.assertEqual(code, 1)
+                self.assertEqual(report["attempted"], 0)
+                self.assertEqual(report["checks"]["local_worker_inference"], "invalid_configuration")
+
 
 
 if __name__ == "__main__":
