@@ -11,6 +11,7 @@ on:
   pull_request:
     paths:
       - '.github/workflows/aift-aetherion-readiness.yml'
+      - '.github/actionlint.yaml'
       - 'scripts/aift_aetherion_readiness.py'
       - 'tests/test_aift_aetherion_readiness.py'
       - 'docs/aetherion-worker-readiness.md'
