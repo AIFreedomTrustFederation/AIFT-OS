@@ -10,8 +10,11 @@ federation health from static PR metadata.
 The workflow `.github/workflows/aift-pr-evidence-audit.yml` is triggered on
 its own PR changes for **offline tests only**. Once the workflow is reviewed
 and merged onto `main`, it will also run on a six-hour schedule and by
-operator-initiated `workflow_dispatch`. Scheduled audits sample at most ten
-recent open PRs per configured repository, with a visible `truncated` flag.
+operator-initiated `workflow_dispatch`. Scheduled audits sample at most two
+recent open PRs per configured repository to stay within anonymous GitHub API
+budgets, with a visible `truncated` flag. For deeper inspection, dispatch a
+single repository and use the bounded CLI `--max-per-repo` option after
+reviewing API rate limits.
 
 The initially enumerated public repositories are AIFT-OS,
 www.aifreedomtrust.com, AIFT-Runtime, and VPS. This is not a claim that these
