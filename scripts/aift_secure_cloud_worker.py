@@ -211,11 +211,11 @@ def _loopback_model_endpoint(endpoint: str) -> int:
             or parts.query or parts.fragment):
         raise Blocked("Only http://127.0.0.1:<port>/v1 is allowed for AIFT inference")
     try:
-        port = parts.port or 8080
+        port = parts.port
     except ValueError as error:
         raise Blocked("Invalid local inference port") from error
-    if not 1 <= port <= 65535:
-        raise Blocked("Invalid local inference port")
+    if port is None or not 1 <= port <= 65535:
+        raise Blocked("Explicit local inference port required")
     return port
 
 
