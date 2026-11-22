@@ -99,13 +99,16 @@ def _private_dir(path: Path) -> Path:
 def prepare_state(root: Path) -> Path:
     """State must be outside repository, owner-only, and never a symlink."""
     root = root.expanduser().absolute()
+    if root.is_symlink():
+        raise worker.Blocked("State directory cannot be a symlink")
+    root = root.resolve(strict=False)
     repo = Path.cwd().resolve()
-    resolved_root = root.resolve(strict=False)
-    if resolved_root == repo or repo in resolved_root.parents:
+    if root == repo or repo in root.parents:
         raise worker.Blocked("Outbox must be outside the Git checkout")
     _private_dir(root)
     _private_dir(root / "outbox")
     _private_dir(root / "archive")
+    _private_dir(root / "discarded")
     return root
 
 
@@ -308,6 +311,30 @@ def mark_delivered(root: Path, issue: int) -> None:
         _sync_dir(root / "outbox")
 
 
+def discard_plan(root: Path, issue: int, *, expected_digest: str) -> str:
+    """Operator-initiated quarantine of a stale/unpublished plan, never delivery."""
+    if not isinstance(expected_digest, str) or not re.fullmatch(r"[0-9a-f]{64}", expected_digest):
+        raise worker.Blocked("Reviewed digest required for discard")
+    root = prepare_state(root)
+    with exclusive_lock(root):
+        source = _plan_path(root, issue)
+        data = _read_plan(source)
+        if type(json.loads(data).get("issue_number")) is not int or json.loads(data)["issue_number"] != issue:
+            raise worker.Blocked("Plan issue mismatch")
+        digest = hashlib.sha256(data).hexdigest()
+        if digest != expected_digest:
+            raise worker.Blocked("Discard digest does not match reviewed plan")
+        # Retain evidence but free active outbox capacity; do not mark delivered.
+        discarded = root / "discarded"
+        destination = discarded / f"issue-{issue}-{time.time_ns()}-{digest[:12]}.json"
+        if destination.exists():
+            raise worker.Blocked("Discard destination already exists")
+        os.rename(source, destination)
+        _sync_dir(discarded)
+        _sync_dir(root / "outbox")
+        return destination.name
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--state-dir", type=Path, default=DEFAULT_STATE)
@@ -326,6 +353,9 @@ def main(argv: list[str] | None = None) -> int:
     export.add_argument("--expected-digest", required=True)
     acknowledged = commands.add_parser("mark-delivered")
     acknowledged.add_argument("--issue", type=int, required=True)
+    discard = commands.add_parser("discard")
+    discard.add_argument("--issue", type=int, required=True)
+    discard.add_argument("--expected-digest", required=True)
     args = parser.parse_args(argv)
     try:
         if args.command == "status":
@@ -337,6 +367,9 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "mark-delivered":
             mark_delivered(args.state_dir, args.issue)
             print(json.dumps({"status": "locally_archived", "issue": args.issue}))
+        elif args.command == "discard":
+            name = discard_plan(args.state_dir, args.issue, expected_digest=args.expected_digest)
+            print(json.dumps({"status": "discarded_unpublished", "issue": args.issue, "archive_name": name}))
         elif args.command == "once":
             print(json.dumps(poll_once(args.state_dir, model=args.model, endpoint=args.model_url), sort_keys=True))
         else:
