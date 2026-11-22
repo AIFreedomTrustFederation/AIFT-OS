@@ -143,7 +143,7 @@ def parse_issue(issue: dict[str, Any]) -> tuple[str, str]:
     return targets[0], instruction
 
 
-def select_issue(read_token: str, *, fetcher=None) -> tuple[dict[str, Any], str, str] | None:
+def select_issue(read_token: str, *, fetcher=None, exclude_issues=None) -> tuple[dict[str, Any], str, str] | None:
     # A local polling client may supply a public, anonymous READ-ONLY fetcher.
     # Existing GitHub Actions behavior continues to use github_get and its read token.
     fetch = fetcher if fetcher is not None else github_get
@@ -159,6 +159,8 @@ def select_issue(read_token: str, *, fetcher=None) -> tuple[dict[str, Any], str,
     existing = "\n".join(str(pr.get("body") or "") for pr in prs)
     for issue in issues:
         if not isinstance(issue, dict) or not isinstance(issue.get("number"), int):
+            continue
+        if exclude_issues and issue["number"] in exclude_issues:
             continue
         marker = f"AIFT-AUTODEV-ISSUE:{issue['number']}"
         if marker in existing:
