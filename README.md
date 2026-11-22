@@ -264,6 +264,7 @@ Explore the proposed architecture and source-editable diagrams:
 - [Windows/Intel Mac/Apple Silicon/ARM boot compatibility and infographic](docs/platform/boot-and-device-compatibility.md)
 - [Future AI phones, robots, wearables and independent safety](docs/platform/embodied-frontier-os.md)
 - [Operating desktop, app manifest and versioned service contracts](docs/platform/desktop-and-service-contracts.md)
+- [Recursive Fibonacci intelligence, context, persistent memory and training curriculum (proposed)](docs/platform/fibonacci-intelligence-memory-training.md)
 - [Evidence-gated milestones, safety and release handoffs](docs/platform/verification-and-release.md)
 
 These guides leave repository and constitutional authority unchanged, distinguish simulated, proposed and verified features, and prohibit unattended physical firmware, disk, boot-security or robotic-actuator changes. Real status comes from linked exact-head tests and approved release artifacts, not roadmap labels.
