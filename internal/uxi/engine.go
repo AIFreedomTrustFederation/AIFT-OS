@@ -90,6 +90,7 @@ func (e *Engine) HandleMessage(ctx context.Context, sessionID, content string) (
 			}
 			if err != nil {
 				metadata["inference_error"] = err.Error()
+				metadata["inference_failure_kind"] = inferenceFailureKind(err)
 			}
 		}
 	}
@@ -199,7 +200,7 @@ func degradedAnswer(repos []Repository, notConfigured bool, inferenceErr error) 
 	case notConfigured:
 		message += " No local model endpoint is configured, so I did not fabricate an AI response. Use `/inspect <repository>` and `/forge` for evidence-backed answers."
 	case inferenceErr != nil:
-		message += " The local model endpoint is not available, so I did not fabricate an AI response. Use `/inspect <repository>` while the model runtime is offline."
+		message += " Local inference failed (" + inferenceFailureKind(inferenceErr) + "); this does not prove the model is offline. No AI response was fabricated. Use `/inspect <repository>` while investigating the recorded inference error."
 	}
 	return message
 }
