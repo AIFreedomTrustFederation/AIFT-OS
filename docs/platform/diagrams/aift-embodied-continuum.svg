@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="970" viewBox="0 0 1400 970" role="img" aria-labelledby="title desc">
+<title id="title">AIFT Continuum Frontier OS proposed portable intelligence and local safety</title>
+<desc id="desc">The user's portable private intelligence and memory are separate from local authority. A future phone, wearable and simulated robot receive user-approved task data but require device-specific permissions. Robotic motion passes an independent physical safety gate; failures result in no action. Diagram is a research design, not proof of physical robot deployment.</desc>
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#080f22"/><stop offset=".5" stop-color="#152c48"/><stop offset="1" stop-color="#24112f"/></linearGradient><linearGradient id="banner" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#ec7165"/><stop offset=".34" stop-color="#efc171"/><stop offset=".66" stop-color="#3ce0bb"/><stop offset="1" stop-color="#9678e9"/></linearGradient><style>text{font-family:Inter,Arial,sans-serif;fill:#eaf2ff}.sub{fill:#b9cce7;font-size:18px}.minor{fill:#c5d8eb;font-size:15px}.header{font-size:28px;font-weight:750}.panel{fill:#182e4b;stroke:#6489ac;stroke-width:2}.connector{stroke:#74c0dd;stroke-width:3;fill:none;stroke-linecap:round}</style></defs>
+<rect width="1400" height="970" fill="url(#bg)"/>
+<text x="700" y="65" text-anchor="middle" font-size="38" font-weight="750">AIFT CONTINUUM: ONE INTELLIGENCE, MANY BODIES</text>
+<text x="700" y="104" text-anchor="middle" class="sub">Personal memory may move • Hardware privileges never transfer implicitly</text>
+<rect x="500" y="125" width="400" height="37" rx="18" fill="#493444" stroke="#f4c37b"/><text x="700" y="151" text-anchor="middle" font-size="16">PROPOSED • SIMULATION-FIRST</text>
+<rect x="245" y="191" width="910" height="140" rx="24" class="panel"/><rect x="258" y="200" width="884" height="8" rx="4" fill="url(#banner)"/>
+<text x="700" y="247" text-anchor="middle" class="header">USER-CUSTODIED CONTINUUM WORKSPACE</text>
+<text x="700" y="285" text-anchor="middle" class="sub">Encrypted context · Selective memory · Skill provenance · User control · Revocation</text>
+<path d="M700 332 V373 M275 374 H1125 M275 374 V408 M700 374 V408 M1125 374 V408" class="connector"/>
+<rect x="86" y="415" width="379" height="203" rx="22" class="panel"/><rect x="510" y="415" width="379" height="203" rx="22" class="panel"/><rect x="934" y="415" width="379" height="203" rx="22" class="panel"/>
+<rect x="96" y="426" width="359" height="7" rx="4" fill="#efc171"/><rect x="520" y="426" width="359" height="7" rx="4" fill="#51d4d2"/><rect x="944" y="426" width="359" height="7" rx="4" fill="#aa84eb"/>
+<text x="275" y="475" text-anchor="middle" class="header">FUTURE PHONE</text>
+<text x="275" y="507" text-anchor="middle" class="sub">AOSP / supported device</text>
+<text x="275" y="541" text-anchor="middle" class="sub">Explicit camera/location grants</text>
+<text x="275" y="578" text-anchor="middle" class="minor">Emulator → reviewed model target</text>
+<text x="700" y="475" text-anchor="middle" class="header">WEARABLE / EDGE</text>
+<text x="700" y="507" text-anchor="middle" class="sub">Energy-aware local intelligence</text>
+<text x="700" y="541" text-anchor="middle" class="sub">Short-lived private sensor access</text>
+<text x="700" y="578" text-anchor="middle" class="minor">Constrained simulation first</text>
+<text x="1123" y="475" text-anchor="middle" class="header">SIMULATED ROBOT</text>
+<text x="1123" y="507" text-anchor="middle" class="sub">ROS 2 / digital twin</text>
+<text x="1123" y="541" text-anchor="middle" class="sub">Model proposes, never actuates</text>
+<text x="1123" y="578" text-anchor="middle" class="minor">No physical controller authority</text>
+<path d="M1123 619 V666" class="connector"/><path d="M1117 657 L1123 668 L1129 657" class="connector"/>
+<rect x="840" y="680" width="475" height="105" rx="20" fill="#183c45" stroke="#45dcc2" stroke-width="3"/>
+<text x="1077" y="718" text-anchor="middle" font-size="23" font-weight="750">INDEPENDENT SAFETY GATE</text>
+<text x="1077" y="750" text-anchor="middle" class="minor">Permission · Sensor freshness · E-stop · Watchdog</text>
+<path d="M1077 786 V826" class="connector"/>
+<rect x="840" y="838" width="475" height="79" rx="16" fill="#3b293c" stroke="#f29694" stroke-width="2"/><text x="1077" y="867" text-anchor="middle" font-size="22" font-weight="700">DENY / SAFE STOP BY DEFAULT</text><text x="1077" y="895" text-anchor="middle" class="minor">Actual motion needs separate approved physical controls</text>
+<rect x="85" y="677" width="684" height="225" rx="20" class="panel"/>
+<text x="427" y="718" text-anchor="middle" class="header">PORTABLE DOES NOT MEAN PRIVILEGED</text>
+<text x="427" y="753" text-anchor="middle" class="sub">Each device evaluates its own policy and capability profile.</text>
+<text x="427" y="790" text-anchor="middle" class="sub">Denied access remains denied after handoff.</text>
+<text x="427" y="827" text-anchor="middle" class="sub">Offline failure, revocation and recovery are testable.</text>
+<text x="427" y="864" text-anchor="middle" class="minor">No hidden sensor collection · No model-directed motors</text>
+<text x="700" y="950" text-anchor="middle" class="minor">Design target • Not a phone ROM, installed robot OS, live actuator controller or safety certification</text>
+</svg>

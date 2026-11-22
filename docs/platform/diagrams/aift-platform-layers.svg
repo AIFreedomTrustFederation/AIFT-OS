@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="930" viewBox="0 0 1400 930" role="img" aria-labelledby="title desc">
+<title id="title">AIFT Universal Operating System proposed layers infographic</title>
+<desc id="desc">A cinematic architecture infographic showing one AIFT operating experience above native, hosted and embodied operating modes; service contracts, safety boundaries, repository roots and verification evidence below. All architecture is proposed and not a claim of deployment.</desc>
+<defs><linearGradient id="space" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#090c1d"/><stop offset=".52" stop-color="#102043"/><stop offset="1" stop-color="#170f36"/></linearGradient><linearGradient id="spectral" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#f15b5b"/><stop offset=".35" stop-color="#edb958"/><stop offset=".65" stop-color="#41deb6"/><stop offset=".85" stop-color="#60b7ff"/><stop offset="1" stop-color="#a67eff"/></linearGradient><filter id="glow"><feGaussianBlur stdDeviation="8"/></filter><style>text{font-family:Inter,Arial,sans-serif;fill:#eaf2ff} .muted{fill:#b9c8e2}.small{font-size:18px}.mini{font-size:15px}.heading{font-size:28px;font-weight:700}.section{font-size:20px;font-weight:700} .card{fill:#182647;stroke:#4b648d;stroke-width:2} .line{fill:none;stroke:#80bfee;stroke-width:3;stroke-linecap:round}</style></defs>
+<rect width="1400" height="930" fill="url(#space)"/><circle cx="1190" cy="130" r="180" fill="#4e509b" opacity=".12" filter="url(#glow)"/><circle cx="200" cy="730" r="230" fill="#2d88ab" opacity=".09" filter="url(#glow)"/>
+<text x="700" y="74" text-anchor="middle" font-size="37" font-weight="750">AIFT UNIVERSAL OPERATING SYSTEM</text>
+<text x="700" y="109" text-anchor="middle" class="muted small">One shared experience • Native hardware • Hosted sessions • Embodied frontier</text>
+<rect x="520" y="129" width="360" height="33" rx="16" fill="#3e3040" stroke="#f4ba72"/><text x="700" y="151" text-anchor="middle" font-size="16" fill="#ffdb9f">DESIGN TARGET — NOT DEPLOYED</text>
+<rect x="170" y="188" width="1060" height="124" rx="22" class="card"/><rect x="180" y="194" width="1040" height="7" rx="4" fill="url(#spectral)"/>
+<text x="700" y="239" text-anchor="middle" class="heading">LIVING UNIVERSE / AIFT DESKTOP</text>
+<text x="700" y="269" text-anchor="middle" class="muted small">Application launcher · Windows · Files · System status · Accessibility · Local-first AI</text>
+<path d="M700 313 V346" class="line"/><path d="M695 338 L700 347 L705 338" class="line"/>
+<rect x="84" y="362" width="389" height="208" rx="20" class="card"/><rect x="505" y="362" width="389" height="208" rx="20" class="card"/><rect x="926" y="362" width="389" height="208" rx="20" class="card"/>
+<rect x="96" y="378" width="365" height="7" rx="4" fill="#edb958"/><rect x="517" y="378" width="365" height="7" rx="4" fill="#41deb6"/><rect x="938" y="378" width="365" height="7" rx="4" fill="#a67eff"/>
+<text x="278" y="427" text-anchor="middle" class="heading">NATIVE OS</text><text x="278" y="458" text-anchor="middle" class="muted small">UEFI / Linux / AIFT services</text><text x="278" y="488" text-anchor="middle" class="muted small">Offline boot, local hardware</text><text x="278" y="532" text-anchor="middle" class="mini">Evidence: QEMU → approved hardware</text>
+<text x="699" y="427" text-anchor="middle" class="heading">HOSTED OS</text><text x="699" y="458" text-anchor="middle" class="muted small">Isolated session / secure APIs</text><text x="699" y="488" text-anchor="middle" class="muted small">Browser client, persistent data</text><text x="699" y="532" text-anchor="middle" class="mini">Evidence: auth + isolation tests</text>
+<text x="1120" y="427" text-anchor="middle" class="heading">EMBODIED / MOBILE</text><text x="1120" y="458" text-anchor="middle" class="muted small">Robot simulation / phone emulator</text><text x="1120" y="488" text-anchor="middle" class="muted small">Device-local safety and consent</text><text x="1120" y="532" text-anchor="middle" class="mini">Evidence: fault + revoke tests</text>
+<path d="M278 570 V608 H1120 V570 M700 570 V608 M700 608 V630" class="line"/>
+<rect x="170" y="638" width="1060" height="108" rx="22" class="card"/><text x="700" y="679" text-anchor="middle" class="heading">VERSIONED SERVICE &amp; CAPABILITY CONTRACTS</text><text x="700" y="710" text-anchor="middle" class="muted small">Identity · Permissions · Applications · Memory · Files · Provenance · Agent plans · Evidence</text>
+<path d="M700 746 V774" class="line"/>
+<rect x="170" y="781" width="1060" height="94" rx="18" fill="#12294b" stroke="#57bce9" stroke-width="2"/>
+<text x="700" y="819" text-anchor="middle" class="heading">SOVEREIGN FEDERATION ROOTS</text>
+<text x="700" y="847" text-anchor="middle" class="muted small">AIFT-OS · Runtime · Forge · VPS · Genesis · Living Universe · Model &amp; app owners</text>
+<text x="700" y="914" text-anchor="middle" class="mini" fill="#c3d4ec">Independent owner authority • Exact-head evidence • No inferred deployment or physical safety</text>
+</svg>
