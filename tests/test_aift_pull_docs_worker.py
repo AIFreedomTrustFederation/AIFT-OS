@@ -202,7 +202,7 @@ class PullWorkerTests(unittest.TestCase):
             if "/pulls?" in path:
                 return []
             pages.append(path)
-            return issues[:worker.MAX_ISSUES] if "page=" not in path else issues[worker.MAX_ISSUES:]
+            return issues[:worker.MAX_ISSUES] if "&page=" not in path else issues[worker.MAX_ISSUES:]
         with patch.object(worker, "safe_document", return_value=Path("docs/example.md")):
             result = worker.select_issue(
                 "", fetcher=fetch, exclude_issues=set(range(1, worker.MAX_ISSUES + 1)),
