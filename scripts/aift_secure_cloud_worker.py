@@ -415,9 +415,25 @@ def validate_plan_artifact(record: Any, *, original: str, expected_sha: str,
     return verified
 
 
+def verify_live_main(expected_sha: str) -> None:
+    """Fail closed when live main differs from exact checkout (best-effort TOCTOU check)."""
+    if not isinstance(expected_sha, str) or not SHA_RE.fullmatch(expected_sha):
+        raise Blocked("Invalid expected main SHA")
+    result = subprocess.run(
+        ["git", "ls-remote", "--heads", "origin", "refs/heads/main"],
+        capture_output=True, text=True, timeout=20,
+    )
+    fields = result.stdout.split()
+    if result.returncode != 0 or len(fields) != 2 or fields[1] != "refs/heads/main":
+        raise Blocked("Unable to verify live main branch")
+    if fields[0] != expected_sha:
+        raise Blocked("Remote main advanced; replan against current main")
+
+
 def preflight_plan(path: Path, *, read_token: str, expected_sha: str) -> tuple[dict, dict]:
     """Revalidate an untrusted plan with no write token and no Git mutations."""
     verify_checkout(expected_sha)
+    verify_live_main(expected_sha)
     if path.is_symlink() or not path.is_file() or not 0 < path.stat().st_size <= 8192:
         raise Blocked("Plan artifact invalid or oversized")
     record = json.loads(path.read_text(encoding="utf-8"))
@@ -453,6 +469,7 @@ def publish_plan(path: Path, *, read_token: str, expected_sha: str, gh_token: st
         raise Blocked("Proposal branch already exists, refusing duplicate")
     if existing.returncode != 2:
         raise Blocked("Unable to verify branch uniqueness")
+    verify_live_main(expected_sha)
     source.write_text(content, encoding="utf-8")
     subprocess.run(["git", "diff", "--check"], check=True)
     changed = run("git", "diff", "--name-only")
@@ -464,6 +481,9 @@ def publish_plan(path: Path, *, read_token: str, expected_sha: str, gh_token: st
                     "aift-cloud-development[bot]@users.noreply.github.com"], check=True)
     subprocess.run(["git", "add", "--", target], check=True)
     subprocess.run(["git", "commit", "-m", f"docs: propose bounded issue #{issue_num} update"], check=True)
+    # Check once more immediately before the remote mutation; protections must
+    # independently prevent unauthorized or stale merges.
+    verify_live_main(expected_sha)
     subprocess.run(["git", "push", "origin", f"HEAD:refs/heads/{branch}"], check=True)
     body = (
         f"## Bounded AI documentation proposal\n\n"
