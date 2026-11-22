@@ -464,8 +464,8 @@ def main() -> int:
         return 0 if create_plan(
             args.output,
             read_token=os.environ.get("GITHUB_TOKEN", ""),
-            model=os.environ.get("AIFT_MODEL_NAME", MODEL_DEFAULT),
-            endpoint=os.environ.get("AIFT_MODEL_URL") or MODEL_URL_DEFAULT,
+            model=os.environ.get("AIFT_MODEL_NAME", ""),
+            endpoint=os.environ.get("AIFT_MODEL_URL", ""),
             expected_sha=expected_sha,
         ) else 0
     publish_plan(args.plan, read_token=os.environ.get("GITHUB_TOKEN", ""),
