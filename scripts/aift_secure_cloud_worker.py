@@ -143,33 +143,44 @@ def parse_issue(issue: dict[str, Any]) -> tuple[str, str]:
     return targets[0], instruction
 
 
-def select_issue(read_token: str, *, fetcher=None, exclude_issues=None) -> tuple[dict[str, Any], str, str] | None:
-    # A local polling client may supply a public, anonymous READ-ONLY fetcher.
-    # Existing GitHub Actions behavior continues to use github_get and its read token.
+def select_issue(read_token: str, *, fetcher=None, exclude_issues=None,
+                 max_pages: int = 1) -> tuple[dict[str, Any], str, str] | None:
+    """Bounded oldest-first issue traversal with no unapproved GitHub API routes.
+
+    Existing Actions planning uses exactly one page; the credentialless local
+    poller can explicitly request several pages so completed tasks do not starve
+    newer approved issues. All pages remain capped and sort order is fixed.
+    """
+    if type(max_pages) is not int or not 1 <= max_pages <= 4:
+        raise Blocked("Issue pagination limit exceeded")
     fetch = fetcher if fetcher is not None else github_get
     base = f"/repos/{OWNER}/{REPO}"
-    issues = fetch(
-        base + f"/issues?state=open&labels={LABEL}&per_page={MAX_ISSUES}&sort=created&direction=asc",
-        read_token)
-    if not isinstance(issues, list):
-        raise Blocked("Issue list malformed")
     prs = fetch(base + f"/pulls?state=open&per_page={MAX_OPEN_PRS}", read_token)
     if not isinstance(prs, list) or len(prs) >= MAX_OPEN_PRS:
         raise Blocked("Cannot prove all existing worker PRs were inspected")
     existing = "\n".join(str(pr.get("body") or "") for pr in prs)
-    for issue in issues:
-        if not isinstance(issue, dict) or not isinstance(issue.get("number"), int):
-            continue
-        if exclude_issues and issue["number"] in exclude_issues:
-            continue
-        marker = f"AIFT-AUTODEV-ISSUE:{issue['number']}"
-        if marker in existing:
-            continue
-        try:
-            path, instruction = parse_issue(issue)
-        except Blocked:
-            continue
-        return issue, path, instruction
+    issue_query = base + f"/issues?state=open&labels={LABEL}&per_page={MAX_ISSUES}&sort=created&direction=asc"
+    for page in range(1, max_pages + 1):
+        # Keep the legacy first-page query unchanged for existing workflows.
+        route = issue_query if page == 1 else issue_query + f"&page={page}"
+        issues = fetch(route, read_token)
+        if not isinstance(issues, list) or len(issues) > MAX_ISSUES:
+            raise Blocked("Issue page malformed or exceeds limit")
+        for issue in issues:
+            if not isinstance(issue, dict) or type(issue.get("number")) is not int:
+                continue
+            if exclude_issues and issue["number"] in exclude_issues:
+                continue
+            marker = f"AIFT-AUTODEV-ISSUE:{issue['number']}"
+            if marker in existing:
+                continue
+            try:
+                path, instruction = parse_issue(issue)
+            except Blocked:
+                continue
+            return issue, path, instruction
+        if len(issues) < MAX_ISSUES:
+            break
     return None
 
 
