@@ -7,6 +7,8 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"net"
+	"net/url"
 	"strings"
 	"time"
 )
@@ -64,6 +66,9 @@ func (c *OpenAICompatibleClient) Complete(ctx context.Context, system string, me
 		client = &http.Client{Timeout: defaultInferenceTimeout}
 	}
 	endpoint, model := normalizeInferenceConfig(c.Endpoint, c.Model)
+	if err := validateLocalInferenceEndpoint(endpoint); err != nil {
+		return "", err
+	}
 	all := make([]ChatMessage, 0, len(messages)+1)
 	all = append(all, ChatMessage{Role: "system", Content: system})
 	all = append(all, messages...)
@@ -103,4 +108,23 @@ func (c *OpenAICompatibleClient) Complete(ctx context.Context, system string, me
 		return "", errors.New("local inference returned no content")
 	}
 	return strings.TrimSpace(decoded.Choices[0].Message.Content), nil
+}
+
+
+// validateLocalInferenceEndpoint prevents a configured provider from becoming
+// an outbound network or privileged local-socket request. Only numeric loopback
+// HTTP hosts are admitted; no credentials, fragments, or query strings.
+func validateLocalInferenceEndpoint(endpoint string) error {
+	u, err := url.Parse(endpoint)
+	if err != nil || u == nil || u.Scheme != "http" || u.User != nil || u.RawQuery != "" || u.Fragment != "" {
+		return errors.New("local inference endpoint must be a plain loopback HTTP URL")
+	}
+	ip := net.ParseIP(u.Hostname())
+	if ip == nil || !ip.IsLoopback() || u.Port() == "" {
+		return errors.New("local inference endpoint must use a numeric loopback address and explicit port")
+	}
+	if u.Path != "" && u.Path != "/v1" {
+		return errors.New("local inference endpoint path must be /v1")
+	}
+	return nil
 }
