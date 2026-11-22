@@ -15,7 +15,7 @@ from pathlib import Path
 import re
 from typing import Any, Callable
 from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
+from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 OWNER = "AIFreedomTrustFederation"
 REPOSITORIES = (
@@ -39,6 +39,13 @@ class ProbeUnavailable(RuntimeError):
     pass
 
 
+class NoRedirects(HTTPRedirectHandler):
+    """Reject API redirects, including redirects that could expose credentials."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
 def read_api(path: str, *, repository: str, token: str = "") -> Any:
     """Only GitHub REST, only a statically enumerated repository."""
     if repository not in REPOSITORIES or not path.startswith(f"/repos/{repository}/"):
@@ -52,7 +59,7 @@ def read_api(path: str, *, repository: str, token: str = "") -> Any:
         headers["Authorization"] = f"Bearer {token}"
     req = Request("https://api.github.com" + path, headers=headers, method="GET")
     try:
-        with urlopen(req, timeout=15) as response:
+        with build_opener(NoRedirects).open(req, timeout=15) as response:
             payload = response.read(1500001)
         if len(payload) > 1500000:
             raise ProbeUnavailable("GitHub evidence response exceeds size limit")
