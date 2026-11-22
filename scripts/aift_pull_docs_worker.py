@@ -159,7 +159,10 @@ def poll_once(root: Path, *, model: str, endpoint: str) -> dict:
             raise worker.Blocked("Local checkout must be on main")
         sha = exact_public_main()
         worker.verify_checkout(sha)
-        selection = worker.select_issue("", fetcher=public_get)
+        already_queued = {int(m.group(1)) for folder in (root / "outbox", root / "archive")
+                          for item in _plans(folder)
+                          if (m := re.fullmatch(r"issue-([0-9]+)[.]json", item.name))}
+        selection = worker.select_issue("", fetcher=public_get, exclude_issues=already_queued)
         if selection is None:
             return {"status": "idle", "head_sha": sha}
         issue, _target, _instruction = selection
