@@ -104,6 +104,7 @@ All engines must read applicable AGENTS.md, preserve per-repository ownership, i
 - [Boot, Apple, Windows and hardware compatibility](boot-and-device-compatibility.md)
 - [Embodied Frontier OS: robots, phones, wearables](embodied-frontier-os.md)
 - [OS desktop and service interfaces](desktop-and-service-contracts.md)
+- [Recursive Fibonacci intelligence: memory, context, training and federation v1](fibonacci-intelligence-memory-training.md)
 - [Acceptance, verification and safe handoffs](verification-and-release.md)
 - [AIFT platform layers infographic](diagrams/aift-platform-layers.svg)
 - [Boot and device compatibility infographic](diagrams/aift-boot-modes.svg)
