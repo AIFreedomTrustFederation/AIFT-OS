@@ -119,11 +119,17 @@ class AuditTests(unittest.TestCase):
         def opener(req, timeout):
             captured.append(req)
             return Response()
-        with patch.object(audit, "urlopen", side_effect=opener):
+        class Opener:
+            def open(self, req, timeout):
+                return opener(req, timeout)
+        with patch.object(audit, "build_opener", return_value=Opener()) as factory:
             audit.read_api("/repos/" + REPO + "/branches/main", repository=REPO, token="secret")
             external = audit.REPOSITORIES[1]
             audit.read_api("/repos/" + external + "/branches/main",
                            repository=external, token="secret")
+        self.assertTrue(all(call.args == (audit.NoRedirects,) for call in factory.call_args_list))
+        self.assertIsNone(audit.NoRedirects().redirect_request(None, None, 302, "",
+                                                                {}, "https://untrusted.invalid/"))
         self.assertIn("Authorization", captured[0].headers)
         self.assertNotIn("Authorization", captured[1].headers)
 
