@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"strconv"
 	"time"
 )
 
@@ -124,6 +125,10 @@ func validateLocalInferenceEndpoint(endpoint string) error {
 	ip := net.ParseIP(u.Hostname())
 	if ip == nil || !ip.IsLoopback() || u.Port() == "" {
 		return errors.New("local inference endpoint must use a numeric loopback address and explicit port")
+	}
+	port, portErr := strconv.Atoi(u.Port())
+	if portErr != nil || port < 1 || port > 65535 {
+		return errors.New("local inference endpoint port must be between 1 and 65535")
 	}
 	if u.Path != "" && u.Path != "/v1" {
 		return errors.New("local inference endpoint path must be /v1")
