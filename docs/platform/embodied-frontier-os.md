@@ -2,6 +2,8 @@
 
 > **Research and simulation roadmap, not shipped robot firmware, phone OS, physical device compatibility or functional-safety certification.** Real physical actuation, camera/mic access, phone bootloader changes and firmware flashing require separate informed operator consent and hardware-specific safety controls.
 
+![Portable intelligence and independent safety infographic](diagrams/aift-embodied-continuum.svg)
+
 ## North star
 
 **One intelligence, many bodies; human sovereignty before autonomy.** An approved user workspace, privacy-preserving personal memory, intent and skills may move among a workstation, phone, wearable and robot. **Permissions never move implicitly with the data.** Real-world movement and sensor access must pass device-local, independently checkable authorization, valid perception and safety-state constraints.
