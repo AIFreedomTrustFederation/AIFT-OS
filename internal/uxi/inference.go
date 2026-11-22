@@ -79,11 +79,11 @@ func (c *OpenAICompatibleClient) Complete(ctx context.Context, system string, me
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("local inference unavailable: %w", err)
+		return "", classifyInferenceTransport(err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return "", fmt.Errorf("local inference returned %s", resp.Status)
+		return "", classifyInferenceHTTP(resp.StatusCode)
 	}
 	payload, err := io.ReadAll(io.LimitReader(resp.Body, maxInferenceResponseBytes+1))
 	if err != nil {
