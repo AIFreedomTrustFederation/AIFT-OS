@@ -78,6 +78,11 @@ class PullWorkerTests(unittest.TestCase):
         with TemporaryDirectory() as temp:
             p = Path(temp) / "state"
             p.mkdir(mode=0o755)
+            # A restrictive inherited umask (e.g. 077 from the Termux
+            # operator) can silently turn mkdir(0755) into 0700.
+            # Explicitly establish the insecure mode under test.
+            p.chmod(0o755)
+            self.assertEqual(p.stat().st_mode & 0o777, 0o755)
             with self.assertRaises(worker.Blocked):
                 poller.prepare_state(p)
             p.chmod(0o700)
