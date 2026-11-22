@@ -11,6 +11,7 @@ import argparse
 import base64
 from contextlib import contextmanager
 import fcntl
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -28,6 +29,8 @@ except ModuleNotFoundError:  # Direct execution: python3 scripts/aift_pull_docs_
     import aift_secure_cloud_worker as worker
 
 MAX_PENDING = 8
+MAX_ISSUE_PAGES = 4
+STALE_TEMP_SECONDS = 24 * 3600
 MAX_PLAN_BYTES = 8192
 MIN_INTERVAL = 600
 DEFAULT_STATE = Path.home() / ".local" / "state" / "aift-aetherion-pull"
@@ -46,7 +49,9 @@ def public_get(path: str, _unused_token: str = ""):
         f"{base}/issues?state=open&labels={worker.LABEL}&per_page={worker.MAX_ISSUES}&sort=created&direction=asc",
         f"{base}/pulls?state=open&per_page={worker.MAX_OPEN_PRS}",
     )
-    if path not in allowed:
+    first_issue_page = allowed[1]
+    issue_pages = {first_issue_page + f"&page={page}" for page in range(2, MAX_ISSUE_PAGES + 1)}
+    if path not in allowed and path not in issue_pages:
         raise worker.Blocked("Anonymous API path not allowed")
     request = Request(
         "https://api.github.com" + path,
@@ -95,7 +100,8 @@ def prepare_state(root: Path) -> Path:
     """State must be outside repository, owner-only, and never a symlink."""
     root = root.expanduser().absolute()
     repo = Path.cwd().resolve()
-    if root == repo or repo in root.parents:
+    resolved_root = root.resolve(strict=False)
+    if resolved_root == repo or repo in resolved_root.parents:
         raise worker.Blocked("Outbox must be outside the Git checkout")
     _private_dir(root)
     _private_dir(root / "outbox")
@@ -148,21 +154,85 @@ def _read_plan(path: Path) -> bytes:
     return data
 
 
+def _sync_dir(folder: Path) -> None:
+    """Persist directory entry creation and rename metadata."""
+    fd = os.open(folder, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+
+
+def _sync_file(path: Path) -> None:
+    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+    try:
+        if not stat.S_ISREG(os.fstat(fd).st_mode):
+            raise worker.Blocked("Unsafe queue item type")
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+
+
+def _recover_interrupted(root: Path, *, now: float | None = None) -> int:
+    """Discard only old *incomplete* hidden temp files while holding lock."""
+    current = time.time() if now is None else now
+    removed = 0
+    for path in (root / "outbox").glob(".pending-*.json"):
+        info = path.lstat()
+        if not stat.S_ISREG(info.st_mode) or stat.S_IMODE(info.st_mode) & 0o077:
+            raise worker.Blocked("Unsafe interrupted queue item")
+        if current - info.st_mtime < STALE_TEMP_SECONDS:
+            continue
+        path.unlink()
+        removed += 1
+    if removed:
+        _sync_dir(root / "outbox")
+    return removed
+
+
+def inspect_plan(root: Path, issue: int) -> dict:
+    """Return JSON-safe preview and digest for human review; no GitHub writes."""
+    root = prepare_state(root)
+    with exclusive_lock(root):
+        data = _read_plan(_plan_path(root, issue))
+        record = json.loads(data)
+        if type(record.get("issue_number")) is not int or record["issue_number"] != issue:
+            raise worker.Blocked("Plan issue mismatch")
+        return {
+            "issue": issue,
+            "target": record["target"],
+            "head_sha": record["head_sha"],
+            "old": record["old"],
+            "new": record["new"],
+            "summary": record["summary"],
+            "changed_lines": record["changed_lines"],
+            "original_sha256": record["original_sha256"],
+            "updated_sha256": record["updated_sha256"],
+            "plan_sha256": hashlib.sha256(data).hexdigest(),
+            "approval": "not_given",
+        }
+
+
 def poll_once(root: Path, *, model: str, endpoint: str) -> dict:
     """One bounded poll, at most one model edit, no GitHub credentials or writes."""
     worker.validate_model_config(endpoint, model)
     root = prepare_state(root)
     with exclusive_lock(root):
+        _recover_interrupted(root)
         if len(_plans(root / "outbox")) >= MAX_PENDING:
             return {"status": "queue_full", "max_pending": MAX_PENDING}
-        if worker.run("git", "branch", "--show-current") != "main":
-            raise worker.Blocked("Local checkout must be on main")
+        # Allow an isolated clean detached worktree pinned to exact remote main.
+        if worker.run("git", "branch", "--show-current") not in ("main", ""):
+            raise worker.Blocked("Planning requires main or a detached exact-main worktree")
         sha = exact_public_main()
         worker.verify_checkout(sha)
         already_queued = {int(m.group(1)) for folder in (root / "outbox", root / "archive")
                           for item in _plans(folder)
                           if (m := re.fullmatch(r"issue-([0-9]+)[.]json", item.name))}
-        selection = worker.select_issue("", fetcher=public_get, exclude_issues=already_queued)
+        selection = worker.select_issue(
+            "", fetcher=public_get, exclude_issues=already_queued,
+            max_pages=MAX_ISSUE_PAGES,
+        )
         if selection is None:
             return {"status": "idle", "head_sha": sha}
         issue, _target, _instruction = selection
@@ -185,10 +255,14 @@ def poll_once(root: Path, *, model: str, endpoint: str) -> dict:
             record = json.loads(data)
             if record.get("head_sha") != sha or record.get("issue_number") != issue_number:
                 raise worker.Blocked("Local plan provenance mismatch")
+            if exact_public_main() != sha:
+                raise worker.Blocked("Remote main advanced during model inference")
+            _sync_file(temp_path)
             # Refuse to replace an existing queue item; lock prevents two pollers.
             if final.exists() or archived.exists():
                 raise worker.Blocked("Duplicate local plan")
             os.replace(temp_path, final)
+            _sync_dir(root / "outbox")
             return {"status": "queued", "issue": issue_number, "head_sha": sha, "pending": len(_plans(root / "outbox"))}
         finally:
             temp_path.unlink(missing_ok=True)
@@ -206,13 +280,17 @@ def queue_status(root: Path) -> dict:
         }
 
 
-def export_plan(root: Path, issue: int) -> str:
+def export_plan(root: Path, issue: int, *, expected_digest: str | None = None) -> str:
     root = prepare_state(root)
     with exclusive_lock(root):
         data = _read_plan(_plan_path(root, issue))
         record = json.loads(data)
-        if record.get("issue_number") != issue:
+        if type(record.get("issue_number")) is not int or record["issue_number"] != issue:
             raise worker.Blocked("Plan issue mismatch")
+        digest = hashlib.sha256(data).hexdigest()
+        if expected_digest is not None and (not re.fullmatch(r"[0-9a-f]{64}", expected_digest)
+                                             or digest != expected_digest):
+            raise worker.Blocked("Export digest does not match reviewed plan")
         return base64.b64encode(data).decode("ascii")
 
 
@@ -226,6 +304,8 @@ def mark_delivered(root: Path, issue: int) -> None:
         if destination.exists():
             raise worker.Blocked("Issue already archived")
         os.rename(source, destination)
+        _sync_dir(root / "archive")
+        _sync_dir(root / "outbox")
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -239,16 +319,21 @@ def main(argv: list[str] | None = None) -> int:
         if name == "loop":
             p.add_argument("--interval", type=int, default=MIN_INTERVAL)
     commands.add_parser("status")
+    inspect = commands.add_parser("inspect")
+    inspect.add_argument("--issue", type=int, required=True)
     export = commands.add_parser("export")
     export.add_argument("--issue", type=int, required=True)
+    export.add_argument("--expected-digest", required=True)
     acknowledged = commands.add_parser("mark-delivered")
     acknowledged.add_argument("--issue", type=int, required=True)
     args = parser.parse_args(argv)
     try:
         if args.command == "status":
             print(json.dumps(queue_status(args.state_dir), sort_keys=True))
+        elif args.command == "inspect":
+            print(json.dumps(inspect_plan(args.state_dir, args.issue), sort_keys=True))
         elif args.command == "export":
-            print(export_plan(args.state_dir, args.issue))
+            print(export_plan(args.state_dir, args.issue, expected_digest=args.expected_digest))
         elif args.command == "mark-delivered":
             mark_delivered(args.state_dir, args.issue)
             print(json.dumps({"status": "locally_archived", "issue": args.issue}))
