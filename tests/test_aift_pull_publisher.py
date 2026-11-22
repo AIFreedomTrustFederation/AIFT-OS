@@ -96,15 +96,17 @@ class PullPublisherTests(unittest.TestCase):
         with TemporaryDirectory() as temp:
             path = Path(temp) / "big.json"
             path.write_bytes(b"x" * 8193)
-            with patch.object(worker, "verify_checkout"),
-                patch.object(worker, "verify_live_main"), self.assertRaises(worker.Blocked):
+            with (patch.object(worker, "verify_checkout"),
+                  patch.object(worker, "verify_live_main"),
+                  self.assertRaises(worker.Blocked)):
                 worker.preflight_plan(path, read_token="read-only", expected_sha="a" * 40)
             target = Path(temp) / "target.json"
             target.write_text(json.dumps(plan()), encoding="utf-8")
             path.unlink()
             path.symlink_to(target)
-            with patch.object(worker, "verify_checkout"),
-                patch.object(worker, "verify_live_main"), self.assertRaises(worker.Blocked):
+            with (patch.object(worker, "verify_checkout"),
+                  patch.object(worker, "verify_live_main"),
+                  self.assertRaises(worker.Blocked)):
                 worker.preflight_plan(path, read_token="read-only", expected_sha="a" * 40)
 
     def test_workflow_never_gives_model_access_or_executes_pr_head(self):
