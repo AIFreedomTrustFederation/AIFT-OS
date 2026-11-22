@@ -61,11 +61,15 @@ class SafetyGate:
                     "simulated": True}
         if self.estop:
             return deny("estop")
-        if not network_ok or not watchdog_ok:
+        if network_ok is not True or watchdog_ok is not True:
             return deny("heartbeat_lost")
         if not isinstance(now_ms, int) or isinstance(now_ms, bool):
             return deny("invalid_clock")
-        if not isinstance(grant, Grant) or grant.revoked or grant.device != self.device or grant.operation != "sim_motion" or now_ms >= grant.expires_ms:
+        if (not isinstance(grant, Grant) or type(grant.device) is not str or
+                type(grant.operation) is not str or type(grant.expires_ms) is not int or
+                type(grant.revoked) is not bool or grant.revoked or
+                grant.device != self.device or grant.operation != "sim_motion" or
+                now_ms >= grant.expires_ms):
             return deny("capability_denied")
         if not isinstance(obs, Observation) or not isinstance(proposal, Proposal):
             return deny("malformed_input")
