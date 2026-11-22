@@ -419,10 +419,13 @@ def verify_live_main(expected_sha: str) -> None:
     """Fail closed when live main differs from exact checkout (best-effort TOCTOU check)."""
     if not isinstance(expected_sha, str) or not SHA_RE.fullmatch(expected_sha):
         raise Blocked("Invalid expected main SHA")
-    result = subprocess.run(
-        ["git", "ls-remote", "--heads", "origin", "refs/heads/main"],
-        capture_output=True, text=True, timeout=20,
-    )
+    try:
+        result = subprocess.run(
+            ["git", "ls-remote", "--heads", "origin", "refs/heads/main"],
+            capture_output=True, text=True, timeout=20,
+        )
+    except (OSError, subprocess.TimeoutExpired) as error:
+        raise Blocked("Live main verification unavailable") from error
     fields = result.stdout.split()
     if result.returncode != 0 or len(fields) != 2 or fields[1] != "refs/heads/main":
         raise Blocked("Unable to verify live main branch")
