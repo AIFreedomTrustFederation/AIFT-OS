@@ -250,3 +250,20 @@ The [engineering command contract](docs/COMMAND-CONTRACT.md) records prerequisit
 See the [real producer integration guide](docs/PRODUCER-INTEGRATION.md) for the
 pinned Runtime/Forge source-QA test, offline consumption and retained evidence
 limitations.
+
+
+---
+
+## Universal OS and Embodied Frontier Architecture (proposed)
+
+AIFT-OS is **already a federation control-plane codebase**, but the longer-term project also targets a native Linux-based operating system, a secure hosted OS session, a Living Universe desktop, a reversible pre-boot manager for explicitly supported hardware, and future local-first phone/robot integrations. **These additions are architectural and engineering milestones, not deployed capabilities.** The current Go federation kernel is not a hardware OS kernel; a Windows-compatible PC UEFI boot manager is not a replacement BIOS; Apple Silicon requires its own supported boot chain; a robotics simulator is not a safety-certified physical device.
+
+Explore the proposed architecture and source-editable diagrams:
+
+- [Universal platform overview and infographic](docs/platform/README.md)
+- [Windows/Intel Mac/Apple Silicon/ARM boot compatibility and infographic](docs/platform/boot-and-device-compatibility.md)
+- [Future AI phones, robots, wearables and independent safety](docs/platform/embodied-frontier-os.md)
+- [Operating desktop, app manifest and versioned service contracts](docs/platform/desktop-and-service-contracts.md)
+- [Evidence-gated milestones, safety and release handoffs](docs/platform/verification-and-release.md)
+
+These guides leave repository and constitutional authority unchanged, distinguish simulated, proposed and verified features, and prohibit unattended physical firmware, disk, boot-security or robotic-actuator changes. Real status comes from linked exact-head tests and approved release artifacts, not roadmap labels.
