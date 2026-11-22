@@ -143,28 +143,44 @@ def parse_issue(issue: dict[str, Any]) -> tuple[str, str]:
     return targets[0], instruction
 
 
-def select_issue(read_token: str) -> tuple[dict[str, Any], str, str] | None:
+def select_issue(read_token: str, *, fetcher=None, exclude_issues=None,
+                 max_pages: int = 1) -> tuple[dict[str, Any], str, str] | None:
+    """Bounded oldest-first issue traversal with no unapproved GitHub API routes.
+
+    Existing Actions planning uses exactly one page; the credentialless local
+    poller can explicitly request several pages so completed tasks do not starve
+    newer approved issues. All pages remain capped and sort order is fixed.
+    """
+    if type(max_pages) is not int or not 1 <= max_pages <= 4:
+        raise Blocked("Issue pagination limit exceeded")
+    fetch = fetcher if fetcher is not None else github_get
     base = f"/repos/{OWNER}/{REPO}"
-    issues = github_get(
-        base + f"/issues?state=open&labels={LABEL}&per_page={MAX_ISSUES}&sort=created&direction=asc",
-        read_token)
-    if not isinstance(issues, list):
-        raise Blocked("Issue list malformed")
-    prs = github_get(base + f"/pulls?state=open&per_page={MAX_OPEN_PRS}", read_token)
+    prs = fetch(base + f"/pulls?state=open&per_page={MAX_OPEN_PRS}", read_token)
     if not isinstance(prs, list) or len(prs) >= MAX_OPEN_PRS:
         raise Blocked("Cannot prove all existing worker PRs were inspected")
     existing = "\n".join(str(pr.get("body") or "") for pr in prs)
-    for issue in issues:
-        if not isinstance(issue, dict) or not isinstance(issue.get("number"), int):
-            continue
-        marker = f"AIFT-AUTODEV-ISSUE:{issue['number']}"
-        if marker in existing:
-            continue
-        try:
-            path, instruction = parse_issue(issue)
-        except Blocked:
-            continue
-        return issue, path, instruction
+    issue_query = base + f"/issues?state=open&labels={LABEL}&per_page={MAX_ISSUES}&sort=created&direction=asc"
+    for page in range(1, max_pages + 1):
+        # Keep the legacy first-page query unchanged for existing workflows.
+        route = issue_query if page == 1 else issue_query + f"&page={page}"
+        issues = fetch(route, read_token)
+        if not isinstance(issues, list) or len(issues) > MAX_ISSUES:
+            raise Blocked("Issue page malformed or exceeds limit")
+        for issue in issues:
+            if not isinstance(issue, dict) or type(issue.get("number")) is not int:
+                continue
+            if exclude_issues and issue["number"] in exclude_issues:
+                continue
+            marker = f"AIFT-AUTODEV-ISSUE:{issue['number']}"
+            if marker in existing:
+                continue
+            try:
+                path, instruction = parse_issue(issue)
+            except Blocked:
+                continue
+            return issue, path, instruction
+        if len(issues) < MAX_ISSUES:
+            break
     return None
 
 
@@ -313,14 +329,22 @@ def verify_checkout(expected: str) -> None:
 
 
 def create_plan(path: Path, *, read_token: str, model: str, expected_sha: str,
-                endpoint: str = MODEL_URL_DEFAULT) -> bool:
+                endpoint: str = MODEL_URL_DEFAULT, selection=None) -> bool:
     verify_checkout(expected_sha)
     validate_model_config(endpoint, model)
-    selection = select_issue(read_token)
+    supplied_selection = selection is not None
+    if selection is None:
+        selection = select_issue(read_token)
     if selection is None:
         print("No eligible labelled documentation issues; no model call or charge")
         return False
     issue, target, instruction = selection
+    # A directly supplied anonymous selection has not passed select_issue's
+    # normal parsing path, so recheck its label and exact Target/Instruction.
+    if supplied_selection:
+        approved_target, approved_instruction = parse_issue(issue)
+        if (target, instruction) != (approved_target, approved_instruction):
+            raise Blocked("Issue selection changed or malformed")
     original = safe_document(target).read_text(encoding="utf-8")
     if len(original.encode("utf-8")) > MAX_DOC_BYTES:
         raise Blocked("Source document exceeds allowed context")
@@ -391,12 +415,10 @@ def validate_plan_artifact(record: Any, *, original: str, expected_sha: str,
     return verified
 
 
-def publish_plan(path: Path, *, read_token: str, expected_sha: str, gh_token: str) -> None:
+def preflight_plan(path: Path, *, read_token: str, expected_sha: str) -> tuple[dict, dict]:
+    """Revalidate an untrusted plan with no write token and no Git mutations."""
     verify_checkout(expected_sha)
-    if not gh_token:
-        raise Blocked("No scoped GitHub App write token")
-    # Untrusted runner artifact: refuse large or legacy full-document payloads.
-    if path.is_symlink() or path.stat().st_size > 8192:
+    if path.is_symlink() or not path.is_file() or not 0 < path.stat().st_size <= 8192:
         raise Blocked("Plan artifact invalid or oversized")
     record = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(record, dict) or set(record) != PLAN_KEYS:
@@ -406,13 +428,22 @@ def publish_plan(path: Path, *, read_token: str, expected_sha: str, gh_token: st
     issue_num = record["issue_number"]
     if type(issue_num) is not int or not (1 <= issue_num <= 1_000_000_000):
         raise Blocked("Issue number invalid")
+    source = safe_document(record["target"])
+    original = source.read_text(encoding="utf-8")
+    issue = github_get(f"/repos/{OWNER}/{REPO}/issues/{issue_num}", read_token)
+    verified = validate_plan_artifact(
+        record, original=original, expected_sha=expected_sha, current_issue=issue,
+    )
+    return record, verified
+
+
+def publish_plan(path: Path, *, read_token: str, expected_sha: str, gh_token: str) -> None:
+    if not gh_token:
+        raise Blocked("No scoped GitHub App write token")
+    record, verified = preflight_plan(path, read_token=read_token, expected_sha=expected_sha)
+    issue_num = record["issue_number"]
     target = record["target"]
     source = safe_document(target)
-    original = source.read_text(encoding="utf-8")
-    current_issue = github_get(f"/repos/{OWNER}/{REPO}/issues/{issue_num}", read_token)
-    verified = validate_plan_artifact(
-        record, original=original, expected_sha=expected_sha, current_issue=current_issue,
-    )
     content = verified["content"]
     summary = verified["summary"]
     branch = f"automation/ai-doc-issue-{issue_num}-{expected_sha[:12]}"
@@ -458,6 +489,8 @@ def main() -> int:
     plan.add_argument("--output", type=Path, required=True)
     publish = commands.add_parser("publish")
     publish.add_argument("--plan", type=Path, required=True)
+    preflight = commands.add_parser("preflight")
+    preflight.add_argument("--plan", type=Path, required=True)
     args = parser.parse_args()
     expected_sha = os.environ.get("GITHUB_SHA", "")
     if args.mode == "plan":
@@ -468,6 +501,13 @@ def main() -> int:
             endpoint=os.environ.get("AIFT_MODEL_URL", ""),
             expected_sha=expected_sha,
         ) else 0
+    if args.mode == "preflight":
+        record, _ = preflight_plan(
+            args.plan, read_token=os.environ.get("GITHUB_TOKEN", ""),
+            expected_sha=expected_sha,
+        )
+        print(f"Validated read-only documentation plan for issue #{record['issue_number']}")
+        return 0
     publish_plan(args.plan, read_token=os.environ.get("GITHUB_TOKEN", ""),
                  gh_token=os.environ.get("GH_TOKEN", ""), expected_sha=expected_sha)
     return 0

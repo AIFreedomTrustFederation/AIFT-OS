@@ -1,0 +1,146 @@
+name: AIFT Pull-Based Documentation Draft Publisher
+
+on:
+  workflow_dispatch:
+    inputs:
+      plan_b64:
+        description: 'Base64 of one reviewed, public-docs-only v2 plan (max 8 KiB decoded)'
+        type: string
+        required: true
+      plan_sha256:
+        description: 'Exact 64-character SHA-256 digest from the local inspect command'
+        type: string
+        required: true
+      operator_approved:
+        description: 'I reviewed this plan digest and authorize one draft documentation PR only'
+        type: boolean
+        default: false
+        required: true
+  pull_request:
+    paths:
+      - '.github/workflows/aift-pull-doc-publisher.yml'
+      - 'scripts/aift_pull_docs_worker.py'
+      - 'scripts/aift_pull_plan_handoff.py'
+      - 'scripts/aift_secure_cloud_worker.py'
+      - 'tests/test_aift_pull_docs_worker.py'
+      - 'tests/test_aift_pull_plan_handoff.py'
+      - 'tests/test_aift_pull_publisher.py'
+      - 'docs/aetherion-pull-worker.md'
+
+permissions:
+  contents: read
+  issues: read
+
+concurrency:
+  group: aift-pull-doc-publisher-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  offline-contract:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - name: Run credentialless poller and publisher boundary regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -s tests -p 'test_aift_pull_docs_worker.py' -v
+          python3 -B -m unittest discover -s tests -p 'test_aift_pull_publisher.py' -v
+          python3 -B -m unittest discover -s tests -p 'test_aift_pull_plan_handoff.py' -v
+          python3 -B -m unittest discover -s tests -p 'test_aift_publisher_artifact.py' -v
+
+
+  workflow-lint:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16
+        with:
+          go-version: '1.26'
+      - name: Strict workflow syntax check
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/aift-bin"
+          GOBIN="$RUNNER_TEMP/aift-bin" go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.12
+          "$RUNNER_TEMP/aift-bin/actionlint" .github/workflows/aift-pull-doc-publisher.yml
+      - name: Workflow security scan
+        uses: zizmorcore/zizmor-action@45d7276c9ca790aabd705e31ca99c6185c3e76dd # v0.8.1
+        with:
+          version: v1.32.0
+          advanced-security: false
+          online-audits: false
+          min-severity: high
+          min-confidence: high
+          inputs: .github/workflows/aift-pull-doc-publisher.yml
+
+  operator-publish:
+    # Only the repository owner, explicitly dispatching the trusted main workflow.
+    # NEVER executes PR head code or a self-hosted runner, and has no model access.
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/main' &&
+      github.actor == 'AIFreedomTrustFederation' &&
+      inputs.operator_approved == true
+    needs: offline-contract
+    runs-on: ubuntu-24.04
+    timeout-minutes: 9
+    permissions:
+      contents: read
+      issues: read
+    steps:
+      - name: Checkout trusted main without persisted credentials
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Verify operator-reviewed digest and materialize bounded plan (no write token)
+        shell: bash
+        env:
+          PLAN_B64: ${{ inputs.plan_b64 }}
+          PLAN_SHA256: ${{ inputs.plan_sha256 }}
+        run: |
+          set -euo pipefail
+          python3 -B scripts/aift_pull_plan_handoff.py \
+            --output "$RUNNER_TEMP/aift-pull-plan.json"
+      - name: Revalidate source, issue approval and exact span BEFORE app token
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 -B scripts/aift_secure_cloud_worker.py preflight \
+            --plan "$RUNNER_TEMP/aift-pull-plan.json"
+      - name: Create short-lived repository-only draft-publisher token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.AIFT_AUTODEV_APP_CLIENT_ID }}
+          private-key: ${{ secrets.AIFT_AUTODEV_APP_PRIVATE_KEY }}
+          owner: AIFreedomTrustFederation
+          repositories: AIFT-OS
+          permission-contents: write
+          permission-pull-requests: write
+      - name: Check out exact main with temporary publisher credential
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: true
+      - name: Independently revalidate and create one DRAFT PR
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          set -euo pipefail
+          python3 -B scripts/aift_secure_cloud_worker.py publish \
+            --plan "$RUNNER_TEMP/aift-pull-plan.json"
