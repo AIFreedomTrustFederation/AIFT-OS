@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Opt-in Termux/Ubuntu AIFT operator helper. No background automation.
+# no-harness: This standalone, human-invoked operator interface runs outside the federation mutating-script harness and has its own approval gates.
 set -Eeuo pipefail
 umask 077
 REPO=/root/AIFT/AIFT-OS
