@@ -25,6 +25,8 @@ on:
       - 'tests/test_aift_pull_docs_worker.py'
       - 'tests/test_aift_pull_plan_handoff.py'
       - 'tests/test_aift_pull_publisher.py'
+      - 'tests/test_aift_pull_postmerge_security.py'
+      - 'scripts/aift_termux_operator.sh'
       - 'docs/aetherion-pull-worker.md'
 
 permissions:
@@ -51,6 +53,8 @@ jobs:
           python3 -B -m unittest discover -s tests -p 'test_aift_pull_publisher.py' -v
           python3 -B -m unittest discover -s tests -p 'test_aift_pull_plan_handoff.py' -v
           python3 -B -m unittest discover -s tests -p 'test_aift_publisher_artifact.py' -v
+          python3 -B -m unittest discover -s tests -p 'test_aift_pull_postmerge_security.py' -v
+          bash -n scripts/aift_termux_operator.sh
 
 
   workflow-lint:
