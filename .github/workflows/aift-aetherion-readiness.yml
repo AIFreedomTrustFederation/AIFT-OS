@@ -34,6 +34,42 @@ jobs:
       - name: Verify offline smoke-test contract
         run: python3 -B -m unittest discover -s tests -p 'test_aift_aetherion_readiness.py' -v
 
+  workflow-lint:
+    # Read-only hosted lint; does not execute model or publisher jobs.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    permissions:
+      contents: read
+    steps:
+      - name: Check out exact source without persisted credentials
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - name: Prepare pinned Go toolchain
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16
+        with:
+          go-version: '1.26'
+      - name: actionlint strict workflow syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/aift-bin"
+          GOBIN="$RUNNER_TEMP/aift-bin" go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.12
+          "$RUNNER_TEMP/aift-bin/actionlint" \
+            .github/workflows/aift-aetherion-readiness.yml \
+            .github/workflows/aift-secure-cloud-worker.yml
+      - name: zizmor high-confidence workflow security audit
+        uses: zizmorcore/zizmor-action@45d7276c9ca790aabd705e31ca99c6185c3e76dd # v0.8.1
+        with:
+          version: v1.32.0
+          advanced-security: false
+          online-audits: false
+          min-severity: high
+          min-confidence: high
+          inputs: |
+            .github/workflows/aift-aetherion-readiness.yml
+            .github/workflows/aift-secure-cloud-worker.yml
+
   operator-local-smoke:
     # NOT an automatic or public runner-registration mechanism.
     # Never execute model jobs on PR events or non-main workflow dispatches.
