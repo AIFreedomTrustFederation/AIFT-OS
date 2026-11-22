@@ -107,6 +107,7 @@ All engines must read applicable AGENTS.md, preserve per-repository ownership, i
 - [Acceptance, verification and safe handoffs](verification-and-release.md)
 - [AIFT platform layers infographic](diagrams/aift-platform-layers.svg)
 - [Boot and device compatibility infographic](diagrams/aift-boot-modes.svg)
+- [Portable intelligence and robotics safety infographic](diagrams/aift-embodied-continuum.svg)
 
 ## External engineering references
 
