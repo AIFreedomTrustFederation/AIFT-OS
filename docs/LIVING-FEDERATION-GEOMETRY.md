@@ -43,6 +43,8 @@ Every repository node binds:
 
 Renderers may increase visual detail during zoom, but must preserve the canonical identity, state, evidence, and governance boundary supplied by this contract.
 
+**Compute, context and training boundary:** The separate [Recursive Fibonacci Intelligence v1 proposal](platform/fibonacci-intelligence-memory-training.md) specifies candidate token budgets, persistent memory, long-context training curricula and federation admission. Its Fibonacci ladder is an evidence-gated *resource-planning heuristic*, not a claim that geometric forms confer training, model capability, trust or authority. Visual renderers may show measured stage, budget and provenance only when they have source-backed data; no autonomous tier promotion follows from the visual geometry.
+
 ## Eternal Now Christic Equivalency Principle
 
 AIFT-OS uses this phrase as a governance and interaction principle:
