@@ -89,6 +89,8 @@ class SecureCloudWorkerTests(unittest.TestCase):
         self.assertEqual(
             result["content"], "# AIFT Example\n\nAIFT performs local verification.\n")
         self.assertEqual(worker.checked_edit(original, result["content"]), 1)
+        self.assertEqual(result["old"], "local checks")
+        self.assertEqual(result["new"], "local verification")
 
     def test_exact_span_rejects_ambiguous_invalid_or_multiline_edits(self):
         original = "# Heading\n\nlocal checks\nlocal checks\n"
@@ -100,6 +102,7 @@ class SecureCloudWorkerTests(unittest.TestCase):
             {"old": "local checks\n", "new": "changed", "summary": "x"},
             {"old": "", "new": "something", "summary": "x"},
             {"old": "local checks", "new": "local verification"},
+            {"old": "local checks", "new": "local verification", "summary": "x\nspoofed"},
         ]
         for item in examples:
             with self.subTest(item=item), self.assertRaises(worker.Blocked):
@@ -236,7 +239,10 @@ class SecureCloudWorkerTests(unittest.TestCase):
         self.assertIn("permission-pull-requests: write", workflow)
         self.assertIn("permission-contents: write", workflow)
         self.assertIn("needs.plan.outputs.has_plan == 'true'", workflow)
-        self.assertIn("runs-on: [self-hosted, linux, aift-local-model]", workflow)
+        self.assertIn("group: aift-isolated-ephemeral", workflow)
+        self.assertIn("labels: [self-hosted, linux, aift-local-model]", workflow)
+        self.assertIn("AIFT_MODEL_NAME is required", workflow)
+        self.assertIn("AIFT_MODEL_URL is required", workflow)
         self.assertIn("AIFT_MODEL_URL", workflow)
         self.assertNotIn("AIFT_AUTODEV_OPENAI_API_KEY", workflow)
         self.assertIn("AIFT_AUTODEV_APP_PRIVATE_KEY", workflow)
