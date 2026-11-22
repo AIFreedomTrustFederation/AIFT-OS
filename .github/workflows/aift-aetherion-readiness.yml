@@ -42,7 +42,10 @@ jobs:
       github.ref == 'refs/heads/main' &&
       inputs.run_local_smoke == true
     needs: offline-contract
-    runs-on: [self-hosted, linux, aift-local-model]
+    # Runner group must be provisioned and approved separately.
+    runs-on:
+      group: aift-isolated-ephemeral
+      labels: [self-hosted, linux, aift-local-model]
     timeout-minutes: 12
     permissions:
       contents: read
@@ -59,8 +62,11 @@ jobs:
           AIFT_MODEL_NAME: ${{ vars.AIFT_MODEL_NAME }}
         run: |
           set -euo pipefail
+          test -n "$AIFT_MODEL_URL" || { echo "::error::AIFT_MODEL_URL is required"; exit 1; }
+          test -n "$AIFT_MODEL_NAME" || { echo "::error::AIFT_MODEL_NAME is required"; exit 1; }
           python3 -B scripts/aift_aetherion_readiness.py \
-            --repetitions 5 --expected-sha "$GITHUB_SHA" \
+            --repetitions 5 --varied-fixtures --expected-sha "$GITHUB_SHA" \
+            --model-url "$AIFT_MODEL_URL" --model "$AIFT_MODEL_NAME" \
             | tee "$RUNNER_TEMP/aift-aetherion-readiness.json"
       - name: Preserve read-only evidence even on failure
         if: always()
