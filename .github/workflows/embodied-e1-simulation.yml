@@ -1,0 +1,26 @@
+name: Embodied E1 simulated safety gate
+on:
+  pull_request:
+    paths:
+      - 'experiments/embodied/**'
+      - '.github/workflows/embodied-e1-simulation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  e1-simulation:
+    name: E1 deterministic simulation tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python version
+        run: python3 --version
+      - name: Run fail-closed simulator regressions
+        run: python3 -m unittest discover -s experiments/embodied -p 'test_*.py' -v
+      - name: Run simulation-only demo
+        run: python3 experiments/embodied/safety_sim.py
