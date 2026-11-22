@@ -243,7 +243,7 @@ func TestEngineInferenceFailureDegrades(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(updated.Turns[1].Content, "endpoint is not available") {
+	if !strings.Contains(updated.Turns[1].Content, "does not prove the model is offline") {
 		t.Fatalf("answer=%q", updated.Turns[1].Content)
 	}
 }
