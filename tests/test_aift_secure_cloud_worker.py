@@ -160,6 +160,7 @@ class SecureCloudWorkerTests(unittest.TestCase):
             "http://192.168.1.7:8080/v1", "http://127.0.0.1:8080/v1?url=example",
             "http://127.0.0.1:bad/v1", "http://127.0.0.1:8080/secret",
             "http://127.0.0.1:8080/v1#fragment", "http://user@127.0.0.1:8080/v1",
+            "http://127.0.0.1/v1",
         ):
             with self.subTest(url=url), self.assertRaises(worker.Blocked):
                 worker._loopback_model_endpoint(url)
