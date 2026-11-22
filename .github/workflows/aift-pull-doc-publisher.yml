@@ -45,6 +45,36 @@ jobs:
           python3 -B -m unittest discover -s tests -p 'test_aift_pull_publisher.py' -v
           python3 -B -m unittest discover -s tests -p 'test_aift_publisher_artifact.py' -v
 
+
+  workflow-lint:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16
+        with:
+          go-version: '1.26'
+      - name: Strict workflow syntax check
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/aift-bin"
+          GOBIN="$RUNNER_TEMP/aift-bin" go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.12
+          "$RUNNER_TEMP/aift-bin/actionlint" .github/workflows/aift-pull-doc-publisher.yml
+      - name: Workflow security scan
+        uses: zizmorcore/zizmor-action@45d7276c9ca790aabd705e31ca99c6185c3e76dd # v0.8.1
+        with:
+          version: v1.32.0
+          advanced-security: false
+          online-audits: false
+          min-severity: high
+          min-confidence: high
+          inputs: .github/workflows/aift-pull-doc-publisher.yml
+
   operator-publish:
     # Only the repository owner, explicitly dispatching the trusted main workflow.
     # NEVER executes PR head code or a self-hosted runner, and has no model access.
