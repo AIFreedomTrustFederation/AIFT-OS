@@ -105,6 +105,7 @@ class PublisherArtifactTests(unittest.TestCase):
             artifact.write_text(json.dumps(record), encoding="utf-8")
             with (
                 patch.object(worker, "verify_checkout"),
+                patch.object(worker, "verify_live_main"),
                 patch.object(worker, "safe_document", return_value=source),
                 patch.object(worker, "github_get", return_value=ISSUE),
                 patch.object(worker.subprocess, "run", side_effect=AssertionError("git ran")) as git,
@@ -125,6 +126,7 @@ class PublisherArtifactTests(unittest.TestCase):
             model_result = worker.apply_exact_replacement(ORIGINAL, REPLACEMENT)
             with (
                 patch.object(worker, "verify_checkout"),
+                patch.object(worker, "verify_live_main"),
                 patch.object(worker, "safe_document", return_value=source),
                 patch.object(worker, "select_issue", return_value=(ISSUE, "docs/example.md", "edit")),
                 patch.object(worker, "model_edit", return_value=model_result),
@@ -146,6 +148,7 @@ class PublisherArtifactTests(unittest.TestCase):
             dishonest = {**REPLACEMENT, "content": "Additional text.\n"}
             with (
                 patch.object(worker, "verify_checkout"),
+                patch.object(worker, "verify_live_main"),
                 patch.object(worker, "safe_document", return_value=source),
                 patch.object(worker, "select_issue", return_value=(ISSUE, "docs/example.md", "edit")),
                 patch.object(worker, "model_edit", return_value=dishonest),
@@ -176,6 +179,7 @@ class PublisherArtifactTests(unittest.TestCase):
             ):
                 with (
                     patch.object(worker, "verify_checkout"),
+                patch.object(worker, "verify_live_main"),
                     patch.object(worker, "select_issue", side_effect=AssertionError("issue queried")) as select,
                     self.assertRaises(worker.Blocked),
                 ):
