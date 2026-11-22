@@ -18,13 +18,28 @@ import time
 from typing import Any, Callable
 
 try:
-    from scripts.aift_secure_cloud_worker import model_edit
+    from scripts.aift_secure_cloud_worker import Blocked, model_edit, validate_model_config
 except ModuleNotFoundError:  # Direct execution: python scripts/aift_aetherion_readiness.py
-    from aift_secure_cloud_worker import model_edit
+    from aift_secure_cloud_worker import Blocked, model_edit, validate_model_config
 
 SOURCE = "# AIFT Example\n\nAIFT performs local checks.\n"
 EXPECTED = "# AIFT Example\n\nAIFT performs local verification.\n"
 INSTRUCTION = "Replace 'local checks' with 'local verification'. Preserve all other content."
+# Additional non-sensitive fixtures are opt-in for a harder, operator-controlled smoke.
+# One exact single-line substitution per fixture, preserving all unrelated text.
+FIXTURES = (
+    (SOURCE, EXPECTED, INSTRUCTION),
+    (
+        "## Runtime\n\nAetherion uses local inference.\n",
+        "## Runtime\n\nAetherion uses loopback inference.\n",
+        "Replace 'local inference' with 'loopback inference'. Preserve other text.",
+    ),
+    (
+        "### Checks\n\nDraft proposals require validation.\n",
+        "### Checks\n\nDraft proposals require exact-head validation.\n",
+        "Replace 'require validation' with 'require exact-head validation'. Preserve other text.",
+    ),
+)
 SHA_RE = re.compile(r"[0-9a-f]{40}\Z")
 
 
@@ -36,6 +51,7 @@ def current_sha() -> str:
 
 def evaluate(*, repetitions: int, model: str, endpoint: str,
              expected_sha: str | None = None,
+             varied_fixtures: bool = False,
              infer: Callable[..., dict[str, str]] = model_edit,
              clock: Callable[[], float] = time.monotonic,
              resolve_sha: Callable[[], str] = current_sha) -> tuple[dict[str, Any], int]:
@@ -49,6 +65,7 @@ def evaluate(*, repetitions: int, model: str, endpoint: str,
         "source_sha": None,
         "checks": {"exact_head": "not_requested", "local_worker_inference": "not_checked"},
         "model": model,
+        "fixture_mode": "varied" if varied_fixtures else "repeat",
         "attempted": 0,
         "passed": 0,
         "failed": 0,
@@ -73,15 +90,21 @@ def evaluate(*, repetitions: int, model: str, endpoint: str,
             report["checks"]["exact_head"] = "mismatch"
             return report, 1
         report["checks"]["exact_head"] = "passed"
-    for _ in range(repetitions):
+    try:
+        validate_model_config(endpoint, model)
+    except Blocked:
+        report["checks"]["local_worker_inference"] = "invalid_configuration"
+        return report, 1
+    for index in range(repetitions):
+        source, expected, instruction = FIXTURES[index % len(FIXTURES)] if varied_fixtures else FIXTURES[0]
         start = clock()
         passed = False
         try:
             result = infer(
                 model=model, endpoint=endpoint, path="docs/example.md",
-                content=SOURCE, instruction=INSTRUCTION,
+                content=source, instruction=instruction,
             )
-            passed = isinstance(result, dict) and result.get("content") == EXPECTED
+            passed = isinstance(result, dict) and result.get("content") == expected
         except Exception:  # Never print exception messages; they may include model output.
             passed = False
         duration_ms = max(0, round((clock() - start) * 1000))
@@ -104,12 +127,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--model", default=os.environ.get("AIFT_MODEL_NAME") or "aetherion:latest")
     parser.add_argument("--model-url", default=os.environ.get("AIFT_MODEL_URL") or "http://127.0.0.1:11434/v1")
     parser.add_argument("--expected-sha", default=None)
+    parser.add_argument("--varied-fixtures", action="store_true")
     args = parser.parse_args(argv)
     if not 1 <= args.repetitions <= 10:
         parser.error("--repetitions must be between 1 and 10")
     report, exit_code = evaluate(
         repetitions=args.repetitions, model=args.model, endpoint=args.model_url,
-        expected_sha=args.expected_sha,
+        expected_sha=args.expected_sha, varied_fixtures=args.varied_fixtures,
     )
     print(json.dumps(report, sort_keys=True))
     return exit_code
