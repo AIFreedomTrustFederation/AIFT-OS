@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Disposable x86_64 UEFI/OVMF M1 smoke proof. Does not touch host NVRAM or disks.
+# no-harness: isolated virtual boot fixture writes only operator-selected artifacts and temporary OVMF VARS; no federation or repository mutation.
 set -euo pipefail
 export LC_ALL=C
-for tool in grub-mkrescue cpio gzip qemu-system-x86_64 sha256sum timeout grep find sort; do
+for tool in grub-mkrescue cpio gzip qemu-system-x86_64 sha256sum timeout grep find sort file mktemp; do
   command -v "$tool" >/dev/null || { echo "MISSING_DEPENDENCY: $tool" >&2; exit 2; }
 done
 : "${AIFT_M1_KERNEL:?Set AIFT_M1_KERNEL to a locally installed x86_64 Linux bzImage}"
@@ -18,6 +19,8 @@ fi
 output="${AIFT_M1_OUTPUT:-$PWD/artifacts/m1-uefi}"
 mkdir -p "$output"
 output="$(cd "$output" && pwd)"
+# Remove stale proof files so a failed boot cannot reuse a previous successful marker.
+rm -f "$output/serial.log" "$output/qemu.log" "$output/SHA256SUMS"
 work="$(mktemp -d)"
 trap 'rm -rf "$work"' EXIT
 mkdir -p "$work/initramfs/bin" "$work/iso/boot/grub" "$work/iso/boot" "$work/initramfs"/{proc,sys,dev}
