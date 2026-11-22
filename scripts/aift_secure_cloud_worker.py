@@ -321,16 +321,19 @@ def create_plan(path: Path, *, read_token: str, model: str, expected_sha: str,
                 endpoint: str = MODEL_URL_DEFAULT, selection=None) -> bool:
     verify_checkout(expected_sha)
     validate_model_config(endpoint, model)
+    supplied_selection = selection is not None
     if selection is None:
         selection = select_issue(read_token)
     if selection is None:
         print("No eligible labelled documentation issues; no model call or charge")
         return False
     issue, target, instruction = selection
-    # A supplied selection is still checked against the worker's normal rules.
-    approved_target, approved_instruction = parse_issue(issue)
-    if (target, instruction) != (approved_target, approved_instruction):
-        raise Blocked("Issue selection changed or malformed")
+    # A directly supplied anonymous selection has not passed select_issue's
+    # normal parsing path, so recheck its label and exact Target/Instruction.
+    if supplied_selection:
+        approved_target, approved_instruction = parse_issue(issue)
+        if (target, instruction) != (approved_target, approved_instruction):
+            raise Blocked("Issue selection changed or malformed")
     original = safe_document(target).read_text(encoding="utf-8")
     if len(original.encode("utf-8")) > MAX_DOC_BYTES:
         raise Blocked("Source document exceeds allowed context")
