@@ -79,6 +79,22 @@ class GateTests(unittest.TestCase):
     def test_malformed(self):
         self.check("malformed_input", proposal=Proposal(1, .1, 0, True))
 
+    def test_malformed_grant_expiration(self):
+        for expires in ("2000", None, True, float("nan")):
+            with self.subTest(expires=repr(expires)):
+                self.check("capability_denied", grant=Grant("virtual-robot-01", "sim_motion", expires))
+
+    def test_nonboolean_heartbeat_and_network(self):
+        for invalid in ("false", 1, None, []):
+            with self.subTest(value=repr(invalid)):
+                self.check("heartbeat_lost", network_ok=invalid)
+                self.check("heartbeat_lost", watchdog_ok=invalid)
+
+    def test_malformed_revocation_flag(self):
+        for invalid in ("false", 0, None):
+            with self.subTest(value=repr(invalid)):
+                self.check("capability_denied", grant=Grant("virtual-robot-01", "sim_motion", 2000, invalid))
+
     def test_invalid_clock(self):
         self.check("invalid_clock", now_ms=True)
 
