@@ -401,7 +401,11 @@ def publish_plan(path: Path, *, read_token: str, expected_sha: str, gh_token: st
     record = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(record, dict) or set(record) != PLAN_KEYS:
         raise Blocked("Plan fields do not match the approved span contract")
+    if record["schema_version"] != PLAN_SCHEMA_VERSION or record["head_sha"] != expected_sha:
+        raise Blocked("Plan not bound to exact trusted checkout")
     issue_num = record["issue_number"]
+    if type(issue_num) is not int or not (1 <= issue_num <= 1_000_000_000):
+        raise Blocked("Issue number invalid")
     target = record["target"]
     source = safe_document(target)
     original = source.read_text(encoding="utf-8")
