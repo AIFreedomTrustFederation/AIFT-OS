@@ -69,7 +69,7 @@ jobs:
           set -euo pipefail
           python3 -B scripts/aift_pr_evidence_audit.py \
             --repository "$SELECTED_REPOSITORY" \
-            --max-per-repo 10 \
+            --max-per-repo 2 \
             --output "$RUNNER_TEMP/aift-pr-evidence.json"
       - name: Upload inspectable evidence
         if: always()
