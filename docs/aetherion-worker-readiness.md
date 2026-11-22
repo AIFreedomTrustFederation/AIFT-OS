@@ -6,14 +6,15 @@ The `AIFT-OS` worker already validates bounded local Aetherion edits and separat
 
 ## What the evidence establishes
 
-The local tester runs the **real** `model_edit` implementation on the same non-sensitive synthetic Markdown fixture, five consecutive times by default. Every resulting complete document must match the expected output, including the final newline; malformed JSON, fenced JSON, wrong fields, multiple lines, missing or extra words, missing model, timeouts and other exceptions are failures. It records pass/fail and elapsed time but **not** model responses, prompts, credentials or complete file content. It never selects a GitHub issue, edits a file, or publishes anything. The result is a limited sample, not a long-term SLA.
+The local tester runs the **real** `model_edit` implementation on the same non-sensitive synthetic Markdown fixture, five consecutive times by default. An opt-in `--varied-fixtures` mode cycles through three distinct, bounded single-span documentation examples; its actual live results must be verified separately. Every resulting complete document must match the expected output, including the final newline; malformed JSON, fenced JSON, wrong fields, multiple lines, missing or extra words, missing model, timeouts and other exceptions are failures. It records pass/fail and elapsed time but **not** model responses, prompts, credentials or complete file content. It never selects a GitHub issue, edits a file, or publishes anything. The result is a limited sample, not a long-term SLA.
 
 Run directly on the machine where Aetherion is reachable at loopback (e.g. the existing Android Ubuntu PRoot environment):
 
 ```sh
 cd /root/AIFT/AIFT-OS
 python3 -B -m unittest discover -s tests -p 'test_aift_aetherion_readiness.py' -v
-python3 -B scripts/aift_aetherion_readiness.py --repetitions 5 \
+python3 -B -m unittest discover -s tests -p 'test_aift_publisher_artifact.py' -v
+python3 -B scripts/aift_aetherion_readiness.py --repetitions 5 --varied-fixtures \
   --model-url http://127.0.0.1:11434/v1 --model aetherion:latest
 ```
 
@@ -21,9 +22,17 @@ Expected: exit `0`, `status=local_worker_inference_verified`, `passed=5`, `faile
 
 ## Separate, manually triggered Actions proof
 
-The dedicated [Aetherion readiness workflow](../.github/workflows/aift-aetherion-readiness.yml) always runs offline tests on GitHub-hosted Ubuntu for PR events. Its optional live model job requires **workflow_dispatch on main** with `run_local_smoke=true` and a preapproved isolated Linux runner labelled `aift-local-model`. The job pins the checkout to `github.sha`, compares the actual checkout against that SHA, and does not receive App write credentials. Evidence is retained for one day. A missing runner leaves the job queued; there is no provider fallback. Do not dispatch this job unless the runner's isolation is independently reviewed.
+The dedicated [Aetherion readiness workflow](../.github/workflows/aift-aetherion-readiness.yml) always runs offline tests on GitHub-hosted Ubuntu for PR events. Its optional live model job requires **workflow_dispatch on main** with `run_local_smoke=true` and an independently approved, ephemeral Linux runner in the GitHub Actions runner group `aift-isolated-ephemeral`, additionally labelled `self-hosted`, `linux`, and `aift-local-model`. The job pins the checkout to `github.sha`, compares the actual checkout against that SHA, and does not receive App write credentials. Evidence is retained for one day. A missing runner **or missing approved runner group** leaves the job queued; there is no provider fallback. A runner-group selector is enforced by Actions, but by itself does **not** prove that a host is ephemeral or safely isolated. Do not dispatch this job unless the runner's isolation is independently reviewed.
+
+**Required operator preconditions:** Provision and independently review the runner group in the organization's GitHub settings before attempting dispatch; verify its repository access policy, ephemeral lifecycle, workload admission, workspace destruction, network restrictions, and separation from GitHub publisher credentials. Set the exact **Actions variables** `AIFT_MODEL_URL=http://127.0.0.1:11434/v1` and `AIFT_MODEL_NAME=aetherion:latest` **only if those values match the real approved runner's localhost service**. The workflows now **fail closed** if either variable is missing, rather than reverting to `8080/local`. The model-worker will reject non-loopback endpoints and invalid model identifiers. No secrets are required for inference.
 
 **Security warning:** GitHub public repositories and persistent self-hosted runners are a risky combination. Do not install a persistent runner on a model/production host merely to satisfy this workflow. Prefer a tightly controlled, ephemeral runner with reviewed job admission, no Docker socket, no unrelated workspace, no write credentials, and no access to sensitive networks. Even trusted-main workflow code must be reviewed before an operator dispatches it. The workflow does not enroll or provision that runner.
+
+## Independent publisher verification: artifact v2
+
+The planner now stores only `schema_version=2`, exact source/issue bindings, the approved `old`/`new` single-line replacement, a short summary, a changed-line count, and the SHA-256 of the **expected** resulting document. It does **not** send `updated_content` or grant the model publisher credentials. On the GitHub-hosted publisher, the artifact is untrusted: the script rejects extra keys, legacy v1, invalid IDs, oversized files and bad hashes; fetches the still-labelled issue; rechecks its body and target against the exact source checkout; then independently applies `old`/`new` through the same strict validator and compares the resulting hash/line count *before* modifying a tracked file. Altering the plan's displayed hash cannot by itself confer trust: the issue approval, content scope and human PR review remain required. This does not cryptographically attest the runner's integrity; provenance hardening remains further work.
+
+The new `tests/test_aift_publisher_artifact.py` exercises valid reconstruction and corrupted or adversarial artifacts without network calls or Git writes. Artifact v1 is intentionally incompatible and must not be republished.
 
 ## End-to-end draft-PR acceptance (separate operator approval)
 
