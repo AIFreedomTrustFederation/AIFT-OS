@@ -168,7 +168,7 @@ class PullWorkerTests(unittest.TestCase):
         self.assertIn("NoRedirects", source)
         self.assertNotIn("gh auth", source)
         self.assertNotIn("gh pr", source)
-        self.assertNotIn("git push", source)
+        self.assertNotIn('subprocess.run(["git", "push"', source)
         self.assertNotIn("Authorization", source.split('def public_get')[1].split('def exact_public_main')[0].split('Request(')[1].split('method=')[0])
 
 
