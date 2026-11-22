@@ -7,8 +7,12 @@ on:
         description: 'Base64 of one reviewed, public-docs-only v2 plan (max 8 KiB decoded)'
         type: string
         required: true
+      plan_sha256:
+        description: 'Exact 64-character SHA-256 digest from the local inspect command'
+        type: string
+        required: true
       operator_approved:
-        description: 'I reviewed this plan and authorize one draft documentation PR only'
+        description: 'I reviewed this plan digest and authorize one draft documentation PR only'
         type: boolean
         default: false
         required: true
@@ -99,12 +103,16 @@ jobs:
         shell: bash
         env:
           PLAN_B64: ${{ inputs.plan_b64 }}
+          PLAN_SHA256: ${{ inputs.plan_sha256 }}
         run: |
           set -euo pipefail
           python3 -B - <<'PY'
           import base64
           import binascii
+          import hashlib
+          import hmac
           import os
+          import re
           from pathlib import Path
           raw = os.environ['PLAN_B64']
           if not (0 < len(raw) <= 11000):
@@ -115,10 +123,15 @@ jobs:
               raise SystemExit('Invalid encoded plan')
           if not (0 < len(data) <= 8192):
               raise SystemExit('Decoded plan missing or oversized')
+          expected = os.environ['PLAN_SHA256']
+          if not re.fullmatch(r'[0-9a-f]{64}', expected):
+              raise SystemExit('Reviewed plan digest missing or malformed')
+          if not hmac.compare_digest(hashlib.sha256(data).hexdigest(), expected):
+              raise SystemExit('Reviewed plan digest mismatch')
           dest = Path(os.environ['RUNNER_TEMP']) / 'aift-pull-plan.json'
           dest.write_bytes(data)
           dest.chmod(0o600)
-          print('Accepted bounded encoded payload for independent validation')
+          print('Accepted reviewed digest and bounded payload for independent validation')
           PY
       - name: Revalidate source, issue approval and exact span BEFORE app token
         shell: bash
