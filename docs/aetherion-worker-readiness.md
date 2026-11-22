@@ -28,6 +28,10 @@ The dedicated [Aetherion readiness workflow](../.github/workflows/aift-aetherion
 
 **Security warning:** GitHub public repositories and persistent self-hosted runners are a risky combination. Do not install a persistent runner on a model/production host merely to satisfy this workflow. Prefer a tightly controlled, ephemeral runner with reviewed job admission, no Docker socket, no unrelated workspace, no write credentials, and no access to sensitive networks. Even trusted-main workflow code must be reviewed before an operator dispatches it. The workflow does not enroll or provision that runner.
 
+## GitHub-hosted workflow security lint
+
+The readiness PR adds a read-only `workflow-lint` job on GitHub-hosted Ubuntu, using SHA-pinned GitHub Actions, `actionlint` v1.7.12 installed through the checksummed Go module ecosystem, and `zizmor` v1.32.0 via a SHA-pinned `zizmor-action` v0.8.1. It checks the two Aetherion workflows only, reports high-severity/high-confidence security findings, and has **no local model access or publishing credentials**. A passing static audit is *not* runner isolation proof. Inspect findings and exact-head Actions results before merging.
+
 ## Independent publisher verification: artifact v2
 
 The planner now stores only `schema_version=2`, exact source/issue bindings, the approved `old`/`new` single-line replacement, a short summary, a changed-line count, and the SHA-256 of the **expected** resulting document. It does **not** send `updated_content` or grant the model publisher credentials. On the GitHub-hosted publisher, the artifact is untrusted: the script rejects extra keys, legacy v1, invalid IDs, oversized files and bad hashes; fetches the still-labelled issue; rechecks its body and target against the exact source checkout; then independently applies `old`/`new` through the same strict validator and compares the resulting hash/line count *before* modifying a tracked file. Altering the plan's displayed hash cannot by itself confer trust: the issue approval, content scope and human PR review remain required. This does not cryptographically attest the runner's integrity; provenance hardening remains further work.
