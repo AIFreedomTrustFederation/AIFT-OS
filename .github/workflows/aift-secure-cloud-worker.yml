@@ -51,7 +51,11 @@ jobs:
       ((github.event_name == 'schedule' && vars.AIFT_AUTODEV_AI_ENABLED == 'true') ||
        (github.event_name == 'workflow_dispatch' && inputs.run_ai_once == true))
     needs: offline-contract
-    runs-on: [self-hosted, linux, aift-local-model]
+    # Requires an org-managed approved runner GROUP, not just an easily copied label.
+    # No matching runner => queued, never a GitHub-hosted fallback.
+    runs-on:
+      group: aift-isolated-ephemeral
+      labels: [self-hosted, linux, aift-local-model]
     timeout-minutes: 9
     permissions:
       contents: read
@@ -71,10 +75,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          export AIFT_MODEL_URL="${AIFT_MODEL_URL:-http://127.0.0.1:8080/v1}"
-          export AIFT_MODEL_NAME="${AIFT_MODEL_NAME:-local}"
+          test -n "$AIFT_MODEL_URL" || { echo "::error::AIFT_MODEL_URL is required"; exit 1; }
+          test -n "$AIFT_MODEL_NAME" || { echo "::error::AIFT_MODEL_NAME is required"; exit 1; }
           python3 -B scripts/aift_aetherion_readiness.py \
-            --repetitions 3 --expected-sha "$GITHUB_SHA"
+            --repetitions 3 --expected-sha "$GITHUB_SHA" \
+            --model-url "$AIFT_MODEL_URL" --model "$AIFT_MODEL_NAME"
       - name: Prepare one bounded, read-only model proposal
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -83,12 +88,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [[ -z "$AIFT_MODEL_URL" ]]; then
-            export AIFT_MODEL_URL=http://127.0.0.1:8080/v1
-          fi
-          if [[ -z "$AIFT_MODEL_NAME" ]]; then
-            export AIFT_MODEL_NAME=local
-          fi
+          test -n "$AIFT_MODEL_URL" || { echo "::error::AIFT_MODEL_URL is required"; exit 1; }
+          test -n "$AIFT_MODEL_NAME" || { echo "::error::AIFT_MODEL_NAME is required"; exit 1; }
           test "$GITHUB_REF" = refs/heads/main
           python3 -B scripts/aift_secure_cloud_worker.py plan \
             --output "$RUNNER_TEMP/aift-secure-plan.json"
