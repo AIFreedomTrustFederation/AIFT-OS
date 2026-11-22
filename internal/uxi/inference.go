@@ -113,7 +113,6 @@ func (c *OpenAICompatibleClient) Complete(ctx context.Context, system string, me
 	return strings.TrimSpace(decoded.Choices[0].Message.Content), nil
 }
 
-
 // validateLocalInferenceEndpoint prevents a configured provider from becoming
 // an outbound network or privileged local-socket request. Only numeric loopback
 // HTTP hosts are admitted; no credentials, fragments, or query strings.
