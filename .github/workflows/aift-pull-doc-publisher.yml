@@ -20,8 +20,10 @@ on:
     paths:
       - '.github/workflows/aift-pull-doc-publisher.yml'
       - 'scripts/aift_pull_docs_worker.py'
+      - 'scripts/aift_pull_plan_handoff.py'
       - 'scripts/aift_secure_cloud_worker.py'
       - 'tests/test_aift_pull_docs_worker.py'
+      - 'tests/test_aift_pull_plan_handoff.py'
       - 'tests/test_aift_pull_publisher.py'
       - 'docs/aetherion-pull-worker.md'
 
@@ -47,6 +49,7 @@ jobs:
           set -euo pipefail
           python3 -B -m unittest discover -s tests -p 'test_aift_pull_docs_worker.py' -v
           python3 -B -m unittest discover -s tests -p 'test_aift_pull_publisher.py' -v
+          python3 -B -m unittest discover -s tests -p 'test_aift_pull_plan_handoff.py' -v
           python3 -B -m unittest discover -s tests -p 'test_aift_publisher_artifact.py' -v
 
 
@@ -99,40 +102,15 @@ jobs:
         with:
           ref: ${{ github.sha }}
           persist-credentials: false
-      - name: Decode strictly bounded plan (no write token)
+      - name: Verify operator-reviewed digest and materialize bounded plan (no write token)
         shell: bash
         env:
           PLAN_B64: ${{ inputs.plan_b64 }}
           PLAN_SHA256: ${{ inputs.plan_sha256 }}
         run: |
           set -euo pipefail
-          python3 -B - <<'PY'
-          import base64
-          import binascii
-          import hashlib
-          import hmac
-          import os
-          import re
-          from pathlib import Path
-          raw = os.environ['PLAN_B64']
-          if not (0 < len(raw) <= 11000):
-              raise SystemExit('Plan input missing or oversized')
-          try:
-              data = base64.b64decode(raw, validate=True)
-          except (binascii.Error, ValueError):
-              raise SystemExit('Invalid encoded plan')
-          if not (0 < len(data) <= 8192):
-              raise SystemExit('Decoded plan missing or oversized')
-          expected = os.environ['PLAN_SHA256']
-          if not re.fullmatch(r'[0-9a-f]{64}', expected):
-              raise SystemExit('Reviewed plan digest missing or malformed')
-          if not hmac.compare_digest(hashlib.sha256(data).hexdigest(), expected):
-              raise SystemExit('Reviewed plan digest mismatch')
-          dest = Path(os.environ['RUNNER_TEMP']) / 'aift-pull-plan.json'
-          dest.write_bytes(data)
-          dest.chmod(0o600)
-          print('Accepted reviewed digest and bounded payload for independent validation')
-          PY
+          python3 -B scripts/aift_pull_plan_handoff.py \
+            --output "$RUNNER_TEMP/aift-pull-plan.json"
       - name: Revalidate source, issue approval and exact span BEFORE app token
         shell: bash
         env:
