@@ -18,6 +18,7 @@ on:
       - 'docs/secure-cloud-worker.md'
       - 'scripts/aift_aetherion_readiness.py'
       - 'tests/test_aift_aetherion_readiness.py'
+      - 'tests/test_aift_publisher_artifact.py'
       - 'docs/aetherion-worker-readiness.md'
 
 permissions:
@@ -41,6 +42,7 @@ jobs:
           set -euo pipefail
           python3 -B -m unittest discover -s tests -p 'test_aift_secure_cloud_worker.py' -v
           python3 -B -m unittest discover -s tests -p 'test_aift_aetherion_readiness.py' -v
+          python3 -B -m unittest discover -s tests -p 'test_aift_publisher_artifact.py' -v
 
   plan:
     # Native AIFT inference is localhost-only, so plan must run beside Aetherion.
