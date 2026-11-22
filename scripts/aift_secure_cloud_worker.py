@@ -194,7 +194,7 @@ def apply_exact_replacement(original: str, proposal: dict[str, str]) -> dict[str
         raise Blocked("Local model replacement must stay on one line")
     if not old.strip() or old == new or original.count(old) != 1:
         raise Blocked("Local model replacement is empty, unchanged or ambiguous")
-    if not (1 <= len(summary) <= 160):
+    if not (1 <= len(summary) <= 160) or any(c in summary for c in ("\r", "\n", "\x00")):
         raise Blocked("Local model summary invalid")
     updated = original.replace(old, new, 1)
     checked_edit(original, updated)
