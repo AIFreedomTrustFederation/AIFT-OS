@@ -6,8 +6,8 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"net/http"
 	"net"
+	"net/http"
 	"net/url"
 	"strings"
 	"time"
@@ -69,6 +69,9 @@ func (c *OpenAICompatibleClient) Complete(ctx context.Context, system string, me
 	if err := validateLocalInferenceEndpoint(endpoint); err != nil {
 		return "", err
 	}
+	// Never follow redirects, even when a custom HTTP client is injected.
+	boundedClient := *client
+	boundedClient.CheckRedirect = func(_ *http.Request, _ []*http.Request) error { return http.ErrUseLastResponse }
 	all := make([]ChatMessage, 0, len(messages)+1)
 	all = append(all, ChatMessage{Role: "system", Content: system})
 	all = append(all, messages...)
@@ -81,7 +84,7 @@ func (c *OpenAICompatibleClient) Complete(ctx context.Context, system string, me
 		return "", err
 	}
 	req.Header.Set("Content-Type", "application/json")
-	resp, err := client.Do(req)
+	resp, err := boundedClient.Do(req)
 	if err != nil {
 		return "", classifyInferenceTransport(err)
 	}
