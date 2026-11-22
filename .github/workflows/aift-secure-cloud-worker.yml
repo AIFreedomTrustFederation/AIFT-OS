@@ -16,6 +16,9 @@ on:
       - 'scripts/aift_secure_cloud_worker.py'
       - 'tests/test_aift_secure_cloud_worker.py'
       - 'docs/secure-cloud-worker.md'
+      - 'scripts/aift_aetherion_readiness.py'
+      - 'tests/test_aift_aetherion_readiness.py'
+      - 'docs/aetherion-worker-readiness.md'
 
 permissions:
   contents: read
@@ -32,8 +35,12 @@ jobs:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           persist-credentials: false
-      - name: Verify bounded AI worker safety contract
-        run: python3 -B -m unittest discover -s tests -p 'test_aift_secure_cloud_worker.py' -v
+      - name: Verify bounded AI worker and Aetherion readiness contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -s tests -p 'test_aift_secure_cloud_worker.py' -v
+          python3 -B -m unittest discover -s tests -p 'test_aift_aetherion_readiness.py' -v
 
   plan:
     # Native AIFT inference is localhost-only, so plan must run beside Aetherion.
@@ -57,6 +64,17 @@ jobs:
         with:
           ref: ${{ github.sha }}
           persist-credentials: false
+      - name: Gate planning on exact-head local Aetherion readiness
+        env:
+          AIFT_MODEL_URL: ${{ vars.AIFT_MODEL_URL }}
+          AIFT_MODEL_NAME: ${{ vars.AIFT_MODEL_NAME }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          export AIFT_MODEL_URL="${AIFT_MODEL_URL:-http://127.0.0.1:8080/v1}"
+          export AIFT_MODEL_NAME="${AIFT_MODEL_NAME:-local}"
+          python3 -B scripts/aift_aetherion_readiness.py \
+            --repetitions 3 --expected-sha "$GITHUB_SHA"
       - name: Prepare one bounded, read-only model proposal
         env:
           GITHUB_TOKEN: ${{ github.token }}
