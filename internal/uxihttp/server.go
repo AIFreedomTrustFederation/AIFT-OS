@@ -23,7 +23,23 @@ func New(engine *uxi.Engine) (*Server, error) {
 	if engine == nil {
 		return nil, errors.New("engine is required")
 	}
-	s := &Server{Engine: engine, mux: http.NewServeMux(), messageJobs: newMessageJobs()}
+	store, err := newMessageJobStore(engine.Store.Root())
+	if err != nil { return nil, err }
+	persisted, err := store.list()
+	if err != nil { return nil, err }
+	jobs := newMessageJobs()
+	jobs.store = store
+	for _, job := range persisted {
+		if job.Status == "running" {
+			job.Status = "interrupted"
+			job.Error = "inference interrupted; outcome requires reconciliation"
+			job.FinishedAt = time.Now().UTC()
+			if err := store.save(job); err != nil { return nil, err }
+		}
+		copy := job
+		jobs.jobs[job.ID] = &copy
+	}
+	s := &Server{Engine: engine, mux: http.NewServeMux(), messageJobs: jobs}
 	s.routes()
 	return s, nil
 }
