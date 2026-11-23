@@ -22,6 +22,7 @@ type messageJob struct {
 	SessionID      string       `json:"session_id"`
 	Status         string       `json:"status"`
 	Error          string       `json:"error,omitempty"`
+	ErrorCode      string       `json:"error_code,omitempty"`
 	Result         *uxi.Session `json:"session,omitempty"`
 	CreatedAt      time.Time    `json:"created_at"`
 	FinishedAt     time.Time    `json:"finished_at,omitempty"`
@@ -145,6 +146,7 @@ func (s *Server) handleAsyncMessage(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			job.Status = "failed"
 			job.Error = "inference failed"
+			job.ErrorCode = classifyInferenceError(err)
 		} else {
 			job.Status = "completed"
 			job.Result = &session
@@ -154,6 +156,7 @@ func (s *Server) handleAsyncMessage(w http.ResponseWriter, r *http.Request) {
 			// Keep the original accepted record on disk and block new work on this session.
 			job.Status = "interrupted"
 			job.Error = "result persistence unavailable; manual reconciliation required"
+			job.ErrorCode = "persistence_uncertain"
 			job.Result = nil
 			job.FinishedAt = time.Time{}
 			return
@@ -199,4 +202,16 @@ func publicMessageJob(job messageJob) messageJob {
 	job.IdempotencyKey = ""
 	job.RequestHash = ""
 	return job
+}
+
+// classifyInferenceError exposes bounded failure categories, never provider diagnostics.
+func classifyInferenceError(err error) string {
+	switch {
+	case errors.Is(err, context.DeadlineExceeded):
+		return "inference_timeout"
+	case errors.Is(err, context.Canceled):
+		return "inference_canceled"
+	default:
+		return "inference_failed"
+	}
 }
