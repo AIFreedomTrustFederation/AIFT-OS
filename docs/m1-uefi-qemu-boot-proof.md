@@ -17,7 +17,7 @@ cat artifacts/m1-uefi/serial.log
 sha256sum -c artifacts/m1-uefi/SHA256SUMS
 ```
 
-**Important:** These paths are examples, not assertions that the files exist. Verify `file "$AIFT_M1_BUSYBOX"` reports *statically linked*. QEMU is invoked without KVM so it can run on an unprivileged x86-64 host. A temporary copy of OVMF VARS is used and deleted afterward; the host's firmware/NVRAM and physical disks are never changed. The harness deliberately powers off after the init marker; this is **M1 smoke evidence only**, not M2 boot selection or M3 service supervision.
+**CI guest kernel selection:** the `ubuntu-24.04` job installs `linux-image-virtual`, selects the packaged `vmlinuz-*-generic` image instead of the runner's possibly unreadable AWS host kernel, and stages only that public package kernel in the temporary directory with a read-only, unprivileged guest-copy path. This corrects the observed `cp: cannot open /boot/vmlinuz-7.0.0-1014-aws: Permission denied` failure. It does **not** establish a successful boot until the actual QEMU/OVMF job, marker and SHA-256 validation pass on this exact head.\n\n**Important:** These paths are examples, not assertions that the files exist. Verify `file "$AIFT_M1_BUSYBOX"` reports *statically linked*. QEMU is invoked without KVM so it can run on an unprivileged x86-64 host. A temporary copy of OVMF VARS is used and deleted afterward; the host's firmware/NVRAM and physical disks are never changed. The harness deliberately powers off after the init marker; this is **M1 smoke evidence only**, not M2 boot selection or M3 service supervision.
 
 ## Acceptance and limitations
 
