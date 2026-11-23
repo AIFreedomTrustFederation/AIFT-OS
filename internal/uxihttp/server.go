@@ -237,7 +237,7 @@ func (s *Server) handleCreateSession(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	writeJSON(w, http.StatusCreated, session)
+	writeJSON(w, http.StatusCreated, publicSession(session))
 }
 
 func (s *Server) handleGetSession(w http.ResponseWriter, r *http.Request) {
@@ -250,7 +250,7 @@ func (s *Server) handleGetSession(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	writeJSON(w, http.StatusOK, session)
+	writeJSON(w, http.StatusOK, publicSession(session))
 }
 
 func (s *Server) handleMessage(w http.ResponseWriter, r *http.Request) {
@@ -270,7 +270,7 @@ func (s *Server) handleMessage(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, err)
 		return
 	}
-	writeJSON(w, http.StatusOK, session)
+	writeJSON(w, http.StatusOK, publicSession(session))
 }
 
 func (s *Server) handlePlan(w http.ResponseWriter, r *http.Request) {
@@ -291,7 +291,7 @@ func (s *Server) handlePlan(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, err)
 		return
 	}
-	writeJSON(w, http.StatusCreated, session)
+	writeJSON(w, http.StatusCreated, publicSession(session))
 }
 
 func (s *Server) handleAction(w http.ResponseWriter, r *http.Request) {
@@ -318,7 +318,7 @@ func (s *Server) handleAction(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, err)
 		return
 	}
-	writeJSON(w, http.StatusCreated, session)
+	writeJSON(w, http.StatusCreated, publicSession(session))
 }
 
 func (s *Server) handleActionDecision(w http.ResponseWriter, r *http.Request) {
@@ -339,7 +339,7 @@ func (s *Server) handleActionDecision(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusConflict, err)
 		return
 	}
-	writeJSON(w, http.StatusOK, session)
+	writeJSON(w, http.StatusOK, publicSession(session))
 }
 
 func (s *Server) handleActionInvoke(w http.ResponseWriter, r *http.Request) {
@@ -353,10 +353,10 @@ func (s *Server) handleActionInvoke(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err != nil {
-		writeJSON(w, http.StatusConflict, map[string]any{"status": "fail", "error": err.Error(), "session": session})
+		writeJSON(w, http.StatusConflict, map[string]any{"status": "fail", "error": err.Error(), "session": publicSession(session)})
 		return
 	}
-	writeJSON(w, http.StatusOK, session)
+	writeJSON(w, http.StatusOK, publicSession(session))
 }
 
 func (s *Server) handleEvents(w http.ResponseWriter, r *http.Request) {
@@ -444,4 +444,11 @@ func allowedLoopbackOrigin(origin string) bool {
 	default:
 		return false
 	}
+}
+
+// publicSession reuses the detached, redacted job projection for every HTTP
+// session response. The underlying durable session is never modified.
+func publicSession(session uxi.Session) uxi.Session {
+	projected := publicMessageJob(messageJob{Result: &session})
+	return *projected.Result
 }
