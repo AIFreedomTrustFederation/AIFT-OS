@@ -1,0 +1,68 @@
+name: PR103 Final Integration
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: final-integration-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.number == 103
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Formatting
+        run: |
+          test -z "$(gofmt -l $(git ls-files '*.go'))"
+          git diff --check
+
+      - name: Full Go tests
+        run: go test -count=1 ./...
+
+      - name: Static analysis
+        run: go vet ./...
+
+      - name: Native Linux race detection
+        run: |
+          CGO_ENABLED=1 go test -race -count=1 \
+            ./internal/uxi ./internal/uxihttp
+
+      - name: Durable recovery regressions
+        run: |
+          go test -count=1 -v ./internal/uxihttp \
+            -run 'TestDurable|TestReconcile|TestUncommitted|TestBrowserDurable|TestInferenceFailure|TestPublicJob|TestAsyncMessage'
+
+      - name: Integration gate summary
+        if: always()
+        run: |
+          {
+            echo "## PR #103 integration evidence"
+            echo ""
+            echo "Commit: $GITHUB_SHA"
+            echo ""
+            echo "Go tests, race checks, and recovery regressions are enforced by this workflow."
+            echo ""
+            echo "Still requires separate acceptance:"
+            echo "- Real Android browser refresh and recovery"
+            echo "- Live local Aetherion inference"
+            echo "- Storage fault injection and multi-process safety"
+            echo "- Security review and PR dependency reconciliation"
+            echo ""
+            echo "No merge or deployment is authorized."
+          } >> "$GITHUB_STEP_SUMMARY"
