@@ -70,3 +70,37 @@ class AdapterTests(unittest.TestCase):
     def test_zero_duration(self):
         data = fixture(); data["proposal"]["duration_ms"] = 0
         self.assertEqual(evaluate_envelope(SafetyGate(), data)["action"], "STOP")
+
+class SerializedBoundaryTests(unittest.TestCase):
+    def test_nominal_json_bytes(self):
+        import json
+        from ros_contract_adapter import evaluate_json_envelope
+        self.assertEqual(evaluate_json_envelope(SafetyGate(), json.dumps(fixture()).encode())["action"], "SIMULATE_ONLY")
+
+    def test_duplicate_nested_key_denied(self):
+        from ros_contract_adapter import evaluate_json_envelope
+        import json
+        payload = json.dumps(fixture()).replace('"vx_mps": 0.1', '"vx_mps": 0.1, "vx_mps": 0.1')
+        self.assertEqual(evaluate_json_envelope(SafetyGate(), payload.encode())["action"], "STOP")
+
+    def test_duplicate_top_level_key_denied(self):
+        from ros_contract_adapter import evaluate_json_envelope
+        import json
+        payload = json.dumps(fixture()).replace('"network_ok": true', '"network_ok": true, "network_ok": true')
+        self.assertEqual(evaluate_json_envelope(SafetyGate(), payload.encode())["action"], "STOP")
+
+    def test_nonfinite_json_constant_denied(self):
+        from ros_contract_adapter import evaluate_json_envelope
+        import json
+        payload = json.dumps(fixture()).replace('0.1', 'NaN')
+        self.assertEqual(evaluate_json_envelope(SafetyGate(), payload.encode())["action"], "STOP")
+
+    def test_oversize_and_wrong_type_denied(self):
+        from ros_contract_adapter import evaluate_json_envelope, MAX_ENVELOPE_BYTES
+        self.assertEqual(evaluate_json_envelope(SafetyGate(), b" " * (MAX_ENVELOPE_BYTES + 1))["action"], "STOP")
+        self.assertEqual(evaluate_json_envelope(SafetyGate(), "{}")["action"], "STOP")
+
+    def test_bad_utf8_and_truncated_json_denied(self):
+        from ros_contract_adapter import evaluate_json_envelope
+        for payload in (b"\\xff", b'{"observation":', b"[]"):
+            self.assertEqual(evaluate_json_envelope(SafetyGate(), payload)["action"], "STOP")
