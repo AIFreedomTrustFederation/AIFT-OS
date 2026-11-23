@@ -3,6 +3,7 @@ package uxihttp
 import (
  "bytes"
  "context"
+ "crypto/sha256"
  "encoding/json"
  "net/http"
  "net/http/httptest"
@@ -51,3 +52,29 @@ func TestAsyncMessageRejectsInvalidSession(t *testing.T) {
  if rr.Code != http.StatusNotFound { t.Fatalf("code=%d body=%s", rr.Code, rr.Body.String()) }
 }
 
+
+func TestAsyncMessageRejectsDifferentConcurrentPrompt(t *testing.T) {
+ server, store := newTestServer(t)
+ session, err := store.CreateSession("conflicting-prompts")
+ if err != nil { t.Fatal(err) }
+ server.messageJobs.mu.Lock()
+ server.messageJobs.jobs["existing"] = &messageJob{
+  ID: "existing", SessionID: session.ID, Status: "running",
+  RequestDigest: sha256.Sum256([]byte("first prompt")),
+ }
+ server.messageJobs.active[session.ID] = "existing"
+ server.messageJobs.mu.Unlock()
+
+ url := "/v1/sessions/" + session.ID + "/messages/async"
+ req := httptest.NewRequest(http.MethodPost, url, bytes.NewBufferString(`{"content":"second prompt"}`))
+ req.Header.Set("Content-Type", "application/json")
+ rr := httptest.NewRecorder()
+ server.Handler().ServeHTTP(rr, req)
+ if rr.Code != http.StatusConflict { t.Fatalf("code=%d body=%s", rr.Code, rr.Body.String()) }
+
+ req = httptest.NewRequest(http.MethodPost, url, bytes.NewBufferString(`{"content":"first prompt"}`))
+ req.Header.Set("Content-Type", "application/json")
+ rr = httptest.NewRecorder()
+ server.Handler().ServeHTTP(rr, req)
+ if rr.Code != http.StatusAccepted { t.Fatalf("same-prompt retry code=%d body=%s", rr.Code, rr.Body.String()) }
+}
