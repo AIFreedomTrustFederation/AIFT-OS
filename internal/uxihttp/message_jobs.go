@@ -152,8 +152,9 @@ func (s *Server) handleAsyncMessage(w http.ResponseWriter, r *http.Request) {
 		if err := q.store.save(*job); err != nil {
 			// Keep the original accepted record on disk and block new work on this session.
 			job.Status = "interrupted"
-			job.Error = "result persistence unavailable"
+			job.Error = "result persistence unavailable; manual reconciliation required"
 			job.Result = nil
+			job.FinishedAt = time.Time{}
 			return
 		}
 		delete(q.active, id)
