@@ -132,6 +132,7 @@ func (s *Server) handleAsyncMessage(w http.ResponseWriter, r *http.Request) {
 	q.jobs[job.ID] = job
 	q.active[id] = job.ID
 	q.wg.Add(1)
+	accepted := publicMessageJob(*job)
 	q.mu.Unlock()
 	go func() {
 		defer q.wg.Done()
@@ -159,7 +160,7 @@ func (s *Server) handleAsyncMessage(w http.ResponseWriter, r *http.Request) {
 		}
 		delete(q.active, id)
 	}()
-	writeJSON(w, http.StatusAccepted, publicMessageJob(*job))
+	writeJSON(w, http.StatusAccepted, accepted)
 }
 
 func (s *Server) handleMessageJob(w http.ResponseWriter, r *http.Request) {
