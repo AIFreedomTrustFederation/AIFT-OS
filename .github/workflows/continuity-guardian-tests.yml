@@ -1,0 +1,32 @@
+name: Continuity Guardian Offline Tests
+
+on:
+  pull_request:
+    paths:
+      - 'federation_automation/continuity.py'
+      - 'tests/test_federation_continuity.py'
+      - '.github/workflows/continuity-guardian-tests.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'federation_automation/continuity.py'
+      - 'tests/test_federation_continuity.py'
+      - '.github/workflows/continuity-guardian-tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  continuity:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: '3.13'
+      - name: Verify fail-closed decision rules
+        run: python -B -m unittest discover -s tests -p 'test_federation_continuity.py' -v
