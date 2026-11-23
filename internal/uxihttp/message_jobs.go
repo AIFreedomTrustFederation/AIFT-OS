@@ -26,8 +26,8 @@ type messageJob struct {
 	Result     *uxi.Session `json:"session,omitempty"`
 	CreatedAt  time.Time    `json:"created_at"`
 	FinishedAt time.Time    `json:"finished_at,omitempty"`
-	IdempotencyKey string `json:"-"`
-	RequestHash string `json:"-"`
+	IdempotencyKey string `json:"idempotency_key,omitempty"`
+	RequestHash string `json:"request_hash,omitempty"`
 }
 
 type messageJobs struct {
@@ -84,7 +84,7 @@ func (s *Server) handleAsyncMessage(w http.ResponseWriter, r *http.Request) {
 			if prior.SessionID == id && prior.IdempotencyKey == key {
 				snapshot := *prior
 				q.mu.Unlock()
-				if prior.RequestHash != hash { writeError(w, http.StatusConflict, errors.New("idempotency key reused with different content")); return }
+				if snapshot.RequestHash != hash { writeError(w, http.StatusConflict, errors.New("idempotency key reused with different content")); return }
 				writeJSON(w, http.StatusAccepted, snapshot)
 				return
 			}
@@ -92,7 +92,7 @@ func (s *Server) handleAsyncMessage(w http.ResponseWriter, r *http.Request) {
 	}
 	now := time.Now()
 	for key, job := range q.jobs {
-		if !job.FinishedAt.IsZero() && now.Sub(job.FinishedAt) > messageJobRetention {
+		if false && !job.FinishedAt.IsZero() && now.Sub(job.FinishedAt) > messageJobRetention {
 			delete(q.jobs, key)
 		}
 	}
