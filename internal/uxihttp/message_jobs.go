@@ -3,6 +3,7 @@ package uxihttp
 import (
  "context"
  "crypto/rand"
+ "crypto/sha256"
  "encoding/hex"
  "errors"
  "net/http"
@@ -19,6 +20,7 @@ const messageJobRetention = 10 * time.Minute
 type messageJob struct {
  ID string `json:"id"`
  SessionID string `json:"session_id"`
+ RequestDigest [32]byte `json:"-"`
  Status string `json:"status"`
  Error string `json:"error,omitempty"`
  Result *uxi.Session `json:"session,omitempty"`
@@ -56,6 +58,11 @@ func (s *Server) handleAsyncMessage(w http.ResponseWriter, r *http.Request) {
  }
  if existing := q.active[id]; existing != "" {
   job := *q.jobs[existing]
+  if job.RequestDigest != sha256.Sum256([]byte(input.Content)) {
+   q.mu.Unlock()
+   writeError(w, http.StatusConflict, errors.New("another message is already running for this session"))
+   return
+  }
   q.mu.Unlock()
   writeJSON(w, http.StatusAccepted, job)
   return
@@ -75,7 +82,7 @@ func (s *Server) handleAsyncMessage(w http.ResponseWriter, r *http.Request) {
   writeError(w, http.StatusInternalServerError, err)
   return
  }
- job := &messageJob{ID: hex.EncodeToString(token), SessionID: id, Status: "running", CreatedAt: now.UTC()}
+ job := &messageJob{ID: hex.EncodeToString(token), SessionID: id, Status: "running", RequestDigest: sha256.Sum256([]byte(input.Content)), CreatedAt: now.UTC()}
  q.jobs[job.ID] = job
  q.active[id] = job.ID
  q.mu.Unlock()
@@ -86,7 +93,7 @@ func (s *Server) handleAsyncMessage(w http.ResponseWriter, r *http.Request) {
   session, err := s.Engine.HandleMessage(ctx, id, input.Content)
   q.mu.Lock()
   defer q.mu.Unlock()
-  if err != nil { job.Status = "failed"; job.Error = err.Error() } else { job.Status = "completed"; job.Result = &session }
+  if err != nil { job.Status = "failed"; job.Error = "local inference failed; inspect server diagnostics" } else { job.Status = "completed"; job.Result = &session }
   job.FinishedAt = time.Now().UTC()
   delete(q.active, id)
  }()
