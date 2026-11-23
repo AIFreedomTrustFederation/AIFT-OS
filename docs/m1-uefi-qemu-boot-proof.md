@@ -21,7 +21,7 @@ sha256sum -c artifacts/m1-uefi/SHA256SUMS
 
 ## Acceptance and limitations
 
-Only label **VERIFIED BOOT** if QEMU exits successfully, `serial.log` contains `AIFT_M1_BOOT_OK`, `SHA256SUMS` verifies the ISO and the exact commit, host architecture, OVMF/kernel package versions and commands are recorded. The generated ISO is not a signed release and does not establish Secure Boot, Windows/macOS compatibility, persistence, a desktop, or hardware readiness.
+Only label **VERIFIED BOOT** if QEMU exits successfully, the serial console contains a full `AIFT_M1_BOOT_OK` line after normalizing UEFI CRLF output, `SHA256SUMS` verifies the ISO and the exact commit, host architecture, OVMF/kernel package versions and commands are recorded. The generated ISO is not a signed release and does not establish Secure Boot, Windows/macOS compatibility, persistence, a desktop, or hardware readiness.
 
 A missing dependency, unavailable OVMF pair, absent static BusyBox, QEMU timeout or missing serial marker is **BLOCKED WITH EVIDENCE**, not a successful boot. Save `build.log`, `qemu.log` and `serial.log` for review. Rollback is deletion of the draft branch or reverting the harness commit; generated artifacts stay outside source control.
 
@@ -41,3 +41,8 @@ A missing dependency, unavailable OVMF pair, absent static BusyBox, QEMU timeout
   "next": "run on a host with QEMU, OVMF, GRUB EFI, x86-64 kernel and static BusyBox"
 }
 ```
+
+
+## Hosted QEMU evidence correction (November 22, 2026)
+
+The hosted workflow on commit `40dd826b27b6` actually booted the Ubuntu 6.8 generic kernel under OVMF, printed the marker twice, powered down normally, and passed the generated ISO checksum. Its final `grep -x` assertion failed only because `serial.log` contained Windows-style `\r\n` line endings. The preserved [boot evidence artifact](https://github.com/AIFreedomTrustFederation/AIFT-OS/actions/runs/45117694034/artifacts/14791604239) confirms the exact bytes. The revised harness and workflow normalize the carriage return and still require the **complete marker line**, without skipping the check. This is not a physical-machine or Secure Boot qualification.

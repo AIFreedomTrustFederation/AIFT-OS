@@ -3,7 +3,7 @@
 # no-harness: isolated virtual boot fixture writes only operator-selected artifacts and temporary OVMF VARS; no federation or repository mutation.
 set -euo pipefail
 export LC_ALL=C
-for tool in grub-mkrescue cpio gzip qemu-system-x86_64 sha256sum timeout grep find sort file mktemp; do
+for tool in grub-mkrescue cpio gzip qemu-system-x86_64 sha256sum timeout grep find sort file mktemp tr; do
   command -v "$tool" >/dev/null || { echo "MISSING_DEPENDENCY: $tool" >&2; exit 2; }
 done
 : "${AIFT_M1_KERNEL:?Set AIFT_M1_KERNEL to a locally installed x86_64 Linux bzImage}"
@@ -62,7 +62,7 @@ timeout --signal=TERM 90s qemu-system-x86_64 \
   -cdrom "$output/aift-m1-x86_64.iso" >"$output/qemu.log" 2>&1
 rc=$?
 set -e
-if [ "$rc" -ne 0 ] || ! grep -q '^AIFT_M1_BOOT_OK' "$output/serial.log"; then
+if [ "$rc" -ne 0 ] || ! (tr -d '\r' < "$output/serial.log" | grep -Fxq 'AIFT_M1_BOOT_OK'); then
   printf 'M1 FAIL: qemu_exit=%s; inspect serial.log and qemu.log\n' "$rc" >&2
   exit 1
 fi

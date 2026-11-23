@@ -56,7 +56,9 @@ jobs:
           set -euo pipefail
           cd "$AIFT_M1_OUTPUT"
           sha256sum -c SHA256SUMS
-          grep -x 'AIFT_M1_BOOT_OK' serial.log
+          # UEFI serial consoles produce CRLF; verify a complete marker line
+          # after CR normalization, not a prefix match or an empty artifact.
+          tr -d '\r' < serial.log | grep -Fx 'AIFT_M1_BOOT_OK'
       - name: Preserve boot evidence (including failures)
         if: always()
         uses: actions/upload-artifact@v4
