@@ -33,6 +33,20 @@ class InMemoryTransport:
         self.last_delivery_ms = None
         self.latched = False
         self.last_tick_ms = None
+        self.armed_at_ms = None
+
+    def arm(self, now_ms):
+        """Explicitly begin startup supervision; no reset or rearm after a fault."""
+        stop = {"accepted": False, "action": "STOP", "simulated": True,
+                "reason": "transport_fault"}
+        if self.latched or self.armed_at_ms is not None or self.last_delivery_ms is not None or type(now_ms) is not int or now_ms < 0 or (self.last_tick_ms is not None and now_ms < self.last_tick_ms):
+            self.latched = True
+            self.gate.stop()
+            return stop
+        self.armed_at_ms = now_ms
+        self.last_tick_ms = now_ms
+        return {"accepted": True, "action": "SIMULATE_ONLY", "simulated": True,
+                "reason": "watchdog_armed"}
 
     def tick(self, now_ms):
         """External scheduler must call this with monotonic milliseconds.
@@ -51,6 +65,11 @@ class InMemoryTransport:
             self.latched = True
             self.gate.stop()
             return stop.copy()
+        if (self.armed_at_ms is not None and self.last_delivery_ms is None and
+                now_ms - self.armed_at_ms > self.deadline_ms):
+            self.latched = True
+            self.gate.stop()
+            return stop.copy()
         self.last_tick_ms = now_ms
         return {"accepted": True, "action": "SIMULATE_ONLY", "simulated": True,
                 "reason": "watchdog_healthy"}
@@ -63,6 +82,8 @@ class InMemoryTransport:
         if (type(delivery_ms) is not int or type(sequence) is not int or
                 (self.last_tick_ms is not None and delivery_ms < self.last_tick_ms) or
                 delivery_ms < 0 or sequence != self.expected or
+                (self.armed_at_ms is not None and self.last_delivery_ms is None and
+                 (delivery_ms < self.armed_at_ms or delivery_ms - self.armed_at_ms > self.deadline_ms)) or
                 (self.last_delivery_ms is not None and
                  (delivery_ms < self.last_delivery_ms or
                   delivery_ms - self.last_delivery_ms > self.deadline_ms))):
@@ -167,6 +188,30 @@ class TransportFaultTests(unittest.TestCase):
     def test_invalid_tick_latches(self):
         t = InMemoryTransport()
         self.assertEqual(t.tick(True)["action"], "STOP")
+
+    def test_armed_startup_silence_latches(self):
+        t = InMemoryTransport(deadline_ms=200)
+        self.assertEqual(t.arm(1000)["action"], "SIMULATE_ONLY")
+        self.assertEqual(t.tick(1200)["action"], "SIMULATE_ONLY")
+        self.assertEqual(t.tick(1201)["action"], "STOP")
+        self.assertEqual(t.deliver(encoded(frame(1, 1202)), delivery_ms=1202, sequence=1)["action"], "STOP")
+
+    def test_armed_first_delivery_after_deadline_latches(self):
+        t = InMemoryTransport(deadline_ms=200)
+        t.arm(1000)
+        self.assertEqual(t.deliver(encoded(frame(1, 1201)), delivery_ms=1201, sequence=1)["action"], "STOP")
+
+    def test_armed_first_delivery_within_deadline(self):
+        t = InMemoryTransport(deadline_ms=200)
+        t.arm(1000)
+        self.assertEqual(t.deliver(encoded(frame(1, 1200)), delivery_ms=1200, sequence=1)["action"], "SIMULATE_ONLY")
+
+    def test_rearm_does_not_clear_latched_stop(self):
+        t = InMemoryTransport(deadline_ms=200)
+        t.arm(1000)
+        t.tick(1201)
+        self.assertEqual(t.arm(1202)["action"], "STOP")
+        self.assertEqual(t.tick(1203)["action"], "STOP")
 
     def test_no_physical_effects(self):
         t = InMemoryTransport()
