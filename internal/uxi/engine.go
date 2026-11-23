@@ -95,6 +95,7 @@ func (e *Engine) HandleMessage(ctx context.Context, sessionID, content string) (
 		}
 	}
 
+	if err := ctx.Err(); err != nil { return Session{}, err }
 	now := time.Now().UTC()
 	return e.Store.AppendExchange(sessionID,
 		Turn{Role: "user", Content: content, CreatedAt: now},
