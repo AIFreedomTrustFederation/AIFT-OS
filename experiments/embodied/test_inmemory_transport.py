@@ -6,7 +6,7 @@ import copy
 import json
 import unittest
 
-from ros_contract_adapter import evaluate_json_envelope
+from ros_contract_adapter import evaluate_json_envelope, _unique_object, _reject_constant
 from safety_sim import SafetyGate
 
 def frame(seq, timestamp_ms):
@@ -43,6 +43,25 @@ class InMemoryTransport:
                 (self.last_delivery_ms is not None and
                  (delivery_ms < self.last_delivery_ms or
                   delivery_ms - self.last_delivery_ms > self.deadline_ms))):
+            self.latched = True
+            self.gate.stop()
+            return stop.copy()
+        # Bind transport sequence to both embedded sequences before evaluation.
+        try:
+            if type(payload) is not bytes or len(payload) > 4096:
+                raise ValueError("invalid payload")
+            message = json.loads(payload.decode("utf-8", errors="strict"),
+                                 object_pairs_hook=_unique_object,
+                                 parse_constant=_reject_constant)
+            if (type(message) is not dict or
+                    type(message.get("observation")) is not dict or
+                    type(message.get("proposal")) is not dict or
+                    type(message["observation"].get("sequence")) is not int or
+                    type(message["proposal"].get("sequence")) is not int or
+                    message["observation"]["sequence"] != sequence or
+                    message["proposal"]["sequence"] != sequence):
+                raise ValueError("sequence mismatch")
+        except (ValueError, TypeError, UnicodeError, RecursionError, AttributeError):
             self.latched = True
             self.gate.stop()
             return stop.copy()
@@ -98,6 +117,17 @@ class TransportFaultTests(unittest.TestCase):
         t = InMemoryTransport()
         t.deliver(encoded(frame(1, 1000)), delivery_ms=1000, sequence=1)
         self.assertEqual(t.deliver(encoded(frame(2, 1100)), delivery_ms=999, sequence=2)["action"], "STOP")
+
+    def test_transport_sequence_mismatch_latches(self):
+        t = InMemoryTransport()
+        self.assertEqual(t.deliver(encoded(frame(2, 1000)), delivery_ms=1000, sequence=1)["action"], "STOP")
+        self.assertEqual(t.deliver(encoded(frame(1, 1001)), delivery_ms=1001, sequence=1)["action"], "STOP")
+
+    def test_proposal_sequence_mismatch_latches(self):
+        t = InMemoryTransport()
+        message = frame(1, 1000)
+        message["proposal"]["sequence"] = 2
+        self.assertEqual(t.deliver(encoded(message), delivery_ms=1000, sequence=1)["action"], "STOP")
 
     def test_no_physical_effects(self):
         t = InMemoryTransport()
