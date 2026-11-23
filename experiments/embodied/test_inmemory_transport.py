@@ -57,7 +57,7 @@ class InMemoryTransport:
                 "reason": "transport_timeout"}
         if self.latched:
             return stop.copy()
-        if (type(now_ms) is not int or now_ms < 0 or
+        if (self.armed_at_ms is None or type(now_ms) is not int or now_ms < 0 or
                 (self.last_tick_ms is not None and now_ms < self.last_tick_ms) or
                 (self.last_delivery_ms is not None and
                  (now_ms < self.last_delivery_ms or
@@ -79,7 +79,7 @@ class InMemoryTransport:
                 "reason": "transport_fault"}
         if self.latched:
             return stop.copy()
-        if (type(delivery_ms) is not int or type(sequence) is not int or
+        if (self.armed_at_ms is None or type(delivery_ms) is not int or type(sequence) is not int or
                 (self.last_tick_ms is not None and delivery_ms < self.last_tick_ms) or
                 delivery_ms < 0 or sequence != self.expected or
                 (self.armed_at_ms is not None and self.last_delivery_ms is None and
@@ -125,56 +125,77 @@ class InMemoryTransport:
                 "reason": "transport_missing"}
 
 class TransportFaultTests(unittest.TestCase):
+    def test_unarmed_delivery_latches(self):
+        t = InMemoryTransport()
+        self.assertEqual(t.deliver(encoded(frame(1, 1000)), delivery_ms=1000, sequence=1)["action"], "STOP")
+        self.assertEqual(t.arm(1001)["action"], "STOP")
+        self.assertEqual(t.deliver(encoded(frame(1, 1002)), delivery_ms=1002, sequence=1)["action"], "STOP")
+
+    def test_unarmed_tick_latches(self):
+        t = InMemoryTransport()
+        self.assertEqual(t.tick(1000)["action"], "STOP")
+        self.assertEqual(t.arm(1001)["action"], "STOP")
+
     def test_nominal_two_frames(self):
         t = InMemoryTransport()
+        t.arm(1000)
         self.assertEqual(t.deliver(encoded(frame(1, 1000)), delivery_ms=1000, sequence=1)["action"], "SIMULATE_ONLY")
         self.assertEqual(t.deliver(encoded(frame(2, 1100)), delivery_ms=1100, sequence=2)["action"], "SIMULATE_ONLY")
 
     def test_duplicate_latches(self):
         t = InMemoryTransport()
+        t.arm(1000)
         t.deliver(encoded(frame(1, 1000)), delivery_ms=1000, sequence=1)
         self.assertEqual(t.deliver(encoded(frame(1, 1000)), delivery_ms=1001, sequence=1)["action"], "STOP")
         self.assertEqual(t.deliver(encoded(frame(2, 1100)), delivery_ms=1100, sequence=2)["action"], "STOP")
 
     def test_reordered_latches(self):
         t = InMemoryTransport()
+        t.arm(1000)
         self.assertEqual(t.deliver(encoded(frame(2, 1100)), delivery_ms=1100, sequence=2)["action"], "STOP")
         self.assertEqual(t.deliver(encoded(frame(1, 1000)), delivery_ms=1101, sequence=1)["action"], "STOP")
 
     def test_delayed_latches(self):
         t = InMemoryTransport()
+        t.arm(1000)
         t.deliver(encoded(frame(1, 1000)), delivery_ms=1000, sequence=1)
         self.assertEqual(t.deliver(encoded(frame(2, 1300)), delivery_ms=1300, sequence=2)["action"], "STOP")
 
     def test_drop_latches(self):
         t = InMemoryTransport()
+        t.arm(1000)
         t.deliver(encoded(frame(1, 1000)), delivery_ms=1000, sequence=1)
         self.assertEqual(t.missing()["action"], "STOP")
         self.assertEqual(t.deliver(encoded(frame(2, 1100)), delivery_ms=1100, sequence=2)["action"], "STOP")
 
     def test_malformed_latches(self):
         t = InMemoryTransport()
+        t.arm(1000)
         self.assertEqual(t.deliver(b'{"bad":', delivery_ms=1000, sequence=1)["action"], "STOP")
         self.assertEqual(t.deliver(encoded(frame(1, 1000)), delivery_ms=1001, sequence=1)["action"], "STOP")
 
     def test_clock_rollback_latches(self):
         t = InMemoryTransport()
+        t.arm(1000)
         t.deliver(encoded(frame(1, 1000)), delivery_ms=1000, sequence=1)
         self.assertEqual(t.deliver(encoded(frame(2, 1100)), delivery_ms=999, sequence=2)["action"], "STOP")
 
     def test_transport_sequence_mismatch_latches(self):
         t = InMemoryTransport()
+        t.arm(1000)
         self.assertEqual(t.deliver(encoded(frame(2, 1000)), delivery_ms=1000, sequence=1)["action"], "STOP")
         self.assertEqual(t.deliver(encoded(frame(1, 1001)), delivery_ms=1001, sequence=1)["action"], "STOP")
 
     def test_proposal_sequence_mismatch_latches(self):
         t = InMemoryTransport()
+        t.arm(1000)
         message = frame(1, 1000)
         message["proposal"]["sequence"] = 2
         self.assertEqual(t.deliver(encoded(message), delivery_ms=1000, sequence=1)["action"], "STOP")
 
     def test_silent_publisher_timeout_latches(self):
         t = InMemoryTransport(deadline_ms=200)
+        t.arm(1000)
         self.assertEqual(t.deliver(encoded(frame(1, 1000)), delivery_ms=1000, sequence=1)["action"], "SIMULATE_ONLY")
         self.assertEqual(t.tick(1200)["action"], "SIMULATE_ONLY")
         self.assertEqual(t.tick(1201)["action"], "STOP")
@@ -182,11 +203,13 @@ class TransportFaultTests(unittest.TestCase):
 
     def test_tick_rollback_latches(self):
         t = InMemoryTransport()
+        t.arm(1000)
         self.assertEqual(t.tick(1000)["action"], "SIMULATE_ONLY")
         self.assertEqual(t.tick(999)["action"], "STOP")
 
     def test_invalid_tick_latches(self):
         t = InMemoryTransport()
+        t.arm(1000)
         self.assertEqual(t.tick(True)["action"], "STOP")
 
     def test_armed_startup_silence_latches(self):
@@ -215,6 +238,7 @@ class TransportFaultTests(unittest.TestCase):
 
     def test_no_physical_effects(self):
         t = InMemoryTransport()
+        t.arm(1000)
         result = t.deliver(encoded(frame(1, 1000)), delivery_ms=1000, sequence=1)
         self.assertTrue(result["simulated"])
         self.assertNotIn("physical_actuation", result)
