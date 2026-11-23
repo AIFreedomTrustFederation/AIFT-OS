@@ -42,3 +42,31 @@ class AdapterTests(unittest.TestCase):
     def test_network_loss(self):
         data = fixture(); data["network_ok"] = False
         self.assertEqual(evaluate_envelope(SafetyGate(), data)["action"], "STOP")
+
+    def test_top_level_unknown_field(self):
+        data = fixture(); data["physical_actuation"] = True
+        self.assertEqual(evaluate_envelope(SafetyGate(), data)["action"], "STOP")
+    def test_nested_wrong_container(self):
+        data = fixture(); data["observation"] = []
+        self.assertEqual(evaluate_envelope(SafetyGate(), data)["action"], "STOP")
+    def test_future_observation(self):
+        data = fixture(); data["observation"]["timestamp_ms"] = 1001
+        self.assertEqual(evaluate_envelope(SafetyGate(), data)["action"], "STOP")
+    def test_expired_capability(self):
+        data = fixture(); data["grant"]["expires_ms"] = 1000
+        self.assertEqual(evaluate_envelope(SafetyGate(), data)["action"], "STOP")
+    def test_geofence(self):
+        data = fixture(); data["observation"]["x"] = 2.0
+        self.assertEqual(evaluate_envelope(SafetyGate(), data)["action"], "STOP")
+    def test_rejection_does_not_consume_sequence(self):
+        gate = SafetyGate(); data = fixture()
+        data["proposal"]["vx_mps"] = 100.0
+        self.assertEqual(evaluate_envelope(gate, data)["action"], "STOP")
+        data["proposal"]["vx_mps"] = 0.1
+        self.assertEqual(evaluate_envelope(gate, data)["action"], "SIMULATE_ONLY")
+    def test_invalid_clock_boolean(self):
+        data = fixture(); data["clock_ms"] = True
+        self.assertEqual(evaluate_envelope(SafetyGate(), data)["action"], "STOP")
+    def test_zero_duration(self):
+        data = fixture(); data["proposal"]["duration_ms"] = 0
+        self.assertEqual(evaluate_envelope(SafetyGate(), data)["action"], "STOP")
