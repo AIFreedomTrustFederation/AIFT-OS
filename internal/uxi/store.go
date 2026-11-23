@@ -473,13 +473,17 @@ func validID(id string) bool {
 // FindJobExchange returns a session only if a persisted assistant turn carries
 // the exact async job ID. This is read-only and never re-executes inference.
 func (s *Store) FindJobExchange(sessionID, jobID string) (Session, bool, error) {
- if jobID == "" { return Session{}, false, errors.New("empty job identity") }
- session, err := s.GetSession(sessionID)
- if err != nil { return Session{}, false, err }
- for _, turn := range session.Turns {
-  if turn.Role == "assistant" && turn.Metadata != nil && turn.Metadata["async_job_id"] == jobID {
-   return session, true, nil
-  }
- }
- return Session{}, false, nil
+	if jobID == "" {
+		return Session{}, false, errors.New("empty job identity")
+	}
+	session, err := s.GetSession(sessionID)
+	if err != nil {
+		return Session{}, false, err
+	}
+	for _, turn := range session.Turns {
+		if turn.Role == "assistant" && turn.Metadata != nil && turn.Metadata["async_job_id"] == jobID {
+			return session, true, nil
+		}
+	}
+	return Session{}, false, nil
 }

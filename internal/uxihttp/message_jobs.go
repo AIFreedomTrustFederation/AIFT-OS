@@ -196,7 +196,7 @@ func (s *Server) Shutdown(ctx context.Context) error {
 
 // publicMessageJob excludes private retry metadata while preserving the durable record.
 func publicMessageJob(job messageJob) messageJob {
- job.IdempotencyKey = ""
- job.RequestHash = ""
- return job
+	job.IdempotencyKey = ""
+	job.RequestHash = ""
+	return job
 }

@@ -2,7 +2,7 @@ package uxihttp
 
 import (
 	"bytes"
- "context"
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -78,36 +78,62 @@ func TestDurableJobRecoveryAndIdempotency(t *testing.T) {
 }
 
 func TestReconcileCommittedExchangeAfterTerminalRecordLoss(t *testing.T) {
- server, store := newTestServer(t)
- session, err := store.CreateSession("reconcile")
- if err != nil { t.Fatal(err) }
- id := "0123456789abcdef0123456789abcdef"
- accepted := messageJob{ID:id, SessionID:session.ID, Status:"running", CreatedAt:time.Now().UTC()}
- if err := server.messageJobs.store.save(accepted); err != nil { t.Fatal(err) }
- committed, err := server.Engine.HandleMessageForJob(context.Background(),session.ID,"hello",id)
- if err != nil { t.Fatal(err) }
- if len(committed.Turns) != 2 { t.Fatalf("turns=%d",len(committed.Turns)) }
- recovered, err := New(server.Engine)
- if err != nil { t.Fatal(err) }
- job := recovered.messageJobs.jobs[id]
- if job == nil || job.Status != "completed" || job.Result == nil { t.Fatalf("recovered=%+v",job) }
- latest, err := store.GetSession(session.ID)
- if err != nil { t.Fatal(err) }
- if len(latest.Turns) != 2 { t.Fatalf("unexpected replay, turns=%d",len(latest.Turns)) }
+	server, store := newTestServer(t)
+	session, err := store.CreateSession("reconcile")
+	if err != nil {
+		t.Fatal(err)
+	}
+	id := "0123456789abcdef0123456789abcdef"
+	accepted := messageJob{ID: id, SessionID: session.ID, Status: "running", CreatedAt: time.Now().UTC()}
+	if err := server.messageJobs.store.save(accepted); err != nil {
+		t.Fatal(err)
+	}
+	committed, err := server.Engine.HandleMessageForJob(context.Background(), session.ID, "hello", id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(committed.Turns) != 2 {
+		t.Fatalf("turns=%d", len(committed.Turns))
+	}
+	recovered, err := New(server.Engine)
+	if err != nil {
+		t.Fatal(err)
+	}
+	job := recovered.messageJobs.jobs[id]
+	if job == nil || job.Status != "completed" || job.Result == nil {
+		t.Fatalf("recovered=%+v", job)
+	}
+	latest, err := store.GetSession(session.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(latest.Turns) != 2 {
+		t.Fatalf("unexpected replay, turns=%d", len(latest.Turns))
+	}
 }
 
 func TestUncommittedInterruptedJobBlocksReplay(t *testing.T) {
- server, store := newTestServer(t)
- session, err := store.CreateSession("interrupted")
- if err != nil { t.Fatal(err) }
- id := "fedcba9876543210fedcba9876543210"
- if err := server.messageJobs.store.save(messageJob{ID:id, SessionID:session.ID, Status:"running", CreatedAt:time.Now().UTC()}); err != nil { t.Fatal(err) }
- recovered, err := New(server.Engine)
- if err != nil { t.Fatal(err) }
- if recovered.messageJobs.jobs[id].Status != "interrupted" { t.Fatal("uncommitted job not interrupted") }
- req := httptest.NewRequest(http.MethodPost,"/v1/sessions/"+session.ID+"/messages/async",bytes.NewBufferString(`{"content":"retry"}`))
- req.Header.Set("Content-Type","application/json")
- rr := httptest.NewRecorder()
- recovered.Handler().ServeHTTP(rr,req)
- if rr.Code != http.StatusConflict { t.Fatalf("replay=%d",rr.Code) }
+	server, store := newTestServer(t)
+	session, err := store.CreateSession("interrupted")
+	if err != nil {
+		t.Fatal(err)
+	}
+	id := "fedcba9876543210fedcba9876543210"
+	if err := server.messageJobs.store.save(messageJob{ID: id, SessionID: session.ID, Status: "running", CreatedAt: time.Now().UTC()}); err != nil {
+		t.Fatal(err)
+	}
+	recovered, err := New(server.Engine)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if recovered.messageJobs.jobs[id].Status != "interrupted" {
+		t.Fatal("uncommitted job not interrupted")
+	}
+	req := httptest.NewRequest(http.MethodPost, "/v1/sessions/"+session.ID+"/messages/async", bytes.NewBufferString(`{"content":"retry"}`))
+	req.Header.Set("Content-Type", "application/json")
+	rr := httptest.NewRecorder()
+	recovered.Handler().ServeHTTP(rr, req)
+	if rr.Code != http.StatusConflict {
+		t.Fatalf("replay=%d", rr.Code)
+	}
 }

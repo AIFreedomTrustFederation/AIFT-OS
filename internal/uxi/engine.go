@@ -100,8 +100,12 @@ func (e *Engine) HandleMessageForJob(ctx context.Context, sessionID, content, jo
 		}
 	}
 
-	if err := ctx.Err(); err != nil { return Session{}, err }
-	if jobID != "" { metadata["async_job_id"] = jobID }
+	if err := ctx.Err(); err != nil {
+		return Session{}, err
+	}
+	if jobID != "" {
+		metadata["async_job_id"] = jobID
+	}
 	now := time.Now().UTC()
 	return e.Store.AppendExchange(sessionID,
 		Turn{Role: "user", Content: content, CreatedAt: now},

@@ -35,17 +35,21 @@ func New(engine *uxi.Engine) (*Server, error) {
 	jobs.store = store
 	for _, job := range persisted {
 		if job.Status == "running" || job.Status == "interrupted" {
-            committed, found, err := engine.Store.FindJobExchange(job.SessionID, job.ID)
-            if err != nil { return nil, fmt.Errorf("reconcile job %s: %w", job.ID, err) }
-            if found {
-                job.Status = "completed"
-                job.Error = ""
-                job.Result = &committed
-                job.FinishedAt = time.Now().UTC()
-                if err := store.save(job); err != nil { return nil, err }
-            }
-        }
-        if job.Status == "running" {
+			committed, found, err := engine.Store.FindJobExchange(job.SessionID, job.ID)
+			if err != nil {
+				return nil, fmt.Errorf("reconcile job %s: %w", job.ID, err)
+			}
+			if found {
+				job.Status = "completed"
+				job.Error = ""
+				job.Result = &committed
+				job.FinishedAt = time.Now().UTC()
+				if err := store.save(job); err != nil {
+					return nil, err
+				}
+			}
+		}
+		if job.Status == "running" {
 			job.Status = "interrupted"
 			job.Error = "inference interrupted; outcome requires reconciliation"
 			job.FinishedAt = time.Now().UTC()
@@ -55,7 +59,9 @@ func New(engine *uxi.Engine) (*Server, error) {
 		}
 		copy := job
 		jobs.jobs[job.ID] = &copy
-		if job.Status == "interrupted" { jobs.active[job.SessionID] = job.ID }
+		if job.Status == "interrupted" {
+			jobs.active[job.SessionID] = job.ID
+		}
 	}
 	s := &Server{Engine: engine, mux: http.NewServeMux(), messageJobs: jobs}
 	s.routes()
