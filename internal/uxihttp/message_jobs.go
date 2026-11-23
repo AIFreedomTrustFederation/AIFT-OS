@@ -95,7 +95,7 @@ func (s *Server) handleAsyncMessage(w http.ResponseWriter, r *http.Request) {
 					writeError(w, http.StatusConflict, errors.New("idempotency key reused with different content"))
 					return
 				}
-				writeJSON(w, http.StatusAccepted, snapshot)
+				writeJSON(w, http.StatusAccepted, publicMessageJob(snapshot))
 				return
 			}
 		}
@@ -159,7 +159,7 @@ func (s *Server) handleAsyncMessage(w http.ResponseWriter, r *http.Request) {
 		}
 		delete(q.active, id)
 	}()
-	writeJSON(w, http.StatusAccepted, job)
+	writeJSON(w, http.StatusAccepted, publicMessageJob(*job))
 }
 
 func (s *Server) handleMessageJob(w http.ResponseWriter, r *http.Request) {
@@ -173,7 +173,7 @@ func (s *Server) handleMessageJob(w http.ResponseWriter, r *http.Request) {
 	}
 	snapshot := *job
 	q.mu.Unlock()
-	writeJSON(w, http.StatusOK, snapshot)
+	writeJSON(w, http.StatusOK, publicMessageJob(snapshot))
 }
 
 // Shutdown stops accepting work, cancels active inference and waits for workers.
@@ -191,4 +191,11 @@ func (s *Server) Shutdown(ctx context.Context) error {
 	case <-ctx.Done():
 		return ctx.Err()
 	}
+}
+
+// publicMessageJob excludes private retry metadata while preserving the durable record.
+func publicMessageJob(job messageJob) messageJob {
+ job.IdempotencyKey = ""
+ job.RequestHash = ""
+ return job
 }
