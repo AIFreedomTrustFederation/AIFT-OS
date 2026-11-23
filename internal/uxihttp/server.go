@@ -16,13 +16,14 @@ import (
 type Server struct {
 	Engine *uxi.Engine
 	mux    *http.ServeMux
+	messageJobs *messageJobs
 }
 
 func New(engine *uxi.Engine) (*Server, error) {
 	if engine == nil {
 		return nil, errors.New("engine is required")
 	}
-	s := &Server{Engine: engine, mux: http.NewServeMux()}
+	s := &Server{Engine: engine, mux: http.NewServeMux(), messageJobs: newMessageJobs()}
 	s.routes()
 	return s, nil
 }
@@ -50,6 +51,8 @@ func (s *Server) routes() {
 	s.mux.HandleFunc("POST /v1/sessions", s.handleCreateSession)
 	s.mux.HandleFunc("GET /v1/sessions/{id}", s.handleGetSession)
 	s.mux.HandleFunc("POST /v1/sessions/{id}/messages", s.handleMessage)
+	s.mux.HandleFunc("POST /v1/sessions/{id}/messages/async", s.handleAsyncMessage)
+	s.mux.HandleFunc("GET /v1/sessions/{id}/message-jobs/{jobID}", s.handleMessageJob)
 	s.mux.HandleFunc("POST /v1/sessions/{id}/plans", s.handlePlan)
 	s.mux.HandleFunc("POST /v1/sessions/{id}/actions", s.handleAction)
 	s.mux.HandleFunc("POST /v1/sessions/{id}/actions/{actionID}/decision", s.handleActionDecision)
