@@ -138,7 +138,7 @@ func (s *Server) handleAsyncMessage(w http.ResponseWriter, r *http.Request) {
 		defer func() { <-q.slots }()
 		ctx, cancel := context.WithTimeout(q.ctx, messageJobTimeout)
 		defer cancel()
-		session, err := s.Engine.HandleMessage(ctx, id, input.Content)
+		session, err := s.Engine.HandleMessageForJob(ctx, id, input.Content, job.ID)
 		q.mu.Lock()
 		defer q.mu.Unlock()
 		if err != nil {
