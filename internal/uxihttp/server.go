@@ -14,8 +14,8 @@ import (
 )
 
 type Server struct {
-	Engine *uxi.Engine
-	mux    *http.ServeMux
+	Engine      *uxi.Engine
+	mux         *http.ServeMux
 	messageJobs *messageJobs
 }
 
@@ -24,9 +24,13 @@ func New(engine *uxi.Engine) (*Server, error) {
 		return nil, errors.New("engine is required")
 	}
 	store, err := newMessageJobStore(engine.Store.Root())
-	if err != nil { return nil, err }
+	if err != nil {
+		return nil, err
+	}
 	persisted, err := store.list()
-	if err != nil { return nil, err }
+	if err != nil {
+		return nil, err
+	}
 	jobs := newMessageJobs()
 	jobs.store = store
 	for _, job := range persisted {
@@ -34,7 +38,9 @@ func New(engine *uxi.Engine) (*Server, error) {
 			job.Status = "interrupted"
 			job.Error = "inference interrupted; outcome requires reconciliation"
 			job.FinishedAt = time.Now().UTC()
-			if err := store.save(job); err != nil { return nil, err }
+			if err := store.save(job); err != nil {
+				return nil, err
+			}
 		}
 		copy := job
 		jobs.jobs[job.ID] = &copy

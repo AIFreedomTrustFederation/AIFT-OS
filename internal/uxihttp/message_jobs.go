@@ -4,9 +4,9 @@ import (
 	"context"
 	"crypto/rand"
 	"crypto/sha256"
-	"fmt"
 	"encoding/hex"
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 	"sync"
@@ -18,15 +18,15 @@ import (
 const messageJobTimeout = 100 * time.Second
 
 type messageJob struct {
-	ID         string       `json:"id"`
-	SessionID  string       `json:"session_id"`
-	Status     string       `json:"status"`
-	Error      string       `json:"error,omitempty"`
-	Result     *uxi.Session `json:"session,omitempty"`
-	CreatedAt  time.Time    `json:"created_at"`
-	FinishedAt time.Time    `json:"finished_at,omitempty"`
-	IdempotencyKey string `json:"idempotency_key,omitempty"`
-	RequestHash string `json:"request_hash,omitempty"`
+	ID             string       `json:"id"`
+	SessionID      string       `json:"session_id"`
+	Status         string       `json:"status"`
+	Error          string       `json:"error,omitempty"`
+	Result         *uxi.Session `json:"session,omitempty"`
+	CreatedAt      time.Time    `json:"created_at"`
+	FinishedAt     time.Time    `json:"finished_at,omitempty"`
+	IdempotencyKey string       `json:"idempotency_key,omitempty"`
+	RequestHash    string       `json:"request_hash,omitempty"`
 }
 
 type messageJobs struct {
@@ -34,16 +34,16 @@ type messageJobs struct {
 	jobs   map[string]*messageJob
 	active map[string]string
 	slots  chan struct{}
-	store *messageJobStore
-	ctx context.Context
+	store  *messageJobStore
+	ctx    context.Context
 	cancel context.CancelFunc
-	wg sync.WaitGroup
+	wg     sync.WaitGroup
 	closed bool
 }
 
 func newMessageJobs() *messageJobs {
 	ctx, cancel := context.WithCancel(context.Background())
-	return &messageJobs{jobs: make(map[string]*messageJob), active: make(map[string]string), slots: make(chan struct{}, 2), ctx:ctx, cancel:cancel}
+	return &messageJobs{jobs: make(map[string]*messageJob), active: make(map[string]string), slots: make(chan struct{}, 2), ctx: ctx, cancel: cancel}
 }
 
 func (s *Server) handleAsyncMessage(w http.ResponseWriter, r *http.Request) {
@@ -74,16 +74,27 @@ func (s *Server) handleAsyncMessage(w http.ResponseWriter, r *http.Request) {
 	}
 	q := s.messageJobs
 	q.mu.Lock()
-	if q.closed { q.mu.Unlock(); writeError(w, http.StatusServiceUnavailable, errors.New("server shutting down")); return }
+	if q.closed {
+		q.mu.Unlock()
+		writeError(w, http.StatusServiceUnavailable, errors.New("server shutting down"))
+		return
+	}
 	key := r.Header.Get("Idempotency-Key")
-	if len(key)>128 || strings.ContainsAny(key, "\r\n\t ") { q.mu.Unlock(); writeError(w, http.StatusBadRequest, errors.New("invalid idempotency key")); return }
+	if len(key) > 128 || strings.ContainsAny(key, "\r\n\t ") {
+		q.mu.Unlock()
+		writeError(w, http.StatusBadRequest, errors.New("invalid idempotency key"))
+		return
+	}
 	hash := fmt.Sprintf("%x", sha256.Sum256([]byte(input.Content)))
 	if key != "" {
 		for _, prior := range q.jobs {
 			if prior.SessionID == id && prior.IdempotencyKey == key {
 				snapshot := *prior
 				q.mu.Unlock()
-				if snapshot.RequestHash != hash { writeError(w, http.StatusConflict, errors.New("idempotency key reused with different content")); return }
+				if snapshot.RequestHash != hash {
+					writeError(w, http.StatusConflict, errors.New("idempotency key reused with different content"))
+					return
+				}
 				writeJSON(w, http.StatusAccepted, snapshot)
 				return
 			}
@@ -111,9 +122,12 @@ func (s *Server) handleAsyncMessage(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	job := &messageJob{ID: hex.EncodeToString(token), SessionID: id, Status: "running", CreatedAt: now.UTC(), IdempotencyKey:key, RequestHash:hash}
+	job := &messageJob{ID: hex.EncodeToString(token), SessionID: id, Status: "running", CreatedAt: now.UTC(), IdempotencyKey: key, RequestHash: hash}
 	if err := q.store.save(*job); err != nil {
-		<-q.slots; q.mu.Unlock(); writeError(w, http.StatusInternalServerError, errors.New("unable to persist job")); return
+		<-q.slots
+		q.mu.Unlock()
+		writeError(w, http.StatusInternalServerError, errors.New("unable to persist job"))
+		return
 	}
 	q.jobs[job.ID] = job
 	q.active[id] = job.ID
@@ -137,7 +151,9 @@ func (s *Server) handleAsyncMessage(w http.ResponseWriter, r *http.Request) {
 		job.FinishedAt = time.Now().UTC()
 		if err := q.store.save(*job); err != nil {
 			// Keep the original accepted record on disk and block new work on this session.
-			job.Status = "interrupted"; job.Error = "result persistence unavailable"; job.Result = nil
+			job.Status = "interrupted"
+			job.Error = "result persistence unavailable"
+			job.Result = nil
 			return
 		}
 		delete(q.active, id)
@@ -162,8 +178,16 @@ func (s *Server) handleMessageJob(w http.ResponseWriter, r *http.Request) {
 // Shutdown stops accepting work, cancels active inference and waits for workers.
 func (s *Server) Shutdown(ctx context.Context) error {
 	q := s.messageJobs
-	q.mu.Lock(); q.closed = true; q.cancel(); q.mu.Unlock()
+	q.mu.Lock()
+	q.closed = true
+	q.cancel()
+	q.mu.Unlock()
 	done := make(chan struct{})
-	go func(){ q.wg.Wait(); close(done) }()
-	select { case <-done: return nil; case <-ctx.Done(): return ctx.Err() }
+	go func() { q.wg.Wait(); close(done) }()
+	select {
+	case <-done:
+		return nil
+	case <-ctx.Done():
+		return ctx.Err()
+	}
 }
