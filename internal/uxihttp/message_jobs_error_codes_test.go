@@ -11,7 +11,7 @@ import (
 func TestInferenceFailureClassification(t *testing.T) {
 	cases := []struct {
 		name string
-		err error
+		err  error
 		want string
 	}{
 		{"timeout", context.DeadlineExceeded, "inference_timeout"},
