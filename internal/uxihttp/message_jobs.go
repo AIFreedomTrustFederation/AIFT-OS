@@ -197,10 +197,33 @@ func (s *Server) Shutdown(ctx context.Context) error {
 	}
 }
 
-// publicMessageJob excludes private retry metadata while preserving the durable record.
+// publicMessageJob returns a detached browser-safe projection; durable records retain
+// provider diagnostics for local operator inspection.
 func publicMessageJob(job messageJob) messageJob {
 	job.IdempotencyKey = ""
 	job.RequestHash = ""
+	if job.Result != nil {
+		session := *job.Result
+		session.Turns = append([]uxi.Turn(nil), session.Turns...)
+		for i := range session.Turns {
+			turn := &session.Turns[i]
+			if turn.Metadata == nil {
+				continue
+			}
+			metadata := make(map[string]any, len(turn.Metadata))
+			for key, value := range turn.Metadata {
+				switch key {
+				case "inference_error":
+					// Raw provider errors can include private endpoint and filesystem details.
+					continue
+				default:
+					metadata[key] = value
+				}
+			}
+			turn.Metadata = metadata
+		}
+		job.Result = &session
+	}
 	return job
 }
 

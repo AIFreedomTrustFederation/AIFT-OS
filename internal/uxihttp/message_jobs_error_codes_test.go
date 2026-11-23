@@ -6,6 +6,8 @@ import (
 	"errors"
 	"strings"
 	"testing"
+
+	"github.com/AIFreedomTrustFederation/AIFT-OS/internal/uxi"
 )
 
 func TestInferenceFailureClassification(t *testing.T) {
@@ -47,5 +49,35 @@ func TestPublicJobHidesRetryMetadata(t *testing.T) {
 	}
 	if job.IdempotencyKey == "" || job.RequestHash == "" {
 		t.Fatal("public projection mutated durable record")
+	}
+}
+
+func TestPublicJobRedactsNestedInferenceErrorWithoutMutatingDurableSession(t *testing.T) {
+	private := "private provider URL /home/user/model.gguf token=secret"
+	session := &uxi.Session{ID: "session", Turns: []uxi.Turn{
+		{Role: "assistant", Content: "Local inference failed", Metadata: map[string]any{
+			"inference_error":        private,
+			"inference_failure_kind": "connection_error",
+			"mode":                   "degraded",
+		}},
+	}}
+	job := messageJob{Status: "completed", Result: session, IdempotencyKey: "secret-key"}
+	projected := publicMessageJob(job)
+	encoded, err := json.Marshal(projected)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(encoded), private) || strings.Contains(string(encoded), "inference_error") || strings.Contains(string(encoded), "secret-key") {
+		t.Fatalf("private diagnostics leaked: %s", encoded)
+	}
+	if !strings.Contains(string(encoded), "connection_error") || !strings.Contains(string(encoded), "Local inference failed") {
+		t.Fatalf("safe failure evidence missing: %s", encoded)
+	}
+	if session.Turns[0].Metadata["inference_error"] != private || job.IdempotencyKey != "secret-key" {
+		t.Fatal("public projection mutated durable record")
+	}
+	projected.Result.Turns[0].Metadata["mode"] = "tampered"
+	if session.Turns[0].Metadata["mode"] != "degraded" {
+		t.Fatal("public metadata aliases durable session")
 	}
 }
