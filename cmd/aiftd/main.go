@@ -70,6 +70,9 @@ func main() {
 	if err := server.Shutdown(ctx); err != nil {
 		log.Printf("shutdown: %v", err)
 	}
+	if err := uxiServer.Shutdown(ctx); err != nil {
+		log.Printf("inference shutdown: %v", err)
+	}
 }
 
 func requireLoopback(addr string) error {

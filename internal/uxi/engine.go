@@ -44,6 +44,11 @@ func (e *Engine) Repositories() ([]Repository, error) {
 
 // HandleMessage serializes one full exchange per session and persists both turns atomically.
 func (e *Engine) HandleMessage(ctx context.Context, sessionID, content string) (Session, error) {
+	return e.HandleMessageForJob(ctx, sessionID, content, "")
+}
+
+// HandleMessageForJob attaches a durable job identity to the committed exchange.
+func (e *Engine) HandleMessageForJob(ctx context.Context, sessionID, content, jobID string) (Session, error) {
 	content = strings.TrimSpace(content)
 	if content == "" {
 		return Session{}, errors.New("message content is required")
@@ -95,6 +100,12 @@ func (e *Engine) HandleMessage(ctx context.Context, sessionID, content string) (
 		}
 	}
 
+	if err := ctx.Err(); err != nil {
+		return Session{}, err
+	}
+	if jobID != "" {
+		metadata["async_job_id"] = jobID
+	}
 	now := time.Now().UTC()
 	return e.Store.AppendExchange(sessionID,
 		Turn{Role: "user", Content: content, CreatedAt: now},

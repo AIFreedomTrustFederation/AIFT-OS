@@ -1,0 +1,58 @@
+name: Durable inference integration gates
+
+on:
+  pull_request:
+    paths:
+      - 'internal/uxi/**'
+      - 'internal/uxihttp/**'
+      - 'internal/ai/**'
+      - 'go.mod'
+      - '.github/workflows/durable-inference-integration.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: durable-inference-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  linux-race-and-recovery:
+    name: Native Linux race and recovery
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version-file: go.mod
+          cache: false
+      - name: Verify canonical Go formatting
+        shell: bash
+        run: |
+          set -euo pipefail
+          unformatted="$(gofmt -l internal/uxi internal/uxihttp)"
+          if [[ -n "$unformatted" ]]; then
+            printf 'Unformatted Go files:\n%s\n' "$unformatted"
+            exit 1
+          fi
+      - name: Run native Linux race detector
+        run: go test -race -count=1 -timeout=10m ./internal/uxi ./internal/uxihttp
+      - name: Exercise durable recovery and browser contract regressions
+        run: |
+          go test -count=10 -timeout=10m ./internal/uxihttp -run 'Test(DurableJobRecoveryAndIdempotency|ReconcileCommittedExchangeAfterTerminalRecordLoss|UncommittedInterruptedJobBlocksReplay|BrowserDurableJobRecoveryContract|InferenceFailureClassification|PublicJobHidesRetryMetadata)'
+      - name: Record gate scope
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '## Durable inference integration verification'
+            echo ''
+            echo '- Native Linux race detection and recovery regression tests: see job steps above.'
+            echo '- This workflow does not start Aetherion, exercise a real browser, simulate disk faults, or verify multi-process safety.'
+            echo '- A passing workflow is necessary but not sufficient for production readiness.'
+            echo '- No merge, deployment, production service restart, or secret access is performed.'
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -14,15 +14,56 @@ import (
 )
 
 type Server struct {
-	Engine *uxi.Engine
-	mux    *http.ServeMux
+	Engine      *uxi.Engine
+	mux         *http.ServeMux
+	messageJobs *messageJobs
 }
 
 func New(engine *uxi.Engine) (*Server, error) {
 	if engine == nil {
 		return nil, errors.New("engine is required")
 	}
-	s := &Server{Engine: engine, mux: http.NewServeMux()}
+	store, err := newMessageJobStore(engine.Store.Root())
+	if err != nil {
+		return nil, err
+	}
+	persisted, err := store.list()
+	if err != nil {
+		return nil, err
+	}
+	jobs := newMessageJobs()
+	jobs.store = store
+	for _, job := range persisted {
+		if job.Status == "running" || job.Status == "interrupted" {
+			committed, found, err := engine.Store.FindJobExchange(job.SessionID, job.ID)
+			if err != nil {
+				return nil, fmt.Errorf("reconcile job %s: %w", job.ID, err)
+			}
+			if found {
+				job.Status = "completed"
+				job.Error = ""
+				job.Result = &committed
+				job.FinishedAt = time.Now().UTC()
+				if err := store.save(job); err != nil {
+					return nil, err
+				}
+			}
+		}
+		if job.Status == "running" {
+			job.Status = "interrupted"
+			job.Error = "inference interrupted; outcome requires reconciliation"
+			job.FinishedAt = time.Now().UTC()
+			if err := store.save(job); err != nil {
+				return nil, err
+			}
+		}
+		copy := job
+		jobs.jobs[job.ID] = &copy
+		if job.Status == "interrupted" {
+			jobs.active[job.SessionID] = job.ID
+		}
+	}
+	s := &Server{Engine: engine, mux: http.NewServeMux(), messageJobs: jobs}
 	s.routes()
 	return s, nil
 }
@@ -50,6 +91,8 @@ func (s *Server) routes() {
 	s.mux.HandleFunc("POST /v1/sessions", s.handleCreateSession)
 	s.mux.HandleFunc("GET /v1/sessions/{id}", s.handleGetSession)
 	s.mux.HandleFunc("POST /v1/sessions/{id}/messages", s.handleMessage)
+	s.mux.HandleFunc("POST /v1/sessions/{id}/messages/async", s.handleAsyncMessage)
+	s.mux.HandleFunc("GET /v1/sessions/{id}/message-jobs/{jobID}", s.handleMessageJob)
 	s.mux.HandleFunc("POST /v1/sessions/{id}/plans", s.handlePlan)
 	s.mux.HandleFunc("POST /v1/sessions/{id}/actions", s.handleAction)
 	s.mux.HandleFunc("POST /v1/sessions/{id}/actions/{actionID}/decision", s.handleActionDecision)
@@ -370,8 +413,8 @@ func securityHeaders(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if origin := r.Header.Get("Origin"); allowedLoopbackOrigin(origin) {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
-			w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
-			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Idempotency-Key")
 			w.Header().Add("Vary", "Origin")
 			if r.Method == http.MethodOptions {
 				w.WriteHeader(http.StatusNoContent)
