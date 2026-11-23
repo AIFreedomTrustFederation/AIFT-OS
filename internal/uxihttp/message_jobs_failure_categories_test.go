@@ -12,7 +12,7 @@ import (
 func TestClassifyInferenceErrorSafeCategories(t *testing.T) {
 	tests := []struct {
 		name string
-		err error
+		err  error
 		want string
 	}{
 		{"deadline", context.DeadlineExceeded, "inference_timeout"},
