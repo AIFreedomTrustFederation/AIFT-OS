@@ -3,6 +3,8 @@ package uxihttp
 import (
 	"context"
 	"crypto/rand"
+	"crypto/sha256"
+	"fmt"
 	"encoding/hex"
 	"errors"
 	"net/http"
@@ -24,6 +26,8 @@ type messageJob struct {
 	Result     *uxi.Session `json:"session,omitempty"`
 	CreatedAt  time.Time    `json:"created_at"`
 	FinishedAt time.Time    `json:"finished_at,omitempty"`
+	IdempotencyKey string `json:"-"`
+	RequestHash string `json:"-"`
 }
 
 type messageJobs struct {
@@ -31,10 +35,16 @@ type messageJobs struct {
 	jobs   map[string]*messageJob
 	active map[string]string
 	slots  chan struct{}
+	store *messageJobStore
+	ctx context.Context
+	cancel context.CancelFunc
+	wg sync.WaitGroup
+	closed bool
 }
 
 func newMessageJobs() *messageJobs {
-	return &messageJobs{jobs: make(map[string]*messageJob), active: make(map[string]string), slots: make(chan struct{}, 2)}
+	ctx, cancel := context.WithCancel(context.Background())
+	return &messageJobs{jobs: make(map[string]*messageJob), active: make(map[string]string), slots: make(chan struct{}, 2), ctx:ctx, cancel:cancel}
 }
 
 func (s *Server) handleAsyncMessage(w http.ResponseWriter, r *http.Request) {
@@ -65,6 +75,21 @@ func (s *Server) handleAsyncMessage(w http.ResponseWriter, r *http.Request) {
 	}
 	q := s.messageJobs
 	q.mu.Lock()
+	if q.closed { q.mu.Unlock(); writeError(w, http.StatusServiceUnavailable, errors.New("server shutting down")); return }
+	key := r.Header.Get("Idempotency-Key")
+	if len(key)>128 || strings.ContainsAny(key, "\r\n\t ") { q.mu.Unlock(); writeError(w, http.StatusBadRequest, errors.New("invalid idempotency key")); return }
+	hash := fmt.Sprintf("%x", sha256.Sum256([]byte(input.Content)))
+	if key != "" {
+		for _, prior := range q.jobs {
+			if prior.SessionID == id && prior.IdempotencyKey == key {
+				snapshot := *prior
+				q.mu.Unlock()
+				if prior.RequestHash != hash { writeError(w, http.StatusConflict, errors.New("idempotency key reused with different content")); return }
+				writeJSON(w, http.StatusAccepted, snapshot)
+				return
+			}
+		}
+	}
 	now := time.Now()
 	for key, job := range q.jobs {
 		if !job.FinishedAt.IsZero() && now.Sub(job.FinishedAt) > messageJobRetention {
@@ -92,25 +117,35 @@ func (s *Server) handleAsyncMessage(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
-	job := &messageJob{ID: hex.EncodeToString(token), SessionID: id, Status: "running", CreatedAt: now.UTC()}
+	job := &messageJob{ID: hex.EncodeToString(token), SessionID: id, Status: "running", CreatedAt: now.UTC(), IdempotencyKey:key, RequestHash:hash}
+	if err := q.store.save(*job); err != nil {
+		<-q.slots; q.mu.Unlock(); writeError(w, http.StatusInternalServerError, errors.New("unable to persist job")); return
+	}
 	q.jobs[job.ID] = job
 	q.active[id] = job.ID
+	q.wg.Add(1)
 	q.mu.Unlock()
 	go func() {
+		defer q.wg.Done()
 		defer func() { <-q.slots }()
-		ctx, cancel := context.WithTimeout(context.Background(), messageJobTimeout)
+		ctx, cancel := context.WithTimeout(q.ctx, messageJobTimeout)
 		defer cancel()
 		session, err := s.Engine.HandleMessage(ctx, id, input.Content)
 		q.mu.Lock()
 		defer q.mu.Unlock()
 		if err != nil {
 			job.Status = "failed"
-			job.Error = err.Error()
+			job.Error = "inference failed"
 		} else {
 			job.Status = "completed"
 			job.Result = &session
 		}
 		job.FinishedAt = time.Now().UTC()
+		if err := q.store.save(*job); err != nil {
+			// Keep the original accepted record on disk and block new work on this session.
+			job.Status = "interrupted"; job.Error = "result persistence unavailable"; job.Result = nil
+			return
+		}
 		delete(q.active, id)
 	}()
 	writeJSON(w, http.StatusAccepted, job)
@@ -128,4 +163,13 @@ func (s *Server) handleMessageJob(w http.ResponseWriter, r *http.Request) {
 	snapshot := *job
 	q.mu.Unlock()
 	writeJSON(w, http.StatusOK, snapshot)
+}
+
+// Shutdown stops accepting work, cancels active inference and waits for workers.
+func (s *Server) Shutdown(ctx context.Context) error {
+	q := s.messageJobs
+	q.mu.Lock(); q.closed = true; q.cancel(); q.mu.Unlock()
+	done := make(chan struct{})
+	go func(){ q.wg.Wait(); close(done) }()
+	select { case <-done: return nil; case <-ctx.Done(): return ctx.Err() }
 }
