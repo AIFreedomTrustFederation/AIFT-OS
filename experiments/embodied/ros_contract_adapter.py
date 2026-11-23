@@ -25,3 +25,33 @@ def evaluate_envelope(gate: SafetyGate, envelope):
     return gate.evaluate(parsed["observation"], parsed["proposal"], parsed["grant"],
                          now_ms=envelope["clock_ms"], network_ok=envelope["network_ok"],
                          watchdog_ok=envelope["watchdog_ok"])
+
+# Bounded serialized-message boundary for a future isolated ROS simulator bridge.
+# JSON is an interchange fixture only; no ROS/DDS transport or network I/O.
+import json
+
+MAX_ENVELOPE_BYTES = 4096
+
+def _unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("duplicate JSON field")
+        result[key] = value
+    return result
+
+def _reject_constant(value):
+    raise ValueError("nonfinite JSON constant")
+
+def evaluate_json_envelope(gate: SafetyGate, payload):
+    """Reject malformed/ambiguous/unbounded messages before safety evaluation."""
+    deny = {"accepted": False, "reason": "invalid_envelope", "action": "STOP", "simulated": True}
+    if type(payload) is not bytes or len(payload) > MAX_ENVELOPE_BYTES:
+        return deny.copy()
+    try:
+        message = json.loads(payload.decode("utf-8", errors="strict"),
+                             object_pairs_hook=_unique_object,
+                             parse_constant=_reject_constant)
+    except (ValueError, UnicodeError, TypeError, RecursionError):
+        return deny.copy()
+    return evaluate_envelope(gate, message)
