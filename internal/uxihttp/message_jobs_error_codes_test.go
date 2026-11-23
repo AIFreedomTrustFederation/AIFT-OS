@@ -56,9 +56,9 @@ func TestPublicJobRedactsNestedInferenceErrorWithoutMutatingDurableSession(t *te
 	private := "private provider URL /home/user/model.gguf token=secret"
 	session := &uxi.Session{ID: "session", Turns: []uxi.Turn{
 		{Role: "assistant", Content: "Local inference failed", Metadata: map[string]any{
-			"inference_error": private,
+			"inference_error":        private,
 			"inference_failure_kind": "connection_error",
-			"mode": "degraded",
+			"mode":                   "degraded",
 		}},
 	}}
 	job := messageJob{Status: "completed", Result: session, IdempotencyKey: "secret-key"}
