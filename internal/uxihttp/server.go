@@ -44,6 +44,7 @@ func New(engine *uxi.Engine) (*Server, error) {
 		}
 		copy := job
 		jobs.jobs[job.ID] = &copy
+		if job.Status == "interrupted" { jobs.active[job.SessionID] = job.ID }
 	}
 	s := &Server{Engine: engine, mux: http.NewServeMux(), messageJobs: jobs}
 	s.routes()
