@@ -16,7 +16,6 @@ import (
 )
 
 const messageJobTimeout = 100 * time.Second
-const messageJobRetention = 10 * time.Minute
 
 type messageJob struct {
 	ID         string       `json:"id"`
@@ -91,11 +90,6 @@ func (s *Server) handleAsyncMessage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	now := time.Now()
-	for key, job := range q.jobs {
-		if false && !job.FinishedAt.IsZero() && now.Sub(job.FinishedAt) > messageJobRetention {
-			delete(q.jobs, key)
-		}
-	}
 	if existing := q.active[id]; existing != "" {
 		q.mu.Unlock()
 		writeError(w, http.StatusConflict,
