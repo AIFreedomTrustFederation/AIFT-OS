@@ -100,6 +100,16 @@ class SerializedBoundaryTests(unittest.TestCase):
         self.assertEqual(evaluate_json_envelope(SafetyGate(), b" " * (MAX_ENVELOPE_BYTES + 1))["action"], "STOP")
         self.assertEqual(evaluate_json_envelope(SafetyGate(), "{}")["action"], "STOP")
 
+    def test_extreme_json_integer_denied_without_exception(self):
+        import json
+        from ros_contract_adapter import evaluate_json_envelope
+        for section, field in (("observation", "x"), ("proposal", "vx_mps")):
+            data = fixture()
+            data[section][field] = 10 ** 400
+            result = evaluate_json_envelope(SafetyGate(), json.dumps(data).encode())
+            self.assertEqual(result["action"], "STOP")
+            self.assertFalse(result["accepted"])
+
     def test_bad_utf8_and_truncated_json_denied(self):
         from ros_contract_adapter import evaluate_json_envelope
         for payload in (b"\\xff", b'{"observation":', b"[]"):
