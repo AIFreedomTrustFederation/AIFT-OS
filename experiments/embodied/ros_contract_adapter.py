@@ -22,7 +22,7 @@ def evaluate_envelope(gate: SafetyGate, envelope):
         if any(type(data[k]) not in (expected if type(expected) is tuple else (expected,)) for k, expected in fields.items()):
             return deny.copy()
         parsed[name] = cls(**data)
-    return gate.evaluate(parsed["observation"], parsed["proposal"], parsed["grant"],
+    # Very large JSON integers can raise OverflowError inside math.isfinite/hypot.\n    # Deny them before invoking the deterministic gate.\n    for field in ("x", "y", "obstacle_m"):\n        value = getattr(parsed["observation"], field)\n        if type(value) is int and value.bit_length() > 1023:\n            return deny.copy()\n    for field in ("vx_mps", "vy_mps"):\n        value = getattr(parsed["proposal"], field)\n        if type(value) is int and value.bit_length() > 1023:\n            return deny.copy()\n    return gate.evaluate(parsed["observation"], parsed["proposal"], parsed["grant"],
                          now_ms=envelope["clock_ms"], network_ok=envelope["network_ok"],
                          watchdog_ok=envelope["watchdog_ok"])
 
