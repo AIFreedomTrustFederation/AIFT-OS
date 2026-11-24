@@ -19,7 +19,7 @@
     "node": ">=20"
   },
   "dependencies": {
-    "@huggingface/transformers": "^4.2.0",
+    "@huggingface/transformers": "^4.3.2",
     "@mlc-ai/web-llm": "0.2.84",
     "@vercel/analytics": "1.5.0",
     "framer-motion": "12.23.0",
