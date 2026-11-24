@@ -90,7 +90,7 @@ class InMemoryTransport:
             self.latched = True
             self.gate.stop()
             return stop.copy()
-        # Bind transport sequence to both embedded sequences before evaluation.
+        # Bind publisher clock and sequences to receiver fixture authority.
         try:
             if type(payload) is not bytes or len(payload) > 4096:
                 raise ValueError("invalid payload")
@@ -98,13 +98,15 @@ class InMemoryTransport:
                                  object_pairs_hook=_unique_object,
                                  parse_constant=_reject_constant)
             if (type(message) is not dict or
+                    type(message.get("clock_ms")) is not int or
+                    message["clock_ms"] != delivery_ms or
                     type(message.get("observation")) is not dict or
                     type(message.get("proposal")) is not dict or
                     type(message["observation"].get("sequence")) is not int or
                     type(message["proposal"].get("sequence")) is not int or
                     message["observation"]["sequence"] != sequence or
                     message["proposal"]["sequence"] != sequence):
-                raise ValueError("sequence mismatch")
+                raise ValueError("clock or sequence mismatch")
         except (ValueError, TypeError, UnicodeError, RecursionError, AttributeError):
             self.latched = True
             self.gate.stop()
@@ -235,6 +237,33 @@ class TransportFaultTests(unittest.TestCase):
         t.tick(1201)
         self.assertEqual(t.arm(1202)["action"], "STOP")
         self.assertEqual(t.tick(1203)["action"], "STOP")
+
+    def test_publisher_clock_mismatch_latches(self):
+        for clock in (999, 1001, True, 1000.0, None):
+            with self.subTest(clock=clock):
+                t = InMemoryTransport()
+                t.arm(1000)
+                message = frame(1, 1000)
+                message["clock_ms"] = clock
+                self.assertEqual(t.deliver(encoded(message), delivery_ms=1000, sequence=1)["action"], "STOP")
+                self.assertTrue(t.latched)
+                self.assertEqual(t.deliver(encoded(frame(1, 1001)), delivery_ms=1001, sequence=1)["action"], "STOP")
+
+    def test_expired_grant_cannot_use_old_publisher_clock(self):
+        t = InMemoryTransport()
+        t.arm(1000)
+        message = frame(1, 1000)
+        message["grant"]["expires_ms"] = 1050
+        self.assertEqual(t.deliver(encoded(message), delivery_ms=1100, sequence=1)["action"], "STOP")
+        self.assertTrue(t.latched)
+
+    def test_matching_clock_expired_grant_latches(self):
+        t = InMemoryTransport()
+        t.arm(1000)
+        message = frame(1, 1100)
+        message["grant"]["expires_ms"] = 1050
+        self.assertEqual(t.deliver(encoded(message), delivery_ms=1100, sequence=1)["action"], "STOP")
+        self.assertTrue(t.latched)
 
     def test_no_physical_effects(self):
         t = InMemoryTransport()
