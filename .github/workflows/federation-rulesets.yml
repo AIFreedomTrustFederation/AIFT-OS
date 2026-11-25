@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.apply && 'federation-policy-apply' || 'federation-policy-audit' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Audit or apply approved repository rulesets
         env:
           GH_TOKEN: ${{ secrets.AIFT_RULESET_ADMIN_TOKEN }}
