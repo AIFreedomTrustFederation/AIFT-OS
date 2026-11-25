@@ -60,7 +60,7 @@ jobs:
             .github/workflows/aift-aetherion-readiness.yml \
             .github/workflows/aift-secure-cloud-worker.yml
       - name: zizmor high-confidence workflow security audit
-        uses: zizmorcore/zizmor-action@45d7276c9ca790aabd705e31ca99c6185c3e76dd # v0.8.1
+        uses: zizmorcore/zizmor-action@a818f16177a5395fc11d3c73577caabaa7119391 # v0.9.1
         with:
           version: v1.32.0
           advanced-security: false
