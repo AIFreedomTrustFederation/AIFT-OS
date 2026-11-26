@@ -17,6 +17,8 @@ func TestClassifyInferenceErrorSafeCategories(t *testing.T) {
 	}{
 		{"deadline", context.DeadlineExceeded, "inference_timeout"},
 		{"cancelled", context.Canceled, "inference_canceled"},
+		{"provider cancellation", &uxi.InferenceFailure{Kind: "cancelled"}, "inference_canceled"},
+		{"possible context limit", &uxi.InferenceFailure{Kind: "possible_context_limit"}, "inference_possible_context_limit"},
 		{"provider timeout", &uxi.InferenceFailure{Kind: "timeout"}, "inference_timeout"},
 		{"connection", &uxi.InferenceFailure{Kind: "connection_error", Cause: errors.New("private path /secret")}, "inference_connection_error"},
 		{"context rejection", &uxi.InferenceFailure{Kind: "request_rejected_possible_context_limit"}, "inference_possible_context_limit"},
