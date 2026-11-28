@@ -4,19 +4,22 @@ No ROS transport, model, network, sensors or physical actuator connections.
 Run: python3 -m unittest discover -s experiments/embodied -p 'test_*.py' -v
 """
 import unittest
-from safety_sim import SafetyGate, Observation, Proposal, Grant
+from safety_sim import SafetyGate, Observation, Proposal, Grant, valid_counter
 
 
 def simulated_cycle(*, sequence=1, now_ms=1000, obstacle_m=2.0,
                     requested_speed=0.1, consent=True, network_ok=True,
                     watchdog_ok=True, estop=False, observation_age_ms=0):
     """Untrusted mock planner may request movement; gate alone authorizes a label."""
-    observation = Observation(sequence, now_ms - observation_age_ms, 0.0, 0.0, obstacle_m)
+    timestamp = None
+    if valid_counter(now_ms) and valid_counter(observation_age_ms):
+        timestamp = now_ms - observation_age_ms
+    observation = Observation(sequence, timestamp, 0.0, 0.0, obstacle_m)
     proposal = Proposal(sequence, requested_speed, 0.0, 100)
-    grant = Grant("virtual-robot-01", "sim_motion", now_ms + 1000,
-                  revoked=not consent)
+    grant = Grant("virtual-robot-01", "sim_motion", now_ms + 1000 if valid_counter(now_ms) else None,
+                  revoked=consent is not True)
     gate = SafetyGate()
-    if estop:
+    if estop is not False:
         gate.stop()
     result = gate.evaluate(observation, proposal, grant, now_ms=now_ms,
                            network_ok=network_ok, watchdog_ok=watchdog_ok)
