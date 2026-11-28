@@ -234,7 +234,23 @@ func classifyInferenceError(err error) string {
 		return "inference_timeout"
 	case errors.Is(err, context.Canceled):
 		return "inference_canceled"
-	default:
-		return "inference_failed"
 	}
+	var failure *uxi.InferenceFailure
+	if errors.As(err, &failure) {
+		switch failure.Kind {
+		case "timeout":
+			return "inference_timeout"
+		case "cancelled":
+			return "inference_canceled"
+		case "connection_error":
+			return "inference_connection_error"
+		case "request_rejected_possible_context_limit", "possible_context_limit":
+			return "inference_possible_context_limit"
+		case "capacity_limited":
+			return "inference_capacity_limited"
+		case "provider_unavailable":
+			return "inference_provider_unavailable"
+		}
+	}
+	return "inference_failed"
 }
