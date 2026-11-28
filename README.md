@@ -209,6 +209,8 @@ bash tests/test-push-all-aift-repos.sh
 
 The [Federation evidence consumer](scripts/check_federation_evidence.py) accepts supplied `aift.verification.v1` JSON records using repeatable `--expect AIFreedomTrustFederation/REPO=COMMIT_SHA` and `--input RECORD.json` arguments. It checks repository identity and exact expected commit, record structure, unique checks and repositories, consistent check exit codes, and explicit security, dependency, and deployment gate statuses. It emits an `aift.federation-assessment.v1` JSON report; missing, stale, contradictory, or failed evidence produces a nonzero exit. An assessment of `partial` means reported checks passed but one or more gates remain unverified or not applicable. The consumer's `reported_pass` status reflects consistency of **supplied** records, not independently authenticated execution.
 
+Each evidence file may contain up to 1 MiB of UTF-8 JSON. The consumer accepts at most 64 simultaneously open objects and arrays, counting the root object as one. This limit also applies to extension fields.
+
 This is a **read-only, offline structural validator**. It does not fetch GitHub artifacts, authenticate their origin or run conclusion, verify signatures, establish that supplied SHAs are current default-branch heads, test live integrations, or authorize deployment. Supply expected commits and records from a separately trusted source. The [consumer regressions](tests/test_federation_evidence.py) run within `make verify-fast` and `make verify`; reproduce that focused test with:
 
 ```bash

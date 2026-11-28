@@ -20,6 +20,7 @@ REPO = re.compile(r"AIFreedomTrustFederation/[A-Za-z0-9_.-]+\Z")
 SHA = re.compile(r"[0-9a-f]{40}\Z")
 GATE_STATUSES = {"passed", "failed", "not_checked", "not_applicable"}
 MAX_BYTES = 1024 * 1024
+MAX_JSON_DEPTH = 64  # Count simultaneously open containers, including the root.
 MAX_INTEGER_DIGITS = 4300
 
 
@@ -55,6 +56,31 @@ def bounded_json_int(value: str) -> int:
     return int(value)
 
 
+def check_json_depth(document: str) -> None:
+    """Bound decoder work before parsing. json.loads still validates JSON syntax."""
+    depth = 0
+    in_string = False
+    escaped = False
+    for char in document:
+        if in_string:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+        elif char == '"':
+            in_string = True
+        elif char in "[{":
+            depth += 1
+            if depth > MAX_JSON_DEPTH:
+                raise EvidenceError(f"nesting exceeds {MAX_JSON_DEPTH} containers")
+        elif char in "]}":
+            depth -= 1
+            if depth < 0:
+                raise EvidenceError("unexpected closing delimiter")
+
+
 def read_record(path: Path) -> dict:
     # A stat-only limit is vulnerable to a file growing between stat and read.
     # Bound bytes actually consumed, including for changing or special files.
@@ -71,7 +97,9 @@ def read_record(path: Path) -> dict:
     if len(raw) > MAX_BYTES:
         raise EvidenceError("evidence exceeds 1 MiB")
     try:
-        record = json.loads(raw.decode("utf-8"), object_pairs_hook=no_duplicate_keys,
+        document = raw.decode("utf-8")
+        check_json_depth(document)
+        record = json.loads(document, object_pairs_hook=no_duplicate_keys,
                             parse_constant=reject_constant, parse_float=finite_json_float,
                             parse_int=bounded_json_int)
     except (UnicodeError, ValueError, RecursionError) as exc:
