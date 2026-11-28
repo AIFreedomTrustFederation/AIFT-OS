@@ -2,12 +2,11 @@
 
 Run: python3 -m unittest discover -s experiments/embodied -p 'test_*.py' -v
 """
-import copy
 import json
 import unittest
 
-from ros_contract_adapter import evaluate_json_envelope, _unique_object, _reject_constant
-from safety_sim import SafetyGate
+from ros_contract_adapter import decode_envelope, evaluate_envelope
+from safety_sim import SafetyGate, valid_counter
 
 def frame(seq, timestamp_ms):
     return {"observation": {"sequence": seq, "timestamp_ms": timestamp_ms,
@@ -27,19 +26,25 @@ class InMemoryTransport:
     The clock and grant are fixture assertions, not authenticated time or identity.
     """
     def __init__(self, *, deadline_ms=200):
+        if not valid_counter(deadline_ms) or deadline_ms == 0:
+            raise ValueError("deadline_ms must be a positive simulated interval")
         self.gate = SafetyGate()
         self.expected = 1
-        self.deadline_ms = deadline_ms
+        self._deadline_ms = deadline_ms
         self.last_delivery_ms = None
         self.latched = False
         self.last_tick_ms = None
         self.armed_at_ms = None
 
+    @property
+    def deadline_ms(self):
+        return self._deadline_ms
+
     def arm(self, now_ms):
         """Explicitly begin startup supervision; no reset or rearm after a fault."""
         stop = {"accepted": False, "action": "STOP", "simulated": True,
                 "reason": "transport_fault"}
-        if self.latched or self.armed_at_ms is not None or self.last_delivery_ms is not None or type(now_ms) is not int or now_ms < 0 or (self.last_tick_ms is not None and now_ms < self.last_tick_ms):
+        if self.latched or self.armed_at_ms is not None or self.last_delivery_ms is not None or not valid_counter(now_ms) or (self.last_tick_ms is not None and now_ms < self.last_tick_ms):
             self.latched = True
             self.gate.stop()
             return stop
@@ -57,7 +62,7 @@ class InMemoryTransport:
                 "reason": "transport_timeout"}
         if self.latched:
             return stop.copy()
-        if (self.armed_at_ms is None or type(now_ms) is not int or now_ms < 0 or
+        if (self.armed_at_ms is None or not valid_counter(now_ms) or
                 (self.last_tick_ms is not None and now_ms < self.last_tick_ms) or
                 (self.last_delivery_ms is not None and
                  (now_ms < self.last_delivery_ms or
@@ -79,9 +84,9 @@ class InMemoryTransport:
                 "reason": "transport_fault"}
         if self.latched:
             return stop.copy()
-        if (self.armed_at_ms is None or type(delivery_ms) is not int or type(sequence) is not int or
+        if (self.armed_at_ms is None or not valid_counter(delivery_ms) or not valid_counter(sequence) or
                 (self.last_tick_ms is not None and delivery_ms < self.last_tick_ms) or
-                delivery_ms < 0 or sequence != self.expected or
+                sequence != self.expected or
                 (self.armed_at_ms is not None and self.last_delivery_ms is None and
                  (delivery_ms < self.armed_at_ms or delivery_ms - self.armed_at_ms > self.deadline_ms)) or
                 (self.last_delivery_ms is not None and
@@ -92,11 +97,7 @@ class InMemoryTransport:
             return stop.copy()
         # Bind publisher clock and sequences to receiver fixture authority.
         try:
-            if type(payload) is not bytes or len(payload) > 4096:
-                raise ValueError("invalid payload")
-            message = json.loads(payload.decode("utf-8", errors="strict"),
-                                 object_pairs_hook=_unique_object,
-                                 parse_constant=_reject_constant)
+            message = decode_envelope(payload)
             if (type(message) is not dict or
                     type(message.get("clock_ms")) is not int or
                     message["clock_ms"] != delivery_ms or
@@ -111,7 +112,7 @@ class InMemoryTransport:
             self.latched = True
             self.gate.stop()
             return stop.copy()
-        result = evaluate_json_envelope(self.gate, payload)
+        result = evaluate_envelope(self.gate, message, now_ms=delivery_ms)
         if result["action"] != "SIMULATE_ONLY":
             self.latched = True
             self.gate.stop()
