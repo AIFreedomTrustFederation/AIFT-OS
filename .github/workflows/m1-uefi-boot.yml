@@ -1,0 +1,72 @@
+name: M1 QEMU UEFI boot proof
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - scripts/m1_uefi_qemu_smoke.sh
+      - docs/m1-uefi-qemu-boot-proof.md
+      - .github/workflows/m1-uefi-boot.yml
+permissions:
+  contents: read
+jobs:
+  m1-virtual-boot:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install virtual-only boot dependencies
+        run: |
+          sudo apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            linux-image-virtual busybox-static ovmf qemu-system-x86 \
+            grub-common grub-pc-bin grub-efi-amd64-bin xorriso mtools cpio file
+      - name: Select packaged x86-64 kernel and matching OVMF pair
+        shell: bash
+        run: |
+          set -euo pipefail
+          # The hosted runner may expose a newer, unreadable AWS host kernel.
+          # Select the generic kernel installed above, then stage a readable
+          # copy using sudo; the disposable QEMU harness itself stays unprivileged.
+          installed_kernel="$(find /boot -maxdepth 1 -type f -name 'vmlinuz-*-generic' | sort -V | tail -1)"
+          test -n "$installed_kernel" && sudo test -s "$installed_kernel"
+          kernel="${RUNNER_TEMP}/aift-m1-generic-vmlinuz"
+          sudo install -m 0644 "$installed_kernel" "$kernel"
+          test -s "$kernel"
+          file "$kernel" | grep -E 'Linux kernel|x86 boot'
+          printf 'Selected packaged guest kernel: %s (staged as %s)\\n' "$installed_kernel" "$kernel"
+          sha256sum "$kernel"
+          test -f /usr/share/OVMF/OVMF_CODE_4M.fd
+          test -f /usr/share/OVMF/OVMF_VARS_4M.fd
+          file /usr/bin/busybox | grep 'statically linked'
+          {
+            echo "AIFT_M1_KERNEL=$kernel"
+            echo "AIFT_M1_BUSYBOX=/usr/bin/busybox"
+            echo "AIFT_M1_OVMF_CODE=/usr/share/OVMF/OVMF_CODE_4M.fd"
+            echo "AIFT_M1_OVMF_VARS=/usr/share/OVMF/OVMF_VARS_4M.fd"
+            echo "AIFT_M1_OUTPUT=${RUNNER_TEMP}/aift-m1-uefi"
+          } >> "$GITHUB_ENV"
+          dpkg-query -W linux-image-virtual busybox-static ovmf qemu-system-x86 grub-efi-amd64-bin
+      - name: Validate harness syntax
+        run: bash -n scripts/m1_uefi_qemu_smoke.sh
+      - name: Boot disposable Linux ISO under OVMF
+        run: bash scripts/m1_uefi_qemu_smoke.sh
+      - name: Verify boot proof digest and marker
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$AIFT_M1_OUTPUT"
+          sha256sum -c SHA256SUMS
+          # UEFI serial consoles produce CRLF; verify a complete marker line
+          # after CR normalization, not a prefix match or an empty artifact.
+          tr -d '\r' < serial.log | grep -Fx 'AIFT_M1_BOOT_OK'
+      - name: Preserve boot evidence (including failures)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: m1-ovmf-boot-evidence
+          path: |
+            ${{ runner.temp }}/aift-m1-uefi/serial.log
+            ${{ runner.temp }}/aift-m1-uefi/qemu.log
+            ${{ runner.temp }}/aift-m1-uefi/build.log
+            ${{ runner.temp }}/aift-m1-uefi/SHA256SUMS
+          if-no-files-found: warn
