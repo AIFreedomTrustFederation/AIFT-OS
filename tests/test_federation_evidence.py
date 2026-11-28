@@ -23,6 +23,16 @@ def record(repo, sha):
             "limitations": ["Does not test production."]}
 
 
+def nested_value(containers, shape):
+    value = None
+    for level in range(containers):
+        if shape == "arrays" or (shape == "mixed" and level % 2):
+            value = [value]
+        else:
+            value = {"child": value}
+    return value
+
+
 class ConsumerTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
@@ -352,6 +362,67 @@ class ConsumerTests(unittest.TestCase):
         self.assertEqual(json.loads(result.stdout)["status"], "failed")
         self.assertIn("invalid JSON", result.stdout)
         self.assertNotIn("Traceback", result.stderr)
+
+    def test_accepts_64_containers_including_root(self):
+        first, second = (record(*pair) for pair in zip(REPOS, SHAS))
+        for shape in ("arrays", "objects", "mixed"):
+            with self.subTest(shape=shape):
+                first["extra"] = nested_value(63, shape)
+                result = self.run_consumer([first, second])
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertEqual(json.loads(result.stdout)["errors"], [])
+
+    def test_rejects_65_containers_even_with_complete_valid_evidence(self):
+        first, second = (record(*pair) for pair in zip(REPOS, SHAS))
+        for shape in ("arrays", "objects", "mixed"):
+            with self.subTest(shape=shape):
+                value = nested_value(64, shape)
+                result = self.run_consumer([first, second, {**first, "ignored": value}])
+                self.assertEqual(result.returncode, 1)
+                self.assertEqual(result.stderr, "")
+                report = json.loads(result.stdout)
+                self.assertEqual(report["status"], "failed")
+                self.assertEqual({r["repository"] for r in report["repositories"]}, set(REPOS))
+                self.assertEqual(report["errors"], [{
+                    "file": str(self.root / "record-2.json"),
+                    "error": "invalid JSON: nesting exceeds 64 containers",
+                }])
+
+    def test_strings_do_not_change_container_depth(self):
+        first, second = (record(*pair) for pair in zip(REPOS, SHAS))
+        # Exercise structural characters in both keys and values. A quote can
+        # be escaped; a string ending with a backslash still has a closing quote.
+        text = '{"[\\' * 80 + ']}"' * 80
+        first["extra"] = [{text: text}, {"trailing": "\\"}, {"quoted": '\\"'}]
+        result = self.run_consumer([first, second])
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(json.loads(result.stdout)["errors"], [])
+
+    def test_overdepth_rejected_before_json_decoder(self):
+        import runpy
+        from unittest.mock import patch
+
+        module = runpy.run_path(str(SCRIPT))
+        path = self.root / "deep.json"
+        # Escaped quotes, then an escaped backslash immediately before the
+        # closing quote. The scanner must resume counting the following objects.
+        prefix = json.dumps({"prefix": '"\\'})[:-1]
+        path.write_text(prefix + ', "extra": ' + '{"k":' * 1000 + '0' + '}' * 1001)
+        with patch.object(json, "loads", side_effect=AssertionError("decoder reached")):
+            with self.assertRaisesRegex(module["EvidenceError"], "invalid JSON: nesting exceeds 64"):
+                module["read_record"](path)
+
+    def test_malformed_json_still_returns_structured_errors(self):
+        for raw in (']', '{"extra":[}', '{"extra": "unterminated', r'{"extra":"\q"}'):
+            with self.subTest(raw=raw):
+                result = self.run_consumer([None], raw=raw)
+                self.assertEqual(result.returncode, 1)
+                self.assertEqual(result.stderr, "")
+                report = json.loads(result.stdout)
+                self.assertEqual(report["status"], "failed")
+                file_errors = [err["error"] for err in report["errors"] if "file" in err]
+                self.assertEqual(len(file_errors), 1)
+                self.assertTrue(file_errors[0].startswith("invalid JSON: "), file_errors)
 
     def test_accepts_finite_json_decimal(self):
         first = record(REPOS[0], SHAS[0])
